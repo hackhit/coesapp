@@ -1,0 +1,26 @@
+= form_for @plan, html: { class: 'form-horizontal' } do |f|
+  .form-group
+    = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
+    .col-md-10
+      = f.text_field :id, class: 'text_field form-control upcase', autofocus: true, placeholder: 'Identidicador Ej.: G280 (Caracteres Especiales No permitidos)', required: true, size: 3
+  .form-group
+    = f.label :description, class: 'control-label col-md-2', value: 'Descripción:'
+    .col-md-10
+      = f.text_field :description, class: 'text_field form-control', placeholder: 'Descripción', required: true
+
+  .form-group
+    .col-md-offset-2.col-md-10
+      = f.submit nil, class: 'btn btn-primary'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), planes_path, class: 'btn btn-default'
+
+:javascript
+  $('.upcase').on('input', function(evt) {
+    $(this).val(function(_, val) {
+      return val.toUpperCase();
+    });
+  });
+
+  $('.upcase').bind('keyup blur',function(){ 
+    var node = $(this);
+    node.val(node.val().replace(/[^A-Z0-9]/g,'') ); 
+  });  
