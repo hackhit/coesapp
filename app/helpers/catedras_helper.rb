@@ -1,0 +1,2 @@
+module CatedrasHelper
+end

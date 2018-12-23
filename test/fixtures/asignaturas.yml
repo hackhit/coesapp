@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: MyString
+  descripcion: MyString
+  catedra: one
+  departamento: one
+  anno: 1
+  id_uxxi: MyString
+  creditos: 1
+
+two:
+  id: MyString
+  descripcion: MyString
+  catedra: two
+  departamento: two
+  anno: 1
+  id_uxxi: MyString
+  creditos: 1

@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Numero:
+  = @seccion.numero
+%p
+  %b Asignatura:
+  = @seccion.asignatura
+%p
+  %b Periodo:
+  = @seccion.periodo
+%p
+  %b Profesor:
+  = @seccion.profesor
+%p
+  %b Calificada:
+  = @seccion.calificada
+
+= link_to 'Edit', edit_seccion_path(@seccion)
+\|
+= link_to 'Back', secciones_path

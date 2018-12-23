@@ -1,0 +1,31 @@
+= form_for @asignatura do |f|
+  - if @asignatura.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@asignatura.errors.count, "error")} prohibited this asignatura from being saved:"
+      %ul
+        - @asignatura.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :id
+    = f.text_field :id
+  .field
+    = f.label :descripcion
+    = f.text_field :descripcion
+  .field
+    = f.label :catedra
+    = f.text_field :catedra
+  .field
+    = f.label :departamento
+    = f.text_field :departamento
+  .field
+    = f.label :anno
+    = f.number_field :anno
+  .field
+    = f.label :id_uxxi
+    = f.text_field :id_uxxi
+  .field
+    = f.label :creditos
+    = f.number_field :creditos
+  .actions
+    = f.submit 'Save'

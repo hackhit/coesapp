@@ -1,0 +1,2 @@
+class Catedra < ApplicationRecord
+end

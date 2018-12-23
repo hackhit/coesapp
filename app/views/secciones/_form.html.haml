@@ -1,0 +1,25 @@
+= form_for @seccion do |f|
+  - if @seccion.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@seccion.errors.count, "error")} prohibited this seccion from being saved:"
+      %ul
+        - @seccion.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :numero
+    = f.text_field :numero
+  .field
+    = f.label :asignatura
+    = f.text_field :asignatura
+  .field
+    = f.label :periodo
+    = f.text_field :periodo
+  .field
+    = f.label :profesor
+    = f.text_field :profesor
+  .field
+    = f.label :calificada
+    = f.check_box :calificada
+  .actions
+    = f.submit 'Save'

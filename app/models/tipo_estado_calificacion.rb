@@ -1,0 +1,2 @@
+class TipoEstadoCalificacion < ApplicationRecord
+end

@@ -1,0 +1,27 @@
+- model_class = Catedra
+.page-header
+  %h1=t '.title', default: model_class.model_name.human.pluralize.titleize
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:descripcion)
+      %th= model_class.human_attribute_name(:orden)
+      %th= model_class.human_attribute_name(:created_at)
+      %th=t '.actions', default: t("helpers.actions")
+  %tbody
+    - @catedras.each do |catedra|
+      %tr
+        %td= catedra.id
+        %td= catedra.descripcion
+        %td= catedra.orden
+        %td=l catedra.created_at, format: :long
+        %td
+          = link_to catedra_path(catedra), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
+            = glyph 'info-sign'
+          = link_to edit_catedra_path(catedra), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+            = glyph 'pencil'
+          = link_to catedra_path(catedra), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+            = glyph 'remove'
+
+= link_to t('.new', default: t("helpers.links.new")), new_catedra_path, class: 'btn btn-primary'

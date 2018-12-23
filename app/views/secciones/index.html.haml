@@ -1,0 +1,29 @@
+%h1 Listing secciones
+
+%table
+  %thead
+    %tr
+      %th Numero
+      %th Asignatura
+      %th Periodo
+      %th Profesor
+      %th Calificada
+      %th
+      %th
+      %th
+
+  %tbody
+    - @secciones.each do |seccion|
+      %tr
+        %td= seccion.numero
+        %td= seccion.asignatura
+        %td= seccion.periodo
+        %td= seccion.profesor
+        %td= seccion.calificada
+        %td= link_to 'Show', seccion
+        %td= link_to 'Edit', edit_seccion_path(seccion)
+        %td= link_to 'Destroy', seccion, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Seccion', new_seccion_path

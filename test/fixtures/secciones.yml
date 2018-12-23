@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  numero: MyString
+  asignatura: one
+  periodo: one
+  profesor: one
+  calificada: false
+
+two:
+  numero: MyString
+  asignatura: two
+  periodo: two
+  profesor: two
+  calificada: false

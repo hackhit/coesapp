@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Id:
+  = @asignatura.id
+%p
+  %b Descripcion:
+  = @asignatura.descripcion
+%p
+  %b Catedra:
+  = @asignatura.catedra
+%p
+  %b Departamento:
+  = @asignatura.departamento
+%p
+  %b Anno:
+  = @asignatura.anno
+%p
+  %b Id uxxi:
+  = @asignatura.id_uxxi
+%p
+  %b Creditos:
+  = @asignatura.creditos
+
+= link_to 'Edit', edit_asignatura_path(@asignatura)
+\|
+= link_to 'Back', asignaturas_path
