@@ -1,0 +1,9 @@
+= form_for (@seccion,url:{action: 'nueva_seccion_admin_guardar'}, :html => { class: 'form-horizontal' }) do |f|
+	.form-actions
+		= f.text_field :numero, autofocus: true, placeholder: 'numero'
+		= f.text_field :cal_semestre_id
+		= f.collection_select :cal_semestre_id, CalSemestre.all, :id, :id
+		= f.text_field :cal_materia_id
+		= f.text_field :cal_profesor_ci
+		= f.submit nil, class: 'btn btn-primary'
+		= link_to t('.cancel', :default => t("helpers.links.cancel")), {action: 'index'}, {class: 'btn'}

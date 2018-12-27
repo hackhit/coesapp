@@ -1,0 +1,73 @@
+%p
+	%h3.text-muted
+		Período Académico: 
+		= "#{@cal_semestre_actual.id}"
+
+.tabbable.tabs-top
+	%h5 Seleccione el Departamento:
+	%ul.nav.nav-pills
+		- @departamentos.each_with_index do |dep,i|
+			- dpto_activo = (session[:dpto_id].eql? dep.id) ? "active" : ""
+			%li{class: dpto_activo}
+				= link_to dep.descripcion, "#dep_#{dep.id}", "data-toggle"=> "tab", onclick: "$.ajax({url: '/sirneim/cal_principal_admin/set_tab', data: {dpto_id: '#{dep.id}'}, dataType: 'json'});"
+
+	.tab-content
+		- @departamentos.each_with_index do |dep,i|
+			- dpto_activo = (session[:dpto_id].eql? dep.id) ? "active" : ""
+			.tab-pane{class: dpto_activo, id: "dep_#{dep.id}"}
+
+				- @catedras = dep.cal_departamentos_categorias.sort_by{|cate| cate.orden}
+				.tabbable.tabs-top
+					%h5 Seleccione la Cátedra:
+					%ul.nav.nav-pills
+						- @catedras.each_with_index do |cat_dep,j|
+							- cat = cat_dep.cal_categoria
+							-# cat_activa = (j.eql? 0) ? "" : ""
+							- cat_activa = (session[:cat_id].eql? cat.id) ? "active" : ""
+
+							%li{class: cat_activa}
+								= link_to cat.descripcion, "#cat_#{dep.id}_#{cat.id}", "data-toggle"=> "tab", onclick: "$.ajax({url: '/sirneim/cal_principal_admin/set_tab', data: {cat_id: '#{cat.id}'}, dataType: 'json'});"
+
+					.tab-content
+						- @catedras.each_with_index do |cat_dep,j|
+							- cat = cat_dep.cal_categoria						
+							-# cat_activa = (j.eql? 0) ? "" : ""
+							- cat_activa = (session[:cat_id].eql? cat.id) ? "active" : ""
+
+							.tab-pane{class: cat_activa, id: "cat_#{dep.id}_#{cat.id}"}
+
+								- @materias = cat.cal_materias.where(:cal_departamento_id => dep.id).sort_by{|m| m.orden}
+								.tabbable.tabs-left
+									%h5 Seleccione la Asignatura:
+									%ul.nav.nav-tabs
+										- @materias.each_with_index do |mat,k|
+											-# mat_activa = (k.eql? 0) ? "" : "" 
+											- mat_activa = (session[:mat_id].eql? mat.id) ? "active" : ""
+								
+											-#secciones = mat.cal_secciones.where(:cal_semestre_id => @cal_semestre_actual.id)
+											
+											%li{class: mat_activa}
+												= link_to "#mat_#{mat.id}", "data-toggle"=> "tab", onclick: "$.ajax({url: '/sirneim/cal_principal_admin/set_tab', data: {mat_id: '#{mat.id}'}, dataType: 'json'});" do
+													= mat.descripcion
+													%span.badge.badge-inverse= mat.id_upsi
+													-if mat.cal_secciones.where(:cal_semestre_id => @cal_semestre_actual.id).count < 1
+														.mute
+															%span.label.label-important
+																inactiva
+
+
+									.tab-content
+										- @materias.each_with_index do |mat,k|
+											-# @mat_activa = (k.eql? 0) ? "" : ""
+											- @mat_activa = (session[:mat_id].eql? mat.id) ? "active" : ""
+
+											-@secciones = mat.cal_secciones.where(:cal_semestre_id => @cal_semestre_actual.id)
+											- @mat = mat
+											= render partial: 'detalle_seccion'
+
+
+- @cal_usuario = session[:cal_usuario]
+
+-if (@cal_usuario.correo_electronico.blank? or @cal_usuario.telefono_movil.blank? or @cal_usuario.telefono_habitacion.blank?)
+
+	= render partial: 'cal_usuario/datos_modal'

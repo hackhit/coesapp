@@ -4,7 +4,6 @@
 %table.table.table-striped
   %thead
     %tr
-      %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:ci)
       %th= model_class.human_attribute_name(:nombres)
       %th= model_class.human_attribute_name(:apellidos)
@@ -13,21 +12,21 @@
       %th= model_class.human_attribute_name(:telefono_movil)
       %th= model_class.human_attribute_name(:password)
       %th= model_class.human_attribute_name(:sexo)
-      %th= model_class.human_attribute_name(:created_at)
+      %th Roles
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @usuarios.each do |usuario|
       %tr
-        %td= usuario.id
         %td= usuario.ci
-        %td= usuario.nombres
+        %td= usuario.nickname
         %td= usuario.apellidos
         %td= usuario.email
         %td= usuario.telefono_habitacion
         %td= usuario.telefono_movil
         %td= usuario.password
-        %td= usuario.sexo
-        %td=l usuario.created_at, format: :long
+        %td= usuario.sexo_to_s
+        %td= usuario.roles
+        / %td=#l usuario.created_at, format: :long
         %td
           = link_to usuario_path(usuario), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

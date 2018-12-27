@@ -1,0 +1,9 @@
+
+%h3 Paso1 (Selección de Archivo):
+= form_tag({action: 'reader_pdf'}, :multipart => true) do
+	%p
+		= link_to "Atrás", {action: "index"}, {class: 'btn'}
+		%label Seleccione el archivo a Importar (recuerde el formato es Pdf):
+		= file_field 'archivo', 'datafile', {required: true, class: 'btn', :accept => 'application/pdf'}
+
+		= submit_tag "Cargar", {class: 'btn btn-success', :disable_with => "Cargando..."}

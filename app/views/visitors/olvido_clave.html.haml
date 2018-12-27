@@ -1,0 +1,22 @@
+.contenedor
+  .subcontenedorizquierdo
+    %div
+      -if flash[:mensaje]
+        #mensaje-flash{style: "display:none;"}
+          %p{ class: "ui-state-highlight ui-corner-all", style: "margin-top: 20px; padding: 3px 3px" }
+            %span.ui-icon.ui-icon-info{ style:"display:inline-block;" }
+            #{flash[:mensaje]}  
+        =javascript_tag "$(document).ready(function(){ $('#mensaje-flash').show('pulsate',{},'fast'); });"
+      %p Ingrese los datos para recuperar su clave:
+      =form_tag(action: "olvido_clave_guardar") do 
+        %p
+          %label
+            Cédula de Identidad
+            %span.req *
+          %br/
+          =text_field :usuario, :ci, autofocus: true
+          Ejemplo: 19123321
+        %p
+          =submit_tag "Siguiente"  
+      %br/    
+      =link_to "<< Regresar a Inicio", action: :index

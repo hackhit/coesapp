@@ -1,0 +1,78 @@
+
+%h3 Paso2 (Previsualización):
+.well.well-small
+	%h4 
+		%u Resumen:
+
+	%p 
+		Nombre asignatura (UXXI):
+		%b=@nombre_asignatura
+	%p
+		Código asignatura (UXXI):
+		%b= @codigo_asignatura
+	%p
+		Total secciones encontradas:
+		%b= "#{@secciones.count} (#{@secciones.join(' - ')})"
+	%p
+		Total de cédulas escaneadas en archivo origen:
+		%b= @estudiantes_encontrados.count + @cedulas_no_encontradas.count
+	%p
+		Total estudiantes encontrados en Sirneim: 
+		%b= @estudiantes_encontrados.count
+	%p
+		Total de cédulas no encontradas: 
+		%b= @cedulas_no_encontradas.count
+
+	- if @cedulas_no_encontradas.count > 0
+
+		.alert.alert-error
+			%h4
+				%u Cédulas no encontradas en el Sirneim (sugerimos cargar estos estudiantes antes de realizar la importación):
+			
+			= @cedulas_no_encontradas.join("  |  ")
+
+
+	/ - if @estudiantes_no_encontrados.count > 0
+
+	/ 	.alert.alert-error
+	/ 		%h4
+	/ 			%u Cédulas no encontradas en el Sirneim (sugerimos cargar estos estudiantes antes de realizar la importación):
+			
+	/ 		= @estudiantes_no_encontrados.join("  |  ")
+
+= form_tag(action: "importar_secciones_paso2") do
+	= link_to "Atrás", "importar_secciones_paso1", {class: 'btn'}
+
+	= submit_tag "Confirmar Importación", :disable_with => 'Importando...', class: 'btn btn-primary pull pull-right' 
+	%br
+	%br
+
+	%table.table.table-striped.table-hover.table-condensed.table-bordered
+		%thead
+			%tr
+				%th #
+				%th Cedulas
+				%th Seccion
+				%th Asignatura
+		%tbody
+			- @estudiantes_encontrados.each_with_index do |estudiante_seccion,i|
+				%tr
+					%td= i+1
+					%td= estudiante_seccion.cal_estudiante.descripcion
+					%td= estudiante_seccion.numero
+					%td= estudiante_seccion.cal_seccion.cal_materia.descripcion if estudiante_seccion.cal_seccion
+				= hidden_field_tag "estudiantes_seccion[]", estudiante_seccion.id
+
+	= submit_tag "Confirmar Importación", :disable_with => 'Importando...', class: 'btn btn-primary pull pull-right' 
+
+%br
+%br
+
+- if @cedulas_no_encontradas.count > 0
+
+	.well.well-small.alert.alert-error
+		%h4
+			%u Cédulas no encontradas en el Sirneim (sugerimos cargar estos estudiantes antes de realizar la importación):
+		
+		= @cedulas_no_encontradas.join("  |  ")
+

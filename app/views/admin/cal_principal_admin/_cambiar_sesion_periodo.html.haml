@@ -1,0 +1,25 @@
+.modal.hide.fade#cambiar_sesion_periodo{'aria-hidden'=> false}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.alert.alert-info
+          Cambio de Período en su sesión
+      .modal-body
+
+        = form_tag({controller: 'cal_principal_admin', action: 'cambiar_sesion_periodo'}, class: 'form-horizontal') do
+          .modal-body
+            .control-group
+              %label.control-label
+                Período Actual:
+              .controls
+                = text_field_tag :actual, session[:cal_parametros][:semestre_actual], readonly: true, disabled: true
+
+            .control-group
+              %label.control-label
+                Nueva Período:
+              .controls
+                = collection_select :nuevo, nil, CalSemestre.order('id desc').all, :id, :id, {:prompt => 'Seleccione Período'}, { class: 'input', required: true }
+
+          .modal-footer
+            %a.btn{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Guardar', class: 'btn btn-primary'

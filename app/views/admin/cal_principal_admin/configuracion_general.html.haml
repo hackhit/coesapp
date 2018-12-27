@@ -1,0 +1,41 @@
+%h2 Configuraciones Generales 
+%h3 
+	Programaciones:
+	%span.badge  
+		= radio_button_tag :programaciones, nil, (CalParametroGeneral.programaciones.eql? 'APAGADAS'), onclick: "$.ajax({url: '/sirneim/cal_principal_admin/set_programaciones?id=ENCENDIDAS', dataType: 'json'})"
+		Agagadas
+	%span.badge.badge-success
+		= radio_button_tag :programaciones, nil, (CalParametroGeneral.programaciones.eql? 'ENCENDIDAS'), onclick: "$.ajax({url: '/sirneim/cal_principal_admin/set_programaciones?id=APAGADAS', dataType: 'json'})"
+		Encendidas
+
+%h3 Período:
+%ul 
+	%li= link_to 'Agregar Nuevo Período', {controller: 'cal_semestre', action: 'nuevo'}, class: 'btn'
+	%br
+	%li
+		.input-append
+			-if @periodo_anterior
+				= text_field_tag 'periodo_anterior', "Período Anterior: #{@periodo_anterior.id}", {id: 'appendedInputButton1', :readonly => true, disabled: true}
+			= text_field_tag 'periodo_actual', "Período Actual: #{@periodo_actual.id}", {class: 'span', id: 'appendedInputButton', :readonly => true, disabled: true}
+			= link_to "Cambiar", "#", class: 'btn btn-success', :onclick => "return $('#cambiar_periodo_actual').modal();", 'data_toggle' => 'modal'
+
+.modal.hide.fade#cambiar_periodo_actual{tabindex: "-1", role: "dialog", 'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false}
+	.modal-header
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		%h3 Cambiar Periodo Actual
+	=form_tag({controller: 'cal_semestre', action: 'cambiar_periodo_actual'}, class: "form-horizontal") do
+		.modal-body
+			.control-group
+				%label.control-label
+					Período Actual:  
+				.controls	
+					= collection_select :cal_semestre, :id, @cal_periodos, :id, :id
+
+			.control-group
+				%label.control-label
+					Período Anterior:
+				.controls	
+					= collection_select :cal_semestre_anterior, :id, @cal_periodos, :id, :id					
+		.modal-footer
+			<a href="#" class="btn">Cerrar</a>
+			=submit_tag "Guardar", class: 'btn btn-primary'

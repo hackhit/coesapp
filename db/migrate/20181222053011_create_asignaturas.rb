@@ -4,6 +4,7 @@ class CreateAsignaturas < ActiveRecord::Migration[5.2]
       t.string :id, null: false, primary_key: true, index: true
       t.string :descripcion
       t.integer :anno
+      t.integer :orden
       t.references :departamento, type: :string
       t.references :catedra, type: :string
       t.string :id_uxxi

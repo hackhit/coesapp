@@ -1,0 +1,33 @@
+- @accion = action_name
+- @controlador = controller_name
+
+%h3
+	= link_to "<< Regresar", :back, {class: 'btn'}
+	- if @estudiante.valido_para_inscribir?
+		= link_to({controller: 'cal_estudiante_seccion', action: 'seleccionar', id: @estudiante.id}, class: 'btn btn-success') do
+			%span.icon-pencil
+			Inscribir
+
+.tabbable.tabs-top
+	%ul.nav.nav-tabs
+		%li= link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab"
+		- if @estudiante
+			%li= link_to 'Plan de Estudio y Combinaciones de Idiomas', "#estudios", "data-toggle"=> "tab"
+			%li= link_to 'Historial Académico', "#historial", "data-toggle"=> "tab"
+		- if @profesor
+			%li= link_to 'Detalles Académicos', "#profesor", "data-toggle"=> "tab"
+
+
+	.tab-content
+		.tab-pane#personales
+			= render partial: 'cal_usuario/personales_contacto'
+		- if @estudiante
+			.tab-pane#estudios
+				= render 'cal_estudiante_tipo_plan/index'
+				= render 'combinaciones/index'
+			.tab-pane#historial
+				= render partial: 'cal_estudiante/historial_academico'
+
+		- if @profesor
+			.tab-pane#profesor
+				= render partial: 'cal_profesor/detalle'

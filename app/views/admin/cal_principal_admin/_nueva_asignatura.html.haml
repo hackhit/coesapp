@@ -1,0 +1,11 @@
+%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Sección'}
+
+	= form_tag 'cal_principal_admin/nueva_seccion_admin_guardar', {class: 'form-horizontal', id: "nueva_seccion_#{@mat.id}"} do 
+		= hidden_field_tag "[cal_materia]id", @mat.id
+		= text_field_tag "[cal_seccion]numero" , nil, {autofocus: true, placeholder: 'Identificador de la Sección...'}
+
+		= grouped_collection_select :cal_seccion, :cal_profesor_ci, @departamentos, :cal_profesores, :descripcion, :id, :descripcion, {:prompt => "Profesor"}, { class: 'selects2', style: 'width:30%'}
+
+		= hidden_field_tag "[cal_seccion]cal_semestre_id", @cal_semestre_actual.id
+
+		= submit_tag 'Agregar', class: 'btn btn-primary'

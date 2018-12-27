@@ -12,7 +12,7 @@
     - @planes.each do |plan|
       %tr
         %td= plan.id
-        %td= plan.description
+        %td= plan.descripcion
         %td=l plan.created_at, format: :long
         %td
           = link_to plan_path(plan), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
