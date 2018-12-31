@@ -1,9 +1,23 @@
 = form_for @departamento, html: { class: 'form-horizontal' } do |f|
   .form-group
-    = f.label :descripcion, class: 'control-label col-md-2'
+    = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
     .col-md-10
-      = f.text_field :descripcion, class: 'text_field form-control'
+      = f.text_field :id, class: 'text_field form-control upcase', autofocus: true, placeholder: "ALE", size: 6, required: true, maxlength: 6
+      %small.text-muted.font-italic Máximo 6 catacteres alfabéticos (Caracteres Especiales y Numéricos No permitidos)
+
+  .form-group
+    = f.label :descripcion, class: 'control-label col-md-2', value: 'Descripción:'
+    .col-md-10
+      = f.text_field :descripcion, class: 'text_field form-control', placeholder: "Alemán", required: true
   .form-group
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'
       = link_to t('.cancel', default: t("helpers.links.cancel")), departamentos_path, class: 'btn btn-default'
+
+:javascript
+
+  $('.upcase').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().replace(/[^a-zA-Z]/g,'') );
+    node.val(node.val().toUpperCase());
+    });

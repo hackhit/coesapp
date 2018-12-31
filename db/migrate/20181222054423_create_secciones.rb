@@ -6,6 +6,7 @@ class CreateSecciones < ActiveRecord::Migration[5.2]
       t.references :periodo, type: :string
       t.references :profesor, type: :string
       t.boolean :calificada
+      t.integer :capacidad
 
       t.timestamps
     end

@@ -32,43 +32,43 @@ class ApplicationController < ActionController::Base
 	def filtro_logueado
 		unless session[:usuario_ci]
 			reset_session
-			flash[:alert] = "Debe iniciar sesión"
+			flash[:danger] = "Debe iniciar sesión"
 			redirect_to root_path
 			return false
 		end
 	end
 	
 	def filtro_administrador
-		unless session[:administrador_ci]
+		unless session[:administrador_id]
 			reset_session
-			flash[:alert] = "Debe iniciar sesión como Administrador"  
+			flash[:danger] = "Debe iniciar sesión como Administrador"  
 			redirect_to root_path
 			return false
 		end
 	end
 
 	def filtro_admin_profe
-		unless session[:administrador_ci] or session[:profesor_ci] 
+		unless session[:administrador_id] or session[:profesor_id] 
 			reset_session
-			flash[:alert] = "Debe iniciar sesión como Profesor o Administrador"  
+			flash[:danger] = "Debe iniciar sesión como Profesor o Administrador"  
 			redirect_to root_path
 			return false
 		end
 	end
 
 	def filtro_profesor
-		unless session[:profesor_ci]
+		unless session[:profesor_id]
 			reset_session
-			flash[:alert] = "Debe iniciar sesión como Profesor"  
+			flash[:danger] = "Debe iniciar sesión como Profesor"  
 			redirect_to root_path
 			return false
 		end
 	end
 
 	def filtro_estudiante
-		unless session[:estudiante_ci]
+		unless session[:estudiante_id]
 			reset_session
-			flash[:alert] = "Debe iniciar sesión como Profesor"  
+			flash[:danger] = "Debe iniciar sesión como Profesor"  
 			redirect_to root_path
 			return false
 		end

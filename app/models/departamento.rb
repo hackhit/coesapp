@@ -7,6 +7,10 @@ class Departamento < ApplicationRecord
 	has_many :profesores
 	accepts_nested_attributes_for :profesores
 
+	has_many :administradores
+	accepts_nested_attributes_for :administradores
+
+
 	has_many :catedras_departamentos, class_name: 'CatedraDepartamento'
 	accepts_nested_attributes_for :catedras_departamentos
 

@@ -15,6 +15,14 @@ gem 'jquery-rails'
 gem 'mysql2', '~> 0.4.10'
 gem 'bootstrap-sass-extras'
 
+gem 'pdf-writer', :git => 'https://github.com/metaskills/pdf-writer.git'
+gem 'iconv'
+gem 'pdf-reader'
+gem 'pdf-reader-html'
+gem 'spreadsheet'
+
+gem 'select2-rails' 
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end

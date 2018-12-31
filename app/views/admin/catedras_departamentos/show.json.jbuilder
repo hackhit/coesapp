@@ -1,0 +1,1 @@
+json.partial! "admin_catedras_departamento/admin_catedra_departamento", admin_catedra_departamento: @admin_catedra_departamento

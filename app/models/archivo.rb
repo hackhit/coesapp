@@ -1,7 +1,20 @@
-class CalArchivo
+class Archivo
+
 	def self.to_utf16(valor)
-		ic_ignore = Iconv.new('ISO-8859-15//IGNORE//TRANSLIT', 'UTF-8')
-		ic_ignore.iconv(valor)
+		require 'iconv'
+		Iconv.iconv('ISO-8859-15//IGNORE//TRANSLIT', 'UTF-8', valor).to_s
+
+		# c = Iconv.new( 'ISO-8859-15//IGNORE//TRANSLIT', 'utf-8')
+		# c.iconv(valor)
+		# valor.force_encode("utf-8", invalid: :replace, undef: :replace, replace: '?')
+		# valor.force_encoding('ASCII-8BIT', invalid: :replace, undef: :replace, replace: '')
+		# valor.force_encoding('ASCII-8BIT')
+		# valor.force_encode("utf-8", invalid: :replace, undef: :replace, replace: '?')
+		# valor.force_encoding('ASCII-8BIT').force_encoding('UTF-8')
+		# valor.valid_encoding?.to_s
+		 # Iconv.iconv('iso-8859-15', 'utf-8', valor).to_s
+		# Iconv.conv('ISO-8859-15//IGNORE//TRANSLIT', 'UTF-8', valor)
+
 	end
 
 	def self.hacer_constancia_estudio estudiante_ci
@@ -369,15 +382,15 @@ class CalArchivo
 		@sheet.row(2).concat data
 		data = ['Materia', @seccion.asignatura.descripcion]
 		@sheet.row(3).concat data
-		data = ['Código', @seccion.asignatura.id_xxi]
+		data = ['Código', @seccion.asignatura.id_uxxi]
 		@sheet.row(4).concat data
 		data = ['Créditos', @seccion.asignatura.creditos]
 		@sheet.row(5).concat data
 		data = ['Sección', @seccion.numero]
 		@sheet.row(6).concat data
-		data = ['Profesor', "#{@seccion.cal_profesor.cal_usuario.nombre_completo if @seccion.cal_profesor}"]
+		data = ['Profesor', "#{@seccion.profesor.usuario.nombre_completo if @seccion.profesor}"]
 		@sheet.row(7).concat data
-		@sheet.row(8).concat ['CI. Profesor', @seccion.profesor_ci]
+		@sheet.row(8).concat ['CI. Profesor', @seccion.profesor_id]
 		@sheet.row(9).concat ['Semestre', '0']
 		@sheet.row(10).concat ['Año', @seccion.periodo.anno]
 
@@ -628,6 +641,7 @@ class CalArchivo
 
 
 	def self.hacer_acta(seccion_id)
+
 		por_pagina = 35
 		pdf = PDF::Writer.new
 		seccion = Seccion.find seccion_id
@@ -664,7 +678,7 @@ class CalArchivo
 			# plan += e.planes.collect{|c| c.id}.join(" | ") if e.planes
 			plan = "#{e.ultimo_plan}"
 			data << {"n" => j+i+1,
-				"ci" => to_utf16(e.usuario_ci),
+				"ci" => to_utf16(e.usuario_id),
 				"nom" => to_utf16(e.usuario.apellido_nombre),
 				"cod" => to_utf16(plan),
 				"cal_des" => to_utf16(es.tipo_calificacion),

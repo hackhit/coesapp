@@ -1,9 +1,15 @@
 class VisitorsController < ApplicationController
+  layout 'visitors'
   def index
-    temp = flash[:error]
+    aux = flash[:error]
+    aux2 = flash[:danger]
+    aux3 = flash[:success]
+    aux4 = flash[:notice]
     reset_session
-
-    flash[:error] = temp
+    flash[:error] = aux
+    flash[:danger] = aux2
+    flash[:success] = aux3
+    flash[:notice] = aux4
   end
 
 
@@ -55,27 +61,26 @@ class VisitorsController < ApplicationController
 
     flash[:success] = "Bienvenid#{gen} #{usuario.nombres}" 
 
-    if tipo == "Administrador" && usuario.cal_administrador
+    if tipo == "Administrador" && usuario.administrador
       session[:rol] = tipo
-      session[:administrador_id] = usuario.administrador_id
-      redirect_to :controller => "principal_admin"
-      return
+      session[:administrador_id] = usuario.administrador.id
+      redirect_to principal_admin_index_path
     elsif tipo == "Profesor" && usuario.profesor
       session[:rol] = tipo
       session[:profesor_id] = usuario.profesor_id
-      redirect_to :controller => "principal_profesor"
+      redirect_to principal_profesor_index_path
       return
     elsif tipo == "Estudiante"
       session[:rol] = tipo
       session[:estudiante_id] = usuario.estudiante_id
-      redirect_to :controller => "principal_estudiante"
+      redirect_to principal_estudiante_index_path
       return
     end
   end
 
   def cerrar_sesion
   	usuario = Usuario.find session[:usuario_ci]
-    msg = "Hasta pronto #{usuario.nombres}"    
+    msg = "¡Hasta pronto #{usuario.nombres}!"    
     reset_session
     flash[:success] = msg
     redirect_to root_path

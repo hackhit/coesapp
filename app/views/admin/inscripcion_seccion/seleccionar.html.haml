@@ -1,0 +1,115 @@
+%i.muted
+	%b.tooltip-btn{'data_toggle'=>'tooltip', title: "Ir al detalle del usuario"}
+		= link_to(usuario_path(@estudiante.id), class: 'btn btn-default btn-small') do
+			= glyph 'plus'
+			Detalle
+	= "#{@estudiante.descripcion}:"
+%br
+
+= form_tag({controller: 'inscripcion_seccion', action: 'inscribir'} ) do
+	=hidden_field_tag :id, @estudiante.usuario_id
+	.border.p-3{style: 'max-height: 350px;overflow-y: scroll;'}
+
+		.row
+			.col-2
+				#dpto-pills-tab.nav.flex-column.nav-pills{"aria-orientation" => "vertical", :role => "tablist"}
+					%p Seleccione el Departamento:
+					- @departamentos.each_with_index do |dpto,i|
+						- dpto_activo = (session[:dpto_id].eql? dpto.id) ? "active" : ""							
+						= link_to "#dpto_#{dpto.id}", "data-toggle"=> "pill", class: "nav-link #{dpto_activo}", "aria-controls" => "dpto_#{dpto.id}", :role => "tab", id: "dpto_#{dpto.id}-tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {dpto_id: '#{dpto.id}'}, dataType: 'json'});"  do
+							= dpto.descripcion
+
+			.col-10
+				#dpto-pills-tabContent.tab-content
+					- @departamentos.each_with_index do |dpto,i|
+						- @dpto_activo = (session[:dpto_id].eql? dpto.id) ? "active show" : ""
+						.tab-pane.fade{class: @dpto_activo, id: "dpto_#{dpto.id}", "aria-labelledby" => "dpto_#{dpto.id}-tab", :role => "tabpanel"}
+							- @catedras = dpto.catedras.order('orden ASC')
+
+							.row
+								.col-2
+									#cat-pills-tab.nav.flex-column.nav-pills{"aria-orientation" => "vertical", :role => "tablist"}
+										%p Seleccione la Cátedra:
+
+										- @catedras.each_with_index do |cat,i|
+											- cat_activa = (session[:cat_id].eql? cat.id) ? "active show" : ""
+											= link_to cat.descripcion, "#cat_#{dpto.id}_#{cat.id}", "data-toggle"=> "pill", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {cat_id: '#{cat.id}'}, dataType: 'json'});", class: "nav-link #{cat_activa}", "aria-controls" => "cat_#{cat.id}", :role => "tab", id: "cat_#{cat.id}-tab"
+
+								.col-10
+									#cat-pills-tabContent.tab-content
+										- @catedras.each_with_index do |cat,i|
+											- @cat_activo = (session[:cat_id].eql? cat.id) ? "active show" : ""
+											.tab-pane.fade{class: @cat_activo, id: "cat_#{cat.id}", "aria-labelledby" => "cat_#{cat.id}-tab", :role => "tabpanel"}
+												- @asignaturas = cat.asignaturas.where(:departamento_id => dpto.id).sort_by{|m| m.orden}
+
+												.row
+													.col-2
+														#mat-pills-tab.nav.flex-column.nav-pills{"aria-orientation" => "vertical", :role => "tablist"}
+
+															%p Seleccione la Asignatura:
+
+															- @asignaturas.each_with_index do |mat,i|
+																- if mat.secciones.where(:periodo_id => @periodo_actual_id).count > 0
+																	- mat_activa = (session[:mat_id].eql? mat.id) ? "active show" : ""
+																	= link_to "#mat_#{mat.id}", "data-toggle"=> "pill", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {mat_id: '#{mat.id}'}, dataType: 'json'});", class: "nav-link #{mat_activa}", "aria-controls" => "mat_#{mat.id}", :role => "tab", id: "mat_#{mat.id}-tab" do
+																		= mat.descripcion
+																		%span.badge.badge-dark= mat.id_uxxi
+
+													.col-10
+														#mat-pills-tabContent.tab-content
+															- @asignaturas.each_with_index do |mat,k|
+																- @secciones = mat.secciones.where(:periodo_id => @periodo_actual_id)
+																- if @secciones.count > 0
+																	- @mat_activa = (session[:mat_id].eql? mat.id) ? "active show" : ""
+																	- @mat = mat
+																	= render 'admin/inscripcion_seccion/detalle_inscripcion'
+
+
+
+	.border.p-3.hideble#seleccion
+		%h6.titulo Selección:
+		= render partial: '/admin/inscripcion_seccion/tabla_selecciones', locals: {secciones: @secciones_disponibles, borrar_seleccion: true}
+
+		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-primary', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
+
+	- if @inscripciones.count > 0
+		.border.p-3
+			%h6.alert.alert-warning= "Ya inscritas en el periodo actual : #{@periodo_actual_id}"
+			%table.table.table-bordered.table-striped.table-sm.table-hover
+				%thead
+					%tr
+						%th Departamento
+						%th Cátedra
+						%th Sección
+						%th Período
+				%tbody
+					- @inscripciones.each do |ins| 
+						%tr
+							%td= ins.seccion.asignatura.departamento.descripcion
+							%td= ins.seccion.asignatura.catedra.descripcion
+							%td= ins.seccion.descripcion
+							%td= ins.seccion.periodo_id
+:javascript
+	function chequear_total_seleccionados(){
+		var total = $('input:radio:checked').length
+		if(total > 0){
+			$('#btn-confirmacion').removeAttr("disabled");
+			$('#seleccion').show();
+
+		}else{
+			$('#btn-confirmacion').attr("disabled", "disabled");
+			$('#seleccion').hide();
+		}
+
+	};
+
+	function borrar_seleccion(materia_id) {
+		$('.'+materia_id).prop('checked', false);
+		$('.sel_'+materia_id).hide();
+		chequear_total_seleccionados();
+	};
+	function agregar_a_seleccion(materia_id,seccion_numero) {
+		$('.sel_'+materia_id).hide();
+		$('#sel_'+materia_id+'_'+seccion_numero).show();
+		chequear_total_seleccionados();
+	};

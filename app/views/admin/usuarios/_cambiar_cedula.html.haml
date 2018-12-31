@@ -1,0 +1,27 @@
+.modal.hide.fade#cambiar_cedula{'aria-hidden'=> false}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5.alert.alert-info
+          Cambio de Cedula
+          = @usuario.nombre_completo 
+          <button type="button" class="close fade" data-dismiss="modal" aria-hidden="true">×</button>
+      .modal-body
+
+        = form_tag(cambiar_ci_usuario_path, class: 'form-horizontal') do
+          =# hidden_field_tag :id, @usuario.id
+          .modal-body
+            .form-group
+              %label.control-label.col-md-12
+                Cédula Actual:
+              .col-md-10
+                = text_field_tag :id, @usuario.id, readonly: true, disabled: true, class: 'text_field form-control'
+            .control-group
+              %label.control-label.col-md-12
+                Nueva Cédula:
+              .col-md-10
+                = text_field_tag :cedula, nil, class: 'text_field', placeholder: "Cédula…", required: true, class: 'text_field form-control'
+
+          .modal-footer
+            %a.btn{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Guardar', class: 'btn btn-primary'

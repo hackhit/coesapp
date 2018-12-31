@@ -1,0 +1,27 @@
+=#link_to "Descargar listado (Excel)", {controller: 'descargar', action: 'listado_seccion', id: @seccion.id}, class: "btn btn-success pull-righ"
+
+- @calificada = @seccion.calificada
+
+- @calificada = false if @admin
+
+- @calificada = true if (@admin and @admin.operador?)
+
+- @calificada = true if @secundaria
+	 
+- @es_periodo1 = true
+
+- @es_periodo2 = false
+
+- @es_periodo3 = false
+
+%p#text
+%h5
+	- if @seccion.periodo_id.eql? '2016-02A'
+		= "Inscritos: #{@seccion.total_estudiantes} / Confirmados: #{@seccion.total_confirmados}"
+	- else
+		= "Total de Estudiantes: #{@estudiantes_secciones.count}"
+= form_tag(controller: '/admin/calificar', action: "calificar") do
+	= hidden_field_tag "id", @seccion.id
+
+	= render partial: '/admin/secciones/tabla_inscripciones'
+														

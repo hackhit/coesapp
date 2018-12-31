@@ -1,0 +1,24 @@
+
+%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Sección'}
+	.border
+		= form_tag 'principal_admin/nueva_seccion_admin_guardar', {class: 'form-horizontal', id: "nueva_seccion_#{@mat.id}"} do 
+			= hidden_field_tag "[asignatura]id", @mat.id
+			= hidden_field_tag "[seccion]periodo_id", @periodo_actual.id
+			.row
+				.col-md-2
+					= text_field_tag "[asignatura]numero" , nil, {autofocus: true, placeholder: 'Id. Sección...', class: 'form-control text_field upcase', maxlength: 3}
+
+				.col-md-5
+					= grouped_collection_select :seccion, :profesor_id, @departamentos, :profesores, :descripcion, :id, :descripcion, {:prompt => "Profesor"}, { class: 'selects2 form-control text_field'}
+
+
+				.col-md-2
+					= submit_tag 'Agregar', class: 'btn btn-success'
+
+:javascript
+
+	$('.upcase').on('input',function(evt){ 
+		var node = $(this);
+		node.val(node.val().toUpperCase());
+		node.val(node.val().replace(/[^A-Z0-9]/g,'') );
+	});

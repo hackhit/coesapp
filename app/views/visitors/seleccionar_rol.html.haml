@@ -1,7 +1,7 @@
 %br
 .container
 	%titulo Roles disponibles para ingresar al sistema:
-	%ul
+	%ul.list-unstyled
 		-@roles.each do |rol|
-			%li= link_to rol, action: :un_rol, tipo: rol, class: 'link'
+			%li= link_to rol, {action: :un_rol, tipo: rol}, class: 'link'
         

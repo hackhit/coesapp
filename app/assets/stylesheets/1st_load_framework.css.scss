@@ -2,6 +2,16 @@
 // Do not use *= require in Sass or your other stylesheets will not be able to access the Bootstrap mixins and variables.
 @import "bootstrap";
 
+.hideble{
+  display:none;
+}
+
+body{
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 13px;
+}
+
+.container{max-width: 98%;}
 // make all images responsive by default
 img {
   @extend .img-fluid;

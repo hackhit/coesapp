@@ -1,0 +1,16 @@
+%h4
+	= "Profesor: #{@seccion.descripcion_profesor_asignado}"
+	.pull-right
+		= "Unidades de Créditos: #{@seccion.asignatura.creditos}"
+
+.well.well-small
+	=link_to "Regresar", {action: 'index'}, class: 'btn'
+
+	=#link_to "Descargar notas", {controller: 'calificar', action: 'descargar_notas', id: @seccion.id}, class: "btn btn-success pull-right"
+
+= render partial: '/admin/calificar/detalle_seccion'
+
+.well.well-small
+	=link_to "Regresar", {action: 'index'}, class: 'btn'
+	
+	=#link_to "Descargar notas", {controller: 'calificar', action: 'descargar_notas', id: @seccion.id}, class: "btn btn-success pull-right"

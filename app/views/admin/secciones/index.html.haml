@@ -1,29 +1,33 @@
-%h1 Listing secciones
-
-%table
+- model_class = Seccion
+.page-header
+  %h1=t '.title', default: model_class.model_name.human.pluralize.titleize
+%table.table.table-striped
   %thead
     %tr
-      %th Numero
-      %th Asignatura
-      %th Periodo
-      %th Profesor
-      %th Calificada
-      %th
-      %th
-      %th
-
+      %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:numero)
+      %th= model_class.human_attribute_name(:asignatura_id)
+      %th= model_class.human_attribute_name(:periodo_id)
+      %th= model_class.human_attribute_name(:profesor_id)
+      %th= model_class.human_attribute_name(:calificada)
+      %th= model_class.human_attribute_name(:created_at)
+      %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @secciones.each do |seccion|
       %tr
+        %td= seccion.id
         %td= seccion.numero
-        %td= seccion.asignatura
-        %td= seccion.periodo
-        %td= seccion.profesor
+        %td= seccion.asignatura_id
+        %td= seccion.periodo_id
+        %td= seccion.profesor_id
         %td= seccion.calificada
-        %td= link_to 'Show', seccion
-        %td= link_to 'Edit', edit_seccion_path(seccion)
-        %td= link_to 'Destroy', seccion, method: :delete, data: { confirm: 'Are you sure?' }
+        %td=l seccion.created_at, format: :long
+        %td
+          = link_to seccion_path(seccion), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
+            = glyph 'info-sign'
+          = link_to edit_seccion_path(seccion), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+            = glyph 'pencil'
+          = link_to seccion_path(seccion), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+            .text-danger= glyph 'trash'
 
-%br
-
-= link_to 'New Seccion', new_seccion_path
+= link_to t('.new', default: t("helpers.links.new")), new_seccion_path, class: 'btn btn-primary'

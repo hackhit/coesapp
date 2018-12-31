@@ -1,0 +1,36 @@
+.border
+	= form_tag({controller: 'cal_estudiante_seccion',action: 'crear'},{class: 'form-horizontal'} ) do |f|
+		=hidden_field_tag :ci, @estudiante.cal_usuario_ci
+
+		=#grouped_collection_select(:cal_seccion, :id, CalMateria.all.sort_by{|m| m.cal_categoria.orden and m.cal_categoria.id} , :cal_secciones, :descripcion_reversa, :id, :descripcion, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2'}) 
+
+		-cal_secciones = CalSeccion.where(:cal_semestre_id => session[:cal_parametros][:semestre_actual])
+
+		.control-group
+			%label.control-label
+				Estudiante:
+			.controls 
+				%p= @estudiante.descripcion
+
+		.control-group
+			%label.control-label
+				Sección:
+			.controls  
+				=collection_select(:cal_seccion, :id, cal_secciones, :id, :descripcion, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2', style: 'width:100%;'})
+
+		=hidden_field_tag 'controlador', @controlador
+		=hidden_field_tag 'accion', @accion
+		%br
+		%a.btn{data: {dismiss: 'modal'}} Cancelar
+
+		= submit_tag "Guardar", :disable_with => 'Enviando...', class: 'btn btn-primary'
+
+:javascript
+
+	$(document).ready(function() {
+		$(".selects2").select2();		
+	});
+
+
+
+

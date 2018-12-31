@@ -1,6 +1,6 @@
 = form_for @periodo, html: { class: 'form-horizontal' } do |f|
   .form-group
-    = f.label :id, class: 'control-label col-md-2'
+    = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
     .col-md-10
       = f.text_field :id, class: 'text_field form-control', autofocus: true, required: true, placeholder: "2018-02A"
   .form-group

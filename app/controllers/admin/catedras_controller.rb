@@ -29,10 +29,11 @@ module Admin
 
       respond_to do |format|
         if @catedra.save
-          format.html { redirect_to @catedra, notice: 'Catedra was successfully created.' }
+          format.html { redirect_to @catedra, notice: 'Catedra creada con éxito.' }
           format.json { render :show, status: :created, location: @catedra }
         else
-          format.html { render :new }
+          flash[:danger] = "Error #{@catedra.errors.messages.to_s}"
+          format.html { render :new}
           format.json { render json: @catedra.errors, status: :unprocessable_entity }
         end
       end
@@ -43,7 +44,7 @@ module Admin
     def update
       respond_to do |format|
         if @catedra.update(catedra_params)
-          format.html { redirect_to @catedra, notice: 'Catedra was successfully updated.' }
+          format.html { redirect_to @catedra, notice: 'Catedra actualizada con éxito.' }
           format.json { render :show, status: :ok, location: @catedra }
         else
           format.html { render :edit }
@@ -57,7 +58,7 @@ module Admin
     def destroy
       @catedra.destroy
       respond_to do |format|
-        format.html { redirect_to catedras_url, notice: 'Catedra was successfully destroyed.' }
+        format.html { redirect_to catedras_url, notice: 'Catedra eliminada.' }
         format.json { head :no_content }
       end
     end
@@ -70,7 +71,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def catedra_params
-        params.require(:catedra).permit(:descripcion, :id)
+        params.require(:catedra).permit(:descripcion, :id, :orden)
       end
   end
 end

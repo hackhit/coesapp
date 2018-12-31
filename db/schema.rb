@@ -10,10 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_26_223811) do
+ActiveRecord::Schema.define(version: 2018_12_27_123228) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
+    t.string "departamento_id"
+    t.index ["departamento_id"], name: "index_administradores_on_departamento_id"
     t.index ["usuario_id"], name: "index_administradores_on_usuario_id"
   end
 
@@ -40,10 +42,12 @@ ActiveRecord::Schema.define(version: 2018_12_26_223811) do
     t.index ["id"], name: "index_catedras_on_id"
   end
 
-  create_table "catedras_departamentos", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "catedras_departamentos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "departamento_id"
     t.string "catedra_id"
     t.integer "orden", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["catedra_id", "departamento_id"], name: "index_catedras_departamentos_on_catedra_id_and_departamento_id", unique: true
     t.index ["catedra_id"], name: "index_catedras_departamentos_on_catedra_id"
     t.index ["departamento_id", "catedra_id"], name: "index_catedras_departamentos_on_departamento_id_and_catedra_id", unique: true
@@ -56,11 +60,13 @@ ActiveRecord::Schema.define(version: 2018_12_26_223811) do
     t.index ["estudiante_id"], name: "index_citas_horarias_on_estudiante_id"
   end
 
-  create_table "combinaciones", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "combinaciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "estudiante_id"
     t.string "periodo_id"
     t.string "idioma1_id"
     t.string "idioma2_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["estudiante_id", "periodo_id"], name: "index_combinaciones_on_estudiante_id_and_periodo_id", unique: true
     t.index ["estudiante_id"], name: "index_combinaciones_on_estudiante_id"
     t.index ["idioma1_id"], name: "index_combinaciones_on_idioma1_id"
@@ -77,17 +83,21 @@ ActiveRecord::Schema.define(version: 2018_12_26_223811) do
   end
 
   create_table "estudiantes", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "tipo_estado_inscripcion_id"
+    t.index ["tipo_estado_inscripcion_id"], name: "index_estudiantes_on_tipo_estado_inscripcion_id"
     t.index ["usuario_id"], name: "index_estudiantes_on_usuario_id"
   end
 
-  create_table "historiales_planes", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "historialplanes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "estudiante_id"
     t.string "periodo_id"
     t.string "plan_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["estudiante_id", "periodo_id"], name: "index_unique", unique: true
-    t.index ["estudiante_id"], name: "index_historiales_planes_on_estudiante_id"
-    t.index ["periodo_id"], name: "index_historiales_planes_on_periodo_id"
-    t.index ["plan_id"], name: "index_historiales_planes_on_plan_id"
+    t.index ["estudiante_id"], name: "index_historialplanes_on_estudiante_id"
+    t.index ["periodo_id"], name: "index_historialplanes_on_periodo_id"
+    t.index ["plan_id"], name: "index_historialplanes_on_plan_id"
   end
 
   create_table "inscripciones_en_secciones", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -137,9 +147,11 @@ ActiveRecord::Schema.define(version: 2018_12_26_223811) do
     t.index ["usuario_id"], name: "index_profesores_on_usuario_id"
   end
 
-  create_table "seccion_profesores_secundarios", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "seccion_profesores_secundarios", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "profesor_id"
     t.bigint "seccion_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["profesor_id", "seccion_id"], name: "seccion_secundarios_on_profesor_id_and_seccion_id", unique: true
     t.index ["profesor_id"], name: "index_seccion_profesores_secundarios_on_profesor_id"
     t.index ["seccion_id", "profesor_id"], name: "seccion_secundarios_on_seccion_id_and_profesor_id", unique: true
@@ -152,6 +164,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_223811) do
     t.string "periodo_id"
     t.string "profesor_id"
     t.boolean "calificada"
+    t.integer "capacidad"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["asignatura_id"], name: "index_secciones_on_asignatura_id"
@@ -187,6 +200,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_223811) do
     t.index ["ci"], name: "index_usuarios_on_ci"
   end
 
+  add_foreign_key "administradores", "departamentos"
   add_foreign_key "administradores", "usuarios", primary_key: "ci", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "catedras", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "departamentos", on_update: :cascade, on_delete: :cascade
@@ -197,9 +211,9 @@ ActiveRecord::Schema.define(version: 2018_12_26_223811) do
   add_foreign_key "combinaciones", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "combinaciones", "periodos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "estudiantes", "usuarios", primary_key: "ci", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "historiales_planes", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "historiales_planes", "periodos", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "historiales_planes", "planes", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "periodos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "planes", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripciones_en_secciones", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripciones_en_secciones", "secciones", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripciones_en_secciones", "tipo_estado_calificaciones", on_update: :cascade, on_delete: :nullify

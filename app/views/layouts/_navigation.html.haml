@@ -1,10 +1,17 @@
+- main_path = root_path
+- main_path = principal_admin_index_path if session[:administrador_id]
+- main_path = principal_index_path if session[:estudiante_id]
+- main_path = principal_profesor_index_path if session[:profesor_id]
+
 .container.fixed-top 
   %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-    %a.navbar-brand{:href => "#"} COES-FHE
+    %a.navbar-brand{:href => main_path} COES-FHE
     %button.navbar-toggler{"aria-controls" => "navbarMain", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarMain", "data-toggle" => "collapse", :type => "button"}
       %span.navbar-toggler-icon
     #navbarMain.collapse.navbar-collapse
       %ul.navbar-nav.mr-auto
         %li.nav-item
           %a.nav-link{:href => "#"} Contáctanos
+      %ul.navbar-nav
+        %li= link_to "Inscribir Estudiante", {controller: '/admin/inscripcion_seccion', action: 'buscar_estudiante'}, class: 'btn btn-success pull-right btn-sm'
       = render 'layouts/nav_session_options' 

@@ -29,9 +29,10 @@ module Admin
 
       respond_to do |format|
         if @asignatura.save
-          format.html { redirect_to @asignatura, notice: 'Asignatura was successfully created.' }
+          format.html { redirect_to @asignatura, notice: 'Asignatura generada con éxito .' }
           format.json { render :show, status: :created, location: @asignatura }
         else
+          flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
           format.html { render :new }
           format.json { render json: @asignatura.errors, status: :unprocessable_entity }
         end
@@ -43,7 +44,7 @@ module Admin
     def update
       respond_to do |format|
         if @asignatura.update(asignatura_params)
-          format.html { redirect_to @asignatura, notice: 'Asignatura was successfully updated.' }
+          format.html { redirect_to @asignatura, notice: 'Asignatura actulizada con éxito.' }
           format.json { render :show, status: :ok, location: @asignatura }
         else
           format.html { render :edit }
@@ -57,7 +58,7 @@ module Admin
     def destroy
       @asignatura.destroy
       respond_to do |format|
-        format.html { redirect_to asignaturas_url, notice: 'Asignatura was successfully destroyed.' }
+        format.html { redirect_to asignaturas_url, notice: 'Asignatura eliminada.' }
         format.json { head :no_content }
       end
     end
@@ -70,7 +71,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def asignatura_params
-        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :id_uxxi, :creditos)
+        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos)
       end
   end
 end

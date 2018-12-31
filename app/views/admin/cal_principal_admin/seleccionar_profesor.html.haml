@@ -1,8 +1,0 @@
-.well.well-small
-	%h3 
-		= "Sección: #{@cal_seccion.descripcion}"
-	= form_tag({action: "cambiar_profe_seccion"}, class: "form-inline") do
-		=hidden_field_tag "id", @cal_seccion.id
-		Seleccione: 
-		=select_tag "cal_profesor_ci", options_from_collection_for_select(@cal_profesores, :id, :descripcion_apellido, @cal_seccion.cal_profesor_ci)
-		= submit_tag "Guardar", id: "submit", class: "btn btn-success", :disable_with => "Espere..."

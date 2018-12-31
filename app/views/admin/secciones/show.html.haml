@@ -1,21 +1,25 @@
-%p#notice= notice
+- model_class = Seccion
+.page-header
+  %h1=t '.title', default: model_class.model_name.human.titleize
+.fieldset
+  %dl
+    %dt.label.label-default= model_class.human_attribute_name(:numero)
+    %dd
+      %pre.prettyprint= @seccion.numero
+    %dt.label.label-default= model_class.human_attribute_name(:asignatura_id)
+    %dd
+      %pre.prettyprint= @seccion.asignatura_id
+    %dt.label.label-default= model_class.human_attribute_name(:periodo_id)
+    %dd
+      %pre.prettyprint= @seccion.periodo_id
+    %dt.label.label-default= model_class.human_attribute_name(:profesor_id)
+    %dd
+      %pre.prettyprint= @seccion.profesor_id
+    %dt.label.label-default= model_class.human_attribute_name(:calificada)
+    %dd
+      %pre.prettyprint= @seccion.calificada
 
-%p
-  %b Numero:
-  = @seccion.numero
-%p
-  %b Asignatura:
-  = @seccion.asignatura
-%p
-  %b Periodo:
-  = @seccion.periodo
-%p
-  %b Profesor:
-  = @seccion.profesor
-%p
-  %b Calificada:
-  = @seccion.calificada
-
-= link_to 'Edit', edit_seccion_path(@seccion)
-\|
-= link_to 'Back', secciones_path
+.form-group
+  = link_to t('.back', default: t("helpers.links.back")), secciones_path, class: 'btn btn-default'
+  = link_to t('.edit', default: t("helpers.links.edit")), edit_seccion_path(@seccion), class: 'btn btn-default'
+  = link_to t('.destroy', default: t("helpers.links.destroy")), seccion_path(@seccion), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger'

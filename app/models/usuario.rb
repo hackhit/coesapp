@@ -4,9 +4,15 @@ class Usuario < ApplicationRecord
 	enum sexo: [:F, :M]
 	attr_accessor :password_confirmation
 
+	# ASOCIACIONES:
+	has_one :administrador
+	has_one :estudiante
+	has_one :profesor
+
 	# TRIGGERS:
 	after_initialize :set_default_sexo, :if => :new_record?
-	before_save :setup
+	before_save :upcase_nombres
+	# before_validation :set_default_password
 
 	# VALIDACIONES:
 	validates :ci,  :presence => true, uniqueness: true
@@ -21,6 +27,10 @@ class Usuario < ApplicationRecord
 	  where("ci LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR ci LIKE ? OR email LIKE ?","%#{clave}%","%#{clave}%","%#{clave}%", "%#{clave}%", "%#{clave}%")
 	}
 	# FUNCIONES:
+
+	def admin?
+		not self.administrador.nil?
+	end
 
 	def roles_generales
       aux = []
@@ -102,11 +112,6 @@ class Usuario < ApplicationRecord
 	# FUNCIONES PROTEGIDAS:
 	protected
 
-	def setup
-		upcase_nombres
-		set_default_password
-		p "Estoy antes de guardar"
-	end
 	def upcase_nombres
 		self.nombres.upcase!
 		self.apellidos.upcase!
@@ -118,11 +123,7 @@ class Usuario < ApplicationRecord
 
 	def set_default_sexo
 		self.sexo ||= :F
-		p "Set Sexo"
 	end
 
-	has_one :administrador
-	has_one :estudiante
-	has_one :profesor
 
 end

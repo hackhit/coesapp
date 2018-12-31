@@ -6,7 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-ParametroGeneral.create([{id: 'SEMESTRE_ACTUAL', valor: '2018-02A'}, {id: 'ACTIVAR_PROGRAMACIONES', valor: 'ENCENDIDAS'}])
+ParametroGeneral.create([{id: 'PERIODO_ACTUAL_ID', valor: '2018-02A'}, {id: 'ACTIVAR_PROGRAMACIONES', valor: 'ENCENDIDAS'}])
 p "#{ParametroGeneral.count} Parametro General Creado!"
 
 TipoEstadoInscripcion.create([{
@@ -16,7 +16,6 @@ TipoEstadoInscripcion.create([{
 	{id: 'REINC', descripcion: 'Reincorporado' },
 	{id: 'RET', descripcion: 'Retirado' },
 	{id: 'VAL', descripcion: 'Válido para inscribir' }])
-
 p "#{TipoEstadoInscripcion.count} TipoEstadoInscripciones Creadas!"
 
 TipoEstadoCalificacion.create([{
@@ -24,19 +23,18 @@ TipoEstadoCalificacion.create([{
 	{id: 'PI', descripcion: 'Perdida por Inasistencia' },
 	{id: 'RE', descripcion: 'Reprobado' },
 	{id: 'SC', descripcion: 'Sin Calificar' }])
-
 p "#{TipoEstadoCalificacion.count} TipoEstadoCalificaciones Creadas!"
 
-Catedra.create([{id: 'IB', descripcion: 'Idioma Básico'}])
+Catedra.create([{id: 'IB', descripcion: 'Idioma Básico', orden: 1}])
 p "#{Catedra.count} Catedra Creada!"
 
 Departamento.create([{id: 'ALE', descripcion: 'ALEMÁN'}, {id: 'ING', descripcion: 'Inglés'}])
 p "#{Departamento.count} Departamentos Creados!"
 
-Usuario.create([{id: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])
+Usuario.create([{id: '1', password: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', password: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])
 p "#{Usuario.count} Usuarios Creados!"
 
-Administrador.create([{usuario_id: 1, rol: 1}])
+Administrador.create!([{usuario_id: 1, rol: 0},{usuario_id: 2, rol: 1, departamento_id: 'ALE'}])
 p "#{Administrador.count} Admin Creado!"
 
 Profesor.create([{usuario_id: 1, departamento_id: 'ALE'}, {usuario_id: 2, departamento_id: 'ALE'}])
@@ -57,8 +55,8 @@ p "#{Periodo.count} Periodos Creados!"
 Plan.create([{id: 'G270', descripcion: 'Lic. Traducción e Interpretación'}, {id: 'G280', descripcion: 'Lic. Traducción'}, {id: 'G290', descripcion: 'Lic. Idiomas Modernos'}])
 p "#{Plan.count} Planes Creados!"
 
-HistorialPlan.create([{estudiante_id: 2, periodo_id: Periodo.first.id, plan_id: Plan.first.id}])
-p "#{HistorialPlan.count} Historial de Plan Creado!"
+Historialplan.create([{estudiante_id: 2, periodo_id: Periodo.first.id, plan_id: Plan.first.id}])
+p "#{Historialplan.count} Historial de Plan Creado!"
 
 Combinacion.create([{estudiante_id: 2, periodo_id: Periodo.first.id, idioma1_id: Departamento.first.id, idioma2_id: Departamento.last.id}])
 p "#{Combinacion.count} Combinaciones de Idiomas Creado!"

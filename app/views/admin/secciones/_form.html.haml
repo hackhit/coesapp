@@ -1,25 +1,29 @@
-= form_for @seccion do |f|
-  - if @seccion.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@seccion.errors.count, "error")} prohibited this seccion from being saved:"
-      %ul
-        - @seccion.errors.full_messages.each do |message|
-          %li= message
+%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Sección'}
+  .border.p-2
+    = form_for @seccion, {class: 'form-horizontal', id: "nueva_seccion_#{@mat.id}"} do |f|
+      = hidden_field_tag "[seccion]asignatura_id", @mat.id
+      = hidden_field_tag "[seccion]periodo_id", @periodo_actual.id
+      .row
+        .col-md-3
+          = f.text_field :numero, placeholder: 'Id. Sección...', class: 'form-control text_field upcase', maxlength: 3, required: true
+        .col-md-6
+          = grouped_collection_select :seccion, :profesor_id, @departamentos, :profesores, :descripcion, :id, :descripcion, {include_blank: 'Selecciona Departamento...', required: true}, { class: 'selects2 form-control text_field'}
+        .col-md-2
+          = f.submit 'Agregar', class: 'btn btn-success'
 
-  .field
-    = f.label :numero
-    = f.text_field :numero
-  .field
-    = f.label :asignatura
-    = f.text_field :asignatura
-  .field
-    = f.label :periodo
-    = f.text_field :periodo
-  .field
-    = f.label :profesor
-    = f.text_field :profesor
-  .field
-    = f.label :calificada
-    = f.check_box :calificada
-  .actions
-    = f.submit 'Save'
+:javascript
+
+  $(document).ready(function() {
+
+    $(".selects2").select2({
+        placeholder: "--Escriba datos del estudiante para buscarlo--",
+        allowClear: true
+    });
+    
+  });
+
+  $('.upcase').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().toUpperCase());
+    node.val(node.val().replace(/[^A-Z0-9]/g,'') );
+  });

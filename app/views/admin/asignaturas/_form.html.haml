@@ -1,31 +1,47 @@
-= form_for @asignatura do |f|
-  - if @asignatura.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@asignatura.errors.count, "error")} prohibited this asignatura from being saved:"
-      %ul
-        - @asignatura.errors.full_messages.each do |message|
-          %li= message
+= form_for @asignatura, html: { class: 'form-horizontal' } do |f|
+  .form-group
+    = f.label :id, class: 'control-label col-md-2', value: 'Identificador'
+    .col-md-10
+      = f.text_field :id, class: 'text_field form-control col-md-2 upcase', autofocus: true, placeholder: "ALEI", size: 10, required: true, maxlength: 10
+      %small.text-muted.font-italic Máximo 10 catacteres alfanuméricos (Caracteres Especiales No permitidos)
+  .form-group
+    = f.label :descripcion, class: 'control-label col-md-2', value: 'Descripción'
+    .col-md-10
+      = f.text_field :descripcion, class: 'text_field form-control', placeholder: 'Alemán I', required: true
+  .form-group
+    = f.label :anno, class: 'control-label col-md-2', value: 'Año'
+    .col-md-10
+      = f.number_field :anno, class: 'text_field form-control', in: 0...11, step: 1
+  .form-group
+    = f.label :orden, class: 'control-label col-md-2'
+    .col-md-10
+      = f.number_field :orden, class: 'text_field form-control', in: 0...21, step: 1
+  .form-group
+    = f.label :departamento_id, class: 'control-label col-md-2'
+    .col-md-10
+      = f.select(:departamento_id, Departamento.all.collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})
+  .form-group
+    = f.label :catedra_id, class: 'control-label col-md-2'
+    .col-md-10
+      = f.select(:catedra_id, Catedra.all.collect{|o| [ o.descripcion, o.id ] }, { prompt: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})      
+  .form-group
+    = f.label :id_uxxi, class: 'control-label col-md-2', value: 'Código Uxxi'
+    .col-md-10
+      = f.text_field :id_uxxi, class: 'text_field form-control'
+  .form-group
+    = f.label :creditos, class: 'control-label col-md-2', value: 'Créditos'
+    .col-md-10
+      = f.number_field :creditos, class: 'text_field form-control', in: 0...21, step: 1
+  .form-group
+    .col-md-offset-2.col-md-10
+      = f.submit nil, class: 'btn btn-primary'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), asignaturas_path, class: 'btn btn-default'
 
-  .field
-    = f.label :id
-    = f.text_field :id
-  .field
-    = f.label :descripcion
-    = f.text_field :descripcion
-  .field
-    = f.label :catedra
-    = f.text_field :catedra
-  .field
-    = f.label :departamento
-    = f.text_field :departamento
-  .field
-    = f.label :anno
-    = f.number_field :anno
-  .field
-    = f.label :id_uxxi
-    = f.text_field :id_uxxi
-  .field
-    = f.label :creditos
-    = f.number_field :creditos
-  .actions
-    = f.submit 'Save'
+
+:javascript
+
+  $('.upcase').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().toUpperCase());
+    node.val(node.val().replace(/[^A-Z0-9]/g,'') );
+    });

@@ -3,7 +3,7 @@ class Seccion < ApplicationRecord
 	# ASOCIACIONES:
 	belongs_to :asignatura
 	belongs_to :periodo
-	belongs_to :profesor
+	belongs_to :profesor, optional: true 
 
 	has_many :inscripciones_en_secciones,
 		class_name: 'InscripcionEnSeccion', dependent: :delete_all
@@ -16,7 +16,11 @@ class Seccion < ApplicationRecord
 	has_many :profesores, through: :secciones_profesores_secundarios, source: :profesor
 
     # VALIDACIONES:
-    validates :usuario_id, presence: true, uniqueness: true
+    validates :asignatura_id, presence: true
+    # validates :profesor_id, presence: true, if: :new_record?
+    validates :periodo_id, presence: true
+    validates :numero, presence: true
+	validates_uniqueness_of :numero, scope: [:periodo_id, :asignatura_id], message: 'La sección ya existe, inténtalo de nuevo!', field_name: false
 
     # SCOPES:
 	scope :calificadas, -> {where "calificada IS TRUE"}
@@ -55,9 +59,9 @@ class Seccion < ApplicationRecord
 		descripcion += asignatura.descripcion if asignatura
 		
 		if numero
-			if numero.eql? "S"
+			if self.suficiencia?
 				descripcion += " (Suficiencia)"
-			elsif numero.eql? "R"
+			elsif self.reparacion?
 				descripcion += " (Reparación)"
 			else
 				descripcion += " - #{numero}"
@@ -88,6 +92,11 @@ class Seccion < ApplicationRecord
 
 	def reparacion?
 		return numero.include? 'R'
+	end
+
+
+	def suficiencia?
+		return numero.include? 'S'
 	end
 
 	def tipo_convocatoria

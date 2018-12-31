@@ -6,10 +6,9 @@ class Estudiante < ApplicationRecord
 	belongs_to :tipo_estado_inscripcion
 	accepts_nested_attributes_for :tipo_estado_inscripcion
 
-	has_many :historiales_planes,
-	class_name: 'HistorialPlan'
-	accepts_nested_attributes_for :historiales_planes
-	has_many :planes, through: :historiales_planes, source: :plan
+	has_many :historialplanes	
+	accepts_nested_attributes_for :historialplanes
+	has_many :planes, through: :historialplanes, source: :plan
 
 	has_many :inscripciones_en_secciones,
 		class_name: 'InscripcionEnSeccion'
@@ -20,6 +19,8 @@ class Estudiante < ApplicationRecord
 	has_many :combinaciones, dependent: :delete_all
 	accepts_nested_attributes_for :combinaciones
 
+	# TRIGGERS
+	after_initialize :set_default, :if => :new_record?
 	# VALIDACIONES:
 	validates :usuario_id, presence: true, uniqueness: true
 
@@ -35,7 +36,7 @@ class Estudiante < ApplicationRecord
 	end
 
 	def inscrito?
-		inscripciones_en_secciones.del_semestre_actual.count > 0
+		inscripciones_en_secciones.del_periodo_actual.count > 0
 	end
 
 	def valido_para_inscribir?
@@ -43,7 +44,7 @@ class Estudiante < ApplicationRecord
 	end
 
 	def ultimo_plan
-		hp = historiales_planes.order("desde_cal_semestre_id DESC").first
+		hp = historialplanes.order("periodo_id DESC").first
 		hp ? hp.tipo_plan_id : ""
 	end
 
@@ -198,5 +199,11 @@ class Estudiante < ApplicationRecord
 			return nil
 		end
 	end
+
+	protected
+
+	def set_default
+		self.tipo_estado_inscripcion_id ||= 'NUEVO'	
+	end	
 
 end

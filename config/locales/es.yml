@@ -139,7 +139,7 @@ es:
     links:
       back: "Atrás"
       cancel: "Cancelar"
-      confirm: "¿Estas Seguro?"
+      confirm: "Esta acción es irreversible, ¿Estas Seguro?"
       destroy: "Eliminar"
       new: "Nuevo"
       edit: "Editar"

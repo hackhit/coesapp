@@ -3,7 +3,7 @@ class ParametroGeneral < ApplicationRecord
   self.table_name = 'parametros_generales'
 
   def self.periodo_actual_id
-    ParametroGeneral.where(id: "SEMESTRE_ACTUAL").first.valor
+    ParametroGeneral.where(id: "PERIODO_ACTUAL_ID").first.valor
   end
 
   def self.periodo_actual

@@ -13,9 +13,9 @@
     - @periodos.each do |periodo|
       %tr
         %td= periodo.id
-        %td= periodo.inicia
-        %td= periodo.culmina
-        %td=l periodo.created_at, format: :long
+        %td=l periodo.inicia
+        %td=l periodo.culmina
+        %td=l periodo.created_at, format: :short
         %td
           = link_to periodo_path(periodo), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

@@ -1,12 +1,11 @@
 class Plan < ApplicationRecord
 
 	# ASOCIACIONES:
-	has_many :historiales_planes,
-	class_name: 'HistorialPlan'
+	has_many :historialplanes
 
-	accepts_nested_attributes_for :historiales_planes
+	accepts_nested_attributes_for :historialplanes
 
-	has_many :estudiantes, through: :historiales_planes, source: :estudiante
+	has_many :estudiantes, through: :historialplanes, source: :estudiante
 
 	# VALIDACIONES:
     validates :id, presence: true, uniqueness: true

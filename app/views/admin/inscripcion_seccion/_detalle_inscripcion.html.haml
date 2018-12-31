@@ -1,0 +1,28 @@
+.tab-pane.fade{class: @mat_activa, id: "mat_#{@mat.id}", "aria-labelledby" => "mat_#{@mat.id}-tab", :role => "tabpanel"}
+	%p Seleccione la Sección:
+	%h3= @mat.descripcion
+	%table.table.table-bordered.table-striped.table-sm.table-hover
+		%thead
+			%tr
+				%th Sec.
+				%th Profesor Tutor (Calificador)
+				%th Estado
+				%th.text-center= borrar_seleccion_link @mat.id
+
+		%tbody{id: @mat.id}
+			- @secciones.each do |seccion|
+				- volumen = seccion.capacidad.to_i - seccion.total_estudiantes.to_i
+
+				- @clase = 'warning' if volumen > 0 and volumen < 3
+				- @clase = 'danger' if volumen <= 0
+				- @clase = 'success' if volumen >= 3
+				%tr{class: @clase}
+					%td= seccion.numero
+					%td= seccion.descripcion_profesor_asignado
+					%td
+						%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Capacidad'}
+							%span.label= seccion.capacidad
+						= "/"
+						%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Inscritos'}		
+							%span.label= seccion.total_estudiantes
+					%td.text-center= radio_button_tag "[secciones][#{seccion.id}]", seccion.numero, false, class: seccion.asignatura_id, onclick: "agregar_a_seleccion('#{seccion.asignatura_id}','#{seccion.numero}')"

@@ -1,5 +1,5 @@
-class HistorialPlan < ApplicationRecord
-	self.table_name = 'historiales_planes'
+class Historialplan < ApplicationRecord
+	# self.table_name = 'historiales_planes'
 
 	belongs_to :estudiante, primary_key: :usuario_id
 	belongs_to :periodo

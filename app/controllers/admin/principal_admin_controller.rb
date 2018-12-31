@@ -1,16 +1,16 @@
 module Admin
 	class PrincipalAdminController < ApplicationController
 
-		before_filter :cal_filtro_logueado
-		before_filter :cal_filtro_administrador
+		before_action :filtro_logueado
+		before_action :filtro_administrador
 
 		def cambiar_sesion_periodo
 			periodo_actual = Periodo.find params[:nuevo].first
-			periodo_anterior = periodo_actual.semestre_anterior
+			# periodo_anterior = periodo_actual.semestre_anterior
 
-			session[:parametros][:semestre_actual] = periodo_actual.id
+			session[:parametros][:periodo_actual] = periodo_actual.id
 			# session[:parametros][:semestre_anterior] = periodo_anterior.id
-			redirect_to controller: 'cal_principal_admin'
+			redirect_to controller: 'principal_admin'
 		end
 
 		def nueva_seccion_admin
@@ -20,40 +20,35 @@ module Admin
 		end
 
 		def nueva_seccion_admin_guardar
-			
-			@cal_materia_id = params[:cal_materia][:id]
-			@cal_materia = CalMateria.find @cal_materia_id
-			@seccion = @cal_materia.cal_secciones.new(params[:cal_seccion])
+			@asignatura_id = params[:asignatura][:id]
+			@asignatura = Asignatura.find @asignatura_id
+			@seccion = @asignatura.secciones.new(params[:seccion])
 			if @seccion.save
 				flash[:success] = "Seccion agregada con éxito"
 			else
 				flash[:error] = "No se pudo agregar la nueva sección. Por favor verifique: #{@seccion.errors.full_messages.join(' ')}"
 			end
 			redirect_to :back, :anchor => 'mat_ALEMI'
-
 		end
 
 		def configuracion_general
-			@periodo_actual = CalParametroGeneral.cal_semestre_actual
-			@periodo_anterior = CalParametroGeneral.cal_semestre_anterior
-			@cal_periodos = CalSemestre.order("id desc").all
+			@periodo_actual = ParametroGeneral.periodo_actual
+			@periodo_anterior = @periodo_actual.periodo_anterior
+			@cal_periodos = Periodo.order("id desc").all
 		end
 
 
 		def set_programaciones
-
-			CalParametroGeneral.cambiar_programacion(params[:id])
-
+			ParametroGeneral.cambiar_programacion(params[:id])
 			respond_to do |format|
-				format.html { redirect_to :back }
+				format.html { redirect_back fallback_location: root_path }
 				format.json { head :ok }
 			end
-			
 		end
 
 		def usuarios
-			@estudiantes = CalEstudiante.all.delete_if{|es| es.cal_usuario.nil?}.sort_by{|es| es.cal_usuario.apellido_nombre}
-			@profesores = CalProfesor.all.delete_if{|po| po.cal_usuario.nil?}.sort_by{|po| po.cal_usuario.apellido_nombre }
+			@estudiantes = Estudiante.all.reject{|es| es.usuario.nil?}.sort_by{|es| es.usuario.apellido_nombre}
+			@profesores = Profesor.all.reject{|po| po.usuario.nil?}.sort_by{|po| po.usuario.apellido_nombre }
 		end
 
 		def set_tab
@@ -68,61 +63,34 @@ module Admin
 		end
 
 		def index
+			@periodo_actual = Periodo.find session[:parametros]['periodo_actual_id']
+			@departamentos = Departamento.all
+			@usuario = current_usuario
+			@admin = current_usuario.administrador
 
-			@cal_semestre_actual_id = session[:cal_parametros][:semestre_actual]
-			@cal_semestre_actual = CalSemestre.where(:id => @cal_semestre_actual_id).limit(1).first
-			@departamentos = CalDepartamento.all
-			@cal_usuario = session[:cal_usuario]
-			@admin = session[:cal_administrador]
-
-			if @admin and @admin.cal_tipo_admin_id.eql? 3
-				
-				(@cal_departamento_id = 'ALE' and @editar_asignaturas = true) if @admin.cal_usuario_ci.eql? "14755681"
-
-				(@cal_departamento_id = 'FRA' and @editar_asignaturas = true) if @admin.cal_usuario_ci.eql? "10673613"
-
-				(@cal_departamento_id = 'EG' and @editar_asignaturas = true) if @admin.cal_usuario_ci.eql? "8965636"
-				(@cal_departamento_id = 'EG' and @editar_asignaturas = false) if @admin.cal_usuario_ci.eql? "12054218"
-				(@cal_departamento_id = 'EG' and @editar_asignaturas = false) if @admin.cal_usuario_ci.eql? "3607466"
-
-				(@cal_departamento_id = 'ING' and @editar_asignaturas = true) if @admin.cal_usuario_ci.eql? "12293163"
-				(@cal_departamento_id = 'ING' and @editar_asignaturas = false) if @admin.cal_usuario_ci.eql? "6311731"
-				(@cal_departamento_id = 'ING' and @editar_asignaturas = false) if @admin.cal_usuario_ci.eql? "10350508"
-
-				(@cal_departamento_id = 'ITA'; @editar_asignaturas = true) if @admin.cal_usuario_ci.eql? "1045134"
-
-				(@cal_departamento_id = 'POR' and @editar_asignaturas = true) if @admin.cal_usuario_ci.eql? "10274406"
-
-				(@cal_departamento_id = 'TRA' and  @editar_asignaturas = true) if @admin.cal_usuario_ci.eql? "3673283"
-
+			if @admin
+				@editar_asignaturas = true unless @admin.operador?
+				@departamentos = Departamento.where(:id => @admin.departamento_id)if @admin.jefe_departamento?
 			end
-			@editar_asignaturas = true if @admin and @admin.cal_tipo_admin_id < 3
-
-			@departamentos = CalDepartamento.where(:id => @cal_departamento_id)	if @cal_departamento_id
 			
 		end
 		
 		def seleccionar_profesor
-			@cal_profesores = CalProfesor.all.sort_by{|profe| profe.cal_usuario.apellidos}
+			@profesores = Profesor.all.sort_by{|profe| profe.usuario.apellidos}
 			@titulo = "Cambio de profesor de sección"
-			@cal_seccion = CalSeccion.find(params[:id])
-
+			@seccion = Seccion.find(params[:id])
 		end
 
 		def cambiar_profe_seccion 
+			@seccion = Seccion.find params[:id]
 
-			id = params[:id]
-			@cal_seccion = CalSeccion.find(id.split(" "))
-
-			@cal_seccion.cal_profesor_ci = params[:cal_profesor_ci]
-			if @cal_seccion.save
+			@seccion.profesor_id = params[:profesor_id]
+			if @seccion.save
 				flash[:success] = "Cambio realizado con éxito"
 			else
 				flash[:error] = "no se pudo guardar los cambios"
 			end
-
 			redirect_to :action => 'index'
-
 		end
 
 		def nuevo_profesor
@@ -130,13 +98,13 @@ module Admin
 		end
 
 		def ver_seccion_admin
-			id = params[:id]
-			@admin = session[:cal_administrador]
-			@cal_seccion = CalSeccion.find(id)
-			@estudiantes_secciones = @cal_seccion.cal_estudiantes_secciones.sort_by{|es| es.cal_estudiante.cal_usuario.apellidos}
-			@titulo = "Sección: #{@cal_seccion.descripcion} - Período: #{@cal_seccion.cal_semestre_id}"
+			@admin = Administrador.find session[:administrador_id]
+
+			@seccion = Seccion.find params[:id]
+			@estudiantes_secciones = @seccion.inscripciones_en_secciones.sort_by{|es| es.estudiante.usuario.apellidos}
+			@titulo = "Sección: #{@seccion.descripcion} - Período: #{@seccion.periodo_id}"
 			
-			if @cal_seccion.cal_materia.cal_categoria_id.eql? 'IB' or @cal_seccion.cal_materia.cal_categoria_id.eql? 'LIN' or @cal_seccion.cal_materia.cal_categoria_id.eql? 'LE'
+			if @seccion.asignatura.catedra_id.eql? 'IB' or @cal_seccion.asignatura.catedra_id.eql? 'LIN' or @cal_seccion.asignatura.catedra_id.eql? 'LE'
 				@p1 = 25 
 				@p2 =35
 				@p3 = 40
@@ -150,45 +118,38 @@ module Admin
 
 		def calificar_admin
 
-			id = params[:id]
-
-			@cal_seccion = CalSeccion.find(id.split(" "))
+			@seccion = Seccion.find params[:id]
 
 			@estudiantes = params[:est]
 
 			@estudiantes.each_pair do |ci,valores|
 
-				@cal_estudiante_seccion = @cal_seccion.cal_estudiantes_secciones.where(:cal_estudiante_ci => ci).limit(1).first
+				@estudiante_seccion = @seccion.inscripciones_en_secciones.where(estudiante_id: ci).limit(1).first
 				
-				if valores['pi']
-					cal_tipo_estado_calificacion_id = 'PI'
+				if valores[:pi]
+					tipo_estado_calificacion_id = 'PI'
 				else
 					if valores[:calificacion_final].to_f >= 10
-						cal_tipo_estado_calificacion_id = 'AP'
+						tipo_estado_calificacion_id = 'AP'
 					else 
-						cal_tipo_estado_calificacion_id = 'RE'
+						tipo_estado_calificacion_id = 'RE'
 					end
 				end
-				valores['cal_tipo_estado_calificacion_id'] = cal_tipo_estado_calificacion_id
-				unless @cal_estudiante_seccion.update_attributes(valores)
+				valores[:tipo_estado_calificacion_id] = tipo_estado_calificacion_id
+				unless @estudiante_seccion.update_attributes(valores)
 					flash[:danger] = "No se pudo guardar la calificación."
 					break
 				end
 
 			end
-			@cal_seccion.calificada = true
-			calificada = @cal_seccion.save
-
-			flash[:success] = "Calificaciones guardada satisfactoriamente." if calificada
-
+			@seccion.calificada = true
+			flash[:success] = "Calificaciones guardada satisfactoriamente." if @seccion.save
 			redirect_to :action => "index"
 
 		end
 
 		def detalle_usuario
-			cal_semestre_actual_id = session[:cal_parametros][:semestre_actual]
-
-			# params[:ci] = session[:cal_usuario].ci if params[:ci].nil?
+			periodo_actual_id = session[:parametros]['periodo_actual_id']
 
 			@estudiante = CalEstudiante.where(cal_usuario_ci: params[:ci]).limit(1).first
 			@profesor = CalProfesor.where(cal_usuario_ci: params[:ci]).limit(1).first
@@ -264,7 +225,7 @@ module Admin
 			require 'pdf-reader'
 			require 'open-uri'
 			require 'pdf/reader/html'
-			cal_semestre_actual_id = session[:cal_parametros][:semestre_actual]
+			cal_semestre_actual_id = session[:parametros]['periodo_actual_id']
 			# @reader = PDF::Reader.new('/home/daniel/Descargas/CTT I Alem.pdf')
 			# @reader = PDF::Reader.new('/home/daniel/Descargas/Alem I(1).pdf')
 
@@ -447,4 +408,4 @@ module Admin
 		end
 
 	end # fin controller
-end # fin module
+end

@@ -14,5 +14,11 @@
 //= require popper
 //= require rails-ujs
 //= require turbolinks
+//= require select2 
+//= require select2_locale_es 
 //= require bootstrap-sprockets
 //= require_tree .
+
+$(document).ready(function() {
+	$('.tooltip-btn').tooltip();
+});

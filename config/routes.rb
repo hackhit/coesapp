@@ -6,17 +6,70 @@ Rails.application.routes.draw do
   get '/visitors/olvido_clave'
   get '/visitors/cerrar_sesion'
 
-  resources :catedras_departamentos
+
   scope module: :admin do
-    resources :secciones
+    get '/descargar/acta_examen_excel'
+    get '/descargar/acta_examen'
+    get '/descargar/constancia_inscripcion'
+
+    get '/principal_admin/index'
+    get '/principal_admin/set_tab'
+    get '/principal_admin/ver_seccion_admin'
+    get '/principal_admin/detalle_usuario'
+
+    get '/inscripcion_seccion/buscar_estudiante'
+    get '/inscripcion_seccion/seleccionar'
+    post '/inscripcion_seccion/inscribir'
+    get '/inscripcion_seccion/resumen'
+
+    get '/principal_profesor/index'
+    get '/principal_estudiante/index'
+
+    post '/calificar/calificar'
+
+    # get '/historial_plan/index'
+    # post '/historial_plan/create'
+    # post '/historial_plan/update'
+
+    resources :historialplanes
+
+    resources :catedras_departamentos
+
+    resources :secciones do
+      collection do
+        get 'seleccionar_profesor'
+        post 'cambiar_capacidad'
+        post 'cambiar_profe_seccion'
+        post 'agregar_profesor_secundario'
+        get 'desasignar_profesor_secundario'
+      end
+    end
+
     resources :asignaturas
     resources :catedras
     resources :tipo_estado_calificaciones
     resources :tipo_estado_inscripciones
     resources :departamentos
-    resources :usuarios
+    resources :usuarios do
+      member do
+        post 'cambiar_ci'
+        get 'resetear_contrasena'
+      end
+    end
     resources :periodos
     resources :planes
   end
   root to: 'visitors#index'
 end
+
+
+
+  # resources :wa_messages, only: [:index] do
+  #   member do
+  #     get 'set_unread'
+  #   end
+  #   collection do
+  #     post 'receive'
+  #     post 'send_message'
+  #   end  
+  # end

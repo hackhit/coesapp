@@ -6,8 +6,8 @@ class Profesor < ApplicationRecord
 	belongs_to :usuario, foreign_key: :usuario_id 
 	accepts_nested_attributes_for :usuario
 
-	has_many :secciones
-	accepts_nested_attributes_for :secciones
+	has_many :secciones, dependent: :nullify
+	# accepts_nested_attributes_for :secciones
 
     has_many :profesor_secciones_secundarias,
         :class_name => 'SeccionProfesorSecundario',
@@ -26,7 +26,7 @@ class Profesor < ApplicationRecord
     end
 
     def descripcion_apellido
-        "#{usuario.descripcion_apellido} - #{cal_departamento.descripcion if cal_departamento}"        
+        "#{usuario.descripcion_apellido} - #{departamento.descripcion if departamento}"        
     end
 
     def descripcion_usuario

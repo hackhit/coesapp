@@ -12,7 +12,7 @@
               %label.control-label
                 Período Actual:
               .controls
-                = text_field_tag :actual, session[:cal_parametros][:semestre_actual], readonly: true, disabled: true
+                = text_field_tag :actual, session[:parametros]['periodo_actual_id'], readonly: true, disabled: true
 
             .control-group
               %label.control-label

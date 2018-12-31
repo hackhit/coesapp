@@ -1,33 +1,37 @@
-%h1 Listing asignaturas
-
-%table
+- model_class = Asignatura
+.page-header
+  %h1=t '.title', default: model_class.model_name.human.pluralize.titleize
+%table.table.table-striped.table-sm.table-hover.table-responsive-md
   %thead
     %tr
-      %th Id
-      %th Descripcion
-      %th Catedra
-      %th Departamento
-      %th Anno
-      %th Id uxxi
-      %th Creditos
-      %th
-      %th
-      %th
-
+      %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:descripcion)
+      %th= model_class.human_attribute_name(:anno)
+      %th= model_class.human_attribute_name(:orden)
+      %th= model_class.human_attribute_name(:departamento_id)
+      %th= model_class.human_attribute_name(:catedra_id)
+      %th= model_class.human_attribute_name(:id_uxxi)
+      %th= model_class.human_attribute_name(:creditos)
+      %th= model_class.human_attribute_name(:created_at)
+      %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @asignaturas.each do |asignatura|
       %tr
         %td= asignatura.id
         %td= asignatura.descripcion
-        %td= asignatura.catedra
-        %td= asignatura.departamento
         %td= asignatura.anno
+        %td= asignatura.orden
+        %td= asignatura.departamento.descripcion
+        %td= asignatura.catedra.descripcion
         %td= asignatura.id_uxxi
         %td= asignatura.creditos
-        %td= link_to 'Show', asignatura
-        %td= link_to 'Edit', edit_asignatura_path(asignatura)
-        %td= link_to 'Destroy', asignatura, method: :delete, data: { confirm: 'Are you sure?' }
+        %td=l asignatura.created_at
+        %td
+          = link_to asignatura_path(asignatura), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
+            = glyph 'info-sign'
+          = link_to edit_asignatura_path(asignatura), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+            = glyph 'pencil'
+          = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+            .text-danger= glyph 'trash'
 
-%br
-
-= link_to 'New Asignatura', new_asignatura_path
+= link_to t('.new', default: t("helpers.links.new")), new_asignatura_path, class: 'btn btn-primary'

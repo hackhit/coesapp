@@ -3,6 +3,10 @@
   %h1=t '.title', default: model_class.model_name.human.titleize
 .fieldset
   %dl
+    %dt.label.label-default= model_class.human_attribute_name(:id)
+    %dd
+      %pre.prettyprint= @periodo.id
+  %dl
     %dt.label.label-default= model_class.human_attribute_name(:inicia)
     %dd
       %pre.prettyprint= @periodo.inicia

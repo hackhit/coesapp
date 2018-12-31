@@ -1,6 +1,59 @@
 module Admin
   class SeccionesController < ApplicationController
-    before_action :set_seccion, only: [:show, :edit, :update, :destroy]
+    before_action :set_seccion, only: [:show, :edit, :update, :destroy, :cambiar_capacidad, :agregar_profesor_secundario, :desasignar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion]
+
+
+    def cambiar_capacidad
+      @seccion.capacidad = params[:capacidad]
+      @seccion.save
+    end
+
+    def agregar_profesor_secundario
+      unless @seccion.nil?
+        if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
+          flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
+        else
+          flash[:error] = "No se pudo agregar la Asignatura"
+          render action: 'seleccionar_profesor_secundario'
+        end
+
+      else
+        flash[:error] = "Sección no encontrada"
+        render action: 'seleccionar_profesor_secundario'
+      end
+
+      redirect_to principal_admin_index_path
+
+    end
+
+    def seleccionar_profesor
+      @accion = params[:sec] ? 'agregar_profesor_secundario' : 'cambiar_profe_seccion'
+      @profesores = Profesor.all.sort_by{|profe| profe.usuario.apellidos}
+      @titulo = "Cambio de profesor de sección"
+    end
+
+    def cambiar_profe_seccion
+      @seccion.profesor_id = params[:profesor_id]
+      if @seccion.save
+        flash[:success] = "Cambio realizado con éxito"
+      else
+        flash[:error] = "no se pudo guardar los cambios"
+      end
+      redirect_to principal_admin_index_path
+    end
+
+    def desasignar_profesor_secundario
+      sps = SeccionProfesorSecundario.where(seccion_id: @seccion.id, profesor_id: params[:profesor_id])
+
+      unless sps.nil?
+        flash[:info] =  sps.destroy_all ? "Profesor Desasignado satisfactoriamente." : "No se pudo desasignar al profesor"
+      else
+        flash[:error] = "Profesor No Encontrado, por favor revisar su solicitud."
+      end
+
+      redirect_to principal_admin_index_path
+    end
+
 
     # GET /secciones
     # GET /secciones.json
@@ -25,14 +78,19 @@ module Admin
     # POST /secciones
     # POST /secciones.json
     def create
+      seccion_params.delete('profesor_id') 
       @seccion = Seccion.new(seccion_params)
+      @seccion.profesor_id = nil if seccion_params[:profesor_id].blank?
+      p "-- #{@seccion.profesor_id} --".to_s.center(100, "*")
 
       respond_to do |format|
         if @seccion.save
-          format.html { redirect_to @seccion, notice: 'Seccion was successfully created.' }
+          flash[:success] = 'Sección creada con éxito'
+          format.html { redirect_back fallback_location: principal_admin_index_path }
           format.json { render :show, status: :created, location: @seccion }
         else
-          format.html { render :new }
+          flash[:danger] = "Error al intentar generar la sección: #{@seccion.errors.full_messages.to_sentence}."
+          format.html { redirect_back fallback_location: principal_admin_index_path }
           format.json { render json: @seccion.errors, status: :unprocessable_entity }
         end
       end
@@ -41,15 +99,12 @@ module Admin
     # PATCH/PUT /secciones/1
     # PATCH/PUT /secciones/1.json
     def update
-      respond_to do |format|
-        if @seccion.update(seccion_params)
-          format.html { redirect_to @seccion, notice: 'Seccion was successfully updated.' }
-          format.json { render :show, status: :ok, location: @seccion }
-        else
-          format.html { render :edit }
-          format.json { render json: @seccion.errors, status: :unprocessable_entity }
-        end
+      if @seccion.update(seccion_params)
+        flash[:success] = 'Sección actualizada con éxito.'
+      else
+        flash[:danger] = "Error al intentar actualizar la sección: #{@seccion.errors.full_messages.to_sentence}."
       end
+      redirect_back fallback_location: principal_admin_index_path
     end
 
     # DELETE /secciones/1
@@ -57,7 +112,8 @@ module Admin
     def destroy
       @seccion.destroy
       respond_to do |format|
-        format.html { redirect_to secciones_url, notice: 'Seccion was successfully destroyed.' }
+      
+        format.html { redirect_back fallback_location: principal_admin_index_path, notice: 'Seccion Eliminada.' }
         format.json { head :no_content }
       end
     end
@@ -70,7 +126,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def seccion_params
-        params.require(:seccion).permit(:numero, :asignatura_id, :periodo_id, :profesor_id, :calificada)
+        params.require(:seccion).permit(:numero, :asignatura_id, :periodo_id, :profesor_id, :calificada, :capacidad)
       end
   end
 end

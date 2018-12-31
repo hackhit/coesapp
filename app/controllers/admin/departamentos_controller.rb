@@ -11,6 +11,10 @@ module Admin
     # GET /departamentos/1
     # GET /departamentos/1.json
     def show
+      @catedras_departamentos = @departamento.catedras_departamentos
+      cat_ids = @catedras_departamentos.collect{|o| o.catedra_id}
+
+      @catedras_disponibles = Catedra.all.reject{|ob| cat_ids.include? ob.id}
     end
 
     # GET /departamentos/new

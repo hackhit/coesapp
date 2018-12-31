@@ -3,9 +3,17 @@
   %h1=t '.title', default: model_class.model_name.human.titleize
 .fieldset
   %dl
+    %dt.label.label-default= model_class.human_attribute_name(:id)
+    %dd
+      %pre.prettyprint= @departamento.id  
+  %dl
     %dt.label.label-default= model_class.human_attribute_name(:descripcion)
     %dd
       %pre.prettyprint= @departamento.descripcion
+
+  .well
+    - @catedra_departamento = CatedraDepartamento.new
+    = render file: '/admin/catedras_departamentos/index'
 
 .form-group
   = link_to t('.back', default: t("helpers.links.back")), departamentos_path, class: 'btn btn-default'

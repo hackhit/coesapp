@@ -1,34 +1,32 @@
-- model_class = Usuario
-.page-header
-  %h1=t '.title', default: model_class.model_name.human.titleize
-.fieldset
-  %dl
-    %dt.label.label-default= model_class.human_attribute_name(:ci)
-    %dd
-      %pre.prettyprint= @usuario.ci
-    %dt.label.label-default= model_class.human_attribute_name(:nombres)
-    %dd
-      %pre.prettyprint= @usuario.nombres
-    %dt.label.label-default= model_class.human_attribute_name(:apellidos)
-    %dd
-      %pre.prettyprint= @usuario.apellidos
-    %dt.label.label-default= model_class.human_attribute_name(:email)
-    %dd
-      %pre.prettyprint= @usuario.email
-    %dt.label.label-default= model_class.human_attribute_name(:telefono_habitacion)
-    %dd
-      %pre.prettyprint= @usuario.telefono_habitacion
-    %dt.label.label-default= model_class.human_attribute_name(:telefono_movil)
-    %dd
-      %pre.prettyprint= @usuario.telefono_movil
-    %dt.label.label-default= model_class.human_attribute_name(:password)
-    %dd
-      %pre.prettyprint= @usuario.password
-    %dt.label.label-default= model_class.human_attribute_name(:sexo)
-    %dd
-      %pre.prettyprint= @usuario.sexo
+- @accion = action_name
+- @controlador = controller_name
 
-.form-group
-  = link_to t('.back', default: t("helpers.links.back")), usuarios_path, class: 'btn btn-default'
-  = link_to t('.edit', default: t("helpers.links.edit")), edit_usuario_path(@usuario), class: 'btn btn-default'
-  = link_to t('.destroy', default: t("helpers.links.destroy")), usuario_path(@usuario), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger'
+%h3
+  = link_to "< Regresar", :back, {class: 'btn btn-secondary'}
+  - if @estudiante and @estudiante.valido_para_inscribir?
+    = link_to({controller: '/admin/inscripcion_seccion', action: 'seleccionar', id: @estudiante.id}, class: 'btn btn-success') do
+      %span.icon-pencil
+      Inscribir
+
+%nav
+  .nav.nav-tabs
+    = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: 'nav-item nav-link'
+    - if @estudiante
+      = link_to 'Plan de Estudio y Combinaciones de Idiomas', "#estudios", "data-toggle"=> "tab", class: 'nav-item nav-link'
+      = link_to 'Historial Académico', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link'
+    - if @profesor
+      = link_to 'Detalles Académicos', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link'
+      
+.tab-content
+  .tab-pane#personales
+    = render partial: '/admin/usuarios/personales_contacto'
+  - if @estudiante
+    .tab-pane#estudios
+      = render '/admin/historialplanes/index'
+      =# render 'combinaciones/index'
+    .tab-pane#historial
+      =# render partial: 'estudiante/historial_academico'
+
+  - if @profesor
+    .tab-pane#profesor
+      =# render partial: 'profesor/detalle'

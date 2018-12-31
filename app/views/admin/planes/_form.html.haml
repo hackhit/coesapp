@@ -2,11 +2,12 @@
   .form-group
     = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
     .col-md-10
-      = f.text_field :id, class: 'text_field form-control upcase', autofocus: true, placeholder: 'Identidicador Ej.: G280 (Caracteres Especiales No permitidos)', required: true, size: 3
+      = f.text_field :id, class: 'text_field form-control upcase', autofocus: true, placeholder: 'G280', required: true, size: 4, maxlength: 4
+      %small.text-muted.font-italic Máximo 4 catacteres alfanuméricos (Caracteres Especiales No permitidos)
   .form-group
-    = f.label :description, class: 'control-label col-md-2', value: 'Descripción:'
+    = f.label :descripcion, class: 'control-label col-md-2', value: 'Descripción:'
     .col-md-10
-      = f.text_field :description, class: 'text_field form-control', placeholder: 'Descripción', required: true
+      = f.text_field :descripcion, class: 'text_field form-control', placeholder: 'Lic. Traducción', required: true
 
   .form-group
     .col-md-offset-2.col-md-10

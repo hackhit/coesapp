@@ -1,0 +1,37 @@
+%br
+%b= link_to "Actualizar datos personales y de contacto", {controller: 'usuarios', action: 'edit', id: @usuario.id,  controlador: controller_name, accion: action_name}, class: 'btn btn-primary btn-sm'
+%h5 Datos Personales: 
+= render '/admin/usuarios/cambiar_cedula'
+%ul.border.list-unstyled.p-3
+	%li
+		%b Cédula de Identidad:
+		= @usuario.id
+
+		%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar'}
+			= link_to('javascript:void(0)', {onclick: "return $('#cambiar_cedula').modal();", 'data_toggle' => 'modal'}) do
+				=glyph 'edit'		
+
+	%li
+		%b Nombre:	
+		= @usuario.nombre_completo
+	- if @admin and @admin.super?
+		%li
+			%b Contraseña:
+			= @usuario.password
+
+			%b.tooltip-btn{'data_toggle'=>'tooltip', title: "Resetear Contraseña"}
+				= link_to({controller: '/admin/usuarios', action: 'resetear_contrasena', id: @usuario.id}, {'data-confirm' => 'Esta acción asignará la cédula de identidad como contraseña, ¿está de acuerdo?'}) do
+					%i.icon-lock.icon-white
+					%i.icon-repeat.icon-white
+
+%h5 Datos de contacto:
+%ul.border.list-unstyled.p-3
+	%li 
+		%b Correo Electrónico:
+		= "#{@usuario.email}" 
+	%li 
+		%b Teléfono Móvil:
+		= "#{@usuario.telefono_movil}"
+	%li 
+		%b Teléfono Habitación:
+		= "#{@usuario.telefono_habitacion}"

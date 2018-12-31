@@ -1,0 +1,12 @@
+
+.well.well-small
+	=link_to "Regresar", {action: 'seleccionar_seccion'}, class: 'btn'
+	-if true #@cal_seccion.calificada
+		=link_to "Descargar notas", {action: 'descargar_notas', id: @cal_seccion.id}, class: "btn btn-success pull-right"
+
+= render partial: 'detalle_seccion'
+
+.well.well-small
+	=link_to "Regresar", {action: 'seleccionar_seccion'}, class: 'btn'
+	-if true #@cal_seccion.calificada
+		=link_to "Descargar notas", {action: 'descargar_notas', id: @cal_seccion.id}, class: "btn btn-success pull-right"

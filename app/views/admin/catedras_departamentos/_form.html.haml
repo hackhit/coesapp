@@ -1,0 +1,34 @@
+- if @catedras_disponibles and @catedras_disponibles.count > 0
+  %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Cátedra al departamento'}
+    = link_to('javascript:void(0)', { class: 'btn btn-primary btn-sm', :onclick => "return $('#nueva_catedra_departamento').modal();", 'data_toggle' => 'modal' }) do
+      = glyph 'plus'
+      Cátedra
+
+
+  .modal.fade#nueva_catedra_departamento{'aria-hidden'=> false}
+    .modal-dialog
+      .modal-content
+        .alert.alert-info
+          %h4 Agregar Catedra al departamento actual
+        .modal-body
+          = form_for(@catedra_departamento, url:{controller: 'catedras_departamentos', action: 'create'}, :html => {class: 'form-horizontal'}) do |f|
+            - if @departamento
+              = hidden_field_tag '[catedra_departamento]departamento_id', @departamento.id
+              .form-group
+                = f.label :catedra_id, class: 'control-label col-md-2', value: 'Cátedra:'
+                .col-md-12
+                  = f.select(:catedra_id, @catedras_disponibles.collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})
+            - else
+              .form-group
+                = f.label :departamento, class: 'control-label col-md-2'
+                = f.text_field :departamento
+              .form-group
+                = f.label :catedra, class: 'control-label col-md-2'
+                = f.text_field :catedra, autofocus: true
+            .form-group
+              = f.label :orden, class: 'control-label col-md-2', value: 'Orden:'
+              .col-md-12
+                = f.number_field :orden, class: 'text_field form-control', in: 0...11, step: 1, required: true, placeholder: "Orden"
+            .modal-footer  
+              %a.btn{data: {dismiss: 'modal'}} Cancelar
+              = f.submit 'Agregar', class: 'btn btn-primary'

@@ -1,7 +1,4 @@
-%h1 Editing asignatura
-
-= render 'form'
-
-= link_to 'Show', @asignatura
-\|
-= link_to 'Back', asignaturas_path
+- model_class = Asignatura
+.page-header
+  %h1=t '.title', default: [:'helpers.titles.edit', 'Edit %{model}'], model: model_class.model_name.human.titleize
+= render partial: "form"

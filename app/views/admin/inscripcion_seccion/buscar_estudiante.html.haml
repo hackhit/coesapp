@@ -1,0 +1,25 @@
+.border
+	%br
+	= form_tag({controller: 'inscripcion_seccion',action: 'seleccionar'},{class: 'form-horizontal', method: :get} ) do
+		.form-group
+			%label.control-label.col-md-2 Estudiante:
+			.col-md-12
+				=collection_select(nil, :id, @estudiantes, :id, :descripcion, {prompt: true}, {required: true, class: 'selects2 form-control text_field', style: 'width:100%;', autofocus: true})
+		.form-group.pl-3
+			= submit_tag "Siguiente", :disable_with => 'Enviando...', class: 'btn btn-primary pull-right'
+			= link_to t('.cancel', default: t("helpers.links.cancel")), principal_admin_index_path, class: 'btn btn-default'
+
+:javascript
+
+	$(document).ready(function() {
+
+		$(".selects2").select2({
+		    placeholder: "--Escriba datos del estudiante para buscarlo--",
+		    allowClear: true
+		});
+		
+	});
+
+
+
+
