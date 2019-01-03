@@ -63,14 +63,15 @@ module Admin
 		end
 
 		def index
-			@periodo_actual = Periodo.find session[:parametros]['periodo_actual_id']
+			@principal_admin_add_asig = true
+			@periodo_actual_id = session[:parametros]['periodo_actual_id']
 			@departamentos = Departamento.all
 			@usuario = current_usuario
 			@admin = current_usuario.administrador
 
 			if @admin
 				@editar_asignaturas = true unless @admin.operador?
-				@departamentos = Departamento.where(:id => @admin.departamento_id)if @admin.jefe_departamento?
+				@departamentos = Departamento.where(id: @admin.departamento_id)if @admin.jefe_departamento?
 			end
 			
 		end
@@ -101,7 +102,7 @@ module Admin
 			@admin = Administrador.find session[:administrador_id]
 
 			@seccion = Seccion.find params[:id]
-			@estudiantes_secciones = @seccion.inscripciones_en_secciones.sort_by{|es| es.estudiante.usuario.apellidos}
+			@estudiantes_secciones = @seccion.inscripcionsecciones.sort_by{|es| es.estudiante.usuario.apellidos}
 			@titulo = "Sección: #{@seccion.descripcion} - Período: #{@seccion.periodo_id}"
 			
 			if @seccion.asignatura.catedra_id.eql? 'IB' or @cal_seccion.asignatura.catedra_id.eql? 'LIN' or @cal_seccion.asignatura.catedra_id.eql? 'LE'
@@ -124,7 +125,7 @@ module Admin
 
 			@estudiantes.each_pair do |ci,valores|
 
-				@estudiante_seccion = @seccion.inscripciones_en_secciones.where(estudiante_id: ci).limit(1).first
+				@estudiante_seccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).limit(1).first
 				
 				if valores[:pi]
 					tipo_estado_calificacion_id = 'PI'
