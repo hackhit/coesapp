@@ -25,10 +25,10 @@ TipoEstadoCalificacion.create([{
 	{id: 'SC', descripcion: 'Sin Calificar' }])
 p "#{TipoEstadoCalificacion.count} TipoEstadoCalificaciones Creadas!"
 
-Catedra.create([{id: 'IB', descripcion: 'Idioma Básico', orden: 1}])
+Catedra.create([{id: 'IB', descripcion: 'Idioma Básico'}, {id: 'GE', descripcion: 'Gramática y Especialización'}, ])
 p "#{Catedra.count} Catedra Creada!"
 
-Departamento.create([{id: 'ALE', descripcion: 'ALEMÁN'}, {id: 'ING', descripcion: 'Inglés'}])
+Departamento.create([{id: 'ALE', descripcion: 'ALEMÁN'}, {id: 'ING', descripcion: 'Inglés'}, {id: 'ITA', descripcion: 'Italiano'}])
 p "#{Departamento.count} Departamentos Creados!"
 
 Usuario.create([{id: '1', password: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', password: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])
@@ -43,10 +43,10 @@ p "#{Profesor.count} Profesor Creado!"
 Estudiante.create([{usuario_id: 2}])
 p "#{Estudiante.count} Estudiante Creado!"
 
-CatedraDepartamento.create([{departamento_id: 'ALE', catedra_id: 'IB', orden: 1}])
-p "#{CatedraDepartamento.count} CatedraDepartamento Creado!"
+Catedradepartamento.create([{departamento_id: 'ALE', catedra_id: 'IB'}])
+p "#{Catedradepartamento.count} CatedraDepartamento Creado!"
 
-Asignatura.create([{id: 'ALEI', descripcion: 'Alemán I', anno: 1, orden: 1, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010101', creditos: 6}, {id: 'ALEII', descripcion: 'Alemán II', anno: 2, orden: 2, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010102', creditos: 5}])
+Asignatura.create([{id: 'ALEI', descripcion: 'Alemán I', anno: 1, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010101', creditos: 6}, {id: 'ALEII', descripcion: 'Alemán II', anno: 2, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010102', creditos: 5}])
 p "#{Asignatura.count} Asignaturas Creadas!"
 
 Periodo.create([{id: '2018-02A', inicia: '2018-12-26', culmina: '2019-12-27'}, {id: '2017-02A', inicia: '2017-12-26', culmina: '2018-12-25'}])
@@ -61,11 +61,11 @@ p "#{Historialplan.count} Historial de Plan Creado!"
 Combinacion.create([{estudiante_id: 2, periodo_id: Periodo.first.id, idioma1_id: Departamento.first.id, idioma2_id: Departamento.last.id}])
 p "#{Combinacion.count} Combinaciones de Idiomas Creado!"
 
-Seccion.create([{numero: 'A1', asignatura_id: Asignatura.first.id, periodo_id: Periodo.first.id, profesor_id: Profesor.first.id}])
+Seccion.create([{numero: 'A1', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id}, {numero: 'A2', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id}])
 p "#{Seccion.count} Sección Creada!"
 
-InscripcionEnSeccion.create([{estudiante_id: Estudiante.first.id, seccion_id: Seccion.first.id}])
-p "#{InscripcionEnSeccion.count} Inscripcion en Sección Creada!"
+Inscripcionseccion.create([{estudiante_id: Estudiante.first.id, seccion_id: Seccion.first.id}])
+p "#{Inscripcionseccion.count} Inscripcion en Sección Creada!"
 
 SeccionProfesorSecundario.create([{profesor_id: Profesor.last.id, seccion_id: Seccion.first.id}])
 p "#{SeccionProfesorSecundario.count} profesor secundario asociado a sección!"

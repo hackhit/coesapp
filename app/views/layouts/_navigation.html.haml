@@ -13,5 +13,5 @@
         %li.nav-item
           %a.nav-link{:href => "#"} Contáctanos
       %ul.navbar-nav
-        %li= link_to "Inscribir Estudiante", {controller: '/admin/inscripcion_seccion', action: 'buscar_estudiante'}, class: 'btn btn-success pull-right btn-sm'
+        %li= link_to "Inscribir Estudiante", buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success pull-right btn-sm'
       = render 'layouts/nav_session_options' 

@@ -1,0 +1,66 @@
+
+%b
+	Seleccione el Departamento:
+	= tooltip_link_to 'Agregar Nuevo Departamento', 'plus', 'success', new_departamento_path if @principal_admin_add_asig
+%div{class: @row}
+	%div{class: @col2}
+		%ul#pills-departamentos-tab.nav.nav-pills.mb-3{role: :tablist, "aria-orientation" => @orientacion, class: @vertical}
+			- @departamentos.each do |dep|
+				- dpto_activo = (session[:dpto_id].eql? dep.id) ? "active" : ""
+				%li.nav-item
+					= link_to dep.descripcion, "#dep_#{dep.id}", "data-toggle"=> "tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {dpto_id: '#{dep.id}'}, dataType: 'json'});", class: "nav-link #{dpto_activo}"
+
+	%div{class: @col10}
+		#pills-departamentos-tabContent.tab-content
+			- @departamentos.each do |dep|
+				- dpto_activo = (session[:dpto_id].eql? dep.id) ? "active show" : ""
+				.tab-pane.fade{"aria-labelledby" => "pills-home-tab", role: :tabpanel, class: dpto_activo, id: "dep_#{dep.id}"}
+
+					- @catedras = dep.catedras#departamentos#.sort_by{|cate| cate.orden}
+					%b
+						Seleccione la Cátedra:
+						= tooltip_link_to 'Agregar nueva cátedra a éste departamento', 'plus', 'success', dep if @principal_admin_add_asig
+					%div{class: @row}
+						%div{class: @col2}
+
+							%ul#pills-catedras-tab.nav.nav-pills.mb-3{role: :tablist, "aria-orientation" => @orientacion, class: @vertical}
+								- @catedras.each do |cat|
+									- cat_activa = (session[:cat_id].eql? cat.id) ? "active" : ""
+									%li.nav-item
+										= link_to cat.descripcion, "#cat_#{dep.id}_#{cat.id}", "data-toggle"=> "tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {cat_id: '#{cat.id}'}, dataType: 'json'});", class: "nav-link #{cat_activa}"
+
+						%div{class: @col10}
+							#pills-catedras-tabContent.tab-content
+								- @catedras.each do |cat|
+							
+									- cat_activa = (session[:cat_id].eql? cat.id) ? "active show" : ""
+									.tab-pane.fade{"aria-labelledby" => "pills-home-tab", role: :tabpanel, class: cat_activa, id: "cat_#{dep.id}_#{cat.id}"}
+										- @asignaturas = cat.asignaturas.where(departamento_id: dep.id).sort_by{|a| a.orden}
+
+										%b
+											Seleccione la Asignatura:
+											= tooltip_link_to 'Agregar Nueva Asignatura', 'plus', 'success', new_asignatura_path if @principal_admin_add_asig
+										.row
+											.col-2
+												#v-pills-tab.nav.flex-column.nav-pills{"aria-orientation" => "vertical", role: :tablist}
+													- @asignaturas.each do |mat|
+														- mat_activa = (session[:mat_id].eql? mat.id) ? "active" : ""							
+														= link_to "#mat_#{mat.id}", "data-toggle"=> "pill", class: "nav-link #{mat_activa}", "aria-controls" => "mat_#{mat.id}", :role => "tab", id: "mat_#{mat.id}-tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {mat_id: '#{mat.id}'}, dataType: 'json'});"  do
+															= mat.descripcion
+															%span.badge.badge-info= mat.id_uxxi
+															-if mat.secciones.where(:periodo_id => @periodo_actual_id).count < 1
+																.mute
+																	%span.badge.badge-secondary
+																		inactiva
+
+											.col-10
+												#v-pills-tabContent.tab-content
+													- @asignaturas.each do |mat|
+														- @mat_activa = (session[:mat_id].eql? mat.id) ? "active show" : ""
+														- @secciones = mat.secciones.where(:periodo_id => @periodo_actual_id)
+														- @mat = mat
+														- if @admin_inscripcion
+															= render partial: '/admin/asignaturas/panel_detalle'
+														- elsif @principal_admin_add_asig
+															= render partial: '/admin/inscripcionsecciones/detalle_inscripcion'
+

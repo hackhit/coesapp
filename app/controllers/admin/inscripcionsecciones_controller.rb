@@ -1,5 +1,5 @@
 module Admin
-	class InscripcionSeccionController < ApplicationController
+	class InscripcionseccionesController < ApplicationController
 
 		before_action :filtro_logueado
 		before_action :filtro_administrador
@@ -8,7 +8,7 @@ module Admin
 			@periodo_actual_id = ParametroGeneral.periodo_actual_id
 
 			if params[:id]
-				@inscripciones = InscripcionEnSeccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
+				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
 				if @inscripciones.count > 2
 					flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path @inscripciones.first.estudiante}' class='btn btn-primary btn-sm'>aquí</a> para mayor información y realizar ajustes sobre las asignaturas" 
 				end
@@ -18,8 +18,14 @@ module Admin
 		end
 
 		def seleccionar
+			@vertical = 'flex-column'
+			@orientacion = "vertical"
+			@admin_inscripcion = true 
+			@row = 'row'
+			@col2 = 'col-2'
+			@col10 = 'col-10'
 			@periodo_actual_id = ParametroGeneral.periodo_actual_id
-			@inscripciones = InscripcionEnSeccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
+			@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
 
 			@estudiante = Estudiante.find params[:id]
 			@titulo = "Inscripción para el período #{@periodo_actual_id} - Paso 2 - Seleccionar Secciones"
@@ -40,7 +46,7 @@ module Admin
 			begin
 				secciones.each_pair do |sec_id, sec_num|
 					seccion = Seccion.find sec_id
-					if seccion.inscripciones_en_secciones.create!(estudiante_id: id, tipo_estado_inscripcion_id: 'INS')
+					if seccion.inscripcionsecciones.create!(estudiante_id: id, tipo_estado_inscripcion_id: 'INS')
 						guardadas += 1
 					else
 						flash[:error] = "#{es_se.errors.full_messages.join' | '}"
@@ -73,10 +79,10 @@ module Admin
 		def crear
 			ci = params[:ci]
 			numero, cal_materia_id, periodo_id = params[:cal_seccion][:id].split(",")
-			if InscripcionEnSeccion.where(:cal_estudiante_ci => ci, :numero => numero, :cal_materia_id => cal_materia_id, :periodo_id => periodo_id).limit(1).first
+			if Inscripcionseccion.where(:cal_estudiante_ci => ci, :numero => numero, :cal_materia_id => cal_materia_id, :periodo_id => periodo_id).limit(1).first
 				flash[:error] = "El Estudiante ya esta inscrito en esa sección"
 			else
-				if InscripcionEnSeccion.create(:cal_estudiante_ci => ci, :numero => numero, :cal_materia_id => cal_materia_id, :periodo_id => periodo_id, :cal_tipo_estado_inscripcion_id => 'INS', :cal_tipo_estado_calificacion_id => 'SC')
+				if Inscripcionseccion.create(:cal_estudiante_ci => ci, :numero => numero, :cal_materia_id => cal_materia_id, :periodo_id => periodo_id, :cal_tipo_estado_inscripcion_id => 'INS', :cal_tipo_estado_calificacion_id => 'SC')
 					flash[:success] = "Estudiante inscrito satisfactoriamente"
 				else
 					flash[:error] = "No se pudo incorporar al estudiante en la seccion correspondiente, intentelo de nuevo"
@@ -92,7 +98,7 @@ module Admin
 			# numero, cal_materia_id, periodo_id = params[:cal_seccion_id].split(",")		
 			id = params[:id]
 			ci = id[0]
-			if es = InscripcionEnSeccion.find(id)
+			if es = Inscripcionseccion.find(id)
 				if es.destroy
 					flash[:success] = "El estudiante fue eliminado de la sección correctamente, ci:#{ci}"
 				else
@@ -108,7 +114,7 @@ module Admin
 		def set_retirar
 			valor = 
 			id = params[:id]
-			if es = InscripcionEnSeccion.find(id)
+			if es = Inscripcionseccion.find(id)
 				es.cal_tipo_estado_inscripcion_id = params[:valor]
 				if es.save
 					flash[:success] = "El cambio el valor de retiro de #{es.cal_estudiante.cal_usuario.nickname} de la sección #{es.cal_seccion.descripcion} se realizó correctamente"

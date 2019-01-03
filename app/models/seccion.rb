@@ -5,10 +5,9 @@ class Seccion < ApplicationRecord
 	belongs_to :periodo
 	belongs_to :profesor, optional: true 
 
-	has_many :inscripciones_en_secciones,
-		class_name: 'InscripcionEnSeccion', dependent: :delete_all
-	accepts_nested_attributes_for :inscripciones_en_secciones
-	has_many :estudiantes, through: :inscripciones_en_secciones, source: :estudiante
+	has_many :inscripcionsecciones, dependent: :delete_all
+	accepts_nested_attributes_for :inscripcionsecciones
+	has_many :estudiantes, through: :inscripcionsecciones, source: :estudiante
 
 	has_many :secciones_profesores_secundarios,
 		:class_name => 'SeccionProfesorSecundario'
@@ -31,27 +30,27 @@ class Seccion < ApplicationRecord
 
 	# FUNCIONES:
 	def total_estudiantes
-		inscripciones_en_secciones.count
+		inscripcionsecciones.count
 	end
 
 	def total_confirmados
-		inscripciones_en_secciones.confirmados.count
+		inscripcionsecciones.confirmados.count
 	end
 
 	def total_aprobados
-		inscripciones_en_secciones.aprobados.count
+		inscripcionsecciones.aprobados.count
 	end
 
 	def total_reprobados
-		inscripciones_en_secciones.reprobados.count
+		inscripcionsecciones.reprobados.count
 	end
 
 	def total_perdidos
-		inscripciones_en_secciones.perdidos.count
+		inscripcionsecciones.perdidos.count
 	end
 
 	def total_sin_calificar
-		inscripciones_en_secciones.sin_calificar.count
+		inscripcionsecciones.sin_calificar.count
 	end
 
 	def descripcion

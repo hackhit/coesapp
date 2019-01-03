@@ -1,6 +1,6 @@
-class InscripcionEnSeccion < ApplicationRecord
+class Inscripcionseccion < ApplicationRecord
 	# SET GLOBALES:
-	self.table_name = 'inscripciones_en_secciones'
+	# self.table_name = 'inscripciones_en_secciones'
 	# ASOCIACIONES: 
 	belongs_to :seccion
 	belongs_to :estudiante, primary_key: :usuario_id

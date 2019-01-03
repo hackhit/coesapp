@@ -10,11 +10,11 @@ class Estudiante < ApplicationRecord
 	accepts_nested_attributes_for :historialplanes
 	has_many :planes, through: :historialplanes, source: :plan
 
-	has_many :inscripciones_en_secciones,
+	has_many :inscripcionsecciones,
 		class_name: 'InscripcionEnSeccion'
-	accepts_nested_attributes_for :inscripciones_en_secciones
+	accepts_nested_attributes_for :inscripcionsecciones
 	
-	has_many :secciones, through: :inscripciones_en_secciones, source: :seccion
+	has_many :secciones, through: :inscripcionsecciones, source: :seccion
 
 	has_many :combinaciones, dependent: :delete_all
 	accepts_nested_attributes_for :combinaciones
@@ -30,13 +30,13 @@ class Estudiante < ApplicationRecord
 	# FUNCIONES:
 	def inactivo?
 	# OJO: ESTA FUNCION DEBE CAMBIAR AL AGREGAR LA TABLA INSCRIPCION PERIDO!!!
-		total_asignaturas = self.inscripciones_en_secciones.del_periodo_actual.count
-		total_retiradas = inscripciones_en_secciones.del_periodo_actual.where(tipo_estado_inscripcion_id: 'RET').count
+		total_asignaturas = self.inscripcionsecciones.del_periodo_actual.count
+		total_retiradas = inscripcionsecciones.del_periodo_actual.where(tipo_estado_inscripcion_id: 'RET').count
 		(total_asignaturas > 0 and total_asignaturas == total_retiradas)
 	end
 
 	def inscrito?
-		inscripciones_en_secciones.del_periodo_actual.count > 0
+		inscripcionsecciones.del_periodo_actual.count > 0
 	end
 
 	def valido_para_inscribir?
@@ -52,7 +52,7 @@ class Estudiante < ApplicationRecord
 		self.secciones.collect{|s| s.asignatura.anno}.uniq
 	end
 	def annos_del_semestre_actual
-		inscripciones_en_secciones.del_semestre_actual.collect{|s| s.seccion.asignatura.anno}.uniq
+		inscripcionsecciones.del_semestre_actual.collect{|s| s.seccion.asignatura.anno}.uniq
 	end
 
 	def combo_idiomas
@@ -85,10 +85,10 @@ class Estudiante < ApplicationRecord
 			secciones_aux.select("seccion.*, asignatura.*").joins(:asignatura).group("asignatura.anno").each{|x| annos << x.anno if x.anno > 0}
 
 
-			inscripciones_en_secciones.reject{|in_se| in_se.seccion.numero.eql? 'R'}.each do |est_sec|
+			inscripcionsecciones.reject{|in_se| in_se.seccion.numero.eql? 'R'}.each do |est_sec|
 				
 				if est_sec.calificacion_final and est_sec.calificacion_final < 10
-					reparacion = inscripciones_en_secciones.en_reparacion.first
+					reparacion = inscripcionsecciones.en_reparacion.first
 
 					if reparacion
 						reprobadas = reprobadas + 1 if reparacion.calificacion_final < 10

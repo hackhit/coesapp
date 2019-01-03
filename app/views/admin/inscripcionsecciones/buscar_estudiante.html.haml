@@ -1,6 +1,6 @@
 .border
 	%br
-	= form_tag({controller: 'inscripcion_seccion',action: 'seleccionar'},{class: 'form-horizontal', method: :get} ) do
+	= form_tag(seleccionar_inscripcionsecciones_path,{class: 'form-horizontal', method: :get} ) do
 		.form-group
 			%label.control-label.col-md-2 Estudiante:
 			.col-md-12

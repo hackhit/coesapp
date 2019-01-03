@@ -11,9 +11,9 @@
         .alert.alert-info
           %h4 Agregar Catedra al departamento actual
         .modal-body
-          = form_for(@catedra_departamento, url:{controller: 'catedras_departamentos', action: 'create'}, :html => {class: 'form-horizontal'}) do |f|
+          = form_for(@catedradepartamento, :html => {class: 'form-horizontal'}) do |f|
             - if @departamento
-              = hidden_field_tag '[catedra_departamento]departamento_id', @departamento.id
+              = f.hidden_field :departamento_id
               .form-group
                 = f.label :catedra_id, class: 'control-label col-md-2', value: 'Cátedra:'
                 .col-md-12
@@ -21,14 +21,14 @@
             - else
               .form-group
                 = f.label :departamento, class: 'control-label col-md-2'
-                = f.text_field :departamento
+                = f.text_field :departamento, class: "form-control text_field col-md-12", autofocus: true, required: true
               .form-group
                 = f.label :catedra, class: 'control-label col-md-2'
-                = f.text_field :catedra, autofocus: true
+                = f.text_field :catedra, class: "form-control text_field col-md-12", required: true
             .form-group
-              = f.label :orden, class: 'control-label col-md-2', value: 'Orden:'
+              =# f.label :orden, class: 'control-label col-md-2', value: 'Orden:'
               .col-md-12
-                = f.number_field :orden, class: 'text_field form-control', in: 0...11, step: 1, required: true, placeholder: "Orden"
+                = #f.number_field :orden, class: 'text_field form-control', in: 0...11, step: 1, required: true, placeholder: "Orden"
             .modal-footer  
               %a.btn{data: {dismiss: 'modal'}} Cancelar
               = f.submit 'Agregar', class: 'btn btn-primary'

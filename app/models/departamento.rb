@@ -10,11 +10,10 @@ class Departamento < ApplicationRecord
 	has_many :administradores
 	accepts_nested_attributes_for :administradores
 
+	has_many :catedradepartamentos#, class_name: 'CatedraDepartamento'
+	accepts_nested_attributes_for :catedradepartamentos
 
-	has_many :catedras_departamentos, class_name: 'CatedraDepartamento'
-	accepts_nested_attributes_for :catedras_departamentos
-
-	has_many :catedras, through: :catedras_departamentos, source: :catedra
+	has_many :catedras, through: :catedradepartamentos, source: :catedra
 
 	# VALIDACIONES
 	validates :id, presence: true, uniqueness: true

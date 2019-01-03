@@ -1,0 +1,62 @@
+%i.muted
+	%b.tooltip-btn{'data_toggle'=>'tooltip', title: "Ir al detalle del usuario"}
+		= link_to(usuario_path(@estudiante.id), class: 'btn btn-default btn-small') do
+			= glyph 'plus'
+			Detalle
+	= "#{@estudiante.descripcion}:"
+%br
+
+= form_tag(inscribir_inscripcionsecciones_path) do
+	=hidden_field_tag :id, @estudiante.usuario_id
+	.border.p-3{style: 'max-height: 350px;overflow-y: scroll;'}
+
+		= render partial: '/admin/principal_admin/tabs_estructura_departamentos'
+
+
+	.border.p-3.hideble#seleccion
+		%h6.titulo Selección:
+		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones_disponibles, borrar_seleccion: true}
+
+		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-primary', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
+
+	- if @inscripciones.count > 0
+		.border.p-3
+			%h6.alert.alert-warning= "Ya inscritas en el periodo actual : #{@periodo_actual_id}"
+			%table.table.table-bordered.table-striped.table-sm.table-hover
+				%thead
+					%tr
+						%th Departamento
+						%th Cátedra
+						%th Sección
+						%th Período
+				%tbody
+					- @inscripciones.each do |ins| 
+						%tr
+							%td= ins.seccion.asignatura.departamento.descripcion
+							%td= ins.seccion.asignatura.catedra.descripcion
+							%td= ins.seccion.descripcion
+							%td= ins.seccion.periodo_id
+:javascript
+	function chequear_total_seleccionados(){
+		var total = $('input:radio:checked').length
+		if(total > 0){
+			$('#btn-confirmacion').removeAttr("disabled");
+			$('#seleccion').show();
+
+		}else{
+			$('#btn-confirmacion').attr("disabled", "disabled");
+			$('#seleccion').hide();
+		}
+
+	};
+
+	function borrar_seleccion(materia_id) {
+		$('.'+materia_id).prop('checked', false);
+		$('.sel_'+materia_id).hide();
+		chequear_total_seleccionados();
+	};
+	function agregar_a_seleccion(materia_id,seccion_numero) {
+		$('.sel_'+materia_id).hide();
+		$('#sel_'+materia_id+'_'+seccion_numero).show();
+		chequear_total_seleccionados();
+	};

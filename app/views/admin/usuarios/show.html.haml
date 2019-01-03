@@ -4,7 +4,7 @@
 %h3
   = link_to "< Regresar", :back, {class: 'btn btn-secondary'}
   - if @estudiante and @estudiante.valido_para_inscribir?
-    = link_to({controller: '/admin/inscripcion_seccion', action: 'seleccionar', id: @estudiante.id}, class: 'btn btn-success') do
+    = link_to({controller: '/admin/inscripcionsecciones', action: 'seleccionar', id: @estudiante.id}, class: 'btn btn-success') do
       %span.icon-pencil
       Inscribir
 

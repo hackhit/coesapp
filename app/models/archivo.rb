@@ -21,7 +21,7 @@ class Archivo
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 		periodo_id = ParametroGeneral.periodo_actual_id
- 		inscripciones = estudiante.inscripciones_en_secciones.del_periodo_actual
+ 		inscripciones = estudiante.inscripcionsecciones.del_periodo_actual
 		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
 
 		pdf = PDF::Writer.new
@@ -149,7 +149,7 @@ class Archivo
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 		periodo_id = ParametroGeneral.periodo_actual_id
- 		inscripciones = estudiante.inscripciones_en_secciones.del_periodo_actual
+ 		inscripciones = estudiante.inscripcionsecciones.del_periodo_actual
 		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
 
 		pdf = PDF::Writer.new
@@ -312,7 +312,7 @@ class Archivo
 
 			plan = TipoPlan.find tipo_plan_id
 			plan.estudiantes.each do |es|
-				(es.inscripciones_en_secciones.del_periodo periodo_id).each_with_index do |h,i| # puede cambiar por el periodo_id
+				(es.inscripcionsecciones.del_periodo periodo_id).each_with_index do |h,i| # puede cambiar por el periodo_id
 					est = h.estudiante
 					sec = h.seccion
 					asign = sec.asignatura
@@ -343,7 +343,7 @@ class Archivo
 		# Plan.all.each do |plan|
 		plan = Plan.first
 		plan.cal_estudiantes.each do |es|
-			es.inscripciones_en_secciones.del_periodo_actual.each_with_index do |h,i| # puede cambiar por el periodo_id
+			es.inscripcionsecciones.del_periodo_actual.each_with_index do |h,i| # puede cambiar por el periodo_id
 				est = h.estudiante
 				sec = h.seccion
 				asign = sec.asignatura
@@ -397,7 +397,7 @@ class Archivo
 		data = ['No.', 'Cédula I', 'Nombres y Apellidos', 'Nota_Final', 'Nota_Def', 'Tipo_Ex.']
 		@sheet.row(13).concat data
 
-		@seccion.inscripciones_en_secciones.each_with_index do |es,i|
+		@seccion.inscripcionsecciones.each_with_index do |es,i|
 			e = es.estudiante
 			@sheet.row(i+14).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, @seccion.tipo_convocatoria]
 		end
@@ -413,7 +413,7 @@ class Archivo
 
 		secciones = InscripcionEnSeccion.where(estudiante_id: estudiante.usuario_id).order("asignatura_id ASC, numero DESC")
 
-		secciones = estudiante.inscripciones_en_secciones.joins(:seccion).order("asignatura_id ASC, numero DESC")
+		secciones = estudiante.inscripcionsecciones.joins(:seccion).order("asignatura_id ASC, numero DESC")
 
 		pdf = PDF::Writer.new
 
@@ -561,7 +561,7 @@ class Archivo
 
 		data = []
 		estudiantes.each_with_index do |e,i|
-			inscripciones_secciones = e.inscripciones_en_secciones.del_periodo periodo_id
+			inscripciones_secciones = e.inscripcionsecciones.del_periodo periodo_id
 			aux = [i+1, e.usuario_id, e.usuario.apellido_nombre]
 
 			inscripciones_secciones.each do |ins_seccion|
@@ -614,9 +614,9 @@ class Archivo
 		@sheet = @book.create_worksheet :name => "Seccion #{seccion.id}"
 
 		if seccion.periodo_id.eql? '2016-02A'
-			inscripciones_en_secciones = seccion.inscripciones_en_secciones.no_retirados.confirmados.sort_by{|i_s| i_s.estudiante.usuario.apellidos}
+			inscripcionsecciones = seccion.inscripcionsecciones.no_retirados.confirmados.sort_by{|i_s| i_s.estudiante.usuario.apellidos}
 		else
-			inscripciones_en_secciones = seccion.inscripciones_en_secciones.no_retirados.sort_by{|i_s| i_s.estudiante.usuario.apellidos}
+			inscripcionsecciones = seccion.inscripcionsecciones.no_retirados.sort_by{|i_s| i_s.estudiante.usuario.apellidos}
 		end
 		# cal_estudiantes_secciones.sort_by{|h| h.cal_estudiante.cal_usuario.apellidos}
 
@@ -630,7 +630,7 @@ class Archivo
 		@sheet.row(2).concat %w{CI NOMBRES CORREO MOVIL}
 
 		data = []
-		inscripciones_en_secciones.each_with_index do |i_s,i|
+		inscripcionsecciones.each_with_index do |i_s,i|
 			usuario = i_s.estudiante.usuario
 			@sheet.row(i+3).concat  [usuario.ci, i_s.nombre_estudiante_con_retiro, usuario.correo_electronico, usuario.telefono_movil]
 		end
@@ -645,7 +645,7 @@ class Archivo
 		por_pagina = 35
 		pdf = PDF::Writer.new
 		seccion = Seccion.find seccion_id
-		inscripciones_en_seccion = seccion.inscripciones_en_secciones.sort_by{|h| h.estudiante.usuario.apellidos}
+		inscripciones_en_seccion = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 		pdf.start_page_numbering(400, 665, 9, nil, to_utf16("PÁGINA: <b><PAGENUM>/<TOTALPAGENUM></b>"), 1)
 		(inscripciones_en_seccion.each_slice por_pagina).to_a.each_with_index do |ests_sec, j| 
 			pdf.start_new_page true if j > 0
@@ -659,9 +659,9 @@ class Archivo
 
 	private 
 
-	def self.pagina_acta_examen_pdf pdf, inscripciones_en_secciones, j
+	def self.pagina_acta_examen_pdf pdf, inscripcionsecciones, j
 
-		seccion = inscripciones_en_secciones.first.cal_seccion
+		seccion = inscripcionsecciones.first.cal_seccion
 
 		encabezado_acta_pdf pdf, seccion, j
 
@@ -673,7 +673,7 @@ class Archivo
 
 		data = []
 
-		inscripciones_en_secciones.each_with_index do |es,i|
+		inscripcionsecciones.each_with_index do |es,i|
 			e = es.cal_estudiante
 			# plan += e.planes.collect{|c| c.id}.join(" | ") if e.planes
 			plan = "#{e.ultimo_plan}"

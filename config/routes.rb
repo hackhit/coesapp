@@ -17,11 +17,16 @@ Rails.application.routes.draw do
     get '/principal_admin/ver_seccion_admin'
     get '/principal_admin/detalle_usuario'
 
-    get '/inscripcion_seccion/buscar_estudiante'
-    get '/inscripcion_seccion/seleccionar'
-    post '/inscripcion_seccion/inscribir'
-    get '/inscripcion_seccion/resumen'
-
+    resources :inscripcionsecciones do
+      collection do 
+        get 'buscar_estudiante'
+        get :seleccionar
+        post :inscribir
+      end
+      member do 
+        get :resumen
+      end
+    end
     get '/principal_profesor/index'
     get '/principal_estudiante/index'
 
@@ -33,7 +38,7 @@ Rails.application.routes.draw do
 
     resources :historialplanes
 
-    resources :catedras_departamentos
+    resources :catedradepartamentos, only: [:create, :destroy]
 
     resources :secciones do
       collection do
