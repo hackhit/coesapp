@@ -1,7 +1,7 @@
 - if @admin and @admin.super? and @estudiante.planes.count < 3
-  %br
+  %br  
   %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nuevo Plan de Estudio'}
-    = link_to('javascript:void(0)', { class: 'btn btn-success btn-sm', :onclick => "return $('#nuevo_plan_periodo').modal();", 'data_toggle' => 'modal' }) do
+    = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nuevo_plan_periodo').modal();", 'data_toggle' => 'modal' }) do
       = glyph "plus"
 
   .modal.hideble.fade#nuevo_plan_periodo{'aria-hidden'=> false}
@@ -9,21 +9,19 @@
     - @hp.estudiante_id = @estudiante.id
     = render '/admin/historialplanes/form'
 %b Planes:
-%br
-%table.table.table-striped.table-sm.table-hover.table-responsive-md
+
+%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   - @estudiante.historialplanes.order("periodo_id DESC").each do |hp|
     %tr
       %th
         = hp.descripcion
         - if @admin and @admin.super?
-    
-          %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar'}
+          %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar plan de estudio'}
             = link_to('javascript:void(0)', {onclick: "return $('##{hp.plan_id}_periodo').modal();", 'data_toggle' => 'modal'}) do
               = glyph 'edit'
-
-          %b.tooltip-btn{'data_toggle'=>'tooltip', title: 'Eliminar'}
-            = link_to(hp, method: :delete, 'data-confirm' => '¿Está Seguro?') do
-              .text-danger= glyph 'trash'
+          %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Eliminar plan de estudio'}
+            = link_to(hp, method: :delete, 'data-confirm' => '¿Está seguro de eliminar el plan de estudio para el estudiante?', class: 'text-danger') do
+              = glyph 'remove'
           .modal.hide.fade{tabindex: "-1", role: "dialog", 'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false, id: "#{hp.plan_id}_periodo"}
             - @hp = hp
             - @accion = 'update'

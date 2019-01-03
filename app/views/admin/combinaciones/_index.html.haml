@@ -1,0 +1,27 @@
+- if @admin and @admin.super? and @estudiante.combinaciones.count < 3
+  %br
+  %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Combinación de Idiomas'}
+    = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nueva_combinacion').modal();", 'data_toggle' => 'modal' }) do
+      = glyph 'plus'
+
+  .modal.hideble.fade#nueva_combinacion{'aria-hidden'=> false}
+    - @combinacion = Combinacion.new
+    - @combinacion.estudiante_id = @estudiante.id
+    = render '/admin/combinaciones/form'
+%b Combinaciones de Idiomas:
+
+%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+  - @estudiante.combinaciones.order("periodo_id DESC").each do |combinacion|
+    %tr
+      %th
+        = combinacion.descripcion
+        - if @admin and @admin.super?
+          %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar'}
+            = link_to('javascript:void(0)', {onclick: "return $('#combinacion_#{combinacion.periodo_id}').modal();", 'data_toggle' => 'modal'}) do
+              = glyph 'edit'
+          %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Eliminar'}
+            = link_to(combinacion, method: :delete, 'data-confirm' => '¿Está seguro de eliminar la combinación de idiomas para el estudiante?', class: 'text-danger') do
+              = glyph 'remove'
+          .modal.hide.fade{tabindex: "-1", role: "dialog", 'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false, id: "combinacion_#{combinacion.periodo_id}"}
+            - @combinacion = combinacion
+            = render '/admin/combinaciones/form'

@@ -25,7 +25,7 @@ class Combinacion < ApplicationRecord
 	def descripcion
 		desc1 = idioma1.descripcion if idioma1
 		desc2 = idioma2.descripcion if idioma2
-		"#{desc1} / #{desc2} - #{desde_cal_semestre_id}"
+		"#{desc1} / #{desc2} - #{periodo_id}"
 	end
 
 end

@@ -1,0 +1,29 @@
+<h1>Listing combinaciones</h1>
+
+<table>
+  <tr>
+    <th>Cal estudiante</th>
+    <th>Cal departamento1</th>
+    <th>Cal departamento2</th>
+    <th>Desde semestre</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @combinaciones.each do |combinacion| %>
+  <tr>
+    <td><%= combinacion.cal_estudiante %></td>
+    <td><%= combinacion.cal_departamento1 %></td>
+    <td><%= combinacion.cal_departamento2 %></td>
+    <td><%= combinacion.desde_semestre %></td>
+    <td><%= link_to 'Show', combinacion %></td>
+    <td><%= link_to 'Edit', edit_combinacion_path(combinacion) %></td>
+    <td><%= link_to 'Destroy', combinacion, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Combinacion', new_combinacion_path %>

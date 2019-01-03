@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Cal estudiante:</b>
+  <%= @combinacion.cal_estudiante.descripcion %>
+</p>
+
+<p>
+  <b>Cal departamento1:</b>
+  <%= @combinacion.idioma1.descripcion %>
+</p>
+
+<p>
+  <b>Cal departamento2:</b>
+  <%= @combinacion.idioma2.descripcion %>
+</p>
+
+<p>
+  <b>Desde semestre:</b>
+  <%= @combinacion.desde_cal_semestre_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_combinacion_path(@combinacion) %> |
+<%= link_to 'Back', combinaciones_path %>

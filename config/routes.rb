@@ -55,6 +55,7 @@ Rails.application.routes.draw do
     resources :tipo_estado_calificaciones
     resources :tipo_estado_inscripciones
     resources :departamentos
+    resources :combinaciones
     resources :usuarios do
       member do
         post 'cambiar_ci'
@@ -64,6 +65,7 @@ Rails.application.routes.draw do
     resources :periodos
     resources :planes
   end
+  
   root to: 'visitors#index'
 end
 
