@@ -27,17 +27,25 @@ module Admin
     def create
       @asignatura = Asignatura.new(asignatura_params)
 
-      respond_to do |format|
-        if @asignatura.save
-          format.html { redirect_to @asignatura, notice: 'Asignatura generada con éxito .' }
-          format.json { render :show, status: :created, location: @asignatura }
-        else
-          flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
-          format.html { render :new }
-          format.json { render json: @asignatura.errors, status: :unprocessable_entity }
+      catdep = Catedradepartamento.where(departamento_id: asignatura_params[:departamento_id], catedra_id: asignatura_params[:catedra_id]).limit(1).first
+      unless catdep
+        flash[:danger] = "No se pudo encontrar la asociación Cátedra-Departamento. Seleccione el departamento y la cátedra apropiadamente o primero agregue la cátedra (+ Cátedra) en la <a class='btn btn-info btn-sm' href='#{departamento_path(asignatura_params[:departamento_id])}'>Asignatura</a> para luego generar las asignaturas respectivas."
+        redirect_back fallback_location: asignaturas_path 
+      else
+        respond_to do |format|
+          if @asignatura.save
+            format.html { redirect_to @asignatura, notice: 'Asignatura generada con éxito .' }
+            format.json { render :show, status: :created, location: @asignatura }
+          else
+            flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
+            format.html { render :new }
+            format.json { render json: @asignatura.errors, status: :unprocessable_entity }
+          end
         end
       end
     end
+
+
 
     # PATCH/PUT /asignaturas/1
     # PATCH/PUT /asignaturas/1.json
