@@ -1,0 +1,37 @@
+.modal.hide.fade#set_admin{'aria-hidden'=> false}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info.text-center
+        %h6 Registrar como administrador a:
+        %h6.text-italic= @usuario.nombre_completo 
+        <button type="button" class="close fade" data-dismiss="modal" aria-hidden="true">×</button>
+      .modal-body
+
+        = form_tag(set_administrador_usuario_path, class: 'form-horizontal') do
+          = hidden_field_tag :id, @usuario.id
+          .modal-body
+
+            .form-group
+              %h6.col-md-12 Rol del Adminstrador
+              .col-md-12
+                = select_tag '[administrador]rol', options_for_select(Administrador.roles.map {|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text_field form-control', id: :roles_admin
+            #jefeDepartamento.hideble
+              .form-group
+                %h6.col-md-12 Departamento
+                .col-md-12
+                  = collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})
+
+          .modal-footer
+            %a.btn{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Guardar', class: 'btn btn-primary'
+
+
+:javascript
+  $('#roles_admin').on('change',function(evt){ 
+    if ($(this).val() == 'jefe_departamento') {
+      alert ('Por favor Seleccione Departamento para el Jefe de Departamento');
+      $('#jefeDepartamento').show();
+    }else{
+      $('#jefeDepartamento').hide();
+    };
+  });

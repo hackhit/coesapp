@@ -12,6 +12,20 @@
       %ul.navbar-nav.mr-auto
         %li.nav-item
           %a.nav-link{:href => "#"} Contáctanos
+
+      -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
+
+        %li.nav-item.nav-link.dropdown
+          %a.dropdown-toggle#usuarioDropdown{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+            Usuarios
+          .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
+            = link_to 'Registrar Profesor', {controller: 'usuarios', action: 'new', profesor: true}, class: 'dropdown-item nav-item'
+            = link_to 'Registrar Estudiante', {controller: 'usuarios', action: 'new', estudiante: true}, class: 'dropdown-item nav-item'
+            = link_to 'Registrar Administrador', {controller: 'usuarios', action: 'new', administrador: true}, class: 'dropdown-item nav-item'
+
       %ul.navbar-nav
         %li= link_to "Inscribir Estudiante", buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success pull-right btn-sm'
       = render 'layouts/nav_session_options' 
+
+
+      /usuarios/new?administrador=true

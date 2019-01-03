@@ -23,6 +23,10 @@ class Administrador < ApplicationRecord
 	def altos?
 		self.super? or self.jefe_departamento?
 	end
+
+	def descripcion
+		"#{usuario.descripcion} - #{rol.titleize}"
+	end
 	
 	protected
 

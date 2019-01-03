@@ -58,6 +58,9 @@ Rails.application.routes.draw do
     resources :combinaciones
     resources :usuarios do
       member do
+        get 'set_estudiante'
+        post 'set_administrador'
+        post 'set_profesor'
         post 'cambiar_ci'
         get 'resetear_contrasena'
       end

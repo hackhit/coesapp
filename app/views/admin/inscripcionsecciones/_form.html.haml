@@ -1,5 +1,5 @@
 .border
-	= form_tag({controller: 'cal_estudiante_seccion',action: 'crear'},{class: 'form-horizontal'} ) do |f|
+	= form_tag({controller: 'inscripcionseccion', action: 'crear'},{class: 'form-horizontal'} ) do |f|
 		=hidden_field_tag :ci, @estudiante.cal_usuario_ci
 
 		=#grouped_collection_select(:cal_seccion, :id, CalMateria.all.sort_by{|m| m.cal_categoria.orden and m.cal_categoria.id} , :cal_secciones, :descripcion_reversa, :id, :descripcion, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2'}) 

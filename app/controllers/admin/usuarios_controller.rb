@@ -10,18 +10,65 @@ module Admin
       @usuarios = Usuario.all
     end
 
+    def set_estudiante
+      est = Estudiante.new
+      est.usuario_id = @usuario.id
+      if est.save
+        flash[:success] = 'Estudiante registrado con éxito'
+      else
+        flash[:danger] = "Error: #{est.errors.full_messages.to_sentence}."
+      end
+      redirect_to @usuario
 
-  def resetear_contrasena
-    @usuario.password = @usuario.ci
-    
-    if @usuario.save
-      flash[:success] = "Contraseña reseteada corréctamente"
-    else
-      flash[:error] = "no se pudo resetear la contraseña"
     end
-    redirect_to @usuario
-    
-  end
+
+    def set_administrador
+
+      unless a = @usuario.administrador
+        a = Administrador.new
+        a.usuario_id = @usuario.id
+      end
+
+      a.rol = params[:administrador][:rol]
+      a.departamento_id = params[:administrador][:departamento_id] if params[:administrador][:departamento_id]
+
+      if a.save
+        flash[:success] = 'Administrador guardado con éxito'
+      else
+        flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}."
+      end
+      redirect_to @usuario
+
+    end
+
+    def set_profesor
+
+      unless pr = @usuario.profesor
+        pr = Profesor.new
+        pr.usuario_id = @usuario.id
+      end
+
+      pr.departamento_id = params[:profesor][:departamento_id]
+      if pr.save
+        flash[:success] = 'Administrador guardado con éxito'
+      else
+        flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}."
+      end
+      redirect_to @usuario
+
+    end
+
+    def resetear_contrasena
+      @usuario.password = @usuario.ci
+      
+      if @usuario.save
+        flash[:success] = "Contraseña reseteada corréctamente"
+      else
+        flash[:error] = "no se pudo resetear la contraseña"
+      end
+      redirect_to @usuario
+      
+    end
 
     def cambiar_ci
       @usuario.id = params[:cedula]
@@ -77,6 +124,7 @@ module Admin
 
       @estudiante = @usuario.estudiante
       @profesor = @usuario.profesor
+      @administrador = @usuario.administrador
 
       # @secciones_estudiantes = CalEstudianteSeccion.where(:cal_estudiante_ci => @estudiante.cal_usuario_ci)   
       @admin = Administrador.find session[:administrador_id]
@@ -107,13 +155,42 @@ module Admin
     # POST /usuarios.json
     def create
       @usuario = Usuario.new(usuario_params)
-
       respond_to do |format|
         if @usuario.save
-          format.html { redirect_to @usuario, notice: 'Usuario creado con éxito.' }
+          flash[:success] = 'Usuario creado con éxito.'
+          if params[:estudiante_set]
+            if e = Estudiante.create(usuario_id: @usuario.id)
+              flash[:success] = 'Estudiante creado con éxito.' 
+            else
+              flash[:danger] = "Error: #{e.errors.full_messages.to_sentence}"
+            end
+          elsif params[:administrador]
+            a = Administrador.new
+            a.usuario_id = @usuario.id
+            a.rol = params[:administrador][:rol]
+            a.departamento_id = params[:administrador][:departamento_id] if params[:administrador][:departamento_id]
+            if a.save
+              flash[:success] = 'Administrador creado con éxito.'
+            else
+              flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}"
+            end
+          elsif params[:profesor]
+            pr = Profesor.new
+            pr.usuario_id = @usuario.id
+            pr.departamento_id = params[:profesor][:departamento_id]
+
+            if pr.save
+              flash[:success] = 'Profesor creado con éxito.'
+            else
+              flash[:danger] = "Error: #{pr.errors.full_messages.to_sentence}"
+            end
+          end
+              
+          format.html { redirect_to @usuario}
           format.json { render :show, status: :created, location: @usuario }
         else
-          format.html { render :new }
+          flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}"
+          format.html { redirect_back fallback_location: new_usuario_path }
           format.json { render json: @usuario.errors, status: :unprocessable_entity }
         end
       end
@@ -153,5 +230,9 @@ module Admin
       def usuario_params
         params.require(:usuario).permit(:ci, :nombres, :apellidos, :email, :telefono_habitacion, :telefono_movil, :password, :sexo)
       end
+      def administrador_params
+        params.require(:administrador).permit(:rol)
+      end
+
   end
 end

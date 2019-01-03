@@ -8,6 +8,31 @@
       %span.icon-pencil
       Inscribir
 
+  - unless @estudiante
+
+    = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Registrar como estudiante' do
+      = link_to set_estudiante_usuario_path(@usuario), class: 'btn btn-outline-success' do
+        = glyph 'plus'
+        = glyph 'user'
+        Estudiante
+
+  - unless @administrador
+    = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Registrar como Administrador' do
+      = link_to "javascript:void(0)", onclick: "$('#set_admin').modal();", class: 'btn btn-outline-primary ml-2' do
+        = glyph 'plus'
+        = glyph 'user'
+        Administrador
+    = render '/admin/usuarios/set_administrador'
+
+
+  - unless @profesor
+    = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Registrar como Profesor' do
+      = link_to "javascript:void(0)", onclick: "$('#set_admin').modal();", class: 'btn btn-outline-primary ml-2' do
+        = glyph 'plus'
+        = glyph 'user'
+        Profesor
+    = render '/admin/usuarios/set_profesor'
+
 %nav
   .nav.nav-tabs
     = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: 'nav-item nav-link'
@@ -16,6 +41,8 @@
       = link_to 'Historial Académico', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link'
     - if @profesor
       = link_to 'Detalles Académicos', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link'
+    - if @administrador
+      = link_to 'Administrador', "#administrador", "data-toggle"=> "tab", class: 'nav-item nav-link'
       
 .tab-content
   .tab-pane#personales
@@ -30,3 +57,16 @@
   - if @profesor
     .tab-pane#profesor
       =# render partial: 'profesor/detalle'
+
+  - if @administrador
+    .tab-pane#administrador
+      %h5
+        = @administrador.descripcion
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Cambiar tipo de Administrador' do
+          - if @admin.super?
+            = link_to "javascript:void(0)", onclick: "$('#set_admin').modal();", class: 'm-2 btn-sm' do
+              = glyph 'edit'
+            = render '/admin/usuarios/set_administrador'
+
+
+
