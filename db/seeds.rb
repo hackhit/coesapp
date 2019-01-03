@@ -28,7 +28,7 @@ p "#{TipoEstadoCalificacion.count} TipoEstadoCalificaciones Creadas!"
 Catedra.create([{id: 'IB', descripcion: 'Idioma Básico'}, {id: 'GE', descripcion: 'Gramática y Especialización'}, ])
 p "#{Catedra.count} Catedra Creada!"
 
-Departamento.create([{id: 'ALE', descripcion: 'ALEMÁN'}, {id: 'ING', descripcion: 'Inglés'}, {id: 'ITA', descripcion: 'Italiano'}])
+Departamento.create([{id: 'ALE', descripcion: 'Alemán'}, {id: 'ING', descripcion: 'Inglés'}, {id: 'ITA', descripcion: 'Italiano'}])
 p "#{Departamento.count} Departamentos Creados!"
 
 Usuario.create([{id: '1', password: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', password: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])

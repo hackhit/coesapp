@@ -2,7 +2,7 @@
 	%h3.text-muted
 		Período Académico: 
 		= "#{@periodo_actual_id}"
-= render partial: '/admin/principal_admin/tabs_estructura_departamentos'
+.border.p-3= render partial: '/admin/principal_admin/tabs_estructura_departamentos'
 
 -if (current_usuario.email.blank? or current_usuario.telefono_movil.blank? or current_usuario.telefono_habitacion.blank?)
 

@@ -20,9 +20,9 @@
 			= @usuario.password
 
 			%b.tooltip-btn{'data_toggle'=>'tooltip', title: "Resetear Contraseña"}
-				= link_to({controller: '/admin/usuarios', action: 'resetear_contrasena', id: @usuario.id}, {'data-confirm' => 'Esta acción asignará la cédula de identidad como contraseña, ¿está de acuerdo?'}) do
-					%i.icon-lock.icon-white
-					%i.icon-repeat.icon-white
+				= link_to( resetear_contrasena_usuario_path(@usuario), {'data-confirm' => 'Esta acción asignará la cédula de identidad como contraseña, ¿está de acuerdo?'}) do
+					= glyph 'repeat'
+					= glyph 'lock'
 
 %h5 Datos de contacto:
 %ul.border.list-unstyled.p-3

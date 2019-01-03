@@ -1,0 +1,13 @@
+- if @ids_asignaturas and @ids_asignaturas.include? @mat.id
+	.text-muted.alert.alert-warning.p-1
+		= @mat.descripcion
+		%span.badge.badge-secondary ya inscrita
+- elsif @sin_secciones
+
+	.text-muted.alert.alert-secondary.p-1
+		= @mat.descripcion
+		%span.badge.badge-secondary Sin Secciones
+- else
+	= link_to "#mat_#{@mat.id}", "data-toggle"=> "pill", class: "nav-link #{@mat_activa}", "aria-controls" => "mat_#{@mat.id}", :role => "tab", id: "mat_#{@mat.id}-tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {mat_id: '#{@mat.id}'}, dataType: 'json'});"  do
+		= @mat.descripcion
+		%span.badge.badge-info= @mat.id_uxxi

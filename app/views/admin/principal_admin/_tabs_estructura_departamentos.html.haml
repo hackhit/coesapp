@@ -1,4 +1,3 @@
-
 %b
 	Seleccione el Departamento:
 	= tooltip_link_to 'Agregar Nuevo Departamento', 'plus', 'success', new_departamento_path if @principal_admin_add_asig
@@ -44,14 +43,15 @@
 											.col-2
 												#v-pills-tab.nav.flex-column.nav-pills{"aria-orientation" => "vertical", role: :tablist}
 													- @asignaturas.each do |mat|
-														- mat_activa = (session[:mat_id].eql? mat.id) ? "active" : ""							
-														= link_to "#mat_#{mat.id}", "data-toggle"=> "pill", class: "nav-link #{mat_activa}", "aria-controls" => "mat_#{mat.id}", :role => "tab", id: "mat_#{mat.id}-tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {mat_id: '#{mat.id}'}, dataType: 'json'});"  do
-															= mat.descripcion
-															%span.badge.badge-info= mat.id_uxxi
-															-if mat.secciones.where(:periodo_id => @periodo_actual_id).count < 1
-																.mute
-																	%span.badge.badge-secondary
-																		inactiva
+														- @mat_activa = (session[:mat_id].eql? mat.id) ? "active" : ""
+														- @mat = mat
+														- @sin_secciones = mat.secciones.where(:periodo_id => @periodo_actual_id).count < 1
+
+														- if @principal_admin_add_asig
+															= render '/admin/principal_admin/tab_estructura_deps_asig'
+														- elsif @admin_inscripcion
+															= render '/admin/inscripcionsecciones/tab_estructura_deps_asig_inscripcion'
+
 
 											.col-10
 												#v-pills-tabContent.tab-content
@@ -59,8 +59,11 @@
 														- @mat_activa = (session[:mat_id].eql? mat.id) ? "active show" : ""
 														- @secciones = mat.secciones.where(:periodo_id => @periodo_actual_id)
 														- @mat = mat
-														- if @admin_inscripcion
+														- @sin_secciones = mat.secciones.where(:periodo_id => @periodo_actual_id).count < 1
+
+														- if @principal_admin_add_asig
 															= render partial: '/admin/asignaturas/panel_detalle'
-														- elsif @principal_admin_add_asig
-															= render partial: '/admin/inscripcionsecciones/detalle_inscripcion'
+														- elsif @admin_inscripcion
+															- if @ids_asignaturas and !@sin_secciones and !(@ids_asignaturas.include? mat.id)
+																= render partial: '/admin/inscripcionsecciones/detalle_inscripcion'
 

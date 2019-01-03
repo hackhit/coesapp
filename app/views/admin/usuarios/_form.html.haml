@@ -9,9 +9,9 @@
       .col-md-10
         = f.password_field :password, required: true, class: 'text_field form-control'
   .form-group
-    = f.label :nombres, class: 'control-label col-md-2 upcase'
+    = f.label :nombres, class: 'control-label col-md-2'
     .col-md-10
-      = f.text_field :nombres, required: true, class: 'text_field form-control'
+      = f.text_field :nombres, required: true, class: 'text_field form-control upcase'
   .form-group
     = f.label :apellidos, class: 'control-label col-md-2'
     .col-md-10

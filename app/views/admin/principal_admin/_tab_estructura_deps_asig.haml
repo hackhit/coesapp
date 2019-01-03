@@ -1,0 +1,7 @@
+= link_to "#mat_#{@mat.id}", "data-toggle"=> "pill", class: "nav-link #{@mat_activa}", "aria-controls" => "mat_#{@mat.id}", :role => "tab", id: "mat_#{@mat.id}-tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {mat_id: '#{@mat.id}'}, dataType: 'json'});"  do
+	= @mat.descripcion
+	%span.badge.badge-info= @mat.id_uxxi
+	-if @sin_secciones
+		.mute
+			%span.badge.badge-secondary
+				inactiva

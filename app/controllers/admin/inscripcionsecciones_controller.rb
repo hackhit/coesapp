@@ -10,7 +10,7 @@ module Admin
 			if params[:id]
 				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
 				if @inscripciones.count > 2
-					flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path @inscripciones.first.estudiante}' class='btn btn-primary btn-sm'>aquí</a> para mayor información y realizar ajustes sobre las asignaturas" 
+					flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path(params[:id])}' class='btn btn-primary btn-sm'>aquí</a> para mayor información y realizar ajustes sobre las asignaturas" 
 				end
 			end
 			@titulo = "Inscripción para el período #{@periodo_actual_id} - Paso 1 - Buscar Estudiante"
@@ -26,6 +26,8 @@ module Admin
 			@col10 = 'col-10'
 			@periodo_actual_id = ParametroGeneral.periodo_actual_id
 			@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
+
+			@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} if @inscripciones
 
 			@estudiante = Estudiante.find params[:id]
 			@titulo = "Inscripción para el período #{@periodo_actual_id} - Paso 2 - Seleccionar Secciones"
@@ -51,7 +53,7 @@ module Admin
 					else
 						flash[:error] = "#{es_se.errors.full_messages.join' | '}"
 					end
-					flash[:info] = "Para mayor información vaya al detalle del estudiante haciendo clic <a href='/admin/usuarios/#{id}' class='btn btn-primary btn-sm'>aquí</a> "
+					flash[:info] = "Para mayor información vaya al detalle del estudiante haciendo clic <a href='#{usuario_path(id)}' class='btn btn-primary btn-sm'>aquí</a> "
 				end 
 			rescue Exception => e
 				flash[:error] = "Error Excepcional: #{e}"

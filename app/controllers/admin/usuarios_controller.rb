@@ -1,6 +1,8 @@
 module Admin
   class UsuariosController < ApplicationController
-    before_action :set_usuario, only: [:show, :edit, :update, :destroy, :cambiar_ci]
+    # before_action :set_usuario, only: [:show, :edit, :update, :destroy, :cambiar_ci, :resetear_contrasena]
+    before_action :set_usuario, except: [:index, :new, :create]
+
 
     # GET /usuarios
     # GET /usuarios.json
@@ -9,10 +11,24 @@ module Admin
     end
 
 
+  def resetear_contrasena
+    @usuario.password = @usuario.ci
+    
+    if @usuario.save
+      flash[:success] = "Contraseña reseteada corréctamente"
+    else
+      flash[:error] = "no se pudo resetear la contraseña"
+    end
+    redirect_to @usuario
+    
+  end
+
     def cambiar_ci
       @usuario.id = params[:cedula]
       if @usuario.save
-        session[:administrador_id] = session[:usuario_ci] = @usuario.id
+        if params[:cedula].eql? session[:administrador_id]
+          session[:administrador_id] = session[:usuario_ci] = @usuario.id
+        end
 
         flash[:success] = "Cambio de cédula de identidad correcto."
       else
@@ -67,7 +83,7 @@ module Admin
 
       @periodos = Periodo.order("id DESC").all
 
-      @secciones = InscripcionEnSeccion.joins(:secciones).where(estudiante_id: @estudiante.id).order("asignatura_id ASC, numero DESC") if @estudiante
+      @secciones = Inscripcionseccion.joins(:secciones).where(estudiante_id: @estudiante.id).order("asignatura_id ASC, numero DESC") if @estudiante
 
       # @secciones = CalSeccion.where(:cal_periodo_id => cal_semestre_actual_id)
       @idiomas1 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
@@ -94,7 +110,7 @@ module Admin
 
       respond_to do |format|
         if @usuario.save
-          format.html { redirect_to @usuario, notice: 'Usuario was successfully created.' }
+          format.html { redirect_to @usuario, notice: 'Usuario creado con éxito.' }
           format.json { render :show, status: :created, location: @usuario }
         else
           format.html { render :new }
@@ -108,7 +124,7 @@ module Admin
     def update
       respond_to do |format|
         if @usuario.update(usuario_params)
-          format.html { redirect_to @usuario, notice: 'Usuario was successfully updated.' }
+          format.html { redirect_to @usuario, notice: 'Usuario actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @usuario }
         else
           format.html { render :edit }
@@ -122,7 +138,7 @@ module Admin
     def destroy
       @usuario.destroy
       respond_to do |format|
-        format.html { redirect_to usuarios_url, notice: 'Usuario was successfully destroyed.' }
+        format.html { redirect_to usuarios_url, notice: 'Usuario eliminado satisfactoriamente.' }
         format.json { head :no_content }
       end
     end
