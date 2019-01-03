@@ -1,5 +1,8 @@
 module Admin
   class CatedrasController < ApplicationController
+    before_action :filtro_logueado
+    before_action :filtro_administrador
+
     before_action :set_catedra, only: [:show, :edit, :update, :destroy]
 
     # GET /catedras
