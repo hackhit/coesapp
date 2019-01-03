@@ -13,10 +13,6 @@
     .col-md-10
       = f.number_field :anno, class: 'text_field form-control', in: 0...11, step: 1
   .form-group
-    = f.label :orden, class: 'control-label col-md-2'
-    .col-md-10
-      = f.number_field :orden, class: 'text_field form-control', in: 0...21, step: 1
-  .form-group
     = f.label :departamento_id, class: 'control-label col-md-2'
     .col-md-10
       = f.select(:departamento_id, Departamento.all.collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})
@@ -35,7 +31,7 @@
   .form-group
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'
-      = link_to t('.cancel', default: t("helpers.links.cancel")), asignaturas_path, class: 'btn btn-default'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), :back, class: 'btn btn-default'
 
 
 :javascript

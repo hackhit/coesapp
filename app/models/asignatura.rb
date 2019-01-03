@@ -14,7 +14,7 @@ class Asignatura < ApplicationRecord
 	validates_presence_of :id_uxxi, message: 'Código UXXI requerido'	
 	validates :descripcion, presence: true
 	validates :anno, presence: true
-	validates :orden, presence: true
+	# validates :orden, presence: true
 	validates :catedra_id, presence: true
 	validates :departamento_id, presence: true
 

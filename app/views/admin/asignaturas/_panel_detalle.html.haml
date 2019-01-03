@@ -7,7 +7,7 @@
 					%tr
 						%th Sec.
 						%th Profesor Tutor (Calificador)
-						%th Profesores Secundarios
+						%th.w-50 Profesores Secundarios
 						%th Capacidad
 						%th Estado
 						- if @admin and @admin.altos?
@@ -20,7 +20,7 @@
 								= "#{seccion.descripcion_profesor_asignado}"
 								- if @editar_asignaturas
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Actualizar Tutor-Calificador'}
-										= link_to "", {:href => "/secciones/seleccionar_profesor?id=#{seccion.id}"},{role: 'button'} do
+										= link_to "", {href: "/secciones/seleccionar_profesor?id=#{seccion.id}"},{role: 'button'} do
 											= glyph 'pencil'
 											= glyph 'user'
 
@@ -32,13 +32,13 @@
 
 											%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Desasignar Este Profesor'}
 												
-												= link_to "", {:href => "/secciones/desasignar_profesor_secundario?id=#{seccion.id}&profesor_id=#{p.usuario_id}", 'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
+												= link_to "", {href: "/secciones/desasignar_profesor_secundario?id=#{seccion.id}&profesor_id=#{p.usuario_id}", 'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
 													%span.glyphicon.glyphicon-minus.text-danger
 													%span.glyphicon.glyphicon-user.text-danger
 
 								%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Profesor Secundario'}
 									- if @editar_asignaturas
-										= link_to "", {:href => "/secciones/seleccionar_profesor?id=#{seccion.id}&sec=true", class: 'btn btn-success btn-sm'},{role: 'button'} do
+										= link_to "", {href: "/secciones/seleccionar_profesor?id=#{seccion.id}&sec=true", class: 'btn-success btn-sm'},{role: 'button'} do
 											= glyph 'plus'
 											= glyph 'user'
 							%td
@@ -69,18 +69,18 @@
 							- if @admin and @admin.altos?
 								%td
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
-										= link_to "", {:href => descargar_acta_examen_excel_path(seccion.id), class: 'btn btn-info btn-success btn-sm'},{role: 'button'} do
+										= link_to "", {href: descargar_acta_examen_excel_path(seccion.id), class: 'btn btn-info btn-success btn-sm'},{role: 'button'} do
 											= glyph 'download-alt'
 											= glyph 'list'
 											X
 
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen'}
-										= link_to "", {:href => descargar_acta_examen_path(seccion.id), class: 'btn btn-info btn-sm'},{role: 'button'} do
+										= link_to "", {href: descargar_acta_examen_path(seccion.id), class: 'btn btn-info btn-sm'},{role: 'button'} do
 											= glyph 'download-alt'
 											= glyph 'list'
 
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Ver Detalle / Calificar'}
-										= link_to "", {:href => "/principal_admin/ver_seccion_admin?id=#{seccion.id}", class: 'btn btn-info btn-sm'},{role: 'button'} do
+										= link_to "", {href: "/principal_admin/ver_seccion_admin?id=#{seccion.id}", class: 'btn btn-info btn-sm'},{role: 'button'} do
 											= content_tag(:i, "", class: " icon-white")
 											= glyph 'eye-open'
 											= glyph 'list'
@@ -90,7 +90,7 @@
 										-if seccion.calificada
 											
 											%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=> 'Habilitar para Calificar Nuevamente'}
-												= link_to "", {:href => "/principal_admin/habilitar_calificar?id=#{seccion.id}", class: 'btn btn-info btn-sm'},{role: 'button'} do
+												= link_to "", {href: "/principal_admin/habilitar_calificar?id=#{seccion.id}", class: 'btn btn-info btn-sm'},{role: 'button'} do
 													= glyph 'off'
 													= glyph 'list'
 										
