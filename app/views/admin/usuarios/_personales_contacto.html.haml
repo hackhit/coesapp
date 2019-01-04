@@ -1,16 +1,16 @@
 %br
-%b= link_to "Actualizar datos personales y de contacto", {controller: 'usuarios', action: 'edit', id: @usuario.id,  controlador: controller_name, accion: action_name}, class: 'btn btn-primary btn-sm'
-%h5 Datos Personales: 
+= btn_edit_primary edit_usuario_path(@usuario), "Actualizar datos personales y de contacto", 'Actualizar'
+
+%br
+%br
+%b.mt-5 Datos Personales: 
 = render '/admin/usuarios/cambiar_cedula'
 %ul.border.list-unstyled.p-3
 	%li
 		%b Cédula de Identidad:
 		= @usuario.id
-
-		%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar'}
-			= link_to('javascript:void(0)', {onclick: "return $('#cambiar_cedula').modal();", 'data_toggle' => 'modal'}) do
-				=glyph 'edit'		
-
+		= simple_icon_toggle_modal_edit "Editar cédula de identidad de #{@nickname}", 'cambiar_cedula'
+		
 	%li
 		%b Nombre:	
 		= @usuario.nombre_completo
@@ -24,7 +24,7 @@
 					= glyph 'repeat'
 					= glyph 'lock'
 
-%h5 Datos de contacto:
+%b Datos de contacto:
 %ul.border.list-unstyled.p-3
 	%li 
 		%b Correo Electrónico:

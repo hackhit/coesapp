@@ -3,6 +3,10 @@ class Catedra < ApplicationRecord
 	# ASOCIACIONES:
 	has_many :asignaturas
 
+	has_many :secciones, through: :asignaturas
+
+	has_many :inscripcionsecciones, through: :secciones
+
 	has_many :catedradepartamentos#, class_name: 'CatedraDepartamento'
 	accepts_nested_attributes_for :catedradepartamentos
 

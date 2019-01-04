@@ -1,9 +1,18 @@
 !!!
 %html
   %head
-    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1.0"}
-    %title= content_for?(:title) ? yield(:title) : 'Coesapp'
-    %meta{:name => "description", :content => "#{content_for?(:description) ? yield(:description) : 'Coesapp'}"}
+    %title COES - Facultad de Humanidades y Educación
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+    %meta{:name => 'viewport', :content =>  "width=device-width, initial-scale=1, shrink-to-fit=no"}
+    %meta{:name => "description", :content => "#{content_for?(:description) ? yield(:description) : 'Coes-FHE-UCV'}"}
+
+    %meta{:charset => "utf-8"}
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}
+    =# favicon_link_tag 'logo.ico'
+    =# stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    =# javascript_include_tag 'application', 'data-turbolinks-track' => true
+
+    =# stylesheet_link_tag 'application', href: "http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.1/summernote.css", media: 'all', 'data-turbolinks-track' => 'reload'
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track' => 'reload'
 
@@ -12,5 +21,6 @@
     %header
       = render 'layouts/navigation'
     %main{:role => "main"}
+      = render 'layouts/titulo'
       = render 'layouts/messages'
       = yield

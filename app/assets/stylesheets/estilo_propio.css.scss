@@ -2,6 +2,15 @@
 // Do not use *= require in Sass or your other stylesheets will not be able to access the Bootstrap mixins and variables.
 @import "bootstrap";
 
+.titulo{
+  color: grey;
+  border-bottom: 1px solid #f7a932;
+  border-top: 1px solid #f7a932;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  padding: 3px;
+}
+
 .hideble{
   display:none;
 }

@@ -35,7 +35,7 @@ class Estudiante < ApplicationRecord
 	end
 
 	def inscrito?
-		inscripcionsecciones.del_periodo_actual.count > 0
+		inscripcionsecciones.del_periodo_actual.count > 1
 	end
 
 	def valido_para_inscribir?
@@ -44,7 +44,7 @@ class Estudiante < ApplicationRecord
 
 	def ultimo_plan
 		hp = historialplanes.order("periodo_id DESC").first
-		hp ? hp.tipo_plan_id : ""
+		hp ? hp.plan_id : ""
 	end
 
 	def annos

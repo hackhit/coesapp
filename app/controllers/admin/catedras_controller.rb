@@ -8,21 +8,25 @@ module Admin
     # GET /catedras
     # GET /catedras.json
     def index
+      @titulo = "Cátedras"
       @catedras = Catedra.all
     end
 
     # GET /catedras/1
     # GET /catedras/1.json
     def show
+      @titulo = "Detalle: #{@catedra.descripcion}"      
     end
 
     # GET /catedras/new
     def new
+      @titulo = "Nueva Cátedra"
       @catedra = Catedra.new
     end
 
     # GET /catedras/1/edit
     def edit
+      @titulo = "Editando Cátedra: #{@catedra.descripcion}"
     end
 
     # POST /catedras

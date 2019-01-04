@@ -1,0 +1,33 @@
+- model_class = Cartelera
+= link_to t('.new', default: t("helpers.links.new")), new_cartelera_path, class: 'btn btn-primary'
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th= model_class.human_attribute_name(:contenido)
+      %th= model_class.human_attribute_name(:activa)
+      %th=t '.actions', default: t("helpers.actions")
+  %tbody
+    - @carteleras.each do |cartelera|
+      %tr
+        %td= raw cartelera.contenido
+        - if cartelera.activa
+          - icon = 'remove'
+          - badge = 'badge-primary'
+          - color = 'danger'
+          - activa = 'Desactivar'
+        - else
+          - icon = 'ok'
+          - badge = 'badge-secondary'
+          - color = 'success'
+          - activa = 'Activar'
+        %td
+          %span.badge{class: badge}= cartelera.activada_valor
+
+        %td
+          = simple_toggle set_activa_cartelera_path(cartelera), '', "#{activa} Cartelera", color, icon
+
+          = link_to edit_cartelera_path(cartelera), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+            = glyph 'pencil'
+          = link_to cartelera_path(cartelera), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+            .text-danger= glyph 'trash'

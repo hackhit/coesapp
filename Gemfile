@@ -22,6 +22,9 @@ gem 'pdf-reader-html'
 gem 'spreadsheet'
 
 gem 'select2-rails' 
+gem 'summernote-rails', '~> 0.8.10.0'
+
+# gem 'glyphicons-rails'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

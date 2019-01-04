@@ -1,25 +1,34 @@
 module Admin
   class AsignaturasController < ApplicationController
+    before_action :filtro_logueado
+    before_action :filtro_administrador
+    
     before_action :set_asignatura, only: [:show, :edit, :update, :destroy]
 
     # GET /asignaturas
     # GET /asignaturas.json
     def index
-      @asignaturas = Asignatura.all
+      @titulo = 'Asignaturas'
+      @departamentos = Departamento.all
+
     end
 
     # GET /asignaturas/1
     # GET /asignaturas/1.json
     def show
+      @titulo = @asignatura.descripcion.titleize
     end
 
     # GET /asignaturas/new
     def new
+      @titulo = 'Nueva Asignatura'
       @asignatura = Asignatura.new
     end
 
     # GET /asignaturas/1/edit
     def edit
+      @titulo = "Editando #{@asignatura.descripcion}"
+
     end
 
     # POST /asignaturas

@@ -1,9 +1,4 @@
-%i.muted
-	%b.tooltip-btn{'data_toggle'=>'tooltip', title: "Ir al detalle del usuario"}
-		= link_to(usuario_path(@estudiante.id), class: 'btn btn-default btn-small') do
-			= glyph 'plus'
-			Detalle
-	= "#{@estudiante.descripcion}:"
+.p-2= simple_toggle usuario_path(@estudiante.id), "#{@estudiante.descripcion}:", "Ir al detalle del usuario", '', 'plus'
 %br
 
 = form_tag(inscribir_inscripcionsecciones_path) do

@@ -1,0 +1,8 @@
+.border.p-3.m-3
+  = form_for @cartelera, html: { class: 'form-horizontal' } do |f| 
+    .form-group
+      = f.text_area :contenido, 'data-provider': :summernote
+    .form-group
+      .col-md-offset-2.col-md-10
+        = f.submit nil, class: 'btn btn-primary'
+        = link_to t('.cancel', default: t("helpers.links.cancel")), carteleras_path, class: 'btn btn-default'

@@ -5,17 +5,17 @@
     .form-group
       %label.control-label.col-md-2 Departamento
       .col-md-10
-        = collection_select(:profesor, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})
+        = collection_select(:profesor, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text-field form-control'})
   - elsif params[:administrador]
     .form-group
       %label.control-label.col-md-2 Rol del Adminstrador
       .col-md-10
-        = select_tag '[administrador]rol', options_for_select(Administrador.roles.map {|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text_field form-control', id: :roles_admin
+        = select_tag '[administrador]rol', options_for_select(Administrador.roles.map {|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text-field form-control', id: :roles_admin
     #jefeDepartamento.hideble
       .form-group
         %label.control-label.col-md-2 Departamento
         .col-md-10
-          = collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})
+          = collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text-field form-control'})
 
   - if action_name.eql? 'new'
     .form-group

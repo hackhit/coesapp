@@ -1,0 +1,13 @@
+- model_class = Cartelera
+.page-header
+  %h1=t '.title', default: model_class.model_name.human.titleize
+.fieldset
+  %dl
+    %dt.label.label-default= model_class.human_attribute_name(:contenido)
+    %dd
+      %pre.prettyprint= @cartelera.contenido
+
+.form-group
+  = link_to t('.back', default: t("helpers.links.back")), carteleras_path, class: 'btn btn-default'
+  = link_to t('.edit', default: t("helpers.links.edit")), edit_cartelera_path(@cartelera), class: 'btn btn-default'
+  = link_to t('.destroy', default: t("helpers.links.destroy")), cartelera_path(@cartelera), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger'

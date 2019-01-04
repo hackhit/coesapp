@@ -9,11 +9,13 @@ module Admin
     # GET /departamentos.json
     def index
       @departamentos = Departamento.all
+      @titulo = 'Departamentos'
     end
 
     # GET /departamentos/1
     # GET /departamentos/1.json
     def show
+      @titulo = "Departamento de #{@departamento.descripcion} <a class='btn btn-default' href='#{edit_departamento_path(@departamento)}'><span class='glyphicon glyphicon-edit'></span>Editar</a> "
       @catedradepartamentos = @departamento.catedradepartamentos
       cat_ids = @catedradepartamentos.collect{|o| o.catedra_id}
       @catedras_disponibles = Catedra.all.reject{|ob| cat_ids.include? ob.id}

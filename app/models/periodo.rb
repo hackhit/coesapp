@@ -2,7 +2,8 @@ class Periodo < ApplicationRecord
 	# ASOCIACIONES:
 	has_many :secciones
 	accepts_nested_attributes_for :secciones
-	has_many :estudiantes_en_secciones, through: :secciones, source: :estudiantes
+	
+	has_many :inscripcionsecciones, through: :secciones, source: :estudiantes
 
 	# VALIDACIONES:
     validates :id, presence: true, uniqueness: true

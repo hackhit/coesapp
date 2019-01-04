@@ -1,13 +1,10 @@
 .modal.hide.fade#cambiar_cedula{'aria-hidden'=> false}
   .modal-dialog
     .modal-content
-      .modal-header
-        %h5.alert.alert-info
-          Cambio de Cedula
-          = @usuario.nombre_completo 
-          <button type="button" class="close fade" data-dismiss="modal" aria-hidden="true">×</button>
+      %h5.alert.alert-info.text-center
+        %p Cambio de Cedula de:
+        %p= @usuario.nombre_completo 
       .modal-body
-
         = form_tag(cambiar_ci_usuario_path, class: 'form-horizontal') do
           =# hidden_field_tag :id, @usuario.id
           .modal-body

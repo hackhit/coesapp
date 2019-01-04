@@ -1,18 +1,25 @@
 - model_class = Departamento
-.page-header
-  %h1=t '.title', default: model_class.model_name.human.pluralize.titleize
-%table.table.table-striped
+
+%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
-      %th= model_class.human_attribute_name(:created_at)
-      %th=t '.actions', default: t("helpers.actions")
+      %th Cátedra
+      %th T. Asig
+      %th T. Secc
+      %th T. Inscr
+      %th Creación
+      %th Opciones
   %tbody
     - @departamentos.each do |departamento|
       %tr
         %td= departamento.id
         %td= departamento.descripcion
+        %td= departamento.catedras.collect{|c| c.descripcion}.join(' | ')
+        %td= departamento.asignaturas.count
+        %td= departamento.secciones.count
+        %td= departamento.inscripcionsecciones.count
         %td=l departamento.created_at, format: :long
         %td
           = link_to departamento_path(departamento), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do

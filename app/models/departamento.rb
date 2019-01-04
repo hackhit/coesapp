@@ -4,6 +4,10 @@ class Departamento < ApplicationRecord
 	has_many :asignaturas
 	accepts_nested_attributes_for :asignaturas
 
+	has_many :secciones, through: :asignaturas
+
+	has_many :inscripcionsecciones, through: :secciones#, source: :estudiante
+
 	has_many :profesores
 	accepts_nested_attributes_for :profesores
 

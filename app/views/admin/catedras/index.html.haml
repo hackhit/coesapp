@@ -1,20 +1,25 @@
 - model_class = Catedra
-.page-header
-  %h1=t '.title', default: model_class.model_name.human.pluralize.titleize
-%table.table.table-striped
+
+%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
-      %th= model_class.human_attribute_name(:orden)
-      %th= model_class.human_attribute_name(:created_at)
+      %th Departamentos
+      %th T. Asig
+      %th T. Secc
+      %th T. Insc
+      %th Creación
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @catedras.each do |catedra|
       %tr
         %td= catedra.id
         %td= catedra.descripcion
-        %td= catedra.orden
+        %td= catedra.departamentos.collect{|c| c.descripcion}.join(' | ')
+        %td= catedra.asignaturas.count
+        %td= catedra.secciones.count
+        %td= catedra.inscripcionsecciones.count
         %td=l catedra.created_at, format: :long
         %td
           = link_to catedra_path(catedra), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do

@@ -1,13 +1,5 @@
 - model_class = Departamento
-.page-header
-  %h2
-    =t '.title', default: model_class.model_name.human.titleize
-    de 
-    = @departamento.descripcion
-    = "(#{@departamento.id})"
-    = link_to edit_departamento_path(@departamento), class: 'btn btn-default' do
-      = glyph 'edit'
-      = t('.edit', default: t("helpers.links.edit"))
+
 .border.p-3
   - @catedradepartamento = Catedradepartamento.new(departamento_id: @departamento.id)
 

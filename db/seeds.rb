@@ -5,6 +5,8 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+Cartelera.create(contenido: 'Sistema de Control de Estudio By Lic. Daniel Moros', activa: true)
+p "#{Cartelera.count} Cartelera Creada!"
 
 ParametroGeneral.create([{id: 'PERIODO_ACTUAL_ID', valor: '2018-02A'}, {id: 'ACTIVAR_PROGRAMACIONES', valor: 'ENCENDIDAS'}])
 p "#{ParametroGeneral.count} Parametro General Creado!"

@@ -8,9 +8,26 @@ Rails.application.routes.draw do
 
 
   scope module: :admin do
-    get '/descargar/acta_examen_excel'
-    get '/descargar/acta_examen'
-    get '/descargar/constancia_inscripcion'
+
+    resources :carteleras do
+      member do
+        get 'set_activa'
+      end
+    end
+    resources :descargar do
+      member do
+        get :kardex
+        get 'acta_examen_excel'
+        get 'acta_examen'
+        get 'constancia_inscripcion'
+        get 'constancia_estudio'
+
+      end
+    end
+    # get '/descargar/acta_examen_excel'
+    # get '/descargar/kardex'
+    # get '/descargar/acta_examen'
+    # get '/descargar/constancia_inscripcion'
 
     get '/principal_admin/index'
     get '/principal_admin/set_tab'
@@ -22,9 +39,12 @@ Rails.application.routes.draw do
         get 'buscar_estudiante'
         get :seleccionar
         post :inscribir
+        post :crear
       end
       member do 
+        get :seleccionar
         get :resumen
+        get 'set_retirar'
       end
     end
     get '/principal_profesor/index'
@@ -57,6 +77,9 @@ Rails.application.routes.draw do
     resources :departamentos
     resources :combinaciones
     resources :usuarios do
+      collection do
+        post :index
+      end
       member do
         get 'set_estudiante'
         post 'set_administrador'

@@ -10,6 +10,7 @@ class VisitorsController < ApplicationController
     flash[:danger] = aux2
     flash[:success] = aux3
     flash[:notice] = aux4
+    @carteleras = Cartelera.all.activas
   end
 
 

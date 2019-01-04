@@ -69,18 +69,18 @@
 							- if @admin and @admin.altos?
 								%td
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
-										= link_to "", {href: descargar_acta_examen_excel_path(seccion.id), class: 'btn btn-info btn-success btn-sm'},{role: 'button'} do
+										= link_to "", {href: acta_examen_excel_descargar_path(seccion.id), class: 'btn btn-info btn-success btn-sm'},{role: 'button'} do
 											= glyph 'download-alt'
 											= glyph 'list'
 											X
 
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen'}
-										= link_to "", {href: descargar_acta_examen_path(seccion.id), class: 'btn btn-info btn-sm'},{role: 'button'} do
+										= link_to "", {href: acta_examen_descargar_path(seccion.id), class: 'btn btn-info btn-sm'},{role: 'button'} do
 											= glyph 'download-alt'
 											= glyph 'list'
 
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Ver Detalle / Calificar'}
-										= link_to "", {href: "/principal_admin/ver_seccion_admin?id=#{seccion.id}", class: 'btn btn-info btn-sm'},{role: 'button'} do
+										= link_to "", {href: principal_admin_ver_seccion_admin_path(seccion.id), class: 'btn btn-info btn-sm'},{role: 'button'} do
 											= content_tag(:i, "", class: " icon-white")
 											= glyph 'eye-open'
 											= glyph 'list'

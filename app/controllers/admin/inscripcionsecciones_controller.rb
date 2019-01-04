@@ -1,8 +1,7 @@
 module Admin
 	class InscripcionseccionesController < ApplicationController
-
 		before_action :filtro_logueado
-		before_action :filtro_administrador
+		before_action :filtro_admin_profe
 		
 		def buscar_estudiante
 			@periodo_actual_id = ParametroGeneral.periodo_actual_id
@@ -79,54 +78,48 @@ module Admin
 		end
 
 		def crear
-			ci = params[:ci]
-			numero, cal_materia_id, periodo_id = params[:cal_seccion][:id].split(",")
-			if Inscripcionseccion.where(:cal_estudiante_ci => ci, :numero => numero, :cal_materia_id => cal_materia_id, :periodo_id => periodo_id).limit(1).first
+			id = params[:estudiante_id]
+			seccion_id = (params[:seccion][:id]).to_i
+			if Inscripcionseccion.where(estudiante_id: id, seccion_id: seccion_id).limit(1).first
 				flash[:error] = "El Estudiante ya esta inscrito en esa sección"
 			else
-				if Inscripcionseccion.create(:cal_estudiante_ci => ci, :numero => numero, :cal_materia_id => cal_materia_id, :periodo_id => periodo_id, :cal_tipo_estado_inscripcion_id => 'INS', :cal_tipo_estado_calificacion_id => 'SC')
+				ins = Inscripcionseccion.new
+				ins.estudiante_id = id
+				ins.seccion_id = seccion_id
+				ins.tipo_estado_inscripcion_id = 'INS'
+				if ins.save
 					flash[:success] = "Estudiante inscrito satisfactoriamente"
 				else
-					flash[:error] = "No se pudo incorporar al estudiante en la seccion correspondiente, intentelo de nuevo"
+					flash[:danger] = "Error al intentar inscribir en la sección: #{ins.errors.full_messages.to_sentence}"
 				end
 			end
-			# redirect_to :controller => params[:controlador], :action => params[:accion], :ci => ci, flash: flash[:success]
-
-			redirect_to({ :controller => params[:controlador], :action => params[:accion], :ci => ci}, flash: flash) and return
+			redirect_back fallback_location: "/usuarios/#{id}"
 		end
 
-		def eliminar
-			# ci = params[:ci]
-			# numero, cal_materia_id, periodo_id = params[:cal_seccion_id].split(",")		
-			id = params[:id]
-			ci = id[0]
-			if es = Inscripcionseccion.find(id)
-				if es.destroy
-					flash[:success] = "El estudiante fue eliminado de la sección correctamente, ci:#{ci}"
-				else
-					flash[:error] = "El estudiante no pudo ser eliminado"
-				end				
+		def destroy
+			es = Inscripcionseccion.find params[:id]
+			est = es.estudiante 
+			if es.destroy
+				flash[:info] = "Estudiante eliminado satisfactoriamente"
 			else
-				flash[:error] = "El estudiante no fue encontrado en la sección especificada"
+				flash[:danger] = "El estudiante no pudo ser eliminado: #{es.errors.full_messages.to_sentence}"
 			end
-			redirect_to({:controller => params[:controlador], :action => params[:accion], :ci => ci}, flash: flash) and return
-			# redirect_to :controller => params[:controlador], :action => params[:accion], :ci => ci
+			redirect_back fallback_location: est.usuario
+
 		end
 
 		def set_retirar
-			valor = 
-			id = params[:id]
-			if es = Inscripcionseccion.find(id)
-				es.cal_tipo_estado_inscripcion_id = params[:valor]
+			if es = Inscripcionseccion.find(params[:id])
+				es.tipo_estado_inscripcion_id = params[:valor]
 				if es.save
-					flash[:success] = "El cambio el valor de retiro de #{es.cal_estudiante.cal_usuario.nickname} de la sección #{es.cal_seccion.descripcion} se realizó correctamente"
+					flash[:success] = "El cambio el valor de retiro de #{es.estudiante.usuario.nickname} de la sección #{es.seccion.descripcion} se realizó correctamente"
 				else
 					flash[:error] = "No se pudo cambiar el valor de retiro, intentelo de nuevo: #{es.errors.full_messages.join' | '}"
 				end				
 			else
 				flash[:error] = "El estudiante no fue encontrado en la sección especificada"
 			end
-			redirect_to :back
+			redirect_to es.estudiante.usuario
 
 		end
 

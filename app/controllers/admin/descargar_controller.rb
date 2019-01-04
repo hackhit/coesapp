@@ -85,8 +85,8 @@ module Admin
 		end
 
 		def acta_examen
-			pdf = Archivo.hacer_acta params[:format]
-			unless send_data pdf.render,:filename => "acta_seccion_#{params[:format].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
+			pdf = Archivo.hacer_acta params[:id]
+			unless send_data pdf.render,:filename => "acta_seccion_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
 				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
 			
@@ -94,8 +94,8 @@ module Admin
 
 
 		def acta_examen_excel
-			excel = Archivo.hacer_acta_excel params[:format]
-			unless send_file excel, :type => "application/vnd.ms-excel", :x_sendfile => true, :stream => false, :filename => "acta_excel_seccion_#{params[:format].to_s}.xls",:disposition => "attachment"
+			excel = Archivo.hacer_acta_excel params[:id]
+			unless send_file excel, :type => "application/vnd.ms-excel", :x_sendfile => true, :stream => false, :filename => "acta_excel_seccion_#{params[:id].to_s}.xls",:disposition => "attachment"
 				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
 			

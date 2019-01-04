@@ -1,25 +1,32 @@
 module Admin 
   class PlanesController < ApplicationController
+    before_action :filtro_logueado
+    before_action :filtro_administrador    
     before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
     # GET /planes
     # GET /planes.json
     def index
+      @titulo = "Planes de Estudio"
       @planes = Plan.all
     end
 
     # GET /planes/1
     # GET /planes/1.json
     def show
+      @titulo = "Detalle del Plan de Estudio: #{@plan.descripcion_completa}"      
     end
 
     # GET /planes/new
     def new
+      @titulo = "Detalle del Plan de Estudio: #{@plan.descripcion_completa}"
       @plan = Plan.new
     end
 
     # GET /planes/1/edit
     def edit
+      @titulo = "Editnado Plan de Estudio: #{@plan.descripcion_completa}"
+
     end
 
     # POST /planes

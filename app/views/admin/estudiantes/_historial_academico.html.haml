@@ -1,0 +1,41 @@
+%table.mt-3.mb-3
+	%tr
+		%td= btn_success 'download', kardex_descargar_path(@estudiante.id), "Descargar Kardex de #{@nickname}", 'Kardex'
+		- if @admin
+
+			- if @estudiante.inscrito?
+				%td= btn_success 'download', constancia_inscripcion_descargar_path(@estudiante.id), "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción'
+				%td= btn_success 'download', constancia_estudio_descargar_path(@estudiante.id), "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
+
+			%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección del periodo actual: #{@periodo_actual_id}", "Inscribir en seccion del #{@periodo_actual_id}", 'estudiante_seccion'
+			= render partial: '/admin/inscripcionsecciones/form'
+%b Registro de Historial Académico:
+
+
+
+#accordion
+	- @periodos.each do |periodo|
+		- @secciones_periodo = @inscripciones.del_periodo periodo.id
+		- if @secciones_periodo.count > 0
+			.card
+				.card-header{id: "heading#{periodo.id}"}
+					%h5.mb-0
+						= link_to "Período Académico #{periodo.id}", "#collapse#{periodo.id}", {"aria-controls" => "collapse#{periodo.id}", "aria-expanded" => :false, "data-target" => "#collapse#{periodo.id}", "data-toggle" => :collapse, class: "btn btn-link"}
+				.collapse{id: "collapse#{periodo.id}", "aria-labelledby" => "heading#{periodo.id}", "data-parent" => "#accordion"}
+					.card-body
+						- @periodo = periodo
+						= render '/admin/estudiantes/table_contenido_historial'
+
+
+:javascript
+
+	function confirmar(ele) {
+		ele.parent().submit();
+
+		if (ele.is(":checked")) {
+			ele.closest('tr').addClass('info');
+		}else{
+			ele.closest('tr').removeClass('info');
+		}
+	};
+	

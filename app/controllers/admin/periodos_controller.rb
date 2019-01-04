@@ -1,25 +1,31 @@
 module Admin
   class PeriodosController < ApplicationController
+    before_action :filtro_logueado
+    before_action :filtro_administrador
     before_action :set_periodo, only: [:show, :edit, :update, :destroy]
 
     # GET /periodos
     # GET /periodos.json
     def index
-      @periodos = Periodo.all
+      @titulo = 'Resumen de los Periodos'
+      @periodos = Periodo.order('inicia DESC').all
     end
 
     # GET /periodos/1
     # GET /periodos/1.json
     def show
+      @titulo = "Detalle de Periodo: #{@periodo.id}"      
     end
 
     # GET /periodos/new
     def new
+      @titulo = "Nuevo Periodo"
       @periodo = Periodo.new
     end
 
     # GET /periodos/1/edit
     def edit
+      @titulo = "Editando Periodo: #{@periodo.id}"
     end
 
     # POST /periodos

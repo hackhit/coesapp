@@ -6,26 +6,39 @@
 .container.fixed-top 
   %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
     %a.navbar-brand{:href => main_path} COES-FHE
-    %button.navbar-toggler{"aria-controls" => "navbarMain", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarMain", "data-toggle" => "collapse", :type => "button"}
+    %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarSupportedContent", "data-toggle" => "collapse", :type => "button"}
       %span.navbar-toggler-icon
-    #navbarMain.collapse.navbar-collapse
+    #navbarSupportedContent.collapse.navbar-collapse
       %ul.navbar-nav.mr-auto
         %li.nav-item
-          %a.nav-link{:href => "#"} Contáctanos
+          %a.nav-link{:href => "mailto:soporte.coes.fhe@gmail.com"} 
+            Contáctanos
+        -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
+          %li.nav-item{class: "#{'active' if controller_name.eql? 'departamentos'}"}
+            = link_to 'Departamentos', departamentos_path, class: 'nav-link'
+          %li.nav-item{class: "#{'active' if controller_name.eql? 'catedras'}"}
+            = link_to 'Cátedras', catedras_path, class: 'nav-link'
+          %li.nav-item{class: "#{'active' if controller_name.eql? 'asignaturas'}"}
+            = link_to 'Asignaturas', asignaturas_path, class: 'nav-link'
+          %li.nav-item{class: "#{'active' if controller_name.eql? 'periodos'}"}
+            = link_to 'Periodos', periodos_path, class: 'nav-link'
+          %li.nav-item{class: "#{'active' if controller_name.eql? 'planes'}"}
+            = link_to 'Planes', planes_path, class: 'nav-link'
 
-      -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
+          %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
+            %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+              Usuarios
+              - if controller_name.eql? 'usuarios'
+                %span.sr-only (current)
+            .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
+              = link_to 'Registrar Profesor', {controller: 'usuarios', action: 'new', profesor: true}, class: 'dropdown-item'
+              = link_to 'Registrar Estudiante', {controller: 'usuarios', action: 'new', estudiante: true}, class: 'dropdown-item'
+              = link_to 'Registrar Administrador', {controller: 'usuarios', action: 'new', administrador: true}, class: 'dropdown-item'
+      -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)    
+        = form_tag({controller: :usuarios, action: :index},{class: 'form-inline my-2 my-lg-0', role: :search, method: :post} ) do
+          = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
+          %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar
+          = link_to "Inscribir Estudiante", buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success btn-sm my-2 my-sm-0', style: 'margin-left: 10px;'
+        %ul.navbar-nav
+          = render 'layouts/nav_session_options' 
 
-        %li.nav-item.nav-link.dropdown
-          %a.dropdown-toggle#usuarioDropdown{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
-            Usuarios
-          .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
-            = link_to 'Registrar Profesor', {controller: 'usuarios', action: 'new', profesor: true}, class: 'dropdown-item nav-item'
-            = link_to 'Registrar Estudiante', {controller: 'usuarios', action: 'new', estudiante: true}, class: 'dropdown-item nav-item'
-            = link_to 'Registrar Administrador', {controller: 'usuarios', action: 'new', administrador: true}, class: 'dropdown-item nav-item'
-
-      %ul.navbar-nav
-        %li= link_to "Inscribir Estudiante", buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success pull-right btn-sm'
-      = render 'layouts/nav_session_options' 
-
-
-      /usuarios/new?administrador=true

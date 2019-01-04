@@ -4,33 +4,17 @@
 %h3
   = link_to "< Regresar", :back, {class: 'btn btn-secondary'}
   - if @estudiante and @estudiante.valido_para_inscribir?
-    = link_to({controller: '/admin/inscripcionsecciones', action: 'seleccionar', id: @estudiante.id}, class: 'btn btn-success') do
-      %span.icon-pencil
-      Inscribir
+    = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
 
   - unless @estudiante
-
-    = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Registrar como estudiante' do
-      = link_to set_estudiante_usuario_path(@usuario), class: 'btn btn-outline-success' do
-        = glyph 'plus'
-        = glyph 'user'
-        Estudiante
+    = btn_success set_estudiante_usuario_path(@estudiante), 'Registrar como estudiante', 'Estudiante' 
 
   - unless @administrador
-    = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Registrar como Administrador' do
-      = link_to "javascript:void(0)", onclick: "$('#set_admin').modal();", class: 'btn btn-outline-primary ml-2' do
-        = glyph 'plus'
-        = glyph 'user'
-        Administrador
+    = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'
     = render '/admin/usuarios/set_administrador'
 
-
   - unless @profesor
-    = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Registrar como Profesor' do
-      = link_to "javascript:void(0)", onclick: "$('#set_admin').modal();", class: 'btn btn-outline-primary ml-2' do
-        = glyph 'plus'
-        = glyph 'user'
-        Profesor
+    = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'set_profesor'
     = render '/admin/usuarios/set_profesor'
 
 %nav
@@ -52,7 +36,7 @@
       = render '/admin/historialplanes/index'
       = render '/admin/combinaciones/index'
     .tab-pane#historial
-      =# render partial: 'estudiante/historial_academico'
+      = render partial: '/admin/estudiantes/historial_academico'
 
   - if @profesor
     .tab-pane#profesor
@@ -60,7 +44,7 @@
 
   - if @administrador
     .tab-pane#administrador
-      %h5
+      %p.border.m-3.p-3
         = @administrador.descripcion
         = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Cambiar tipo de Administrador' do
           - if @admin.super?

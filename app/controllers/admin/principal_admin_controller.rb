@@ -149,51 +149,6 @@ module Admin
 
 		end
 
-		def detalle_usuario
-			periodo_actual_id = session[:parametros]['periodo_actual_id']
-
-			@estudiante = CalEstudiante.where(cal_usuario_ci: params[:ci]).limit(1).first
-			@profesor = CalProfesor.where(cal_usuario_ci: params[:ci]).limit(1).first
-
-			if @estudiante
-				@usuario = @estudiante.cal_usuario
-			elsif @profesor
-				@usuario = @profesor.cal_usuario
-			else
-				@usuario = CalUsuario.find  params[:ci]
-			end
-
-			# @secciones_estudiantes = CalEstudianteSeccion.where(:cal_estudiante_ci => @estudiante.cal_usuario_ci)		
-			@admin = session[:cal_administrador]
-
-			@periodos = CalSemestre.order("id DESC").all
-
-			@secciones = CalEstudianteSeccion.where(cal_estudiante_ci: @estudiante.cal_usuario_ci).order("cal_materia_id ASC, numero DESC") if @estudiante
-
-			# @secciones = CalSeccion.where(:cal_periodo_id => cal_semestre_actual_id)
-			@idiomas1 = CalDepartamento.all.delete_if{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-			@idiomas2 = CalDepartamento.all.delete_if{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-
-			inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante and @estudiante.inactivo?
-			@titulo = "Detalle de Usuario: #{@usuario.descripcion} #{inactivo}"
-		end
-
-		def resetear_contrasena
-
-			@cal_usuario = CalUsuario.where(:ci =>params[:ci]).limit(1).first
-			@cal_usuario.contrasena = @cal_usuario.ci
-
-			if @cal_usuario.save(:validate => false)
-				# AdministradorMailer.aviso_general("#{@usuario.correo}","Su Contraseña fue Reseteada II", "su contraseña fue reseteada, ahora es:#{@usuario.contrasena}. Si ud. no solicitó este servicio dirijase a nuestras oficinas a fin de aclarar la situación").deliver
-				flash[:success] = "Contraseña reseteada corréctamente"
-				redirect_to  :action=>"usuarios"
-			else
-				flash[:error] = "No se pudo resetear la contraseña#{@cal_usuario.errors.full_messages.join(' ')}"
-				redirect_to  :action=>"usuarios"
-			end
-
-		end
-
 		def habilitar_calificar
 			if params[:id]
 				numero, cal_materia_id, cal_semestre_id = params[:id].to_s.split(",")

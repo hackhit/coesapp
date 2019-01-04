@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_27_123228) do
+ActiveRecord::Schema.define(version: 2019_01_04_041749) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -32,6 +32,13 @@ ActiveRecord::Schema.define(version: 2018_12_27_123228) do
     t.index ["catedra_id"], name: "index_asignaturas_on_catedra_id"
     t.index ["departamento_id"], name: "index_asignaturas_on_departamento_id"
     t.index ["id"], name: "index_asignaturas_on_id"
+  end
+
+  create_table "carteleras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "contenido"
+    t.boolean "activa", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "catedradepartamentos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

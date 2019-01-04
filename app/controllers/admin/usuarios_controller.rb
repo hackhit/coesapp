@@ -1,13 +1,33 @@
 module Admin
   class UsuariosController < ApplicationController
+    before_action :filtro_logueado
+    before_action :filtro_administrador
     # before_action :set_usuario, only: [:show, :edit, :update, :destroy, :cambiar_ci, :resetear_contrasena]
     before_action :set_usuario, except: [:index, :new, :create]
 
 
     # GET /usuarios
     # GET /usuarios.json
+    # def index
+    #   @usuarios = Usuario.all
+    # end
+
     def index
-      @usuarios = Usuario.all
+      @titulo = 'Usuarios'
+      @admin = current_usuario.administrador
+
+      if params[:search]
+        @usuarios = Usuario.search(params[:search]).limit(50)
+        if @usuarios.count > 0 && @usuarios.count < 50  
+          flash[:success] = "Total de coincidencias: #{@usuarios.count}"
+        elsif @usuarios.count == 0
+          flash[:error] = "No se encontraron conincidencas. Intenta con otra búsqueda"
+        else
+          flash[:error] = "50 o más conincidencia. Puedes ser más explicito en la búsqueda. Recuerda que puedes buscar por CI, Nombre, Apellido, Correo Electrónico o incluso Número Telefónico"
+        end
+      else
+        @usuarios = Usuario.limit(50).order("apellidos, nombres, ci")      
+      end
     end
 
     def set_estudiante
@@ -120,7 +140,7 @@ module Admin
     # GET /usuarios/1
     # GET /usuarios/1.json
     def show
-      periodo_actual_id = session[:parametros]['periodo_actual_id']
+      @periodo_actual_id = session[:parametros]['periodo_actual_id']
 
       @estudiante = @usuario.estudiante
       @profesor = @usuario.profesor
@@ -131,12 +151,12 @@ module Admin
 
       @periodos = Periodo.order("id DESC").all
 
-      @secciones = Inscripcionseccion.joins(:secciones).where(estudiante_id: @estudiante.id).order("asignatura_id ASC, numero DESC") if @estudiante
+      @inscripciones = @estudiante.inscripcionsecciones if @estudiante
 
       # @secciones = CalSeccion.where(:cal_periodo_id => cal_semestre_actual_id)
       @idiomas1 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
       @idiomas2 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-
+      @nickname = @estudiante.usuario.nickname.capitalize
       inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante and @estudiante.inactivo?
       @titulo = "Detalle de Usuario: #{@usuario.descripcion} #{inactivo}"
 
@@ -144,11 +164,13 @@ module Admin
 
     # GET /usuarios/new
     def new
+      @titulo = "Nuevo Usuario"
       @usuario = Usuario.new
     end
 
     # GET /usuarios/1/edit
     def edit
+      @titulo = "Editar Usuario: #{@usuario.descripcion}"
     end
 
     # POST /usuarios

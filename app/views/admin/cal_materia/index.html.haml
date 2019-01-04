@@ -1,0 +1,43 @@
+%h3 Asignaturas
+
+%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Agirnatura'}
+	= link_to "", {:href => 'cal_materia/nueva', class: 'btn btn-success'},{role: 'button'} do
+		= content_tag(:i, "", class: "icon-plus icon-white")
+		= content_tag(:i, "", class: "icon-list icon-white") 
+
+.tabbable.tabs-top
+	%h5 Seleccione el Departamento:
+	%ul.nav.nav-pills
+		- @departamentos.each_with_index do |dep,i|
+			-activa = (i.eql? 0) ? "" : ""
+			%li{class: activa}
+				= link_to dep.descripcion, "#dep_#{dep.id}", "data-toggle"=> "tab"
+
+	.tab-content
+		- @departamentos.each_with_index do |dep,i|
+			-activa = (i.eql? 0) ? "" : ""
+			.tab-pane{class: activa, id: "dep_#{dep.id}"}
+				%table.table.table-bordered.table-striped.table-condensed.table-hover
+					%thead
+						%tr
+							%th ID
+							%th Descripción
+							%th Cátedra
+							%th Año
+							%th Orden
+							%th U. Créditos
+							%th Cód. UXXI
+							%th Opciones
+								
+
+					- dep.cal_materias.order("orden ASC").each do |asignatura|
+						%tr
+							%td= asignatura.id
+							%td= asignatura.descripcion
+							%td= asignatura.cal_categoria.descripcion
+							%td= asignatura.anno
+							%td= asignatura.orden
+							%td= asignatura.creditos
+							%td= asignatura.id_upsi
+							%td= link_to 'Editar', {action: :editar, id: asignatura.id}, class: 'btn btn-info'
+
