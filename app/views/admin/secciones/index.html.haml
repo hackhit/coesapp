@@ -10,7 +10,7 @@
       %th= model_class.human_attribute_name(:periodo_id)
       %th= model_class.human_attribute_name(:profesor_id)
       %th= model_class.human_attribute_name(:calificada)
-      %th= model_class.human_attribute_name(:created_at)
+      %th Actividad
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @secciones.each do |seccion|
@@ -21,7 +21,7 @@
         %td= seccion.periodo_id
         %td= seccion.profesor_id
         %td= seccion.calificada
-        %td=l seccion.created_at, format: :long
+        %td=l seccion.updated_at, format: :short
         %td
           = link_to seccion_path(seccion), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

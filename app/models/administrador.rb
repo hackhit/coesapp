@@ -1,10 +1,10 @@
 class Administrador < ApplicationRecord
 
 	# VARIABLES
-	enum rol: [:super, :jefe_departamento, :operador]
+	enum rol: [:super, :jefe_departamento, :taquilla]
 
 	# TRIGGERS
-	after_initialize :set_default_operador, if: :new_record?
+	after_initialize :set_default_taquilla, if: :new_record?
 
 	# ASOCIACIONES
 	belongs_to :usuario, foreign_key: :usuario_id 
@@ -31,8 +31,8 @@ class Administrador < ApplicationRecord
 	protected
 
 
-	def set_default_operador
-		self.rol ||= :operador
+	def set_default_taquilla
+		self.rol ||= :taquilla
 	end
 
 

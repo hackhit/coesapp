@@ -6,21 +6,31 @@
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
       %th Departamentos
-      %th T. Asig
-      %th T. Secc
-      %th T. Insc
-      %th Creación
+      %th
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de asignaturas para el periodo actual' do
+          Asigs
+      %th 
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de secciones para el periodo actual' do
+          Seccs
+      %th
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de inscripciones para el periodo actual' do
+          Inscr
+      %th Actividad
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @catedras.each do |catedra|
       %tr
         %td= catedra.id
         %td= catedra.descripcion
-        %td= catedra.departamentos.collect{|c| c.descripcion}.join(' | ')
+        %td
+          %table.table
+            - catedra.departamentos.each do |c| 
+              %tr
+                %td= c.descripcion
         %td= catedra.asignaturas.count
         %td= catedra.secciones.count
         %td= catedra.inscripcionsecciones.count
-        %td=l catedra.created_at, format: :long
+        %td=l catedra.updated_at, format: :short
         %td
           = link_to catedra_path(catedra), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

@@ -6,14 +6,14 @@
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:description)
-      %th= model_class.human_attribute_name(:created_at)
+      %th Actividad
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @planes.each do |plan|
       %tr
         %td= plan.id
         %td= plan.descripcion
-        %td=l plan.created_at, format: :long
+        %td=l plan.updated_at, format: :short
         %td
           = link_to plan_path(plan), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

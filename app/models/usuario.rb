@@ -89,11 +89,11 @@ class Usuario < ApplicationRecord
 
 	def roles
 		aux = []
-		aux << " Administrador (#{administrador.rol.titleize})" if administrador
+		aux << " Administrador (#{administrador.rol.titleize} #{" - "+administrador.departamento.descripcion if administrador.jefe_departamento?})" if administrador
 		aux << " Estudiante" if estudiante
-		aux << " Profesor" if profesor
+		aux << " Profesor (#{profesor.departamento.descripcion})" if profesor
 
-		return aux.join(" | ")
+		return aux
 	end
 
 	def descripcion

@@ -6,14 +6,14 @@
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
-      %th= model_class.human_attribute_name(:created_at)
+      %th Actividad
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @tipo_estado_inscripciones.each do |tipo_estado_inscripcion|
       %tr
         %td= tipo_estado_inscripcion.id
         %td= tipo_estado_inscripcion.descripcion
-        %td=l tipo_estado_inscripcion.created_at, format: :long
+        %td=l tipo_estado_inscripcion.updated_at, format: :long
         %td
           = link_to tipo_estado_inscripcion_path(tipo_estado_inscripcion), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

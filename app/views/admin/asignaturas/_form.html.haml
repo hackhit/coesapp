@@ -9,10 +9,6 @@
     .col-md-10
       = f.text_field :descripcion, class: 'text_field form-control', placeholder: 'Alemán I', required: true
   .form-group
-    = f.label :anno, class: 'control-label col-md-2', value: 'Año'
-    .col-md-10
-      = f.number_field :anno, class: 'text_field form-control', in: 0...11, step: 1
-  .form-group
     = f.label :departamento_id, class: 'control-label col-md-2'
     .col-md-10
       = f.select(:departamento_id, Departamento.all.collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})

@@ -15,10 +15,12 @@
     -@usuarios.each do |u| 
       %tr
         %td
-          = u.roles
-          = "(#{u.profesor.departamento.descripcion})" if u.profesor and u.profesor.departamento
+          %table.table        
+            - u.roles.each do |rol| 
+              %tr
+                %td= rol
         %td
-          - if u.estudiante and u.estudiante.ultimo_plan #and u.cal_estudiante.planes.last
+          - if u.estudiante and u.estudiante.ultimo_plan
             = u.estudiante.ultimo_plan  
           - else
             = "--"

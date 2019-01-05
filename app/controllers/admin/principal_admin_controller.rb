@@ -70,7 +70,7 @@ module Admin
 			@admin = current_usuario.administrador
 
 			if @admin
-				@editar_asignaturas = true unless @admin.operador?
+				@editar_asignaturas = true unless @admin.taquilla?
 				@departamentos = Departamento.where(id: @admin.departamento_id)if @admin.jefe_departamento?
 			end
 			

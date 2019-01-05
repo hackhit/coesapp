@@ -13,7 +13,7 @@ class Asignatura < ApplicationRecord
 	validates_uniqueness_of :id_uxxi, message: 'Código UXXI ya está en uso', field_name: false	
 	validates_presence_of :id_uxxi, message: 'Código UXXI requerido'	
 	validates :descripcion, presence: true
-	validates :anno, presence: true
+	# validates :anno, presence: true
 	# validates :orden, presence: true
 	validates :catedra_id, presence: true
 	validates :departamento_id, presence: true
