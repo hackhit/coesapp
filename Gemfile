@@ -21,7 +21,7 @@ gem 'pdf-reader'
 gem 'pdf-reader-html'
 gem 'spreadsheet'
 
-gem 'glyphicons-rails'
+# gem 'glyphicons-rails'
 
 gem 'select2-rails' 
 gem 'summernote-rails', '~> 0.8.10.0'

@@ -103,9 +103,6 @@ GEM
     ffi (1.9.25)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    glyphicons-rails (0.1.2)
-      sass (~> 3.3)
-      sass-rails
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
@@ -271,7 +268,6 @@ DEPENDENCIES
   capybara (>= 2.15)
   chromedriver-helper
   coffee-rails (~> 4.2)
-  glyphicons-rails
   haml-rails
   html2haml
   hub
