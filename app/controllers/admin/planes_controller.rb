@@ -19,14 +19,13 @@ module Admin
 
     # GET /planes/new
     def new
-      @titulo = "Detalle del Plan de Estudio: #{@plan.descripcion_completa}"
+      @titulo = "Nuevo Plan de Estudio"
       @plan = Plan.new
     end
 
     # GET /planes/1/edit
     def edit
-      @titulo = "Editnado Plan de Estudio: #{@plan.descripcion_completa}"
-
+      @titulo = "Editando Plan de Estudio: #{@plan.descripcion_completa}"
     end
 
     # POST /planes

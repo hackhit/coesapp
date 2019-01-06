@@ -1,5 +1,7 @@
 - model_class = Departamento
 
+= btn_add_success new_departamento_path, 'Agregar Nuevo Departamento', 'Nuevo'
+
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
@@ -39,4 +41,3 @@
           = link_to departamento_path(departamento), method: :delete, data: { confirm: 'Esta acción eliminará irreversiblemente tadas las asignaturas y asociaciones con cátedras del sistema. ¿Está Seguro?'}, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
             .text-danger{style:"color:red;"}= glyph 'trash'
 
-= link_to t('.new', default: t("helpers.links.new")), new_departamento_path, class: 'btn btn-primary'

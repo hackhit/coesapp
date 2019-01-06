@@ -13,9 +13,9 @@
 //= require jquery3
 //= require popper
 //= require rails-ujs
+//= require bootstrap-sprockets
 //= require select2 
 //= require select2_locale_es 
-//= require bootstrap-sprockets
 //= require summernote/summernote-bs4.min
 //= require summernote-init
 //= require summernote/lang/summernote-es-ES

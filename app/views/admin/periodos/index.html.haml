@@ -1,14 +1,26 @@
 - model_class = Periodo
+
+= btn_add_success new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo'
+
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:inicia)
       %th= model_class.human_attribute_name(:culmina)
-      %th Secciones
-      %th Insc
-      %th Apro
-      %th Rep
+      %th
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de secciones por periodo' do
+          Seccs
+      %th
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de inscripciones por periodo' do
+          Inscs
+
+      %th
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de aprobados por periodo' do
+          Apro
+      %th
+        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de reprobados por periodo' do
+          Rep
 
       %th=t '.actions', default: t("helpers.actions")
   %tbody
@@ -22,11 +34,7 @@
         %td= Inscripcionseccion.del_periodo(periodo.id).aprobados.count
         %td= Inscripcionseccion.del_periodo(periodo.id).reprobados.count
         %td
-          = link_to periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
-            = glyph 'info-sign'
           = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
             = glyph 'pencil'
           = link_to periodo_path(periodo), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-            = glyph 'remove'
-
-= link_to t('.new', default: t("helpers.links.new")), new_periodo_path, class: 'btn btn-primary'
+            .text-danger= glyph 'trash'

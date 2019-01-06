@@ -1,6 +1,6 @@
 %b
 	Seleccione el Departamento:
-	= tooltip_link_to 'Agregar Nuevo Departamento', 'plus', 'success', new_departamento_path if @principal_admin_add_asig
+	=# tooltip_link_to 'Agregar Nuevo Departamento', 'plus', 'success', new_departamento_path if @principal_admin_add_asig
 %div{class: @row}
 	%div{class: @col2}
 		%ul#pills-departamentos-tab.nav.nav-pills.mb-3{role: :tablist, "aria-orientation" => @orientacion, class: @vertical}
@@ -18,7 +18,7 @@
 					- @catedras = dep.catedras#departamentos#.sort_by{|cate| cate.orden}
 					%b
 						Seleccione la Cátedra:
-						= tooltip_link_to 'Agregar nueva cátedra a éste departamento', 'plus', 'success', dep if @principal_admin_add_asig
+						=# tooltip_link_to 'Agregar nueva cátedra a éste departamento', 'plus', 'success', dep if @principal_admin_add_asig
 					%div{class: @row}
 						%div{class: @col2}
 
@@ -38,7 +38,7 @@
 
 										%b
 											Seleccione la Asignatura:
-											= tooltip_link_to 'Agregar Nueva Asignatura', 'plus', 'success', new_asignatura_path if @principal_admin_add_asig
+											=# tooltip_link_to 'Agregar Nueva Asignatura', 'plus', 'success', new_asignatura_path if @principal_admin_add_asig
 										.row
 											.col-2
 												#v-pills-tab.nav.flex-column.nav-pills{"aria-orientation" => "vertical", role: :tablist}

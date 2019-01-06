@@ -1,7 +1,8 @@
 - model_class = Plan
-.page-header
-  %h1=t '.title', default: model_class.model_name.human.pluralize.titleize
-%table.table.table-striped
+
+= btn_add_success new_plan_path, 'Agregar Nuevo Plan de Estudio', 'Nuevo'
+
+%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
@@ -15,11 +16,7 @@
         %td= plan.descripcion
         %td=l plan.updated_at, format: :short
         %td
-          = link_to plan_path(plan), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
-            = glyph 'info-sign'
           = link_to edit_plan_path(plan), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
             = glyph 'pencil'
           = link_to plan_path(plan), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm text-danger', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
             = glyph 'trash'
-
-= link_to t('.new', default: t("helpers.links.new")), new_plan_path, class: 'btn btn-primary'
