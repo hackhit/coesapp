@@ -35,10 +35,9 @@
               = link_to 'Registrar Estudiante', {controller: 'usuarios', action: 'new', estudiante: true}, class: 'dropdown-item'
               = link_to 'Registrar Administrador', {controller: 'usuarios', action: 'new', administrador: true}, class: 'dropdown-item'
       -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)    
-        = form_tag({controller: :usuarios, action: :index},{class: 'form-inline my-2 my-lg-0', role: :search, method: :post} ) do
+        = form_tag({controller: :usuarios, action: :index},{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
           = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
           %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar
-          = link_to "Inscribir Estudiante", buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success btn-sm my-2 my-sm-0', style: 'margin-left: 10px;'
         %ul.navbar-nav
           = render 'layouts/nav_session_options' 
 

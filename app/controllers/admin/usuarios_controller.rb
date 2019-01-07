@@ -3,7 +3,7 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_administrador
     # before_action :set_usuario, only: [:show, :edit, :update, :destroy, :cambiar_ci, :resetear_contrasena]
-    before_action :set_usuario, except: [:index, :new, :create]
+    before_action :set_usuario, except: [:index, :new, :create, :busquedas]
 
 
     # GET /usuarios
@@ -11,6 +11,17 @@ module Admin
     # def index
     #   @usuarios = Usuario.all
     # end
+
+    def busquedas
+      @usuarios = Usuario.search(params[:term])
+      if params[:estudiantes]
+        @usuarios = Usuario.search(params[:term]).reject{|u| u.estudiante.nil?} 
+      elsif params[:profesores]
+        @usuarios = Usuario.search(params[:term]).reject{|u| u.profesor.nil?}
+      else
+        @usuarios = Usuario.search(params[:term])
+      end
+    end
 
     def index
       @titulo = 'Usuarios'
@@ -26,7 +37,7 @@ module Admin
           flash[:error] = "50 o más conincidencia. Puedes ser más explicito en la búsqueda. Recuerda que puedes buscar por CI, Nombre, Apellido, Correo Electrónico o incluso Número Telefónico"
         end
       else
-        @usuarios = Usuario.limit(50).order("apellidos, nombres, ci")      
+        @usuarios = Usuario.limit(50).order("created_at, apellidos, nombres, ci")      
       end
     end
 
@@ -176,12 +187,16 @@ module Admin
     # POST /usuarios
     # POST /usuarios.json
     def create
+      p ' Creando Usuario '.center(300, '*')
       @usuario = Usuario.new(usuario_params)
       respond_to do |format|
         if @usuario.save
+          p ' Usuario Creado '.center(300, '*')
           flash[:success] = 'Usuario creado con éxito.'
           if params[:estudiante_set]
             if e = Estudiante.create(usuario_id: @usuario.id)
+              p ' Estudiante Creado '.center(300, '*')
+
               flash[:success] = 'Estudiante creado con éxito.' 
             else
               flash[:danger] = "Error: #{e.errors.full_messages.to_sentence}"

@@ -4,7 +4,10 @@
 		.form-group
 			%label.control-label.col-md-2 Estudiante:
 			.col-md-12
-				=collection_select(nil, :id, @estudiantes, :id, :descripcion, {prompt: true}, {required: true, class: 'selects2 form-control text_field', style: 'width:100%;', autofocus: true})
+				=#collection_select(nil, :id, @estudiantes, :id, :descripcion, {prompt: true}, {required: true, class: 'selects2 form-control text_field', style: 'width:100%;', autofocus: true})
+				=#collection_select(nil, :id, @estudiantes, :id, :descripcion, {prompt: true}, {required: true, class: 'selects2 form-control text_field', style: 'width:100%;', autofocus: true})
+				%select.selects2.form-control.text_field
+
 		.form-group.pl-3
 			= submit_tag "Siguiente", :disable_with => 'Enviando...', class: 'btn btn-primary pull-right'
 			= link_to t('.cancel', default: t("helpers.links.cancel")), principal_admin_index_path, class: 'btn btn-default'
@@ -13,13 +16,21 @@
 
 	$(document).ready(function() {
 
-		$(".selects2").select2({
-		    placeholder: "--Escriba datos del estudiante para buscarlo--",
-		    allowClear: true
+		$( ".selects2" ).select2({
+			ajax: {
+			url: '/usuarios/busquedas.json?estudiantes=true',
+			dataType: 'json',
+			delay: 250,
+			processResults: function (data) {
+				return {
+					results: data
+				};
+			}			
+			},
+			placeholder: "--Escriba datos del estudiante para buscarlo--",
+			theme: "bootstrap",
+			cache: true
+
 		});
 		
 	});
-
-
-
-

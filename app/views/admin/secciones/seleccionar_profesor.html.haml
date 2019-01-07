@@ -15,9 +15,21 @@
 
 	$(document).ready(function() {
 
-		$(".selects2").select2({
-				placeholder: "--Escriba datos del estudiante para buscarlo--",
-				allowClear: true
+		$( ".selects2" ).select2({
+			ajax: {
+			url: '/usuarios/busquedas.json?profesores=true',
+			dataType: 'json',
+			delay: 250,
+			processResults: function (data) {
+				return {
+					results: data
+				};
+			}			
+			},
+			placeholder: "--Escriba datos del estudiante para buscarlo--",
+			theme: "bootstrap",
+			cache: true
+
 		});
 		
 	});

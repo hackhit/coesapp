@@ -78,7 +78,8 @@ Rails.application.routes.draw do
     resources :combinaciones
     resources :usuarios do
       collection do
-        post :index
+        # post :index
+        get :busquedas
       end
       member do
         get 'set_estudiante'

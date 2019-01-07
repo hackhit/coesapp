@@ -1,1 +1,6 @@
-%h5.text-light.bg-dark.text-center.p-2.border.border-info= raw (@titulo ? @titulo : action_name.titleize)
+%h5.text-light.bg-dark.text-center.p-2.border.border-info
+	
+	= raw (@titulo ? @titulo : action_name.titleize)
+
+	-if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
+		= link_to "Inscribir Estudiante", buscar_estudiante_inscripcionsecciones_path, class: 'btn-success btn-sm float-left', style: 'margin-left: 10px;'
