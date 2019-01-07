@@ -1,5 +1,7 @@
 class Asignatura < ApplicationRecord
 
+	enum tipo: [:obligatoria, :optativa, :electiva]
+
 	# ASOCIACIONES:
 	belongs_to :catedra
 	belongs_to :departamento
@@ -17,11 +19,20 @@ class Asignatura < ApplicationRecord
 	# validates :orden, presence: true
 	validates :catedra_id, presence: true
 	validates :departamento_id, presence: true
+	validates :tipo, presence: true
+
+	# SCOPE
+
+	scope :activas, -> {where "activa IS TRUE"}
 
 	# TRIGGGERS:
 	before_save :set_uxxi_how_id
 
 	# FUNCIONES:
+
+	def activa?
+		return self.activa #self.activa.eql? true ? true : false
+	end
 	def descripcion_completa
 		desc = "#{descripcion} "
 		desc += "- #{catedra.descripcion}" if catedra

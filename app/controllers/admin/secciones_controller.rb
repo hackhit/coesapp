@@ -3,8 +3,8 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_admin_profe
     
-    before_action :set_seccion, only: [:show, :edit, :update, :destroy, :cambiar_capacidad, :agregar_profesor_secundario, :desasignar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion]
-
+    # before_action :set_seccion, only: [:show, :edit, :update, :destroy, :cambiar_capacidad, :agregar_profesor_secundario, :desasignar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion]
+    before_action :set_seccion, except: [:index, :new, :create]
 
     def cambiar_capacidad
       @seccion.capacidad = params[:capacidad]

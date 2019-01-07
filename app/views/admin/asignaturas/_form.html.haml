@@ -17,6 +17,10 @@
     .col-md-10
       = f.select(:catedra_id, Catedra.all.collect{|o| [ o.descripcion, o.id ] }, { prompt: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})      
   .form-group
+    = f.label :tipo, class: 'control-label col-md-2', value: 'Tipo de asignatura'
+    .col-md-10
+      = f.select(:tipo, Asignatura.tipos.keys.map {|tipo| [tipo.titleize,tipo]}, {prompt: 'Selecciona tipo Asignatura...'}, {required: true, class: "form-control text_field"})
+  .form-group
     = f.label :id_uxxi, class: 'control-label col-md-2', value: 'Código Uxxi'
     .col-md-10
       = f.text_field :id_uxxi, class: 'text_field form-control'

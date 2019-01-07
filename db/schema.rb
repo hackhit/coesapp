@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 2019_01_04_041749) do
     t.string "descripcion"
     t.integer "anno"
     t.integer "orden"
+    t.boolean "activa", default: false
+    t.integer "tipo", null: false
     t.string "departamento_id"
     t.string "catedra_id"
     t.string "id_uxxi"
@@ -207,7 +209,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_041749) do
     t.index ["ci"], name: "index_usuarios_on_ci"
   end
 
-  add_foreign_key "administradores", "departamentos"
+  add_foreign_key "administradores", "departamentos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "administradores", "usuarios", primary_key: "ci", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "catedras", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "departamentos", on_update: :cascade, on_delete: :cascade

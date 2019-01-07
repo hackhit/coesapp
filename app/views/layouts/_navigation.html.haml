@@ -10,9 +10,6 @@
       %span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       %ul.navbar-nav.mr-auto
-        %li.nav-item
-          %a.nav-link{:href => "mailto:soporte.coes.fhe@gmail.com"} 
-            Contáctanos
         -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
           %li.nav-item{class: "#{'active' if controller_name.eql? 'departamentos'}"}
             = link_to 'Departamentos', departamentos_path, class: 'nav-link'
@@ -41,5 +38,8 @@
           = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
           %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar
         %ul.navbar-nav
+          %li.nav-item
+            %a.nav-link{:href => "mailto:soporte.coes.fhe@gmail.com"} 
+              Contáctanos
           = render 'layouts/nav_session_options' 
 

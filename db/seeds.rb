@@ -48,7 +48,7 @@ p "#{Estudiante.count} Estudiante Creado!"
 Catedradepartamento.create([{departamento_id: 'ALE', catedra_id: 'IB'}])
 p "#{Catedradepartamento.count} CatedraDepartamento Creado!"
 
-Asignatura.create([{id: 'ALEI', descripcion: 'Alemán I', anno: 1, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010101', creditos: 6}, {id: 'ALEII', descripcion: 'Alemán II', anno: 2, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010102', creditos: 5}])
+Asignatura.create([{id: 'ALEI', descripcion: 'Alemán I', anno: 1, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010101', creditos: 6, tipo: :obligatoria, }, {id: 'ALEII', descripcion: 'Alemán II', anno: 2, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010102', creditos: 5, tipo: :electiva}])
 p "#{Asignatura.count} Asignaturas Creadas!"
 
 Periodo.create([{id: '2018-02A', inicia: '2018-12-26', culmina: '2019-12-27'}, {id: '2017-02A', inicia: '2017-12-26', culmina: '2018-12-25'}])

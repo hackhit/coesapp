@@ -72,7 +72,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :asignaturas
+    resources :asignaturas do
+      member do
+        get 'set_activa'
+      end
+    end
     resources :catedras
     resources :tipo_estado_calificaciones
     resources :tipo_estado_inscripciones

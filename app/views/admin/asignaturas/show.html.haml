@@ -7,9 +7,9 @@
     %dt.label.label-default= model_class.human_attribute_name(:anno)
     %dd
       %pre.prettyprint= @asignatura.anno
-    %dt.label.label-default= model_class.human_attribute_name(:orden)
+    %dt.label.label-default= model_class.human_attribute_name(:tipo)
     %dd
-      %pre.prettyprint= @asignatura.orden
+      %pre.prettyprint= @asignatura.tipo.titleize
     %dt.label.label-default= model_class.human_attribute_name(:departamento_id)
     %dd
       %pre.prettyprint= @asignatura.departamento_id

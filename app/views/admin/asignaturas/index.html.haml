@@ -1,10 +1,6 @@
-%h3 
-  Asignaturas
-  = btn_add_success new_asignatura_path, 'Agregar Agirnatura', ''
+= btn_add_success new_asignatura_path, 'Agregar Nueva Agirnatura', 'Nueva'
 
-
-
-%nav
+%nav.mt-3
   .nav.nav-tabs
     - @departamentos.each_with_index do |dep,i|
       -activa = (i.eql? 0) ? "" : ""
@@ -23,10 +19,12 @@
             %th Año
             %th U. Créditos
             %th Cód. UXXI
-            %th Opciones
+            %th Secciones
+            %th{style: 'width:15%;'} Opciones
 
         - dep.asignaturas.order("orden ASC").each do |asignatura|
-          %tr
+          - activa = asignatura.activa ? 'table-success' : ''
+          %tr{class: activa}
             %td= asignatura.id
             %td= asignatura.descripcion
             %td= asignatura.catedra.descripcion
@@ -34,8 +32,36 @@
             %td= asignatura.creditos
             %td= asignatura.id_uxxi
             %td
-              = link_to edit_asignatura_path(asignatura), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-                = glyph 'pencil'
-              = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-                .text-danger= glyph 'trash'
+              %table
+                %tr
+                  - asignatura.secciones.each do |s| 
+                    %td= s.numero
+            %td
+              .float-right
+                = link_to edit_asignatura_path(asignatura), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+                  = glyph 'pencil'
+              .float-right
+                = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+                  .text-danger= glyph 'trash'
+              - @asignatura = asignatura
+              .float-right.mt-1= render '/admin/asignaturas/onoffswitch'
+
+
+:javascript
+
+  function switches(url, id){
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json', 
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
+    });
+    var ele = $("#switch_"+id).parents('tr');
+    if ($("#switch_"+id).is(':checked')){
+      ele.addClass("table-success");      
+    }else{
+      ele.removeClass("table-success");
+    }      
+  }
+
 

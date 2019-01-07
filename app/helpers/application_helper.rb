@@ -34,7 +34,7 @@ module ApplicationHelper
 	end
 
 	def btn_toggle type, icon, href, title_tooltip, value, onclick_action=nil
-		content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: title_tooltip do
+		content_tag :b, class: 'tooltip-btn', 'data_toggle': :tooltip, title: title_tooltip, 'data-placement': :rigth do
 			link_to href, class: "btn btn-sm #{type}", onclick: onclick_action do
 				capture_haml{"#{glyph icon} #{value}"}
 			end

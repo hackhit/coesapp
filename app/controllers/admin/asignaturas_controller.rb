@@ -3,8 +3,15 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_administrador
     
-    before_action :set_asignatura, only: [:show, :edit, :update, :destroy]
+    before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa]
 
+    def set_activa
+      @asignatura.activa = !@asignatura.activa
+      @asignatura.save
+      @titulo = 'Asignaturas'
+      @departamentos = Departamento.all
+      head :no_content
+    end
     # GET /asignaturas
     # GET /asignaturas.json
     def index
@@ -43,7 +50,7 @@ module Admin
       else
         respond_to do |format|
           if @asignatura.save
-            format.html { redirect_to @asignatura, notice: 'Asignatura generada con éxito .' }
+            format.html { redirect_to @asignatura, notice: 'Asignatura generada con éxito.' }
             format.json { render :show, status: :created, location: @asignatura }
           else
             flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
@@ -75,7 +82,7 @@ module Admin
     def destroy
       @asignatura.destroy
       respond_to do |format|
-        format.html { redirect_to asignaturas_url, notice: 'Asignatura eliminada.' }
+        format.html { redirect_to asignaturas_url, notice: 'Asignatura eliminada satisfactoriamente.' }
         format.json { head :no_content }
       end
     end
@@ -88,7 +95,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def asignatura_params
-        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos)
+        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos, :tipo)
       end
   end
 end
