@@ -37,7 +37,7 @@ module Admin
 
       respond_to do |format|
         if @departamento.save
-          format.html { redirect_to @departamento, notice: 'Departamento was successfully created.' }
+          format.html { redirect_to @departamento, notice: 'Departamento creado con éxito.' }
           format.json { render :show, status: :created, location: @departamento }
         else
           format.html { render :new }
@@ -51,7 +51,7 @@ module Admin
     def update
       respond_to do |format|
         if @departamento.update(departamento_params)
-          format.html { redirect_to @departamento, notice: 'Departamento was successfully updated.' }
+          format.html { redirect_to @departamento, notice: 'Departamento actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @departamento }
         else
           format.html { render :edit }
@@ -65,7 +65,7 @@ module Admin
     def destroy
       @departamento.destroy
       respond_to do |format|
-        format.html { redirect_to departamentos_url, notice: 'Departamento was successfully destroyed.' }
+        format.html { redirect_to departamentos_url, notice: 'Departamento eliminado satisfactoriamente.' }
         format.json { head :no_content }
       end
     end
