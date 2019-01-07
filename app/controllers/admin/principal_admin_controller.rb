@@ -52,9 +52,8 @@ module Admin
 		end
 
 		def set_tab
-			session[:dpto_id] = params[:dpto_id] if params[:dpto_id]
-			session[:cat_id] = params[:cat_id] if params[:cat_id]
-			session[:mat_id] = params[:mat_id] if params[:mat_id]
+
+			session[params[:tipo]] = params[:valor]
 
 			respond_to do |format|
 				format.html { redirect_to :back }

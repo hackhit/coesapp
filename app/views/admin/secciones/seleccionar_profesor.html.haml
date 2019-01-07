@@ -28,7 +28,8 @@
 			},
 			placeholder: "--Escriba datos del estudiante para buscarlo--",
 			theme: "bootstrap",
-			cache: true
+			cache: true,
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
 
 		});
 		

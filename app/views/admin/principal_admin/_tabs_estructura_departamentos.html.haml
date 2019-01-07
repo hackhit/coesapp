@@ -7,7 +7,7 @@
 			- @departamentos.each do |dep|
 				- dpto_activo = (session[:dpto_id].eql? dep.id) ? "active" : ""
 				%li.nav-item
-					= link_to dep.descripcion, "#dep_#{dep.id}", "data-toggle"=> "tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {dpto_id: '#{dep.id}'}, dataType: 'json'});", class: "nav-link #{dpto_activo}"
+					= link_to dep.descripcion, "#dep_#{dep.id}", "data-toggle"=> "tab", onclick: "set_tab('dpto_id', '#{dep.id}');", class: "nav-link #{dpto_activo}"
 
 	%div{class: @col10}
 		#pills-departamentos-tabContent.tab-content
@@ -26,7 +26,7 @@
 								- @catedras.each do |cat|
 									- cat_activa = (session[:cat_id].eql? cat.id) ? "active" : ""
 									%li.nav-item
-										= link_to cat.descripcion, "#cat_#{dep.id}_#{cat.id}", "data-toggle"=> "tab", onclick: "$.ajax({url: '/principal_admin/set_tab', data: {cat_id: '#{cat.id}'}, dataType: 'json'});", class: "nav-link #{cat_activa}"
+										= link_to cat.descripcion, "#cat_#{dep.id}_#{cat.id}", "data-toggle"=> "tab", onclick: "set_tab('cat_id', '#{cat.id}')", class: "nav-link #{cat_activa}"
 
 						%div{class: @col10}
 							#pills-catedras-tabContent.tab-content
@@ -67,3 +67,14 @@
 															- if @ids_asignaturas and !@sin_secciones and !(@ids_asignaturas.include? mat.id)
 																= render partial: '/admin/inscripcionsecciones/detalle_inscripcion'
 
+
+:javascript
+
+	function set_tab(tipo, id){
+		$.ajax({
+			url: '/principal_admin/set_tab', 
+			data: {tipo: tipo, valor: id}, 
+			dataType: 'json', 
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
+			});
+	}
