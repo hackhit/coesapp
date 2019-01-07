@@ -5,8 +5,8 @@
 			%label.control-label.col-md-2 Estudiante:
 			.col-md-12
 				=#collection_select(nil, :id, @estudiantes, :id, :descripcion, {prompt: true}, {required: true, class: 'selects2 form-control text_field', style: 'width:100%;', autofocus: true})
-				=#collection_select(nil, :id, @estudiantes, :id, :descripcion, {prompt: true}, {required: true, class: 'selects2 form-control text_field', style: 'width:100%;', autofocus: true})
-				%select.selects2.form-control.text_field
+				=collection_select(nil, :id, @estudiantes, :id, :descripcion, {prompt: true}, {required: true, class: 'selects2 form-control text_field', style: 'width:100%;', autofocus: true})
+				
 
 		.form-group.pl-3
 			= submit_tag "Siguiente", :disable_with => 'Enviando...', class: 'btn btn-primary pull-right'
@@ -18,7 +18,7 @@
 
 		$( ".selects2" ).select2({
 			ajax: {
-			url: '/coesapp/usuarios/busquedas.json?estudiantes=true',
+			url: "#{busquedas_usuarios_path}.json?estudiantes=true",
 			dataType: 'json',
 			delay: 250,
 			processResults: function (data) {
