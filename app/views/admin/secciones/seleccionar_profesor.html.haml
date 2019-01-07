@@ -17,7 +17,7 @@
 
 		$( ".selects2" ).select2({
 			ajax: {
-			url: '/coesapp/usuarios/busquedas.json?profesores=true',
+			url: "#{busquedas_usuarios_path}.json?profesores=true",
 			dataType: 'json',
 			delay: 250,
 			processResults: function (data) {

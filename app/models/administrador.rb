@@ -6,6 +6,8 @@ class Administrador < ApplicationRecord
 	# TRIGGERS
 	after_initialize :set_default_taquilla, if: :new_record?
 
+	before_save :set_dpto_to_nil
+
 	# ASOCIACIONES
 	belongs_to :usuario, foreign_key: :usuario_id 
 	accepts_nested_attributes_for :usuario
@@ -20,6 +22,10 @@ class Administrador < ApplicationRecord
 	# FUNCIONES
 
 	# FUNCIONES PROTEGIDAS
+	def set_dpto_to_nil
+		self.departamento_id = nil if self.departamento_id.blank?
+	end
+
 	def altos?
 		self.super? or self.jefe_departamento?
 	end

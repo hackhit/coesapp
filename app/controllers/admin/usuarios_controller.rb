@@ -167,7 +167,7 @@ module Admin
       # @secciones = CalSeccion.where(:cal_periodo_id => cal_semestre_actual_id)
       @idiomas1 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
       @idiomas2 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-      @nickname = @estudiante.usuario.nickname.capitalize
+      @nickname = @usuario.nickname.capitalize
       inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante and @estudiante.inactivo?
       @titulo = "Detalle de Usuario: #{@usuario.descripcion} #{inactivo}"
 

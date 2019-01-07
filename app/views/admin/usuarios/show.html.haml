@@ -8,14 +8,14 @@
 - @controlador = controller_name
 
 %h3
-  = link_to usuarios_path, {class: 'btn btn-secondary btn-sm'} do
+  = link_to usuarios_path, {class: 'btn btn-secondary btn-sm mr-2'} do
     = glyph 'chevron-left'
     Regresar
   - if @estudiante and @estudiante.valido_para_inscribir?
     = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
 
   - unless @estudiante
-    = btn_success set_estudiante_usuario_path(@estudiante), 'Registrar como estudiante', 'Estudiante' 
+    = btn_success 'plus', set_estudiante_usuario_path(@usuario), 'Registrar como estudiante', 'Estudiante' 
 
   - unless @administrador
     = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'

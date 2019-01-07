@@ -15,7 +15,7 @@
       .form-group
         %label.control-label.col-md-2 Departamento
         .col-md-10
-          = collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text-field form-control'})
+          = collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {class: 'text-field form-control'})
 
   - if action_name.eql? 'new'
     .form-group
@@ -60,8 +60,12 @@
     if ($(this).val() == 'jefe_departamento') {
       alert ('Por favor Seleccione Departamento para el Jefe de Departamento');
       $('#jefeDepartamento').show();
+      $("#administrador_departamento_id").prop('required',true);
+
     }else{
       $('#jefeDepartamento').hide();
+      $("#administrador_departamento_id").prop('required',false);
+
     };
   });
 
