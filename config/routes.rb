@@ -62,11 +62,13 @@ Rails.application.routes.draw do
 
     resources :secciones do
       collection do
-        get 'seleccionar_profesor'
         post 'cambiar_capacidad'
         post 'cambiar_profe_seccion'
         post 'agregar_profesor_secundario'
+      end
+      member do
         get 'desasignar_profesor_secundario'
+        get 'seleccionar_profesor'
       end
     end
 

@@ -1,4 +1,3 @@
-= form_tag({controller: 'secciones', action: 'cambiar_capacidad'}, class: 'form-horizontal', remote: true ) do
+= form_tag(cambiar_capacidad_secciones_path, class: 'form-horizontal', authenticity_token: true, remote: true ) do
   = hidden_field_tag :id, @seccion.id
   = number_field_tag :capacidad, @seccion.capacidad, required: true, step: 1, in: 0...51, class: 'span11', onchange: '$(this).parent().submit();'
-

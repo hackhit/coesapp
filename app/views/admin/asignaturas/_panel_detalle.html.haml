@@ -19,8 +19,8 @@
 							%td
 								= "#{seccion.descripcion_profesor_asignado}"
 								- if @editar_asignaturas
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Actualizar Tutor-Calificador'}
-										= link_to "", {href: "/secciones/seleccionar_profesor?id=#{seccion.id}"},{role: 'button'} do
+									%b.tooltip-btn{'data_toggle': :tooltip, title: 'Actualizar Tutor-Calificador'}
+										= link_to seleccionar_profesor_seccion_path(seccion.id), {role: 'button'} do
 											= glyph 'pencil'
 											= glyph 'user'
 
@@ -32,13 +32,13 @@
 
 											%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Desasignar Este Profesor'}
 												
-												= link_to "", {href: "/secciones/desasignar_profesor_secundario?id=#{seccion.id}&profesor_id=#{p.usuario_id}", 'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
+												= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
 													%span.glyphicon.glyphicon-minus.text-danger
 													%span.glyphicon.glyphicon-user.text-danger
 
-								%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Profesor Secundario'}
+								%b.tooltip-btn{'data_toggle': :tooltip, title: 'Agregar Profesor Secundario'}
 									- if @editar_asignaturas
-										= link_to "", {href: "/secciones/seleccionar_profesor?id=#{seccion.id}&sec=true", class: 'btn-success btn-sm'},{role: 'button'} do
+										= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true", {class: 'btn-success btn-sm'},{role: 'button'} do
 											= glyph 'plus'
 											= glyph 'user'
 							%td
@@ -46,12 +46,6 @@
 								= render '/admin/secciones/cambiar_capacidad'
 
 							%td
-								-if seccion.periodo_id.eql? '2016-02A'
-									%span.badge.badge-info 
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Inscritos/Confirmados'}																		
-										%span.badge
-											= "#{seccion.total_estudiantes}/#{seccion.total_confirmados}"
-
 								-if seccion.calificada 
 									%span.badge.badge-success Calificada
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Aprobados'}
@@ -65,7 +59,7 @@
 								- else
 									%span.badge.badge-info Por calificar
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
-										%span.badge= seccion.total_sin_calificar
+										%span.badge.badge-dark= seccion.total_sin_calificar
 							- if @admin and @admin.altos?
 								%td
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
