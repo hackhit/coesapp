@@ -24,6 +24,8 @@
             = link_to 'Periodos', periodos_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'planes'}"}
             = link_to 'Planes', planes_path, class: 'nav-link'
+          %li.nav-item{class: "#{'active' if controller_name.eql? 'carteleras'}"}
+            = link_to 'Cartelera', carteleras_path, class: 'nav-link'
 
           %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
             %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
