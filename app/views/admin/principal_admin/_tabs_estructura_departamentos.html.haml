@@ -72,7 +72,7 @@
 
 	function set_tab(tipo, id){
 		$.ajax({
-			url: '/principal_admin/set_tab', 
+			url: '/coesapp/principal_admin/index', 
 			data: {tipo: tipo, valor: id}, 
 			dataType: 'json', 
 			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
