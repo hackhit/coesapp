@@ -49,7 +49,7 @@
   .form-group
     = f.label :sexo, class: 'control-label col-md-2'
     .col-md-10
-      = f.select(:sexo, Usuario.sexos.keys.map {|sexo| [sexo.titleize,sexo]}, required: true)
+      = f.select(:sexo, Usuario.sexos.keys.map {|sexo| [sexo.titleize,sexo]},{}, {class: 'text_field form-control', required: true})
   .form-group
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'

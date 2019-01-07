@@ -1,7 +1,7 @@
 - model_class = Cartelera
-= link_to t('.new', default: t("helpers.links.new")), new_cartelera_path, class: 'btn btn-primary'
 
-%table.table.table-striped
+= btn_add_success new_cartelera_path, 'Agregar Nueva Cartelera', 'Nueva'
+%table.table.table-striped.mt-3
   %thead
     %tr
       %th= model_class.human_attribute_name(:contenido)
