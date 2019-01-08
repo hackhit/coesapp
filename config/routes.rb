@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :escuelas
   resources :tipoasignaturas
 
   resources :visitors, only: [:index] do

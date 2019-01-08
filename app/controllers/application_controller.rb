@@ -29,6 +29,15 @@ class ApplicationController < ActionController::Base
 		}
 	end
 
+	def filtro_ninja
+		unless session[:usuario_ci].eql? '15573230'
+			reset_session
+			flash[:danger] = "Lo siento chico, debes iniciar sesión como ninja!"
+			redirect_to root_path
+			return false
+		end		
+	end
+
 	def filtro_logueado
 		unless session[:usuario_ci]
 			reset_session

@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Descripcion:
+  = @escuela.descripcion
+%p
+  %b Id:
+  = @escuela.id
+
+= link_to 'Edit', edit_escuela_path(@escuela)
+\|
+= link_to 'Back', escuelas_path
