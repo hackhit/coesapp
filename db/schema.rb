@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_08_172629) do
+ActiveRecord::Schema.define(version: 2019_01_04_041749) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -24,9 +24,9 @@ ActiveRecord::Schema.define(version: 2019_01_08_172629) do
     t.integer "anno"
     t.integer "orden"
     t.boolean "activa", default: false
-    t.integer "tipo", null: false
-    t.string "departamento_id"
-    t.string "catedra_id"
+    t.string "departamento_id", null: false
+    t.string "catedra_id", null: false
+    t.string "tipoasignatura_id", null: false
     t.string "id_uxxi"
     t.integer "creditos"
     t.datetime "created_at", null: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2019_01_08_172629) do
     t.index ["catedra_id"], name: "index_asignaturas_on_catedra_id"
     t.index ["departamento_id"], name: "index_asignaturas_on_departamento_id"
     t.index ["id"], name: "index_asignaturas_on_id"
+    t.index ["tipoasignatura_id"], name: "index_asignaturas_on_tipoasignatura_id"
   end
 
   create_table "carteleras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -220,6 +221,7 @@ ActiveRecord::Schema.define(version: 2019_01_08_172629) do
   add_foreign_key "administradores", "usuarios", primary_key: "ci", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "catedras", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "departamentos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "asignaturas", "tipoasignaturas", on_update: :cascade, on_delete: :cascade
   add_foreign_key "catedradepartamentos", "catedras", on_update: :cascade, on_delete: :cascade
   add_foreign_key "catedradepartamentos", "departamentos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "combinaciones", "departamentos", column: "idioma1_id", on_update: :cascade, on_delete: :cascade

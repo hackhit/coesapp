@@ -6,9 +6,9 @@ class CreateAsignaturas < ActiveRecord::Migration[5.2]
       t.integer :anno
       t.integer :orden
       t.boolean :activa, default: false
-      t.integer :tipo, null: false
-      t.references :departamento, type: :string
-      t.references :catedra, type: :string
+      t.references :departamento, type: :string, null: false
+      t.references :catedra, type: :string, null: false
+      t.references :tipoasignatura, type: :string, null: false
       t.string :id_uxxi
       t.integer :creditos
 
@@ -16,6 +16,7 @@ class CreateAsignaturas < ActiveRecord::Migration[5.2]
     end
     add_foreign_key :asignaturas, :catedras, type: :string, on_delete: :cascade, on_update: :cascade, index: true
     add_foreign_key :asignaturas, :departamentos, type: :string, on_delete: :cascade, on_update: :cascade, index: true
+    add_foreign_key :asignaturas, :tipoasignaturas, type: :string, on_delete: :cascade, on_update: :cascade, index: true
 
   end
 end

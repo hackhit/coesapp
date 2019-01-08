@@ -8,6 +8,17 @@
 Cartelera.create(contenido: 'Sistema de Control de Estudio By Lic. Daniel Moros', activa: true)
 p "#{Cartelera.count} Cartelera Creada!"
 
+Escuela.create([{id: 'ARTE', descripcion: 'ESCUELA DE ARTES'}, 
+	{id: 'BIAR', descripcion: 'ESCUELA DE BIBLIOTECOLOGÍA Y ARCHIVOLOGÍA'}, 
+	{id: 'COMU', descripcion: 'ESCUELA DE COMUNICACIÓN SOCIAL'}, 
+	{id: 'EDUC', descripcion: 'ESCUELA DE EDUCACIÓN'},
+	{id: 'FILO', descripcion: 'ESCUELA DE FILOSOFÍA'},
+	{id: 'GEOG', descripcion: 'ESCUELA DE GEOGRAFÍA'},
+	{id: 'HIST', descripcion: 'ESCUELA DE HISTORIA'},
+	{id: 'IDIO', descripcion: 'ESCUELA DE IDIOMAS MODERNOS'},
+	{id: 'LETR', descripcion: 'ESCUELA DE LETRAS'},
+	{id: 'PSIC', descripcion: 'ESCUELA DE PSICOLOGÍA'} ])
+
 Tipoasignatura.create([{id: :L, descripcion: :obtativa}, {id: :O, descripcion: :electiva}, {id: :B, descripcion: :obligatoria}, {id: :P, descripcion: :proyecto}])
 p "#{Tipoasignatura.count} Tipo Asignaturas Creadas!"
 
@@ -34,7 +45,8 @@ p "#{TipoEstadoCalificacion.count} TipoEstadoCalificaciones Creadas!"
 Catedra.create([{id: 'IB', descripcion: 'Idioma Básico'}, {id: 'GE', descripcion: 'Gramática y Especialización'}, ])
 p "#{Catedra.count} Catedra Creada!"
 
-Departamento.create([{id: 'ALE', descripcion: 'Alemán'}, {id: 'ING', descripcion: 'Inglés'}, {id: 'ITA', descripcion: 'Italiano'}])
+Departamento.create([{id: 'ALE', descripcion: 'Alemán', escuela_id: 'IDIO'}, {id: 'ING', descripcion: 'Inglés'}, {id: 'ITA', descripcion: 'Italiano', escuela_id: 'IDIO'}])
+
 p "#{Departamento.count} Departamentos Creados!"
 
 Usuario.create([{id: '1', password: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', password: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])
@@ -52,7 +64,7 @@ p "#{Estudiante.count} Estudiante Creado!"
 Catedradepartamento.create([{departamento_id: 'ALE', catedra_id: 'IB'}])
 p "#{Catedradepartamento.count} CatedraDepartamento Creado!"
 
-Asignatura.create([{id: 'ALEI', descripcion: 'Alemán I', anno: 1, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010101', creditos: 6, tipo: :obligatoria, }, {id: 'ALEII', descripcion: 'Alemán II', anno: 2, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010102', creditos: 5, tipo: :electiva}])
+Asignatura.create([{id: 'ALEI', descripcion: 'Alemán I', anno: 1, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010101', creditos: 6, tipoasignatura_id: :L}, {id: 'ALEII', descripcion: 'Alemán II', anno: 2, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010102', creditos: 5, tipoasignatura_id: :B}])
 p "#{Asignatura.count} Asignaturas Creadas!"
 
 Periodo.create([{id: '2018-02A', inicia: '2018-12-26', culmina: '2019-12-27'}, {id: '2017-02A', inicia: '2017-12-26', culmina: '2018-12-25'}])
