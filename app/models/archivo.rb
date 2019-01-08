@@ -411,9 +411,9 @@ class Archivo
 		estudiante = Estudiante.find id
 		periodos = Periodo.order("id ASC").all
 
-		secciones = InscripcionEnSeccion.where(estudiante_id: estudiante.usuario_id).order("asignatura_id ASC, numero DESC")
+		#secciones = Inscripcionseccion.where(estudiante_id: estudiante.usuario_id).order("asignatura_id ASC, numero DESC")
 
-		secciones = estudiante.inscripcionsecciones.joins(:seccion).order("asignatura_id ASC, numero DESC")
+		inscripcionsecciones = estudiante.inscripcionsecciones.joins(:seccion).order("asignatura_id ASC, numero DESC")
 
 		pdf = PDF::Writer.new
 
@@ -421,7 +421,7 @@ class Archivo
 		pdf.margins_cm(1.8)
 
 		# Logos
-		pdf.add_image_from_file 'app/assets/images/logo_ucv.jpg', 275, 720, 50,nil
+		# pdf.add_image_from_file "#{::Rails.root}/app/assets/images/logo_ucv.jpg", 275, 720, 50,nil
 
 		#texto del encabezado
 		pdf.add_text_wrap 50,705,510,to_utf16("UNIVERSIDAD CENTRAL DE VENEZUELA"), 12,:center
@@ -431,13 +431,13 @@ class Archivo
 		pdf.add_text_wrap 50,645,510,to_utf16("<b>Historia Académica</b>"), 12,:center
 
 		#titulo
-		pdf.add_text 50,625,to_utf16("<b>Cédula:</b> #{estudiante.cal_usuario_ci}"),9
+		pdf.add_text 50,625,to_utf16("<b>Cédula:</b> #{estudiante.usuario_id}"),9
 		pdf.add_text 50,610,to_utf16("<b>Plan:</b> #{estudiante.ultimo_plan}"),9
 		pdf.add_text 150,625,to_utf16("<b>Alumno:</b> #{estudiante.usuario.apellido_nombre.upcase}"),9
 
 		pdf.text "\n"*10
 		periodos.each do |periodo|
-			secciones_periodo = secciones.where(:periodo_id => periodo.id)
+			secciones_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
 			if secciones_periodo.count > 0
 
 

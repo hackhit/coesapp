@@ -11,8 +11,6 @@
 			= render partial: '/admin/inscripcionsecciones/form'
 %b Registro de Historial Académico:
 
-
-
 #accordion
 	- @periodos.each do |periodo|
 		- @secciones_periodo = @inscripciones.del_periodo periodo.id

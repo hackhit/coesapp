@@ -6,10 +6,10 @@ module Admin
 		# OJO: POR REVISAR
 		def seleccionar_seccion
 			@profesor = Profesor.find (session[:profesor_id])
-			@periodo_actual = ParametroGeneral.periodo_actual_id
-			@titulo = "Secciones disponibles para este período #{@periodo_actual.id}"
-			@secciones = @profesor.secciones.where(:semestre_id => @periodo_actual.id)
-			@secciones_secundarias = @profesor.secciones_secundarias.where(:periodo_id => @periodo_actual.id)
+			@periodo_actual_id = ParametroGeneral.periodo_actual_id
+			@titulo = "Secciones disponibles para este período #{@periodo_actual_id}"
+			@secciones = @profesor.secciones.del_periodo_actual
+			@secciones_secundarias = @profesor.secciones_secundarias.where(periodo_id: @periodo_actual_id)
 		end
 
 		def ver_seccion

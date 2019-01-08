@@ -51,6 +51,9 @@ Rails.application.routes.draw do
     get '/principal_estudiante/index'
 
     post '/calificar/calificar'
+    get '/calificar/seleccionar_seccion'
+    get '/calificar/ver_seccion'
+    get '/calificar/descargar_notas'
 
     # get '/historial_plan/index'
     # post '/historial_plan/create'

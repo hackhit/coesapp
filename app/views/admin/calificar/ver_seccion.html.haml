@@ -1,12 +1,21 @@
 
-.well.well-small
-	=link_to "Regresar", {action: 'seleccionar_seccion'}, class: 'btn'
-	-if true #@cal_seccion.calificada
-		=link_to "Descargar notas", {action: 'descargar_notas', id: @cal_seccion.id}, class: "btn btn-success pull-right"
+.border.p-3
+	=link_to calificar_seleccionar_seccion_path, class: 'btn btn-sm btn-outline-secondary' do
+		= glyph 'chevron-left'
+		Regresar
 
-= render partial: 'detalle_seccion'
-
-.well.well-small
-	=link_to "Regresar", {action: 'seleccionar_seccion'}, class: 'btn'
 	-if true #@cal_seccion.calificada
-		=link_to "Descargar notas", {action: 'descargar_notas', id: @cal_seccion.id}, class: "btn btn-success pull-right"
+		=link_to calificar_seleccionar_seccion_path(@seccion.id), class: "btn btn-outline-success pull-right btn-sm ml-2" do
+			= glyph 'download'
+			Descargar notas
+
+	= render partial: '/admin/calificar/detalle_seccion'
+
+
+	=link_to calificar_seleccionar_seccion_path, class: 'btn btn-sm btn-outline-secondary' do
+		= glyph 'chevron-left'
+		Regresar
+	-if true #@cal_seccion.calificada
+		=link_to calificar_seleccionar_seccion_path(@seccion.id), class: "btn btn-outline-success pull-right btn-sm ml-2" do
+			= glyph 'download'
+			Descargar notas

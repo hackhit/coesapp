@@ -68,12 +68,12 @@ class VisitorsController < ApplicationController
       redirect_to principal_admin_index_path
     elsif tipo == "Profesor" && usuario.profesor
       session[:rol] = tipo
-      session[:profesor_id] = usuario.profesor_id
+      session[:profesor_id] = usuario.profesor.id
       redirect_to principal_profesor_index_path
       return
     elsif tipo == "Estudiante"
       session[:rol] = tipo
-      session[:estudiante_id] = usuario.estudiante_id
+      session[:estudiante_id] = usuario.estudiante.id
       redirect_to principal_estudiante_index_path
       return
     end

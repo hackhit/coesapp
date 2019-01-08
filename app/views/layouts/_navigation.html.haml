@@ -1,6 +1,6 @@
 - main_path = root_path
 - main_path = principal_admin_index_path if session[:administrador_id]
-- main_path = principal_index_path if session[:estudiante_id]
+- main_path = principal_estudiante_index_path if session[:estudiante_id]
 - main_path = principal_profesor_index_path if session[:profesor_id]
 
 .container.fixed-top 
@@ -10,7 +10,7 @@
       %span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       %ul.navbar-nav.mr-auto
-        -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
+        -if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
           %li.nav-item{class: "#{'active' if controller_name.eql? 'departamentos'}"}
             = link_to 'Departamentos', departamentos_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'catedras'}"}
@@ -33,13 +33,13 @@
               = link_to 'Registrar Profesor', {controller: 'usuarios', action: 'new', profesor: true}, class: 'dropdown-item'
               = link_to 'Registrar Estudiante', {controller: 'usuarios', action: 'new', estudiante: true}, class: 'dropdown-item'
               = link_to 'Registrar Administrador', {controller: 'usuarios', action: 'new', administrador: true}, class: 'dropdown-item'
-      -if current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)    
+      -if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)    
         = form_tag({controller: :usuarios, action: :index},{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
           = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
           %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar
-        %ul.navbar-nav
-          %li.nav-item
-            %a.nav-link{:href => "mailto:soporte.coes.fhe@gmail.com"} 
-              Contáctanos
-          = render 'layouts/nav_session_options' 
+      %ul.navbar-nav
+        %li.nav-item
+          %a.nav-link{:href => "mailto:soporte.coes.fhe@gmail.com"} 
+            Contáctanos
+        = render 'layouts/nav_session_options' 
 

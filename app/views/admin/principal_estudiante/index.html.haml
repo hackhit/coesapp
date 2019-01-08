@@ -1,0 +1,64 @@
+.border
+
+-if (@usuario.email.blank? or @usuario.telefono_movil.blank? or @usuario.telefono_habitacion.blank?)
+	= render partial: 'usuario/datos_modal'
+
+- if @estudiante.combinaciones.count < 1 and not @estudiante.tipo_estado_inscripcion_id.eql? 'NUEVO' 
+	= render partial: 'estudiante/actualizar_idiomas'
+
+-if false# @estudiante.cita_horaria
+	%h3 Cita Horaria:
+	.well.well-small
+		%p
+			%b Fecha:
+			=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%A, %d de %B de %Y")).capitalize()
+			= "-"
+			%b Hora:
+			= @estudiante.cita_horaria.hora
+
+- if false#@archivos
+	%p
+		%h3= "Horario #{@periodo_actual.id}:"
+		.well.well-small
+			- @archivos.each do |archivo|
+				%p= link_to archivo, controller: 'descargar', action: 'horario', id: archivo
+
+- if false
+	%h3 Exámenes de Reparación y Suficiencia Enero 2019
+	%ul
+		%li
+			= link_to "Martes 08 Enero 2019", controller: 'descargar', action: 'archivo', id: "2019/01_RepSuf_Mar_08Ene2019"
+		%li
+			= link_to "Miércoles 09 Enero 2019", controller: 'descargar', action: 'archivo', id: "2019/01_RepSuf_Mie_09Ene2019"
+		%li
+			= link_to "Formato de Solicitud", controller: 'descargar', action: 'archivo', id: "2019/formato_solicitud_rep_sufic_201902A"
+		%li
+			= link_to "Sobre las Inscripciones", controller: 'descargar', action: 'archivo', id: "2019/SOBRE_INSCRIPCION_201902A"
+
+
+- if false #ParametroGeneral.programaciones_encendidas
+	%h3 Programaciones (Pdf):
+	%ul
+		- if @programaciones and @programaciones.count > 0
+			- @programaciones.each do |programacion|
+				%li
+					=link_to "Programación #{programacion.descripcion} - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: programacion.id, :semestre_id => @periodo_actual.id} 
+		%li=link_to "Programación Estudios Generales - Lingǘística - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_LI", :semestre_id => @periodo_actual.id} 
+
+		%li=link_to "Programación Estudios Generales - Lengua Española - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_LE", :semestre_id => @periodo_actual.id} 
+
+		%li=link_to "Programación Estudios Generales - Instrumental Obligatoria - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_IO", :semestre_id => @periodo_actual.id} 
+
+		%li=link_to "Programación Estudios Generales - Optativas - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_OPT", :semestre_id => @periodo_actual.id} 
+
+		%li=link_to "Programación Tradución e Interpretación - Interpretación - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "T&I_INT", :semestre_id => @periodo_actual.id} 
+
+		%li=link_to "Programación Tradución e Interpretación - Tradución - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "T&I_TRAD", :semestre_id => @periodo_actual.id} 
+
+- if false
+	%h3 Otros Archivos:
+	%ul
+		%li=link_to "Comunicado Sobre Inscripciones 2017-2018", {controller: 'descargar', action: 'archivo', id: "SOBRE_INSCRIP_2017-02A"}
+		%li=link_to "Horario Tentativo 2017-2018", {controller: 'descargar', action: 'archivo', id: "HORARIO_TENTATIVO_2017-02A"} 
+
+= render partial: '/admin/estudiantes/historial_academico'

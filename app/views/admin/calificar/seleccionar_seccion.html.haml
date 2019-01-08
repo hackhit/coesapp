@@ -1,28 +1,28 @@
 
 %h3 Por Calificar
 
-- @cal_secciones.each do |cal_seccion|
+- @secciones.each do |seccion|
 	%p
-		= link_to cal_seccion.descripcion, action: 'ver_seccion', id: cal_seccion.id, clalificar: true
+		= link_to seccion.descripcion, action: 'ver_seccion', id: seccion.id, clalificar: true
 
 
-		-if cal_seccion.calificada
+		-if seccion.calificada
 			%span.label.label-success Calificada
 			%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Aprobados'}
 				%span.label
-					= cal_seccion.total_aprobados
+					= seccion.total_aprobados
 			%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Reprobados'}
 				%span.label
-					= cal_seccion.total_reprobados
+					= seccion.total_reprobados
 			%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Perdidas Por Inasistencias'}
 				%span.label
-					= cal_seccion.total_perdidos
+					= seccion.total_perdidos
 		- else
 			%span.label.label-info Pendiente por calificar
 
--if @cal_secciones_secundarias and @cal_secciones_secundarias.all.count > 0
+-if @secciones_secundarias and @secciones_secundarias.all.count > 0
 	%h3 Para Participar
 
-	- @cal_secciones_secundarias.each do |cal_seccion|
-		%p= link_to cal_seccion.descripcion, action: 'ver_seccion', id: cal_seccion.id, secundaria: true
+	- @secciones_secundarias.each do |seccion|
+		%p= link_to seccion.descripcion, action: 'ver_seccion', id: seccion.id, secundaria: true
 	

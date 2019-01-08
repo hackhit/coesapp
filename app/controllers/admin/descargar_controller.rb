@@ -2,7 +2,7 @@ module Admin
 
 	class DescargarController < ApplicationController
 		before_action :filtro_logueado
-		before_action :filtro_administrador, except: [:programaciones, :cita_horaria]
+		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex]
 
 		def reportes
 			@cal_semestre_actual_id = session[:cal_parametros][:semestre_actual]
@@ -102,7 +102,7 @@ module Admin
 		end
 
 		def kardex
-			pdf = CalArchivo.hacer_kardex params[:id]
+			pdf = Archivo.hacer_kardex params[:id]
 			unless send_data pdf.render,:filename => "kardex_#{params[:id]}.pdf",:type => "application/pdf", :disposition => "attachment"
 		    	flash[:mensaje] = "En estos momentos no se pueden descargar el kardex, intentelo luego."
 		    end

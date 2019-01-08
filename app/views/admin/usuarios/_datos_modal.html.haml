@@ -1,0 +1,17 @@
+
+.modal.fade#actualizar_datos{'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false}
+	.modal-dialog
+		.modal-content
+			.alert.alert-info
+				%h4 IMPORTANTE:
+				Le recomendamos actualice sus datos para una mejor experiencia.
+			%h2#myModalLabel 
+				Actualizar Datos
+			.modal-body
+				- @cal_usuario = session[:cal_usuario]
+
+				= render partial: '/admin/usuarios/form'
+	:javascript
+		$(document).ready(function() {
+			$("#actualizar_datos").modal({keyboard: false});
+		});

@@ -40,7 +40,7 @@
 					= "(#{es.estudiante_id})"
 					= link_to_if @admin, es.estudiante.usuario.apellido_nombre, {action: 'detalle_usuario', controller: 'principal_admin', ci: es.estudiante_id}
 					%span.badge= 'Retirada' if retirada
-				- if @seccion.reparacion? or @seccion.suficienia?
+				- if @seccion.reparacion? or @seccion.suficiencia?
 					%td
 						= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: (@calificada or retirada), value: es.calificacion_final.to_i, class: 'span9', required: true, :step => 0.1, :in => 0...21}
 				
@@ -57,20 +57,20 @@
 							= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {:onclick => "pi(#{es.estudiante_id})", disabled: retirada}
 						- else
 							= es.tipo_estado_calificacion.descripcion
-					%td=number_field_tag "[est][#{es.estudiante_id}]calificacion_primera", {}, {class: 'span9', required: @es_periodo1, :step => 0.1, :in => 0...21, value: es.calificacion_primera, disabled: (@calificada or es.pi? or retirada), :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+					%td=number_field_tag "[est][#{es.estudiante_id}]primera_calificacion", {}, {class: 'span9', required: @es_periodo1, :step => 0.1, :in => 0...21, value: es.primera_calificacion, disabled: (@calificada or es.pi? or retirada), :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
 					%td.border-right.border-dark
-						%p{id: "#{es.estudiante_id}_calificacion_primera_text"}
-							= sprintf( "%0.01f", es.calificacion_primera*@p1/100) if es.calificacion_primera
+						%p{id: "#{es.estudiante_id}primera__calificacion_text"}
+							= sprintf( "%0.01f", es.primera_calificacion*@p1/100) if es.primera_calificacion
 					%td 
-						=number_field_tag "[est][#{es.estudiante_id}]calificacion_segunda", {}, {class: 'span9', required: @es_periodo2, :step => 0.1, :in => 0...21, disabled: (@calificada or es.pi? or retirada), value: es.calificacion_segunda, :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+						=number_field_tag "[est][#{es.estudiante_id}]segunda_calificacion", {}, {class: 'span9', required: @es_periodo2, :step => 0.1, :in => 0...21, disabled: (@calificada or es.pi? or retirada), value: es.segunda_calificacion, :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
 					%td.border-right.border-dark
-						%p{id: "#{es.estudiante_id}_calificacion_segunda_text"}
-							= sprintf( "%0.01f", es.calificacion_segunda*@p2/100) if es.calificacion_segunda
-					%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_tercera", {}, {class: 'span9', required: @es_periodo3, :step => 0.1, :in => 0...21, value: es.calificacion_tercera, disabled: (@calificada or es.pi? or retirada), :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+						%p{id: "#{es.estudiante_id}_segunda_calificacion_text"}
+							= sprintf( "%0.01f", es.segunda_calificacion*@p2/100) if es.segunda_calificacion
+					%td= number_field_tag "[est][#{es.estudiante_id}]tercera_calificacion", {}, {class: 'span9', required: @es_periodo3, :step => 0.1, :in => 0...21, value: es.tercera_calificacion, disabled: (@calificada or es.pi? or retirada), :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
 
 					%td.border-right.border-dark
-						%p{id: "#{es.estudiante_id}_calificacion_tercera_text"}
-							= sprintf( "%0.01f", es.calificacion_tercera*@p3/100) if es.calificacion_tercera
+						%p{id: "#{es.estudiante_id}_tercera_calificacion_text"}
+							= sprintf( "%0.01f", es.tercera_calificacion*@p3/100) if es.tercera_calificacion
 					%td
 						- valor = es.pi? ? es.tipo_estado_calificacion.descripcion : es.calificacion_final.to_i
 						- valor = 'Retirada' if retirada
@@ -85,49 +85,49 @@
 
 		if ($("#_est_"+ci+"pi").prop('checked') == true){
 
-			$("#_est_"+ci+"calificacion_primera").prop( "disabled", true );	
-			$("#_est_"+ci+"calificacion_segunda").prop( "disabled", true );
-			$("#_est_"+ci+"calificacion_tercera").prop( "disabled", true );
+			$("#_est_"+ci+"primera_calificacion").prop( "disabled", true );	
+			$("#_est_"+ci+"segunda_calificacion").prop( "disabled", true );
+			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", true );
 
-			$("#_est_"+ci+"calificacion_primera").val("");
-			$("#_est_"+ci+"calificacion_segunda").val("");
-			$("#_est_"+ci+"calificacion_tercera").val("");			
+			$("#_est_"+ci+"primera_calificacion").val("");
+			$("#_est_"+ci+"segunda_calificacion").val("");
+			$("#_est_"+ci+"tercera_calificacion").val("");			
 
-			$("#_est_"+ci+"calificacion_primera").prop( "required", false );	
-			$("#_est_"+ci+"calificacion_segunda").prop( "required", false );
-			$("#_est_"+ci+"calificacion_tercera").prop( "required", false );
+			$("#_est_"+ci+"primera_calificacion").prop( "required", false );	
+			$("#_est_"+ci+"segunda_calificacion").prop( "required", false );
+			$("#_est_"+ci+"tercera_calificacion").prop( "required", false );
 
 			$("#_est_"+ci+"calificacion_final").val("Perdida por Inasistencia");
-			$("#_est_"+ci+"calificacion_tercera").prop( "disabled", true );
+			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", true );
 				
 		}else{
-			$("#_est_"+ci+"calificacion_primera").prop( "disabled", false );	
-			$("#_est_"+ci+"calificacion_segunda").prop( "disabled", false );
-			$("#_est_"+ci+"calificacion_tercera").prop( "disabled", false );
+			$("#_est_"+ci+"primera_calificacion").prop( "disabled", false );	
+			$("#_est_"+ci+"segunda_calificacion").prop( "disabled", false );
+			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", false );
 
-			$("#_est_"+ci+"calificacion_primera").prop( "required", true );	
-			$("#_est_"+ci+"calificacion_segunda").prop( "required", true );
-			$("#_est_"+ci+"calificacion_tercera").prop( "required", true );	
+			$("#_est_"+ci+"primera_calificacion").prop( "required", true );	
+			$("#_est_"+ci+"segunda_calificacion").prop( "required", true );
+			$("#_est_"+ci+"tercera_calificacion").prop( "required", true );	
 
 			$("#_est_"+ci+"calificacion_final").val("");
-			$("#_est_"+ci+"calificacion_tercera").prop( "disabled", false );
+			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", false );
 		}
 
 	}
 
 	function calcular(p1,p2,p3,ci){
-		var nota1 = document.getElementById("_est_"+ci+"calificacion_primera").value;
-		var nota2 = document.getElementById("_est_"+ci+"calificacion_segunda").value;
-		var nota3 = document.getElementById("_est_"+ci+"calificacion_tercera").value;
+		var nota1 = document.getElementById("_est_"+ci+"primera_calificacion").value;
+		var nota2 = document.getElementById("_est_"+ci+"segunda_calificacion").value;
+		var nota3 = document.getElementById("_est_"+ci+"tercera_calificacion").value;
 		var porcen1 = (p1*nota1)/100;
 		porcen1 =  Math.round(porcen1 * 10) / 10;
 		var porcen2 = (p2*nota2)/100;
 		porcen2 =  Math.round(porcen2 * 10) / 10;		
 		var porcen3 = (p3*nota3)/100;
 		porcen3 =  Math.round(porcen3 * 10) / 10;		
-		$("#"+ci+"_calificacion_primera_text").text(porcen1);
-		$("#"+ci+"_calificacion_segunda_text").text(porcen2);
-		$("#"+ci+"_calificacion_tercera_text").text(porcen3);
+		$("#"+ci+"primera__calificacion_text").text(porcen1);
+		$("#"+ci+"_segunda_calificacion_text").text(porcen2);
+		$("#"+ci+"_tercera_calificacion_text").text(porcen3);
 		var final = (porcen1+porcen2+porcen3).toFixed(0);
 		
 		$("#_est_"+ci+"calificacion_final").val(final);
