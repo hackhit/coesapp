@@ -8,8 +8,4 @@
         %li.nav-item
           %a.nav-link{:href => "#"} Contáctanos
 
-      = button_to '¿Olvidaste tu contraseña?', visitors_olvido_clave_path, class: 'btn btn-sm btn-outline-warning mr-2'
-      = form_tag(visitors_validar_path, class: 'form-inline my-2 my-lg-0' ) do
-        = text_field_tag 'usuario[ci]', nil, {class: 'form-control mr-sm-2', placeholder: 'Cédula de Identidad'}
-        = password_field_tag 'usuario[password]', nil, {class: 'form-control mr-sm-2', placeholder: 'Contraseña'}
-        = button_tag 'Ingresar', class: 'btn btn-outline-info my-2 my-sm-0'      
+      = render 'layouts/inicio_sesion_form'

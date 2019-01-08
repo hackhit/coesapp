@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
   
   resources :tipoasignaturas
-  post '/visitors/validar'
-  get '/visitors/un_rol'
-  get '/visitors/seleccionar_rol'
-  get '/visitors/olvido_clave'
-  get '/visitors/cerrar_sesion'
+
+  resources :visitors, only: [:index] do
+    collection do
+      post :validar
+      get 'olvido_clave'
+      get 'un_rol'
+      get 'seleccionar_rol'
+      get 'cerrar_sesion'
+    end
+  end
 
 
   scope module: :admin do

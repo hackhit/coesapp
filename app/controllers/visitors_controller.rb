@@ -1,5 +1,6 @@
 class VisitorsController < ApplicationController
   layout 'visitors'
+
   def index
     aux = flash[:error]
     aux2 = flash[:danger]
@@ -52,6 +53,27 @@ class VisitorsController < ApplicationController
     @roles = usuario.roles_generales
   end
 
+
+  def cerrar_sesion
+    usuario = Usuario.find session[:usuario_ci]
+    msg = "¡Hasta pronto #{usuario.nombres}!"    
+    reset_session
+    flash[:success] = msg
+    redirect_to root_path
+  end 
+
+  def olvido_clave
+    usuario = Usuario.find session[:usuario_ci]
+    if usuario
+      # CalEstudianteMailer.olvido_clave(usuario).deliver  
+      # info_bitacora "El usuario #{usuario.descripcion} olvido su clave y la pidio recuperar"
+      flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{usuario.correo_electronico}"
+    else
+      flash[:error] = "Usuario no registrado"
+    end
+      redirect_to root_path
+  end
+
   def un_rol 
     tipo = params[:tipo]
     usuario = Usuario.find session[:usuario_ci]
@@ -78,26 +100,5 @@ class VisitorsController < ApplicationController
       return
     end
   end
-
-  def cerrar_sesion
-  	usuario = Usuario.find session[:usuario_ci]
-    msg = "¡Hasta pronto #{usuario.nombres}!"    
-    reset_session
-    flash[:success] = msg
-    redirect_to root_path
-  end 
-
-  def olvido_clave
-  	usuario = Usuario.find session[:usuario_ci]
-    if usuario
-      # CalEstudianteMailer.olvido_clave(usuario).deliver  
-      # info_bitacora "El usuario #{usuario.descripcion} olvido su clave y la pidio recuperar"
-      flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{usuario.correo_electronico}"
-    else
-      flash[:error] = "Usuario no registrado"
-    end
-      redirect_to root_path
-  end
-
 
 end
