@@ -1,10 +1,9 @@
 class Asignatura < ApplicationRecord
 
-	enum tipo: [:obligatoria, :optativa, :electiva]
-
 	# ASOCIACIONES:
 	belongs_to :catedra
 	belongs_to :departamento
+	belongs_to :tipoasignatura
 	# belongs_to :catedra_departamento, class_name: 'CatedraDepartamento', foreign_key: [:catedra_id, :departamento_id], primary_key: [:catedra_id, :departamento_id]
 
 	has_many :secciones
@@ -19,7 +18,7 @@ class Asignatura < ApplicationRecord
 	# validates :orden, presence: true
 	validates :catedra_id, presence: true
 	validates :departamento_id, presence: true
-	validates :tipo, presence: true
+	validates :tipoasignatura_id, presence: true
 
 	# SCOPE
 

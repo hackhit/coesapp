@@ -1,10 +1,10 @@
 class Tipoasignatura < ApplicationRecord
-	# Relación
+	# Relaciones:
 	has_many :asignaturas
 
-	# Validación
-	validate :id, presence: true
-	validate :descripcion, presence: true
+	# Validaciones:
+	validates :id, presence: true
+	validates :descripcion, presence: true
 
 	before_save :set_downcase_descripcion
 

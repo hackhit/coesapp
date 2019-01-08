@@ -7,15 +7,15 @@
     %dt.label.label-default= model_class.human_attribute_name(:anno)
     %dd
       %pre.prettyprint= @asignatura.anno
-    %dt.label.label-default= model_class.human_attribute_name(:tipo)
+    %dt.label.label-default= Tipo
     %dd
-      %pre.prettyprint= @asignatura.tipo.titleize
+      %pre.prettyprint= @asignatura.tipoasignatura.descripcion.titleize
     %dt.label.label-default= model_class.human_attribute_name(:departamento_id)
     %dd
-      %pre.prettyprint= @asignatura.departamento_id
+      %pre.prettyprint= @asignatura.departamento.descripcion.titleize
     %dt.label.label-default= model_class.human_attribute_name(:catedra_id)
     %dd
-      %pre.prettyprint= @asignatura.catedra_id
+      %pre.prettyprint= @asignatura.catedra.descripcion.titleize
     %dt.label.label-default= model_class.human_attribute_name(:id_uxxi)
     %dd
       %pre.prettyprint= @asignatura.id_uxxi
