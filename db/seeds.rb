@@ -8,6 +8,10 @@
 Cartelera.create(contenido: 'Sistema de Control de Estudio By Lic. Daniel Moros', activa: true)
 p "#{Cartelera.count} Cartelera Creada!"
 
+Tipoasignatura.create([{id: :L, descripcion: :obtativa}, {id: :O, descripcion: :electiva}, {id: :B, descripcion: :obligatoria}, {id: :P, descripcion: :proyecto}])
+p "#{Tipoasignatura.count} Tipo Asignaturas Creadas!"
+
+
 ParametroGeneral.create([{id: 'PERIODO_ACTUAL_ID', valor: '2018-02A'}, {id: 'ACTIVAR_PROGRAMACIONES', valor: 'ENCENDIDAS'}])
 p "#{ParametroGeneral.count} Parametro General Creado!"
 

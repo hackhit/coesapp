@@ -30,11 +30,11 @@
               - if controller_name.eql? 'usuarios'
                 %span.sr-only (current)
             .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
-              = link_to 'Registrar Profesor', {controller: 'usuarios', action: 'new', profesor: true}, class: 'dropdown-item'
-              = link_to 'Registrar Estudiante', {controller: 'usuarios', action: 'new', estudiante: true}, class: 'dropdown-item'
-              = link_to 'Registrar Administrador', {controller: 'usuarios', action: 'new', administrador: true}, class: 'dropdown-item'
+              = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
+              = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
+              = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
       -if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)    
-        = form_tag({controller: :usuarios, action: :index},{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
+        = form_tag(usuarios_path,{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
           = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
           %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar
       %ul.navbar-nav

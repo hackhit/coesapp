@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :tipoasignaturas
   post '/visitors/validar'
   get '/visitors/un_rol'
   get '/visitors/seleccionar_rol'

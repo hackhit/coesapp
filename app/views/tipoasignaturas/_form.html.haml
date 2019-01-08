@@ -1,0 +1,9 @@
+= form_for @tipoasignatura, html: { class: 'form-horizontal' } do |f|
+  .form-group
+    = f.label :descripcion, class: 'control-label col-md-2'
+    .col-md-10
+      = f.text_field :descripcion, class: 'text_field form-control'
+  .form-group
+    .col-md-offset-2.col-md-10
+      = f.submit nil, class: 'btn btn-primary'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), tipoasignaturas_path, class: 'btn btn-default'
