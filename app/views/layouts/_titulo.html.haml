@@ -2,7 +2,7 @@
 	
 	= raw (@titulo ? @titulo : action_name.titleize)
 
-	-if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
+	-if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.admin_departamento?)
 		= content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Inscribir Estudiante Existente', 'data-placement': :rigth do
 			= link_to buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success btn-sm float-left ml-1' do
 				= glyph 'plus'

@@ -10,7 +10,7 @@
       %span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       %ul.navbar-nav.mr-auto
-        -if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)
+        -if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.admin_departamento?)
           %li.nav-item{class: "#{'active' if controller_name.eql? 'departamentos'}"}
             = link_to 'Departamentos', departamentos_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'catedras'}"}
@@ -33,7 +33,7 @@
               = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
               = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
               = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
-      -if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.jefe_departamento?)    
+      -if session[:administrador_id] and current_usuario.admin? and (current_usuario.administrador.super? or current_usuario.administrador.admin_departamento?)    
         = form_tag(usuarios_path,{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
           = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
           %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar

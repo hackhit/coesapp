@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   
-  resources :escuelas
   resources :tipoasignaturas
 
   resources :visitors, only: [:index] do
@@ -16,6 +15,7 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
+    resources :escuelas
     resources :carteleras do
       member do
         get 'set_activa'
@@ -98,7 +98,7 @@ Rails.application.routes.draw do
         get :busquedas
       end
       member do
-        get 'set_estudiante'
+        post 'set_estudiante'
         post 'set_administrador'
         post 'set_profesor'
         post 'cambiar_ci'
