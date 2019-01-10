@@ -17,4 +17,16 @@ class Catedra < ApplicationRecord
 	validates :descripcion, presence: true
 	# validates :orden, presence: true
 
+	# TRIGGERS
+	before_save :set_to_upcase
+
+	def descripcion_completa
+		"#{self.descripcion.titleize} (#{departamento.descripcion_completa})"
+	end
+
+	protected
+
+	def set_to_upcase
+		self.descripcion = self.descripcion.upcase
+	end
 end
