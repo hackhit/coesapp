@@ -1,0 +1,19 @@
+%b
+	Seleccione la Cátedra:
+	=# tooltip_link_to 'Agregar nueva cátedra a éste departamento', 'plus', 'success', dep if @principal_admin_add_asig
+%div{class: @row}
+	%div{class: @col2}
+		%ul#pills-catedras-tab.nav.nav-pills.mb-3{role: :tablist, "aria-orientation" => @orientacion, class: @vertical}
+			- @catedras.each do |cat|
+				- cat_activa = (session[:cat_id].eql? cat.id) ? "active" : ""
+				%li.nav-item
+					= link_to cat.descripcion, "#cat_#{@dep.id}_#{cat.id}", "data-toggle"=> "tab", onclick: "set_tab('cat_id', '#{cat.id}')", class: "nav-link #{cat_activa}"
+
+	%div{class: @col10}
+		#pills-catedras-tabContent.tab-content
+			- @catedras.each do |cat|
+		
+				- cat_activa = (session[:cat_id].eql? cat.id) ? "active show" : ""
+				.tab-pane.fade{"aria-labelledby" => "pills-home-tab", role: :tabpanel, class: cat_activa, id: "cat_#{@dep.id}_#{cat.id}"}
+					- @asignaturas = cat.asignaturas.activas.where(departamento_id: @dep.id)#.sort_by{|a| a.orden}
+					= render '/admin/principal_admin/tabs_estructura/asignaturas'

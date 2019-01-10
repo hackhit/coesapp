@@ -7,6 +7,7 @@
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:description)
+      %th= Escuela
       %th Actividad
       %th=t '.actions', default: t("helpers.actions")
   %tbody
@@ -14,6 +15,7 @@
       %tr
         %td= plan.id
         %td= plan.descripcion
+        %td= plan.escuela.descripcion.titleize
         %td=l plan.updated_at, format: :short
         %td
           = link_to edit_plan_path(plan), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do

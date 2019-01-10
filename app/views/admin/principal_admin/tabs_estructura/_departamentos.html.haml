@@ -1,0 +1,21 @@
+%b
+	Seleccione el Departamento:
+	=# tooltip_link_to 'Agregar Nuevo Departamento', 'plus', 'success', new_departamento_path if @principal_admin_add_asig
+%div{class: @row}
+	%div{class: @col2}
+		%ul#pills-departamentos-tab.nav.nav-pills.mb-3{role: :tablist, "aria-orientation" => @orientacion, class: @vertical}
+			- @departamentos.each do |dep|
+				- dpto_activo = (session[:dpto_id].eql? dep.id) ? "active" : ""
+				%li.nav-item
+					= link_to dep.descripcion, "#dep_#{dep.id}", "data-toggle"=> "tab", onclick: "set_tab('dpto_id', '#{dep.id}');", class: "nav-link #{dpto_activo}"
+
+	%div{class: @col10}
+		#pills-departamentos-tabContent.tab-content
+			- @departamentos.each do |dep|
+				- dpto_activo = (session[:dpto_id].eql? dep.id) ? "active show" : ""
+				.tab-pane.fade{"aria-labelledby" => "pills-home-tab", role: :tabpanel, class: dpto_activo, id: "dep_#{dep.id}"}
+					- @dep = dep
+					- @catedras = dep.catedras#departamentos#.sort_by{|cate| cate.orden}
+					= render '/admin/principal_admin/tabs_estructura/catedras'
+
+

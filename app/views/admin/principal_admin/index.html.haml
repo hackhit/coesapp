@@ -2,8 +2,21 @@
 	%h3.text-muted
 		Período Académico: 
 		= "#{@periodo_actual_id}"
-.border.p-3= render partial: '/admin/principal_admin/tabs_estructura_departamentos'
+					
+
+.border.p-3= render '/admin/principal_admin/tabs_estructura/escuelas'
 
 -if (current_usuario.email.blank? or current_usuario.telefono_movil.blank? or current_usuario.telefono_habitacion.blank?)
 
 	= render partial: 'usuario/datos_modal'
+
+:javascript
+
+	function set_tab(tipo, id){
+		$.ajax({
+			url: "#{principal_admin_set_tab_path}", 
+			data: {tipo: tipo, valor: id}, 
+			dataType: 'json', 
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
+			});
+	}
