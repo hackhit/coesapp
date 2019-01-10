@@ -2,21 +2,21 @@ module Admin
   class AsignaturasController < ApplicationController
     before_action :filtro_logueado
     before_action :filtro_administrador
+    before_action :filtro_admin_puede_escribir, except: [:index, :show, :set_activa]
+    before_action :filtro_super_admin!, only: [:destroy]
     
     before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa]
 
     def set_activa
       @asignatura.activa = !@asignatura.activa
       @asignatura.save
-      @titulo = 'Asignaturas'
-      @departamentos = Departamento.all
       head :no_content
     end
     # GET /asignaturas
     # GET /asignaturas.json
     def index
       @titulo = 'Asignaturas'
-      @departamentos = Departamento.all
+      @departamentos = current_admin.departamentos
 
     end
 

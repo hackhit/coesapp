@@ -1,12 +1,10 @@
 module Admin
 	class PrincipalAdminController < ApplicationController
-
 		before_action :filtro_logueado
 		before_action :filtro_administrador
 
 		def cambiar_sesion_periodo
 			periodo_actual = Periodo.find params[:nuevo].first
-			# periodo_anterior = periodo_actual.semestre_anterior
 
 			session[:parametros][:periodo_actual] = periodo_actual.id
 			# session[:parametros][:semestre_anterior] = periodo_anterior.id
@@ -64,15 +62,8 @@ module Admin
 		def index
 			@principal_admin_add_asig = true
 			@periodo_actual_id = session[:parametros]['periodo_actual_id']
-			@departamentos = Departamento.all
-			@usuario = current_usuario
-			@admin = current_usuario.administrador
-
-			if @admin
-				@editar_asignaturas = true unless @admin.taquilla?
-				@departamentos = Departamento.where(id: @admin.departamento_id)if @admin.jefe_departamento?
-			end
-			
+			@escuelas = current_admin.escuelas
+			@editar_asignaturas = true unless current_admin.taquilla?
 		end
 		
 		def seleccionar_profesor

@@ -1,4 +1,6 @@
 class VisitorsController < ApplicationController
+    before_action :filtro_logueado, only: [:cerrar_sesion]
+
   layout 'visitors'
 
   def index

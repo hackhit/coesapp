@@ -2,9 +2,9 @@ module Admin
   class UsuariosController < ApplicationController
     before_action :filtro_logueado
     before_action :filtro_administrador
-    # before_action :set_usuario, only: [:show, :edit, :update, :destroy, :cambiar_ci, :resetear_contrasena]
-    before_action :set_usuario, except: [:index, :new, :create, :busquedas]
+    before_action :filtro_ninja!, only: [:destroy]
 
+    before_action :set_usuario, except: [:index, :new, :create, :busquedas]
 
     # GET /usuarios
     # GET /usuarios.json
@@ -44,6 +44,7 @@ module Admin
     def set_estudiante
       est = Estudiante.new
       est.usuario_id = @usuario.id
+      est.escuela_id = params[:estudiante][:escuela_id]
       if est.save
         flash[:success] = 'Estudiante registrado con éxito'
       else
@@ -61,7 +62,16 @@ module Admin
       end
 
       a.rol = params[:administrador][:rol]
-      a.departamento_id = params[:administrador][:departamento_id] if params[:administrador][:departamento_id]
+
+
+      unless params[:administrador][:departamento_id].blank?
+        a.departamento_id = params[:administrador][:departamento_id] 
+        a.escuela_id = nil
+      end
+      unless params[:administrador][:escuela_id].blank?
+        a.escuela_id = params[:administrador][:escuela_id]
+        a.departamento_id = nil
+      end
 
       if a.save
         flash[:success] = 'Administrador guardado con éxito'
@@ -114,38 +124,6 @@ module Admin
         @usuario = Usuario.find(params[:id])
       end
       redirect_to @usuario
-
-      # redirect_back fallback_location: usuario_path(@usuario)
-      # begin
-      #   cedula = Integer(params[:cedula])
-      #   connection = ActiveRecord::Base.connection()
-      #   sql = "UPDATE usuarios SET ci = '#{cedula}' where ci = '#{params[:id]}';"
-      #   connection.execute(sql)
-      #   flash[:success] = "Cambio de cédula de identidad correcto."
-      #   redirect_to usuario_path controller: 'cal_principal_admin', action: 'detalle_usuario', ci: cedula
-
-      # rescue Exception => e
-      #   flash[:error] = "Error excepcional: #{e}"
-      #   redirect_to controller: 'cal_principal_admin', action: 'detalle_usuario', ci: params[:usuario_ci]
-      # end
-
-
-      # begin
-      #   cedula = Integer(params[:cedula])
-      #   connection = ActiveRecord::Base.connection()
-      #   sql = "UPDATE usuarioS set  = '#{cedula}' where ci = '#{params[:usuario_ci]}';"
-      #   connection.execute(sql)
-      #   flash[:success] = "Cambio de cédula de identidad correcto."
-      #   redirect_to controller: 'cal_principal_admin', action: 'detalle_usuario', ci: cedula
-
-      # rescue Exception => e
-      #   flash[:error] = "Error excepcional: #{e}"
-      #   p " Error ".center(200," !! ")
-      #   p "Error excepcional: #{e}".center(200," -- ")
-      #   p " Error ".center(200," !! ")
-      #   redirect_to controller: 'cal_principal_admin', action: 'detalle_usuario', ci: params[:usuario_ci]
-      # end
-
     end
 
     # GET /usuarios/1
@@ -187,16 +165,12 @@ module Admin
     # POST /usuarios
     # POST /usuarios.json
     def create
-      p ' Creando Usuario '.center(300, '*')
       @usuario = Usuario.new(usuario_params)
       respond_to do |format|
         if @usuario.save
-          p ' Usuario Creado '.center(300, '*')
           flash[:success] = 'Usuario creado con éxito.'
           if params[:estudiante_set]
-            if e = Estudiante.create(usuario_id: @usuario.id)
-              p ' Estudiante Creado '.center(300, '*')
-
+            if e = Estudiante.create(usuario_id: @usuario.id, escuela_id: params[:estudiante][:escuela_id])
               flash[:success] = 'Estudiante creado con éxito.' 
             else
               flash[:danger] = "Error: #{e.errors.full_messages.to_sentence}"
@@ -205,7 +179,16 @@ module Admin
             a = Administrador.new
             a.usuario_id = @usuario.id
             a.rol = params[:administrador][:rol]
-            a.departamento_id = params[:administrador][:departamento_id] if params[:administrador][:departamento_id]
+
+            unless params[:administrador][:departamento_id].blank?
+              a.departamento_id = params[:administrador][:departamento_id] 
+              a.escuela_id = nil
+            end
+            unless params[:administrador][:escuela_id].blank?
+              a.escuela_id = params[:administrador][:escuela_id]
+              a.departamento_id = nil
+            end
+
             if a.save
               flash[:success] = 'Administrador creado con éxito.'
             else
@@ -265,10 +248,10 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def usuario_params
-        params.require(:usuario).permit(:ci, :nombres, :apellidos, :email, :telefono_habitacion, :telefono_movil, :password, :sexo)
+        params.require(:usuario).permit(:ci, :nombres, :apellidos, :email, :telefono_habitacion, :telefono_movil, :password, :sexo, :password_confirmation)
       end
       def administrador_params
-        params.require(:administrador).permit(:rol)
+        params.require(:administrador).permit(:rol, :departamento_id, :escuela_id)
       end
 
   end

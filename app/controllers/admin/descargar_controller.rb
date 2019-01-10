@@ -2,6 +2,7 @@ module Admin
 
 	class DescargarController < ApplicationController
 		before_action :filtro_logueado
+		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria, :kardex]
 		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex]
 
 		def reportes

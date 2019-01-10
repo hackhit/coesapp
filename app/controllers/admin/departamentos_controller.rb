@@ -1,14 +1,17 @@
 module Admin
   class DepartamentosController < ApplicationController
+    # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_administrador
+    before_action :filtro_administrador, only: [:index]
+    before_action :filtro_super_admin!, except: [:destroy]
+    before_action :filtro_ninja!, only: [:destroy]
 
     before_action :set_departamento, only: [:show, :edit, :update, :destroy]
 
     # GET /departamentos
     # GET /departamentos.json
     def index
-      @departamentos = Departamento.all
+      @departamentos = current_admin.departamentos#.select("departamentos.*")#.joins(:departamentos)# Departamento.all
       @titulo = 'Departamentos'
     end
 

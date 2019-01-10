@@ -1,7 +1,8 @@
 module Admin 
   class PlanesController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_administrador    
+    before_action :filtro_super_admin!, except: [:destroy]
+    before_action :filtro_ninja!, only: [:destroy]
     before_action :set_plan, only: [:show, :edit, :update, :destroy]
 
     # GET /planes

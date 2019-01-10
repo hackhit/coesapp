@@ -2,9 +2,15 @@ module Admin
   class SeccionesController < ApplicationController
     before_action :filtro_logueado
     before_action :filtro_admin_profe
-    
-    # before_action :set_seccion, only: [:show, :edit, :update, :destroy, :cambiar_capacidad, :agregar_profesor_secundario, :desasignar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion]
+    before_action :filtro_administrador, except: [:index]
+    before_action :filtro_admin_puede_escribir
     before_action :set_seccion, except: [:index, :new, :create]
+
+    # GET /secciones
+    # GET /secciones.json
+    def index
+      @secciones = Seccion.all
+    end
 
     def cambiar_capacidad
       @seccion.capacidad = params[:capacidad]
@@ -55,13 +61,6 @@ module Admin
       end
 
       redirect_to principal_admin_index_path
-    end
-
-
-    # GET /secciones
-    # GET /secciones.json
-    def index
-      @secciones = Seccion.all
     end
 
     # GET /secciones/1

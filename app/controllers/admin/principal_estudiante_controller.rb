@@ -1,7 +1,5 @@
 module Admin
-
 	class PrincipalEstudianteController < ApplicationController
-
 		before_action :filtro_logueado
 		before_action :filtro_estudiante
 

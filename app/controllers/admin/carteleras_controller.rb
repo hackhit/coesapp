@@ -1,7 +1,8 @@
 module Admin
   class CartelerasController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_administrador
+    before_action :filtro_super_admin!
+
     before_action :set_cartelera, only: [:show, :edit, :update, :destroy, :set_activa, :set_contenido]
 
     # GET /carteleras

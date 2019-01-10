@@ -1,7 +1,7 @@
 module Admin
 	class InscripcionseccionesController < ApplicationController
 		before_action :filtro_logueado
-		before_action :filtro_admin_profe
+		before_action :filtro_admin_puede_escribir
 		
 		def buscar_estudiante
 			@periodo_actual_id = ParametroGeneral.periodo_actual_id
@@ -33,8 +33,8 @@ module Admin
 			if @inscripciones.count > 2
 				flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path @inscripciones.first.estudiante}' class='btn btn-primary btn-small'>aquí</a> para para mayor información y realizar ajustes sobre las asignaturas" 
 				redirect_to action: 'buscar_estudiante', id: params[:id]
-			else		
-				@departamentos = Departamento.all
+			else
+				@escuelas = current_admin.escuelas	
 				@secciones_disponibles = Seccion.del_periodo_actual
 			end
 		end

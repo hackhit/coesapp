@@ -1,5 +1,8 @@
 module Admin
   class TipoEstadoCalificacionesController < ApplicationController
+    before_action :filtro_super_admin!, except: [:destroy]
+    before_action :filtro_ninja!, only: [:destroy]
+
     before_action :set_tipo_estado_calificacion, only: [:show, :edit, :update, :destroy]
 
     # GET /tipo_estado_calificaciones

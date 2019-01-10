@@ -1,7 +1,8 @@
 module Admin
   class CatedradepartamentosController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_administrador
+    before_action :filtro_admin_puede_escribir
+
     before_action :set_catedradepartamento, only: [:destroy]
 
     # POST /admin/catedradepartamentos

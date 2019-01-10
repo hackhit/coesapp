@@ -1,6 +1,5 @@
 module Admin
   class CombinacionesController < ApplicationController
-
     before_action :filtro_logueado
     before_action :filtro_administrador
 

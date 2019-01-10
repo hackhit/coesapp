@@ -2,7 +2,8 @@ module Admin
 	class CalificarController < ApplicationController
 
 		before_action :filtro_logueado
-		before_action :filtro_admin_profe
+		before_action :filtro_admin_profe, only: [:descargar_notas]
+		before_action :filtro_admin_escritor_o_profe, except: [:descargar_notas]
 		# OJO: POR REVISAR
 		def seleccionar_seccion
 			@profesor = Profesor.find (session[:profesor_id])

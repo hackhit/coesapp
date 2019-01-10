@@ -1,5 +1,8 @@
 module Admin
   class HistorialplanesController < ApplicationController
+    before_action :filtro_logueado
+    before_action :filtro_administrador
+
     before_action :set_historialplan, only: [:show, :edit, :update, :destroy]
 
     # GET /historialplan/1
