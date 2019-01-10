@@ -3,12 +3,12 @@
 %nav.mt-3
   .nav.nav-tabs
     - @departamentos.each_with_index do |dep,i|
-      -activa = (i.eql? 0) ? "" : ""
-      = link_to dep.descripcion, "#dep_#{dep.id}", "data-toggle"=> "tab", class: "#{activa} nav-item nav-link"
+      -activa = (i.eql? 0) ? "active" : ""
+      = link_to dep.descripcion_completa, "#dep_#{dep.id}", "data-toggle"=> "tab", class: "#{activa} nav-item nav-link"
 
 .tab-content
   - @departamentos.each_with_index do |dep,i|
-    -activa = (i.eql? 0) ? "" : ""
+    -activa = (i.eql? 0) ? "active" : ""
     .tab-pane{class: activa, id: "dep_#{dep.id}"}
       %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
         %thead

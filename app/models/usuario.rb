@@ -12,15 +12,14 @@ class Usuario < ApplicationRecord
 	# TRIGGERS:
 	after_initialize :set_default_sexo, :if => :new_record?
 	before_save :upcase_nombres
-	# before_validation :set_default_password
 
 	# VALIDACIONES:
-	validates :ci,  :presence => true, uniqueness: true
-	validates :nombres,  :presence => true
-	validates :apellidos, :presence => true
-	validates :sexo, :presence => true
-	validates :password, :presence => true
-	validates :password, :confirmation => true
+	validates :ci, presence: true, uniqueness: true
+	validates :nombres, presence: true
+	validates :apellidos, presence: true
+	validates :sexo, presence: true
+	validates :password, presence: true
+	validates :password, confirmation: true
 
 	# SCOPES:
 	scope :search, lambda { |clave| 
@@ -89,7 +88,7 @@ class Usuario < ApplicationRecord
 
 	def roles
 		aux = []
-		aux << " Administrador (#{administrador.rol.titleize} #{" - "+administrador.departamento.descripcion if administrador.jefe_departamento?})" if administrador
+		aux << " Administrador (#{administrador.rol.titleize} #{" - "+administrador.departamento.descripcion if administrador.admin_departamento?})" if administrador
 		aux << " Estudiante" if estudiante
 		aux << " Profesor (#{profesor.departamento.descripcion})" if profesor
 
