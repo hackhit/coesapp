@@ -5,6 +5,7 @@ class CreateAsignaturas < ActiveRecord::Migration[5.2]
       t.string :descripcion
       t.integer :anno
       t.integer :orden
+      t.integer :calificacion, default: 0
       t.boolean :activa, default: false
       t.references :departamento, type: :string, null: false
       t.references :catedra, type: :string, null: false

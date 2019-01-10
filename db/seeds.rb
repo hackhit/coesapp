@@ -8,20 +8,19 @@
 Cartelera.create(contenido: 'Sistema de Control de Estudio By Lic. Daniel Moros', activa: true)
 p "#{Cartelera.count} Cartelera Creada!"
 
-Escuela.create([{id: 'ARTE', descripcion: 'ESCUELA DE ARTES'}, 
-	{id: 'BIAR', descripcion: 'ESCUELA DE BIBLIOTECOLOGÍA Y ARCHIVOLOGÍA'}, 
-	{id: 'COMU', descripcion: 'ESCUELA DE COMUNICACIÓN SOCIAL'}, 
-	{id: 'EDUC', descripcion: 'ESCUELA DE EDUCACIÓN'},
-	{id: 'FILO', descripcion: 'ESCUELA DE FILOSOFÍA'},
-	{id: 'GEOG', descripcion: 'ESCUELA DE GEOGRAFÍA'},
-	{id: 'HIST', descripcion: 'ESCUELA DE HISTORIA'},
-	{id: 'IDIO', descripcion: 'ESCUELA DE IDIOMAS MODERNOS'},
-	{id: 'LETR', descripcion: 'ESCUELA DE LETRAS'},
-	{id: 'PSIC', descripcion: 'ESCUELA DE PSICOLOGÍA'} ])
+Escuela.create([{id: 'ARTE', descripcion: 'ARTES'}, 
+	{id: 'BIAR', descripcion: 'BIBLIOTECOLOGÍA Y ARCHIVOLOGÍA'}, 
+	{id: 'COMU', descripcion: 'COMUNICACIÓN SOCIAL'}, 
+	{id: 'EDUC', descripcion: 'EDUCACIÓN'},
+	{id: 'FILO', descripcion: 'FILOSOFÍA'},
+	{id: 'GEOG', descripcion: 'GEOGRAFÍA'},
+	{id: 'HIST', descripcion: 'HISTORIA'},
+	{id: 'IDIO', descripcion: 'IDIOMAS MODERNOS'},
+	{id: 'LETR', descripcion: 'LETRAS'},
+	{id: 'PSIC', descripcion: 'PSICOLOGÍA'} ])
 
 Tipoasignatura.create([{id: :L, descripcion: :obtativa}, {id: :O, descripcion: :electiva}, {id: :B, descripcion: :obligatoria}, {id: :P, descripcion: :proyecto}])
 p "#{Tipoasignatura.count} Tipo Asignaturas Creadas!"
-
 
 ParametroGeneral.create([{id: 'PERIODO_ACTUAL_ID', valor: '2018-02A'}, {id: 'ACTIVAR_PROGRAMACIONES', valor: 'ENCENDIDAS'}])
 p "#{ParametroGeneral.count} Parametro General Creado!"
@@ -45,20 +44,20 @@ p "#{TipoEstadoCalificacion.count} TipoEstadoCalificaciones Creadas!"
 Catedra.create([{id: 'IB', descripcion: 'Idioma Básico'}, {id: 'GE', descripcion: 'Gramática y Especialización'}, ])
 p "#{Catedra.count} Catedra Creada!"
 
-Departamento.create([{id: 'ALE', descripcion: 'Alemán', escuela_id: 'IDIO'}, {id: 'ING', descripcion: 'Inglés'}, {id: 'ITA', descripcion: 'Italiano', escuela_id: 'IDIO'}])
+Departamento.create([{id: 'ALE', descripcion: 'Alemán', escuela_id: 'IDIO'}, {id: 'ING', descripcion: 'Inglés', escuela_id: 'IDIO'}, {id: 'ITA', descripcion: 'Italiano', escuela_id: 'IDIO'}])
 
 p "#{Departamento.count} Departamentos Creados!"
 
-Usuario.create([{id: '1', password: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', password: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])
+Usuario.create([{id: '1', password: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', password: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}, {id: '3', password: '3', nombres: 'Jefe de', apellidos: 'Facultad', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])
 p "#{Usuario.count} Usuarios Creados!"
 
-Administrador.create!([{usuario_id: 1, rol: 0},{usuario_id: 2, rol: 1, departamento_id: 'ALE'}])
+Administrador.create!([{usuario_id: 1, rol: 0},{usuario_id: 2, rol: 2, departamento_id: 'ALE'}, {usuario_id: 3, rol: 1, escuela_id: 'IDIO'}])
 p "#{Administrador.count} Admin Creado!"
 
 Profesor.create([{usuario_id: 1, departamento_id: 'ALE'}, {usuario_id: 2, departamento_id: 'ALE'}])
 p "#{Profesor.count} Profesor Creado!"
 
-Estudiante.create([{usuario_id: 2}])
+Estudiante.create([{usuario_id: 2, activo: true, escuela_id: 'IDIO'}])
 p "#{Estudiante.count} Estudiante Creado!"
 
 Catedradepartamento.create([{departamento_id: 'ALE', catedra_id: 'IB'}])
@@ -70,7 +69,7 @@ p "#{Asignatura.count} Asignaturas Creadas!"
 Periodo.create([{id: '2018-02A', inicia: '2018-12-26', culmina: '2019-12-27'}, {id: '2017-02A', inicia: '2017-12-26', culmina: '2018-12-25'}])
 p "#{Periodo.count} Periodos Creados!"
 
-Plan.create([{id: 'G270', descripcion: 'Lic. Traducción e Interpretación'}, {id: 'G280', descripcion: 'Lic. Traducción'}, {id: 'G290', descripcion: 'Lic. Idiomas Modernos'}])
+Plan.create([{id: 'G270', descripcion: 'Lic. Traducción e Interpretación', escuela_id: 'IDIO'}, {id: 'G280', descripcion: 'Lic. Traducción', escuela_id: 'IDIO'}, {id: 'G290', descripcion: 'Lic. Idiomas Modernos', escuela_id: 'IDIO'}])
 p "#{Plan.count} Planes Creados!"
 
 Historialplan.create([{estudiante_id: 2, periodo_id: Periodo.first.id, plan_id: Plan.first.id}])
