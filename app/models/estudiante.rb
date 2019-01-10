@@ -1,10 +1,8 @@
 class Estudiante < ApplicationRecord
 	# ASOCIACIONES:
 	belongs_to :usuario, foreign_key: :usuario_id 
-	accepts_nested_attributes_for :usuario
-
 	belongs_to :tipo_estado_inscripcion
-	accepts_nested_attributes_for :tipo_estado_inscripcion
+	belongs_to :escuela
 
 	has_many :historialplanes	
 	accepts_nested_attributes_for :historialplanes
