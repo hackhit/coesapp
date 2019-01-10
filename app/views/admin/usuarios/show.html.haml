@@ -15,8 +15,8 @@
     = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
 
   - unless @estudiante
-    = btn_success 'plus', set_estudiante_usuario_path(@usuario), 'Registrar como estudiante', 'Estudiante' 
-
+    = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'set_estudiante'
+    = render '/admin/usuarios/set_estudiante'
   - unless @administrador
     = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'
     = render '/admin/usuarios/set_administrador'

@@ -15,11 +15,17 @@
               %h6.col-md-12 Rol del Adminstrador
               .col-md-12
                 = select_tag '[administrador]rol', options_for_select(Administrador.roles.map {|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text_field form-control', id: :roles_admin
-            #jefeDepartamento.hideble
+            #adminDepartamento.hideble
               .form-group
                 %h6.col-md-12 Departamento
                 .col-md-12
-                  = collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})
+                  = grouped_collection_select :administrador, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, { class: 'text_field form-control'}
+                  =# collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion_completa, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})                  
+            #adminEscuela.hideble
+              .form-group
+                %h6.col-md-2 Escuela
+                .col-md-10
+                  = collection_select(:administrador, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
 
           .modal-footer
             %a.btn{data: {dismiss: 'modal'}} Cancelar
@@ -28,10 +34,23 @@
 
 :javascript
   $('#roles_admin').on('change',function(evt){ 
-    if ($(this).val() == 'jefe_departamento') {
-      alert ('Por favor Seleccione Departamento para el Jefe de Departamento');
-      $('#jefeDepartamento').show();
+    if ($(this).val() == 'admin_departamento') {
+      $('#adminDepartamento').show();
+      $("#administrador_departamento_id").prop('required',true);
+
     }else{
-      $('#jefeDepartamento').hide();
+      $('#adminDepartamento').hide();
+      $("#administrador_departamento_id").prop('required',false);
     };
+
+    if ($(this).val() == 'admin_escuela') {
+      $('#adminEscuela').show();
+      $("#administrador_escuela_id").prop('required',true);
+
+    }else{
+      $('#adminEscuela').hide();
+      $("#administrador_escuela_id").prop('required',false);
+
+    };
+
   });
