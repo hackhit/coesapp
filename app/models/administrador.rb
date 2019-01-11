@@ -52,6 +52,10 @@ class Administrador < ApplicationRecord
 		aux += " (#{self.escuela.descripcion})" if self.escuela
 		return aux
 	end
+
+	def puede_escribir?
+		!self.taquilla?
+	end
 	
 	# FUNCIONES PROTEGIDAS
 	protected
@@ -61,9 +65,5 @@ class Administrador < ApplicationRecord
 	def set_to_nil
 		self.departamento_id = nil if self.departamento_id.blank?
 		self.escuela_id = nil if self.escuela_id.blank?
-	end
-
-	def puede_escribir?
-		!self.taquilla?
 	end
 end

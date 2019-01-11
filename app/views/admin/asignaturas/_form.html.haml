@@ -19,7 +19,21 @@
   .form-group
     = f.label :tipo, class: 'control-label col-md-2', value: 'Tipo de asignatura'
     .col-md-10
-      = f.select(:tipoasignatura_id, Tipoasignatura.all.collect{|tipo| [tipo.descripcion.titleize,tipo.id]}, {prompt: 'Selecciona tipo Asignatura...'}, {required: true, class: "form-control text_field"})
+      .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+        - Tipoasignatura.order("created_at DESC").all.each do |asignatura| 
+          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: asignatura.descripcion.titleize}
+            = radio_button_tag '[asignatura]tipoasignatura_id', asignatura.id, false, required: true
+            = asignatura.id
+      =# f.select(:tipoasignatura_id, Tipoasignatura.all.collect{|tipo| [tipo.descripcion.titleize,tipo.id]}, {prompt: 'Selecciona tipo Asignatura...'}, {required: true, class: "form-control text_field"})
+
+  .form-group
+    = f.label :tipo, class: 'control-label col-md-2', value: 'Tipo de calificación'
+    .col-md-10
+      .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+        - Asignatura.calificaciones.map do |k,v| 
+          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+            = radio_button_tag '[asignatura]calificacion', k, false, required: true
+            = k[0].upcase
   .form-group
     = f.label :id_uxxi, class: 'control-label col-md-2', value: 'Código Uxxi'
     .col-md-10

@@ -1,9 +1,2 @@
-- if params[:estudiante]
-	%h1 Nuevo: Estudiante
-- elsif params[:administrador]
-	%h1 Nuevo: Administrador
-- elsif params[:profesor]
-	%h1 Nuevo: Profesor	
-- else
-	- model_class = Usuario
-= render partial: "form"
+
+.border.m-3.p-3= render partial: "form"

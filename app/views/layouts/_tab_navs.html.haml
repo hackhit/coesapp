@@ -1,0 +1,20 @@
+%b Seleccione la Escuela:
+
+%div{class: @row}
+	%div{class: @col2}
+		%ul#pills-escuelas-tab.nav.nav-pills.mb-3{role: :tablist, "aria-orientation" => @orientacion, class: @vertical}
+			- @escuelas.each do |esc|
+				- esc_activo = (session[:esc_id].eql? esc.id) ? "active" : ""
+				%li.nav-item
+					= link_to esc.descripcion, "#esc_#{esc.id}", "data-toggle"=> "tab", onclick: "set_tab('esc_id', '#{esc.id}');", class: "nav-link #{esc_activo}"
+
+	%div{class: @col10}
+		#pills-escuelas-tabContent.tab-content
+			- @escuelas.each do |esc|
+				- esc_activo = (session[:esc_id].eql? esc.id) ? "active show" : ""
+				.tab-pane.fade{"aria-labelledby" => "pills-escuelas-tab", role: :tabpanel, class: esc_activo, id: "esc_#{esc.id}"}
+					- if @current_admin.admin_departamento?
+						- @departamentos = current_admin.departamentos
+					- else
+						- @departamentos = esc.departamentos
+					= render '/admin/principal_admin/tabs_estructura/departamentos'

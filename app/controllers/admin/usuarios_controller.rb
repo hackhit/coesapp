@@ -153,7 +153,15 @@ module Admin
 
     # GET /usuarios/new
     def new
-      @titulo = "Nuevo Usuario"
+      if params[:estudiante]
+        @titulo = "Nuevo Estudiante"
+      elsif params[:profesor]
+        @titulo = "Nuevo Profesor"
+      elsif params[:administrador]
+        @titulo = "Nuevo Administrador"
+      else
+        @titulo = "Nuevo Usuario"
+      end
       @usuario = Usuario.new
     end
 

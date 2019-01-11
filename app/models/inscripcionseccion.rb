@@ -6,6 +6,7 @@ class Inscripcionseccion < ApplicationRecord
 	belongs_to :estudiante, primary_key: :usuario_id
 	belongs_to :tipo_estado_calificacion
 	belongs_to :tipo_estado_inscripcion
+	belongs_to :tipoasignatura, optional: true
 
 	# TRIGGERS:
 	after_initialize :set_default, :if => :new_record?

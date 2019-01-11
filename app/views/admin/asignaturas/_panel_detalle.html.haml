@@ -5,6 +5,7 @@
 			%table.table.table-bordered.table-striped.table-sm.table-hover
 				%thead
 					%tr
+						%th T
 						%th Sec.
 						%th Profesor Tutor (Calificador)
 						%th{style: 'width: 35%'} Profesores Secundarios
@@ -15,6 +16,7 @@
 				%tbody
 					- @secciones.each do |seccion|
 						%tr
+							%td.tooltip-btn{'data_toggle': :tooltip, title: seccion.tipo_seccion.descripcion.titleize}= seccion.tipo_seccion_id.upcase
 							%td= seccion.numero
 							%td
 								= "#{seccion.descripcion_profesor_asignado}"
@@ -60,7 +62,7 @@
 									%span.badge.badge-info Por calificar
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
 										%span.badge.badge-dark= seccion.total_sin_calificar
-							- if @admin and @admin.altos?
+							- if @current_admin and @current_admin.altos? 
 								%td
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
 										= link_to "", {href: acta_examen_excel_descargar_path(seccion.id), class: 'btn btn-info btn-success btn-sm'},{role: 'button'} do
@@ -80,7 +82,7 @@
 											= glyph 'list'
 											= glyph 'check'
 											
-									-if @admin and @admin.super?
+									- if @current_admin and @current_admin.super?
 										-if seccion.calificada
 											
 											%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=> 'Habilitar para Calificar Nuevamente'}

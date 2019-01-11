@@ -1,4 +1,39 @@
 module ApplicationHelper
+
+	def colocar_nav_tab name, objetos, contenido = nil, vertical = false
+		if vertical
+			verti = 'flex-column'
+			orientacion = 'vertical'
+			row = 'row'
+			col2 = 'col-2'
+			col10 = 'col-10'
+		else
+			verti = ''
+			orientacion = ''
+			row = ''
+			col2 = ''
+			col10 = ''			
+		end
+
+		content_tag :b do "Seleccione #{name.titleize}" end
+		capture_haml do 
+			haml_tag :div, class: row do
+				haml_tag :div, class: col2 do
+					haml_tag :ul, class: "nav nav-pills mb-3 #{verti}", role: :tablist, "aria-orientation": orientacion, id: "pills-#{name}-tab" do
+						capture_haml do 
+							objetos.each do |obj|
+								haml_tag :li, class: 'nav-item' do
+									activo = (session["#{name}_id"].eql? obj.id) ? "active" : ""
+									link_to obj.descripcion, "##{name}_#{obj.id}", "data-toggle": :tab, onclick: "alert('#{name}_id', '#{obj.id}');", class: "nav-link #{activo}"
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
 	def btn_tooltip_link_to title_tooltip, title, icon_name, btn_type, path
 		content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: title_tooltip do
 			link_to path, class: "btn #{btn_type}" do
