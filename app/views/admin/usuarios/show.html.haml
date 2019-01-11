@@ -6,21 +6,20 @@
         %td= rol
 
 - if current_usuario.administrador.maestros?
-  %h3
-    - if @estudiante and @estudiante.valido_para_inscribir?
-      = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
-
+  %h6
+    Agregar Roles:
     - unless @estudiante
       = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'set_estudiante'
       = render '/admin/usuarios/set_estudiante'
     - unless @administrador
       = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'
       = render '/admin/usuarios/set_administrador'
-
     - unless @profesor
       = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'set_profesor'
       = render '/admin/usuarios/set_profesor'
 
+    - if @estudiante and @estudiante.valido_para_inscribir?
+      = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
 %nav
   .nav.nav-tabs
     = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: 'nav-item nav-link'

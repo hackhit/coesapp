@@ -16,7 +16,7 @@
 	%li
 		%b Nombre:	
 		= @usuario.nombre_completo
-	- if @admin and @admin.super?
+	- if current_usuario.administrador.ninja?
 		%li
 			%b Contraseña:
 			= @usuario.password

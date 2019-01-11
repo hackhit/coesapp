@@ -5,6 +5,10 @@
 				.alert.alert-info
 					%h4 IMPORTANTE:
 					Le recomendamos actualice sus datos para una mejor experiencia.
+				- if current_usuario.ci.eql? current_usuario.password
+					.alert.alert-warning
+						%b Atención:
+						Cambie su contraseña a un valor distinto a la cédula de identidad
 				%h2#myModalLabel.text-center
 					Actualizar Datos
 				.modal-body
