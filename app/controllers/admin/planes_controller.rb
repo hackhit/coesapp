@@ -41,6 +41,8 @@ module Admin
           format.html { redirect_to @plan, notice: 'Plan creado con éxtio.' }
           format.json { render :show, status: :created, location: @plan }
         else
+          flash[:danger] = "Error al intentar crear el plan: #{@plan.errors.full_messages.to_sentence}"
+
           format.html { render :new }
           format.json { render json: @plan.errors, status: :unprocessable_entity }
         end
@@ -55,6 +57,7 @@ module Admin
           format.html { redirect_to @plan, notice: 'Plan actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @plan }
         else
+          flash[:danger] = "Error al intentar actualizar el plan: #{@plan.errors.full_messages.to_sentence}"
           format.html { render :edit }
           format.json { render json: @plan.errors, status: :unprocessable_entity }
         end
