@@ -5,9 +5,7 @@
 - if current_usuario.administrador.altos?
 	.border.p-3= render '/admin/principal_admin/tabs_estructura/escuelas'
 
-- if (current_usuario.email.blank? or current_usuario.telefono_movil.blank? or current_usuario.telefono_habitacion.blank?)
-
-	= render partial: '/admin/usuarios/datos_modal'
+= render partial: '/admin/usuarios/datos_modal'
 
 :javascript
 

@@ -229,23 +229,26 @@ module Admin
     # PATCH/PUT /usuarios/1.json
     def update
       respond_to do |format|
-        if @usuario.update(usuario_params)
-          if current_admin
-            if current_admin.altos?
-              url_back = @usuario
-            else
-              url_back = principal_admin_index_path
-            end
-          elsif current_usuario.estudiante
-            url_back = principal_estudiante_index_path
-          elsif current_usuario.profesor
-            url_back = principal_profesor_index_path
+        if current_admin
+          if current_admin.maestros?
+            url_back = @usuario
+          else
+            url_back = principal_admin_index_path
           end
-            
-          format.html { redirect_to url_back, success: 'Usuario actualizado con éxito.' }
+        elsif current_usuario.estudiante
+          url_back = principal_estudiante_index_path
+        elsif current_usuario.profesor
+          url_back = principal_profesor_index_path
+        end
+        if @usuario.update(usuario_params)
+          
+          flash[:success] = "Usuario actualizado con éxito"
+          format.html { redirect_to url_back}
           format.json { render :show, status: :ok, location: @usuario }
         else
-          format.html { render :edit }
+          flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}"
+
+          format.html { redirect_to url_back }
           format.json { render json: @usuario.errors, status: :unprocessable_entity }
         end
       end

@@ -31,6 +31,18 @@ class Administrador < ApplicationRecord
 		end
 	end
 
+	def desc_rol
+		if self.ninja?
+			return "Maestro"
+		elsif self.admin_escuela?
+			return "Admin Esc. #{self.escuela_id.titleize}"
+		elsif self.admin_departamento?
+			return "Admin Dpto. #{self.departamento_id.capitalize} (#{self.departamento.escuela_id.capitalize})"
+		else
+			return self.rol.titleize
+		end
+	end
+
 	def departamentos
 		if self.admin_escuela? 
 			self.escuela.departamentos

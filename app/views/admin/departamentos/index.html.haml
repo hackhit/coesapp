@@ -36,10 +36,12 @@
         %td= departamento.inscripcionsecciones.count
         %td=l departamento.updated_at, format: :short
         %td
-          = link_to departamento_path(departamento), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
+          = link_to departamento_path(departamento), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'
-          = link_to edit_departamento_path(departamento), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-            = glyph 'pencil'          
-          = link_to departamento_path(departamento), method: :delete, data: { confirm: 'Esta acción eliminará irreversiblemente tadas las asignaturas y asociaciones con cátedras del sistema. ¿Está Seguro?'}, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-            .text-danger{style:"color:red;"}= glyph 'trash'
+          = link_to edit_departamento_path(departamento), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+            = glyph 'pencil'
+          - if current_usuario.administrador.ninja?
+            = link_to departamento_path(departamento), method: :delete, data: { confirm: 'Esta acción eliminará irreversiblemente tadas las asignaturas y asociaciones con cátedras del sistema. ¿Está Seguro?'}, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+              .text-danger{style:"color:red;"}
+              = glyph 'trash'
 

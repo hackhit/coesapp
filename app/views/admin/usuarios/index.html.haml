@@ -2,7 +2,8 @@
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
-      %th.span3 Roles
+      - if @admin.maestros? 
+        %th.span3 Roles
       %th Plan
       %th.span4 Nombre y Apellido
       %th Cédula
@@ -16,7 +17,7 @@
       %tr
         %td
           %table.table        
-            - u.roles_generales.each do |rol| 
+            - u.roles.each do |rol| 
               %tr
                 %td= rol
         %td

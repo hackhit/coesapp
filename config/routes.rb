@@ -40,6 +40,7 @@ Rails.application.routes.draw do
     get '/principal_admin/set_tab'
     get '/principal_admin/ver_seccion_admin'
     get '/principal_admin/detalle_usuario'
+    get '/principal_admin/habilitar_calificar'
 
     resources :inscripcionsecciones do
       collection do 

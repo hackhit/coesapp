@@ -1,7 +1,6 @@
 .border
 
--if (@usuario.email.blank? or @usuario.telefono_movil.blank? or @usuario.telefono_habitacion.blank?)
-	= render partial: 'usuario/datos_modal'
+= render partial: 'usuario/datos_modal'
 
 - if @estudiante.combinaciones.count < 1 and not @estudiante.tipo_estado_inscripcion_id.eql? 'NUEVO' 
 	= render partial: 'estudiante/actualizar_idiomas'
