@@ -22,7 +22,6 @@ class ApplicationController < ActionController::Base
 		@current_usuario ||= Usuario.find(session[:usuario_ci]) if session[:usuario_ci]
 	end
 
-
 	def current_admin
 		@current_admin ||= Administrador.find(session[:administrador_id]) if session[:administrador_id]
 	end

@@ -163,10 +163,12 @@ module Admin
         @titulo = "Nuevo Usuario"
       end
       @usuario = Usuario.new
+      @current_admin = current_admin
     end
 
     # GET /usuarios/1/edit
     def edit
+      @current_admin = current_admin
       @titulo = "Editar Usuario: #{@usuario.descripcion}"
     end
 
@@ -229,7 +231,15 @@ module Admin
     def update
       respond_to do |format|
         if @usuario.update(usuario_params)
-          format.html { redirect_to @usuario, notice: 'Usuario actualizado con éxito.' }
+          if current_admin
+            url_back = @usuario 
+          elsif current_usuario.estudiante
+            url_back = principal_estudiante_index_path
+          elsif current_usuario.profesor
+            url_back = principal_profesor_index_path
+          end
+            
+          format.html { redirect_to url_back, success: 'Usuario actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @usuario }
         else
           format.html { render :edit }

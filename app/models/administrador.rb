@@ -43,7 +43,7 @@ class Administrador < ApplicationRecord
 	end
 
 	def altos?
-		self.super? or self.admin_departamento?
+		self.super? or self.admin_escuela? 
 	end
 
 	def descripcion

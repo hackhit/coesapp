@@ -1,7 +1,7 @@
 class Usuario < ApplicationRecord
 	# VARIABLES:
 	self.primary_key = :ci
-	enum sexo: [:F, :M]
+	enum sexo: [:Femenino, :Masculino]
 	attr_accessor :password_confirmation
 
 	# ASOCIACIONES:
@@ -121,7 +121,7 @@ class Usuario < ApplicationRecord
 	end
 
 	def set_default_sexo
-		self.sexo ||= :F
+		self.sexo ||= :Femenino
 	end
 
 

@@ -46,11 +46,17 @@
   .form-group
     = f.label :nombres, class: 'control-label col-md-2'
     .col-md-10
-      = f.text_field :nombres, required: true, class: 'text_field form-control upcase'
+      - if @current_admin and @current_admin.altos?  
+        = f.text_field :nombres, required: true, class: 'text_field form-control upcase'
+      - else
+        .text_field.form-control.text-muted= @usuario.nombres
   .form-group
     = f.label :apellidos, class: 'control-label col-md-2'
     .col-md-10
-      = f.text_field :apellidos, required: true, class: 'text_field form-control upcase'
+      - if @current_admin and @current_admin.altos?
+        = f.text_field :apellidos, required: true, class: 'text_field form-control upcase'
+      - else
+        .text_field.form-control.text-muted= @usuario.apellidos
   .form-group
     = f.label :email, class: 'control-label col-md-2'
     .col-md-10
@@ -66,7 +72,13 @@
   .form-group
     = f.label :sexo, class: 'control-label col-md-2'
     .col-md-10
-      = f.select(:sexo, Usuario.sexos.keys.map {|sexo| [sexo.titleize,sexo]},{}, {class: 'text_field form-control', required: true})
+      =# f.select(:sexo, Usuario.sexos.keys.map {|sexo| [sexo.titleize,sexo]},{}, {class: 'text_field form-control', required: true})
+
+      .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+        - Usuario.sexos.map do |k,v| 
+          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+            = radio_button_tag '[usuario]sexo', k, false, required: true
+            = k[0].upcase      
   .form-group
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'

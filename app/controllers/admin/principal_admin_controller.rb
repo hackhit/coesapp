@@ -60,6 +60,7 @@ module Admin
 		end
 
 		def index
+			@usuario = current_usuario
 			@principal_admin_add_asig = true
 			@periodo_actual_id = session[:parametros]['periodo_actual_id']
 			@escuelas = current_admin.escuelas
