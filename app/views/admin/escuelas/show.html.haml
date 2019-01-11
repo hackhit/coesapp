@@ -1,12 +1,13 @@
-%p#notice= notice
+- model_class = Escuela
+.fieldset
+  %dl
+    %dt.label.label-default= model_class.human_attribute_name(:descripcion)
+    %dd
+      %pre.prettyprint= @escuela.descripcion
 
-%p
-  %b Descripcion:
-  = @escuela.descripcion
-%p
-  %b Id:
-  = @escuela.id
-
-= link_to 'Edit', edit_escuela_path(@escuela)
-\|
-= link_to 'Back', escuelas_path
+.form-group
+  = link_to t('.back', default: t("helpers.links.back")), escuelas_path, class: 'btn btn-outline-secondary btn-sm'
+  = link_to t('.edit', default: t("helpers.links.edit")), edit_escuela_path(@escuela), class: 'btn btn-outline-info btn-sm'
+  - if current_usuario.administrador.ninja?
+    = link_to escuela_path(@escuela), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-outline-danger btn-sm' do
+      = glyph 'trash'

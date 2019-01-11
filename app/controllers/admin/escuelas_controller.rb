@@ -10,21 +10,25 @@ module Admin
     # GET /escuelas
     # GET /escuelas.json
     def index
+      @titulo = "Escuelas"
       @escuelas = Escuela.all
     end
 
     # GET /escuelas/1
     # GET /escuelas/1.json
     def show
+      @titulo = "Escuela #{@escuela.descripcion.titleize}"
     end
 
     # GET /escuelas/new
     def new
+      @titulo = "Nueva Escuela"
       @escuela = Escuela.new
     end
 
     # GET /escuelas/1/edit
     def edit
+      @titulo = "Editando Escuela: #{@escuela.descripcion}"
     end
 
     # POST /escuelas
@@ -34,7 +38,7 @@ module Admin
 
       respond_to do |format|
         if @escuela.save
-          format.html { redirect_to @escuela, notice: 'Escuela was successfully created.' }
+          format.html { redirect_to @escuela, notice: 'Escuela creada con éxito.' }
           format.json { render :show, status: :created, location: @escuela }
         else
           format.html { render :new }
@@ -48,7 +52,7 @@ module Admin
     def update
       respond_to do |format|
         if @escuela.update(escuela_params)
-          format.html { redirect_to @escuela, notice: 'Escuela was successfully updated.' }
+          format.html { redirect_to @escuela, notice: 'Escuela actualizada con éxito.' }
           format.json { render :show, status: :ok, location: @escuela }
         else
           format.html { render :edit }
@@ -62,7 +66,7 @@ module Admin
     def destroy
       @escuela.destroy
       respond_to do |format|
-        format.html { redirect_to escuelas_url, notice: 'Escuela was successfully destroyed.' }
+        format.html { redirect_to escuelas_url, notice: 'Escuela eliminada satisfactoriamente.' }
         format.json { head :no_content }
       end
     end
