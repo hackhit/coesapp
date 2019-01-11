@@ -64,7 +64,7 @@ module Admin
 			@principal_admin_add_asig = true
 			@periodo_actual_id = session[:parametros]['periodo_actual_id']
 			@escuelas = current_admin.escuelas
-			@editar_asignaturas = true unless current_admin.taquilla?
+			@editar_asignaturas = true if current_usuario.administrador.mas_altos?
 		end
 		
 		def seleccionar_profesor

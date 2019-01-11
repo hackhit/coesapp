@@ -4,11 +4,18 @@
     %dt.label.label-default= model_class.human_attribute_name(:descripcion)
     %dd
       %pre.prettyprint= @catedra.descripcion
-    %dt.label.label-default= model_class.human_attribute_name(:orden)
-    %dd
-      %pre.prettyprint= @catedra.orden
 
 .form-group
-  = link_to t('.back', default: t("helpers.links.back")), catedras_path, class: 'btn btn-default'
-  = link_to t('.edit', default: t("helpers.links.edit")), edit_catedra_path(@catedra), class: 'btn btn-default'
-  = link_to t('.destroy', default: t("helpers.links.destroy")), catedra_path(@catedra), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger'
+  = link_to catedras_path, class: 'btn btn-outline-secondary ml-2' do
+    = glyph 'chevron-left'
+    = t('.back', default: t("helpers.links.back"))
+  
+  - if current_usuario and current_usuario.administrador.maestros?
+    = link_to edit_catedra_path(@catedra), class: 'btn btn-outline-info ml-2' do
+      = glyph 'edit'
+      = t('.edit', default: t("helpers.links.edit"))
+
+  - if current_usuario and current_usuario.administrador.ninja?
+    = link_to catedra_path(@catedra), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-outline-danger ml-2' do
+      = glyph 'trash'
+      = t('.destroy', default: t("helpers.links.destroy"))

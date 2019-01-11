@@ -1,16 +1,15 @@
 module Admin
   class UsuariosController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_administrador
+    before_action :filtro_administrador, except: [:update]
+    before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :update]
+    before_action :filtro_super_admin!, only: [:set_administrador, :set_estudiante, :set_profesor]
     before_action :filtro_ninja!, only: [:destroy]
 
     before_action :set_usuario, except: [:index, :new, :create, :busquedas]
 
     # GET /usuarios
     # GET /usuarios.json
-    # def index
-    #   @usuarios = Usuario.all
-    # end
 
     def busquedas
       @usuarios = Usuario.search(params[:term])
@@ -232,7 +231,11 @@ module Admin
       respond_to do |format|
         if @usuario.update(usuario_params)
           if current_admin
-            url_back = @usuario 
+            if current_admin.altos?
+              url_back = @usuario
+            else
+              url_back = principal_admin_index_path
+            end
           elsif current_usuario.estudiante
             url_back = principal_estudiante_index_path
           elsif current_usuario.profesor

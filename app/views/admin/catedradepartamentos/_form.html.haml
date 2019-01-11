@@ -1,6 +1,6 @@
 - if @catedras_disponibles and @catedras_disponibles.count > 0
   %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Cátedra al departamento'}
-    = link_to('javascript:void(0)', { class: 'btn btn-primary btn-sm', :onclick => "return $('#nueva_catedra_departamento').modal();", 'data_toggle' => 'modal' }) do
+    = link_to('javascript:void(0)', { class: 'btn btn-outline-primary btn-sm', :onclick => "return $('#nueva_catedra_departamento').modal();", 'data_toggle' => 'modal' }) do
       = glyph 'plus'
       Cátedra
 

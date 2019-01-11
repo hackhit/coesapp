@@ -2,28 +2,24 @@
   %h5 Roles:
   %table.table.table-bordered.table-sm.ml-3
     %tr
-      - @usuario.roles.each do |rol| 
+      - @usuario.roles_generales.each do |rol| 
         %td= rol
-- @accion = action_name
-- @controlador = controller_name
 
-%h3
-  = link_to usuarios_path, {class: 'btn btn-outline-secondary btn-sm mr-2'} do
-    = glyph 'chevron-left'
-    Regresar
-  - if @estudiante and @estudiante.valido_para_inscribir?
-    = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
+- if current_usuario.administrador.maestros?
+  %h3
+    - if @estudiante and @estudiante.valido_para_inscribir?
+      = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
 
-  - unless @estudiante
-    = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'set_estudiante'
-    = render '/admin/usuarios/set_estudiante'
-  - unless @administrador
-    = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'
-    = render '/admin/usuarios/set_administrador'
+    - unless @estudiante
+      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'set_estudiante'
+      = render '/admin/usuarios/set_estudiante'
+    - unless @administrador
+      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'
+      = render '/admin/usuarios/set_administrador'
 
-  - unless @profesor
-    = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'set_profesor'
-    = render '/admin/usuarios/set_profesor'
+    - unless @profesor
+      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'set_profesor'
+      = render '/admin/usuarios/set_profesor'
 
 %nav
   .nav.nav-tabs
@@ -50,12 +46,12 @@
     .tab-pane#profesor
       =# render partial: 'profesor/detalle'
 
-  - if @administrador
+  - if current_usuario.administrador.mas_altos?
     .tab-pane#administrador
       %p.border.m-3.p-3
         = @administrador.descripcion
         = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Cambiar tipo de Administrador' do
-          - if @admin.super?
+          - if @admin.maestros?
             = link_to "javascript:void(0)", onclick: "$('#set_admin').modal();", class: 'm-2 btn-sm' do
               = glyph 'edit'
             = render '/admin/usuarios/set_administrador'

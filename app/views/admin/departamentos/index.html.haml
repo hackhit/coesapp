@@ -1,6 +1,7 @@
 - model_class = Departamento
 
-= btn_add_success new_departamento_path, 'Agregar Nuevo Departamento', 'Nuevo'
+- if current_usuario and current_usuario.administrador.mas_altos?
+  = btn_add_success new_departamento_path, 'Agregar Nuevo Departamento', 'Nuevo'
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead

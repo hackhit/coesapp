@@ -1,6 +1,6 @@
 - model_class = Catedra
-
-= btn_add_success new_catedra_path, 'Agregar Nueva Cátedra', 'Nueva'
+- if current_usuario and current_usuario.administrador.mas_altos?
+  = btn_add_success new_catedra_path, 'Agregar Nueva Cátedra', 'Nueva'
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead

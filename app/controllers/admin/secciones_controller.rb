@@ -1,9 +1,11 @@
 module Admin
   class SeccionesController < ApplicationController
+    # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_admin_profe
-    before_action :filtro_administrador, except: [:index]
-    before_action :filtro_admin_puede_escribir
+    before_action :filtro_admin_altos!
+    before_action :filtro_admin_mas_altos!, only: [:cambiar_capacidad, :create, :new, :create, :update]
+    before_action :filtro_ninja!, only: [:destroy, :index]
+
     before_action :set_seccion, except: [:index, :new, :create]
 
     # GET /secciones

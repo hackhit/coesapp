@@ -1,10 +1,10 @@
 module Admin
   class AsignaturasController < ApplicationController
+    # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_administrador
-    before_action :filtro_admin_puede_escribir, except: [:index, :show, :set_activa]
-    before_action :filtro_super_admin!, only: [:destroy]
-    
+    before_action :filtro_admin_mas_altos!, except: [:destroy]
+    before_action :filtro_ninja!, only: [:destroy]
+
     before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa]
 
     def set_activa

@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
 	end
 
 	def filtro_super_admin!
-		if !session[:administrador_id] or (current_admin and !current_admin.super?)
+		if !session[:administrador_id] or (current_admin and !current_admin.maestros?)
 			reset_session
 			flash[:danger] = "Debe tener máximos privilegios administrativos. Solicite esta acción a su superior"
 			redirect_to root_path
@@ -69,8 +69,8 @@ class ApplicationController < ActionController::Base
 		end		
 	end
 
-	def filtro_admin_puede_escribir
-		if !session[:administrador_id] or (current_admin and !current_admin.puede_escribir?)
+	def filtro_admin_mas_altos!
+		if !session[:administrador_id] or (current_admin and !current_admin.mas_altos?)
 			reset_session
 			flash[:danger] = "Debe iniciar sesión como Administrador con privilegios de escritura"
 			redirect_to root_path
@@ -78,10 +78,22 @@ class ApplicationController < ActionController::Base
 		end
 	end
 
-	def filtro_admin_escritor_o_profe
-		if !session[:administrador_id] or (current_admin and !current_admin.puede_escribir?) or !session[:profesor_id] 
+
+
+	def filtro_admin_altos!
+		if !session[:administrador_id] or (current_admin and !current_admin.altos?)
 			reset_session
-			flash[:danger] = "Debe iniciar sesión como Profesor o Administrador"  
+			flash[:danger] = "Debe iniciar sesión como Administrador con privilegios de escritura"
+			redirect_to root_path
+			return false
+		end
+	end
+
+
+	def filtro_admin_alto_o_profe
+		if !session[:administrador_id] or (current_admin and !current_admin.alto?) or !session[:profesor_id] 
+			reset_session
+			flash[:danger] = "Debe iniciar sesión como Profesor o Administrador superior"  
 			redirect_to root_path
 			return false
 		end
@@ -109,7 +121,7 @@ class ApplicationController < ActionController::Base
 	def filtro_estudiante
 		unless session[:estudiante_id]
 			reset_session
-			flash[:danger] = "Debe iniciar sesión como Profesor"  
+			flash[:danger] = "Debe iniciar sesión como Estudiante"  
 			redirect_to root_path
 			return false
 		end

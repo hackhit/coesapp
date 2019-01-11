@@ -1,7 +1,8 @@
 module Admin
 	class InscripcionseccionesController < ApplicationController
 		before_action :filtro_logueado
-		before_action :filtro_admin_puede_escribir
+		before_action :filtro_admin_mas_altos!, except: [:destroy]
+		before_action :filtro_ninja!, only: [:destroy]
 		
 		def buscar_estudiante
 			@periodo_actual_id = ParametroGeneral.periodo_actual_id

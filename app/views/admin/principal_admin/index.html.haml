@@ -2,11 +2,11 @@
 	%h3.text-muted
 		Período Académico: 
 		= "#{@periodo_actual_id}"
-					
+= current_usuario.administrador.rol
+- if current_usuario.administrador.altos?
+	.border.p-3= render '/admin/principal_admin/tabs_estructura/escuelas'
 
-.border.p-3= render '/admin/principal_admin/tabs_estructura/escuelas'
-
--if (current_usuario.email.blank? or current_usuario.telefono_movil.blank? or current_usuario.telefono_habitacion.blank?)
+- if (current_usuario.email.blank? or current_usuario.telefono_movil.blank? or current_usuario.telefono_habitacion.blank?)
 
 	= render partial: '/admin/usuarios/datos_modal'
 

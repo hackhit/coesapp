@@ -10,9 +10,14 @@
     .col-md-10
       = f.text_field :descripcion, class: 'text_field form-control', placeholder: "Alemán", required: true
   .form-group
+    %label.control-label.col-md-2 Escuela
+    .col-md-10
+      = collection_select(:departamento, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control', required: true})
+
+  .form-group
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'
-      = link_to t('.cancel', default: t("helpers.links.cancel")), :back, class: 'btn btn-default'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), :back, class: 'btn btn-outline-secondary'
 
 :javascript
 

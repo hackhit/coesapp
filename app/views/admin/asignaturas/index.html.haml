@@ -1,4 +1,5 @@
-= btn_add_success new_asignatura_path, 'Agregar Nueva Agirnatura', 'Nueva'
+- if current_usuario and current_usuario.administrador.mas_altos?
+  = btn_add_success new_asignatura_path, 'Agregar Nueva Agirnatura', 'Nueva'
 
 %nav.mt-3
   .nav.nav-tabs
@@ -65,5 +66,3 @@
       ele.removeClass("table-success");
     }      
   }
-
-

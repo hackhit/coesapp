@@ -1,7 +1,7 @@
 class Administrador < ApplicationRecord
 
 	# VARIABLES
-	enum rol: [:super, :admin_escuela, :admin_departamento, :taquilla]
+	enum rol: [:ninja, :super, :admin_escuela, :admin_departamento, :taquilla]
 
 	# TRIGGERS
 	after_initialize :set_default_taquilla, if: :new_record?
@@ -22,28 +22,35 @@ class Administrador < ApplicationRecord
 
 	# FUNCIONES
 	def escuelas
-		if self.super?
-			return Escuela.all
-		elsif self.admin_escuela? 
+		if self.escuela_id
 			return Escuela.where(id: self.escuela_id)
-		else
+		elsif self.departamento_id 
 			return Escuela.where(id: self.departamento.escuela_id)
+		else
+			return Escuela.all
 		end
-		
 	end
 
 	def departamentos
-		if self.escuela_id
+		if self.admin_escuela? 
 			self.escuela.departamentos
-		elsif self.departamento_id
+		elsif self.admin_departamento? 
 			Departamento.where(id: departamento_id)
 		else
 			Departamento.all
 		end
 	end
 
+	def maestros?
+		self.ninja? or self.super?
+	end
+
+	def mas_altos?
+		self.ninja? or self.super? or self.admin_escuela?
+	end
+
 	def altos?
-		self.super? or self.admin_escuela? 
+		self.ninja? or self.super? or self.admin_escuela? or self.admin_departamento?
 	end
 
 	def descripcion
@@ -51,10 +58,6 @@ class Administrador < ApplicationRecord
 		aux += " (#{self.departamento.descripcion})" if self.departamento
 		aux += " (#{self.escuela.descripcion})" if self.escuela
 		return aux
-	end
-
-	def puede_escribir?
-		!self.taquilla?
 	end
 	
 	# FUNCIONES PROTEGIDAS

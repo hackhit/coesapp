@@ -1,9 +1,9 @@
 module Admin
   class DepartamentosController < ApplicationController
     # Privilegios
+
     before_action :filtro_logueado
-    before_action :filtro_administrador, only: [:index]
-    before_action :filtro_super_admin!, except: [:destroy]
+    before_action :filtro_admin_mas_altos!, except: [:destroy]
     before_action :filtro_ninja!, only: [:destroy]
 
     before_action :set_departamento, only: [:show, :edit, :update, :destroy]
@@ -18,7 +18,7 @@ module Admin
     # GET /departamentos/1
     # GET /departamentos/1.json
     def show
-      @titulo = "Departamento de #{@departamento.descripcion} <a class='btn btn-default' href='#{edit_departamento_path(@departamento)}'><span class='glyphicon glyphicon-edit'></span>Editar</a> "
+      @titulo = "Departamento de #{@departamento.descripcion}"
       @catedradepartamentos = @departamento.catedradepartamentos
       cat_ids = @catedradepartamentos.collect{|o| o.catedra_id}
       @catedras_disponibles = Catedra.all.reject{|ob| cat_ids.include? ob.id}
@@ -27,6 +27,7 @@ module Admin
     # GET /departamentos/new
     def new
       @departamento = Departamento.new
+      @titulo = "Crear Nuevo Departamento"
     end
 
     # GET /departamentos/1/edit
@@ -43,7 +44,8 @@ module Admin
           format.html { redirect_to @departamento, notice: 'Departamento creado con éxito.' }
           format.json { render :show, status: :created, location: @departamento }
         else
-          format.html { render :new }
+          flash[:danger] = "Error al intentar crear el departamento: #{@departamento.errors.full_messages.to_sentence}"
+          format.html { render :new, notice: "Error al intentar crear el departamento: #{@departamento.errors.full_messages.to_sentence}" }
           format.json { render json: @departamento.errors, status: :unprocessable_entity }
         end
       end
@@ -81,7 +83,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def departamento_params
-        params.require(:departamento).permit(:descripcion, :id)
+        params.require(:departamento).permit(:descripcion, :id, :escuela_id)
       end
   end
 end
