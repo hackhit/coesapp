@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
 	end
 
 	def filtro_ninja!
-		unless session[:usuario_ci].eql? '15573230'
+		unless !session[:administrador_id] or (current_admin and !current_admin.ninja?)
 			reset_session
 			flash[:danger] = "¡Buen intento! Debes tener Dunamis para realizar esta acción"
 			redirect_to root_path

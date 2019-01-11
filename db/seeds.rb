@@ -8,7 +8,7 @@
 Cartelera.create(contenido: 'Cartelera del Sistema de Control de Estudios de la Facultad de Humanidades y Educación', activa: true)
 p "#{Cartelera.count} Cartelera Creada!"
 
-TipoSeccion.create([{id: :F, descripcion: 'Normal'}, {id: :NR, descripcion: 'Reparación'}, {id: :NS, descripcion: 'Suficiencia'}, {id: :EE, descripcion: 'Equivalencia Externa'}, {id: :EI, descripcion: 'Equivalencia Interna'}, {id: :ND, descripcion: 'Diferido'}])
+TipoSeccion.create([{id: :NF, descripcion: 'Nota Final'}, {id: :NR, descripcion: 'Reparación'}, {id: :NS, descripcion: 'Suficiencia'}, {id: :EE, descripcion: 'Equivalencia Externa'}, {id: :EI, descripcion: 'Equivalencia Interna'}, {id: :ND, descripcion: 'Diferido'}])
 
 Escuela.create([{id: 'ARTE', descripcion: 'ARTES'}, 
 	{id: 'BIAR', descripcion: 'BIBLIOTECOLOGÍA Y ARCHIVOLOGÍA'}, 
