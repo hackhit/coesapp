@@ -8,6 +8,8 @@
 Cartelera.create(contenido: 'Sistema de Control de Estudio By Lic. Daniel Moros', activa: true)
 p "#{Cartelera.count} Cartelera Creada!"
 
+TipoSeccion.create([{id: :F, descripcion: 'Normal'}, {id: :NR, descripcion: 'Reparación'}, {id: :NS, descripcion: 'Suficiencia'}, {id: :EE, descripcion: 'Equivalencia Externa'}, {id: :EI, descripcion: 'Equivalencia Interna'}, {id: :ND, descripcion: 'Diferido'}])
+
 Escuela.create([{id: 'ARTE', descripcion: 'ARTES'}, 
 	{id: 'BIAR', descripcion: 'BIBLIOTECOLOGÍA Y ARCHIVOLOGÍA'}, 
 	{id: 'COMU', descripcion: 'COMUNICACIÓN SOCIAL'}, 
@@ -78,7 +80,7 @@ p "#{Historialplan.count} Historial de Plan Creado!"
 Combinacion.create([{estudiante_id: 2, periodo_id: Periodo.first.id, idioma1_id: Departamento.first.id, idioma2_id: Departamento.last.id}])
 p "#{Combinacion.count} Combinaciones de Idiomas Creado!"
 
-Seccion.create([{numero: 'A1', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id}, {numero: 'A2', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id}])
+Seccion.create([{numero: 'A1', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id, tipo_seccion_id: TipoSeccion.first.id}, {numero: 'A2', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id, tipo_seccion_id: TipoSeccion.last.id}])
 p "#{Seccion.count} Sección Creada!"
 
 Inscripcionseccion.create([{estudiante_id: Estudiante.first.id, seccion_id: Seccion.first.id}])

@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   
-  resources :tipoasignaturas
 
   resources :visitors, only: [:index] do
     collection do
@@ -12,9 +11,9 @@ Rails.application.routes.draw do
     end
   end
 
-
   scope module: :admin do
-
+    resources :tipo_secciones
+    resources :tipoasignaturas
     resources :escuelas
     resources :carteleras do
       member do

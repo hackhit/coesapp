@@ -1,10 +1,9 @@
 class Seccion < ApplicationRecord
-	# CONSTANTES
 
-	enum tipo: [:normal, :reparacion, :suficiencia, 'equivalencia_interna', 'equivalencia_externa', :diferido]
 	# ASOCIACIONES:
 	belongs_to :asignatura
 	belongs_to :periodo
+	belongs_to :tipo_seccion
 	belongs_to :profesor, optional: true 
 
 	has_many :inscripcionsecciones, dependent: :delete_all
@@ -22,9 +21,6 @@ class Seccion < ApplicationRecord
     validates :periodo_id, presence: true
     validates :numero, presence: true
 	validates_uniqueness_of :numero, scope: [:periodo_id, :asignatura_id], message: 'La sección ya existe, inténtalo de nuevo!', field_name: false
-	# TRIGGERS
-
-	after_initialize :set_default_tipo, if: :new_record?
 
     # SCOPES:
 	scope :calificadas, -> {where "calificada IS TRUE"}
@@ -118,10 +114,5 @@ class Seccion < ApplicationRecord
 	end
 
 	# FUNCIONES PROTEGIDAS
-	protected
-
-	def set_default_tipo
-		self.tipo ||= :normal
-	end
 
 end

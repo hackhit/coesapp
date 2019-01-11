@@ -1,3 +1,4 @@
+
 %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Sección'}
   .border.p-2
     = form_for @seccion, {class: 'form-horizontal', id: "nueva_seccion_#{@mat.id}"} do |f|
@@ -5,11 +6,22 @@
       = hidden_field_tag "[seccion]periodo_id", @periodo_actual_id
       .row
         .col-md-3
-          = f.text_field :numero, placeholder: 'Id. Sección...', class: 'form-control text_field upcase', maxlength: 3, required: true
-        .col-md-6
-          = grouped_collection_select :seccion, :profesor_id, @departamentos, :profesores, :descripcion, :id, :descripcion, {include_blank: 'Selecciona Departamento...', required: true}, { class: 'selects2 form-control text_field'}
+          .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+            - TipoSeccion.order("created_at DESC").all.each do |ts| 
+              
+              %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: ts.descripcion.titleize}
+                = radio_button_tag '[seccion]tipo_seccion_id', ts.id, false, required: true
+                = ts.id
         .col-md-2
-          = f.submit 'Agregar', class: 'btn btn-success'
+
+          = f.text_field :numero, placeholder: 'Id. Sección...', class: 'form-control text_field upcase form-control-sm', maxlength: 3, required: true
+        .col-md-4
+
+          = grouped_collection_select :seccion, :profesor_id, @departamentos, :profesores, :descripcion, :id, :descripcion, {include_blank: 'Selecciona Departamento...', required: true}, { class: 'selects2 form-control text_field form-control-sm'}
+        .col-md-2
+          = f.submit 'Agregar', class: 'btn btn-outline-success btn-sm'
+            
+
 
 :javascript
 
@@ -26,7 +38,7 @@
         };
       }     
       },
-      placeholder: "--Escriba datos del estudiante para buscarlo--",
+      placeholder: "--Escriba datos del profesor para buscarlo--",
       theme: "bootstrap",
       cache: true,
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}

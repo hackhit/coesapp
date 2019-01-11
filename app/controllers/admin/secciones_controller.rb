@@ -83,7 +83,6 @@ module Admin
       seccion_params.delete('profesor_id') 
       @seccion = Seccion.new(seccion_params)
       @seccion.profesor_id = nil if seccion_params[:profesor_id].blank?
-      p "-- #{@seccion.profesor_id} --".to_s.center(100, "*")
 
       respond_to do |format|
         if @seccion.save
@@ -128,7 +127,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def seccion_params
-        params.require(:seccion).permit(:numero, :asignatura_id, :periodo_id, :profesor_id, :calificada, :capacidad)
+        params.require(:seccion).permit(:numero, :asignatura_id, :periodo_id, :profesor_id, :calificada, :capacidad, :tipo_seccion_id)
       end
   end
 end

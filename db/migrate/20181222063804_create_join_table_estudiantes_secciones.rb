@@ -18,7 +18,7 @@ class CreateJoinTableEstudiantesSecciones < ActiveRecord::Migration[5.2]
     add_foreign_key :inscripcionsecciones, :secciones, on_delete: :cascade,  on_update: :cascade
     add_foreign_key :inscripcionsecciones, :tipo_estado_inscripciones, on_delete: :nullify,  on_update: :cascade
     add_foreign_key :inscripcionsecciones, :tipo_estado_calificaciones, on_delete: :nullify,  on_update: :cascade
-    add_foreign_key :inscripcionsecciones, :tipoasignaturas, on_delete: :cascade,  on_update: :cascade
+    add_foreign_key :inscripcionsecciones, :tipoasignaturas, on_delete: :nullify,  on_update: :cascade
 
   end
 end

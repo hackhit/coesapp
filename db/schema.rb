@@ -196,13 +196,14 @@ ActiveRecord::Schema.define(version: 2019_01_04_041749) do
     t.string "profesor_id"
     t.boolean "calificada"
     t.integer "capacidad"
-    t.integer "tipo", default: 0
+    t.string "tipo_seccion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["asignatura_id"], name: "index_secciones_on_asignatura_id"
     t.index ["numero", "periodo_id", "asignatura_id"], name: "index_secciones_on_numero_and_periodo_id_and_asignatura_id", unique: true
     t.index ["periodo_id"], name: "index_secciones_on_periodo_id"
     t.index ["profesor_id"], name: "index_secciones_on_profesor_id"
+    t.index ["tipo_seccion_id"], name: "index_secciones_on_tipo_seccion_id"
   end
 
   create_table "tipo_estado_calificaciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -217,6 +218,13 @@ ActiveRecord::Schema.define(version: 2019_01_04_041749) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_tipo_estado_inscripciones_on_id"
+  end
+
+  create_table "tipo_secciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "descripcion"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_tipo_secciones_on_id"
   end
 
   create_table "tipoasignaturas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -270,4 +278,5 @@ ActiveRecord::Schema.define(version: 2019_01_04_041749) do
   add_foreign_key "secciones", "asignaturas", on_update: :cascade, on_delete: :cascade
   add_foreign_key "secciones", "periodos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "secciones", "profesores", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "tipo_secciones", on_update: :cascade, on_delete: :cascade
 end
