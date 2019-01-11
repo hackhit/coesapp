@@ -1,9 +1,6 @@
-.w-50.d-flex.justify-content-center
-  %h5 Roles:
-  %table.table.table-bordered.table-sm.ml-3
-    %tr
-      - @usuario.roles_generales.each do |rol| 
-        %td= rol
+%h5 
+  Roles:
+  = @usuario.roles_generales.to_sentence
 
 - if current_usuario.administrador.maestros?
   %h6
