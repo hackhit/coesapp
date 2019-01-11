@@ -1,0 +1,2 @@
+class Inscripcionperiodo < ApplicationRecord
+end

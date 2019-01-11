@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
 
+  resources :inscripcionperiodos
   resources :visitors, only: [:index] do
     collection do
       post :validar

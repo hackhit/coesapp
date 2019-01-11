@@ -1,0 +1,19 @@
+= form_for @inscripcionperiodo do |f|
+  - if @inscripcionperiodo.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@inscripcionperiodo.errors.count, "error")} prohibited this inscripcionperiodo from being saved:"
+      %ul
+        - @inscripcionperiodo.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :references
+    = f.text_field :references
+  .field
+    = f.label :references
+    = f.text_field :references
+  .field
+    = f.label :references
+    = f.text_field :references
+  .actions
+    = f.submit 'Save'

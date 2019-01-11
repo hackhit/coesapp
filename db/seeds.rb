@@ -5,7 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-Cartelera.create(contenido: 'Sistema de Control de Estudio By Lic. Daniel Moros', activa: true)
+Cartelera.create(contenido: 'Cartelera del Sistema de Control de Estudios de la Facultad de Humanidades y Educación', activa: true)
 p "#{Cartelera.count} Cartelera Creada!"
 
 TipoSeccion.create([{id: :F, descripcion: 'Normal'}, {id: :NR, descripcion: 'Reparación'}, {id: :NS, descripcion: 'Suficiencia'}, {id: :EE, descripcion: 'Equivalencia Externa'}, {id: :EI, descripcion: 'Equivalencia Interna'}, {id: :ND, descripcion: 'Diferido'}])
@@ -43,48 +43,8 @@ TipoEstadoCalificacion.create([{
 	{id: 'SC', descripcion: 'Sin Calificar' }])
 p "#{TipoEstadoCalificacion.count} TipoEstadoCalificaciones Creadas!"
 
-Catedra.create([{id: 'IB', descripcion: 'Idioma Básico'}, {id: 'GE', descripcion: 'Gramática y Especialización'}, ])
-p "#{Catedra.count} Catedra Creada!"
-
-Departamento.create([{id: 'ALE', descripcion: 'Alemán', escuela_id: 'IDIO'}, {id: 'ING', descripcion: 'Inglés', escuela_id: 'IDIO'}, {id: 'ITA', descripcion: 'Italiano', escuela_id: 'IDIO'}])
-
-p "#{Departamento.count} Departamentos Creados!"
-
-Usuario.create([{id: '1', password: '1', nombres: 'Fulanito', apellidos: 'De Tal', email: 'fulanodetal@email.com',telefono_habitacion: '02124321098', telefono_movil: '04188887766', sexo: 1},{id: '2', password: '2', nombres: 'Menganito', apellidos: 'De Cual', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}, {id: '3', password: '3', nombres: 'Jefe de', apellidos: 'Facultad', email: 'menganito@email.com',telefono_habitacion: '02124321097', telefono_movil: '04188887755'}])
+Usuario.create([{id: '10264009', password: '10264009', nombres: 'CARLOS A.', apellidos: 'SAAVEDRA A.', email: 'saavedraazuaje73@gmail.com',telefono_habitacion: '', telefono_movil: '04143661978', sexo: 1},{id: '15573230', password: '15573230', nombres: 'DANIEL JOSUÉ', apellidos: 'MOROS CASTILLO', email: 'moros.daniel@gmail.com',telefono_habitacion: '02124221011', telefono_movil: '04164126484'}])
 p "#{Usuario.count} Usuarios Creados!"
 
-Administrador.create!([{usuario_id: 1, rol: 0},{usuario_id: 2, rol: 2, departamento_id: 'ALE'}, {usuario_id: 3, rol: 1, escuela_id: 'IDIO'}])
+Administrador.create!([{usuario_id: 10264009, rol: 0},{usuario_id: 15573230, rol: 0}])
 p "#{Administrador.count} Admin Creado!"
-
-Profesor.create([{usuario_id: 1, departamento_id: 'ALE'}, {usuario_id: 2, departamento_id: 'ALE'}])
-p "#{Profesor.count} Profesor Creado!"
-
-Estudiante.create([{usuario_id: 2, activo: true, escuela_id: 'IDIO'}])
-p "#{Estudiante.count} Estudiante Creado!"
-
-Catedradepartamento.create([{departamento_id: 'ALE', catedra_id: 'IB'}])
-p "#{Catedradepartamento.count} CatedraDepartamento Creado!"
-
-Asignatura.create([{id: 'ALEI', descripcion: 'Alemán I', anno: 1, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010101', creditos: 6, tipoasignatura_id: :L}, {id: 'ALEII', descripcion: 'Alemán II', anno: 2, departamento_id: 'ALE', catedra_id: 'IB', id_uxxi: '01010102', creditos: 5, tipoasignatura_id: :B}])
-p "#{Asignatura.count} Asignaturas Creadas!"
-
-Periodo.create([{id: '2018-02A', inicia: '2018-12-26', culmina: '2019-12-27'}, {id: '2017-02A', inicia: '2017-12-26', culmina: '2018-12-25'}])
-p "#{Periodo.count} Periodos Creados!"
-
-Plan.create([{id: 'G270', descripcion: 'Lic. Traducción e Interpretación', escuela_id: 'IDIO'}, {id: 'G280', descripcion: 'Lic. Traducción', escuela_id: 'IDIO'}, {id: 'G290', descripcion: 'Lic. Idiomas Modernos', escuela_id: 'IDIO'}])
-p "#{Plan.count} Planes Creados!"
-
-Historialplan.create([{estudiante_id: 2, periodo_id: Periodo.first.id, plan_id: Plan.first.id}])
-p "#{Historialplan.count} Historial de Plan Creado!"
-
-Combinacion.create([{estudiante_id: 2, periodo_id: Periodo.first.id, idioma1_id: Departamento.first.id, idioma2_id: Departamento.last.id}])
-p "#{Combinacion.count} Combinaciones de Idiomas Creado!"
-
-Seccion.create([{numero: 'A1', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id, tipo_seccion_id: TipoSeccion.first.id}, {numero: 'A2', asignatura_id: Asignatura.first.id, periodo_id: Periodo.last.id, profesor_id: Profesor.first.id, tipo_seccion_id: TipoSeccion.last.id}])
-p "#{Seccion.count} Sección Creada!"
-
-Inscripcionseccion.create([{estudiante_id: Estudiante.first.id, seccion_id: Seccion.first.id}])
-p "#{Inscripcionseccion.count} Inscripcion en Sección Creada!"
-
-SeccionProfesorSecundario.create([{profesor_id: Profesor.last.id, seccion_id: Seccion.first.id}])
-p "#{SeccionProfesorSecundario.count} profesor secundario asociado a sección!"

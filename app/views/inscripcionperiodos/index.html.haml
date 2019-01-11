@@ -1,0 +1,25 @@
+%h1 Listing inscripcionperiodos
+
+%table
+  %thead
+    %tr
+      %th References
+      %th References
+      %th References
+      %th
+      %th
+      %th
+
+  %tbody
+    - @inscripcionperiodos.each do |inscripcionperiodo|
+      %tr
+        %td= inscripcionperiodo.references
+        %td= inscripcionperiodo.references
+        %td= inscripcionperiodo.references
+        %td= link_to 'Show', inscripcionperiodo
+        %td= link_to 'Edit', edit_inscripcionperiodo_path(inscripcionperiodo)
+        %td= link_to 'Destroy', inscripcionperiodo, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Inscripcionperiodo', new_inscripcionperiodo_path
