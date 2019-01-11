@@ -71,6 +71,7 @@ module Admin
           format.html { redirect_to @asignatura, notice: 'Asignatura actulizada con éxito.' }
           format.json { render :show, status: :ok, location: @asignatura }
         else
+          flash[:danger] = "Error al intentar actualizar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
           format.html { render :edit }
           format.json { render json: @asignatura.errors, status: :unprocessable_entity }
         end

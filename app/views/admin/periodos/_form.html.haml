@@ -1,17 +1,19 @@
 = form_for @periodo, html: { class: 'form-horizontal' } do |f|
   .form-group
     = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
-    .col-md-10
+    .col-md-3
       = f.text_field :id, class: 'text_field form-control', autofocus: true, required: true, placeholder: "2018-02A"
   .form-group
     = f.label :inicia, class: 'control-label col-md-2'
-    .col-md-10
+    .col-md-3
       = f.date_field :inicia, class: 'text_field form-control', required: true
   .form-group
     = f.label :culmina, class: 'control-label col-md-2'
-    .col-md-10
+    .col-md-3
       = f.date_field :culmina, class: 'text_field form-control', required: true
   .form-group
     .col-md-offset-2.col-md-10
-      = f.submit nil, class: 'btn btn-primary'
-      = link_to t('.cancel', default: t("helpers.links.cancel")), periodos_path, class: 'btn btn-default'
+      = link_to periodos_path, class: 'btn btn-outline-secondary' do
+        = glyph 'chevron-left'
+        = t('.cancel', default: t("helpers.links.cancel"))
+      = f.submit nil, class: 'btn btn-outline-success ml-2'

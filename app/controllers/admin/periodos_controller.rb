@@ -41,6 +41,8 @@ module Admin
           format.html { redirect_to @periodo, notice: 'Periodo was successfully created.' }
           format.json { render :show, status: :created, location: @periodo }
         else
+          flash[:danger] = "Error al intentar generar el periodo: #{@periodo.errors.full_messages.to_sentence}."
+
           format.html { render :new }
           format.json { render json: @periodo.errors, status: :unprocessable_entity }
         end
@@ -55,6 +57,7 @@ module Admin
           format.html { redirect_to @periodo, notice: 'Periodo was successfully updated.' }
           format.json { render :show, status: :ok, location: @periodo }
         else
+          flash[:danger] = "Error al intentar actualizar el periodo: #{@periodo.errors.full_messages.to_sentence}."
           format.html { render :edit }
           format.json { render json: @periodo.errors, status: :unprocessable_entity }
         end
@@ -79,7 +82,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def periodo_params
-        params.require(:periodo).permit(:inicia, :culmina)
+        params.require(:periodo).permit(:id, :inicia, :culmina)
       end
   end
 end

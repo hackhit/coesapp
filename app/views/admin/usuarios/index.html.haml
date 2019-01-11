@@ -6,7 +6,7 @@
       %th Plan
       %th.span4 Nombre y Apellido
       %th Cédula
-      - if @admin.super? 
+      - if @admin.ninja? 
         %th Contraseña
       %th Correo Electrónico
       %th Móvil
@@ -27,7 +27,7 @@
 
         %td= link_to u.nombre_completo, u
         %td= u.ci
-        - if @admin.super?  
+        - if @admin.ninja?  
           %td= u.password
         %td= u.email
         %td= u.telefono_movil
