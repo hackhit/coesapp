@@ -14,7 +14,8 @@
             .form-group
               %h6.col-md-12 Departamento
               .col-md-12
-                = collection_select(:profesor, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})
+                = grouped_collection_select :profesor, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, { class: 'text_field form-control'}
+                =# collection_select(:profesor, :departamento_id, Departamento.all, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})
 
           .modal-footer
             %a.btn{data: {dismiss: 'modal'}} Cancelar

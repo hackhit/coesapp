@@ -1,7 +1,4 @@
-%h1 Editing inscripcionperiodo
-
-= render 'form'
-
-= link_to 'Show', @inscripcionperiodo
-\|
-= link_to 'Back', inscripcionperiodos_path
+- model_class = Inscripcionperiodo
+.page-header
+  %h1=t '.title', default: [:'helpers.titles.edit', 'Edit %{model}'], model: model_class.model_name.human.titleize
+= render partial: "form"

@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   
 
-  resources :inscripcionperiodos
   resources :visitors, only: [:index] do
     collection do
       post :validar
@@ -13,6 +12,7 @@ Rails.application.routes.draw do
   end
 
   scope module: :admin do
+    resources :inscripcionperiodos
     resources :tipo_secciones
     resources :tipoasignaturas
     resources :escuelas
@@ -42,6 +42,12 @@ Rails.application.routes.draw do
     get '/principal_admin/detalle_usuario'
     get '/principal_admin/habilitar_calificar'
 
+    # resources :principal_admin, only: :index do
+    #   collection do 
+    #   end
+    # end
+
+
     resources :inscripcionsecciones do
       collection do 
         get 'buscar_estudiante'
@@ -55,8 +61,12 @@ Rails.application.routes.draw do
         get 'set_retirar'
       end
     end
-    get '/principal_profesor/index'
-    get '/principal_estudiante/index'
+
+    resources :principal_profesor, only: :index
+    resources :principal_estudiante, only: :index
+
+    # get '/principal_profesor/index'
+    # get '/principal_estudiante/index'
 
     post '/calificar/calificar'
     get '/calificar/seleccionar_seccion'
@@ -99,6 +109,7 @@ Rails.application.routes.draw do
         get :busquedas
       end
       member do
+        get 'delete_rol'
         post 'set_estudiante'
         post 'set_administrador'
         post 'set_profesor'

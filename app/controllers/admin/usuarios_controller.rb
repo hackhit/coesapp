@@ -1,10 +1,10 @@
 module Admin
   class UsuariosController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_administrador, except: [:update]
-    before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :update]
+    before_action :filtro_administrador, except: [:edit, :update]
+    before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :edit, :update]
     before_action :filtro_super_admin!, only: [:set_administrador, :set_estudiante, :set_profesor]
-    before_action :filtro_ninja!, only: [:destroy]
+    before_action :filtro_ninja!, only: [:destroy, :delete_rol]
 
     before_action :set_usuario, except: [:index, :new, :create, :busquedas]
 
@@ -54,7 +54,6 @@ module Admin
     end
 
     def set_administrador
-
       unless a = @usuario.administrador
         a = Administrador.new
         a.usuario_id = @usuario.id
@@ -62,14 +61,15 @@ module Admin
 
       a.rol = params[:administrador][:rol]
 
-
-      unless params[:administrador][:departamento_id].blank?
+      if params[:administrador][:rol].eql? "admin_departamento"
         a.departamento_id = params[:administrador][:departamento_id] 
         a.escuela_id = nil
-      end
-      unless params[:administrador][:escuela_id].blank?
+      elsif params[:administrador][:rol].eql? "admin_escuela"
         a.escuela_id = params[:administrador][:escuela_id]
         a.departamento_id = nil
+      else
+        a.departamento_id = nil
+        a.escuela_id = nil
       end
 
       if a.save
@@ -79,6 +79,23 @@ module Admin
       end
       redirect_to @usuario
 
+    end
+
+    def delete_rol
+      if params[:estudiante]
+        u = Estudiante.find params[:id]
+      elsif params[:profesor]
+        u = Profesor.find  params[:id]
+      elsif params[:administrador]
+        u = Administrador.find params[:id]
+      else
+        flash[:danger] = "Error: Rol no encontrado."
+      end
+      if u
+        flash[:info] = "Rol Eliminado." if u.destroy 
+      end
+      redirect_back fallback_location: principal_admin_index_path
+        
     end
 
     def set_profesor

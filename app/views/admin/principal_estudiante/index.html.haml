@@ -1,6 +1,6 @@
 .border
 
-= render partial: 'usuario/datos_modal'
+= render partial: '/admin/usuarios/datos_modal'
 
 - if @estudiante.combinaciones.count < 1 and not @estudiante.tipo_estado_inscripcion_id.eql? 'NUEVO' 
 	= render partial: 'estudiante/actualizar_idiomas'
