@@ -1,0 +1,38 @@
+.border.p-3
+	%h4 Por Calificar
+	%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+		%thead
+			%tr
+				%th Sección
+				%th Asignatura
+				%th Estado
+		%tbody
+			- @secciones.each do |seccion|
+				%tr
+					%td= link_to seccion.descripcion, "#{seccion_path(seccion)}?calificar=true", class: 'btn btn-sm btn-outline-success'
+					%td= seccion.asignatura.descripcion_completa
+					%td
+						-if seccion.calificada
+							%span.badge.badge-success Calificada
+							%span.badge.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Aprobados'}= seccion.total_aprobados
+							%span.badge.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Reprobados'}= seccion.total_reprobados
+
+							%span.badge.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Perdidas Por Inasistencias'}= seccion.total_perdidos
+						- else
+							%span.badge.badge-info Pendiente por calificar
+
+-if @secciones_secundarias and @secciones_secundarias.all.count > 0
+	.border.p-3
+		%h4 Para Participar
+
+		%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+			%thead
+				%tr
+					%th Sección
+					%th Asignatura
+			%tbody
+				- @secciones_secundarias.each do |seccion|
+					%tr
+						%td= link_to seccion.descripcion, "#{seccion_path(seccion)}?secundaria=true", class: 'btn btn-sm btn-outline-success'
+						%td= seccion.asignatura.descripcion_completa
+	

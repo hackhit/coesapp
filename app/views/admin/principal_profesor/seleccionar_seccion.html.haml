@@ -3,8 +3,7 @@
 
 - @secciones.each do |seccion|
 	%p
-		= link_to seccion.descripcion, action: 'ver_seccion', id: seccion.id, clalificar: true
-
+		= link_to seccion.descripcion, @seccion, clalificar: true
 
 		-if seccion.calificada
 			%span.label.label-success Calificada
@@ -24,5 +23,5 @@
 	%h3 Para Participar
 
 	- @secciones_secundarias.each do |seccion|
-		%p= link_to seccion.descripcion, action: 'ver_seccion', id: seccion.id, secundaria: true
+		%p= link_to seccion.descripcion, @seccion, secundaria: true 
 	

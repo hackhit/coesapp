@@ -1,21 +1,5 @@
 .border
-
-	- if false #true
-		%h3 Exámenes de Reparación y Suficiencia Enero 2019
-		%ul
-			%li
-				= link_to "Martes 08 Enero 2019", controller: 'cal_descargar', action: 'archivo', id: "2019/01_RepSuf_Mar_08Ene2019"
-			%li
-				= link_to "Miércoles 09 Enero 2019", controller: 'cal_descargar', action: 'archivo', id: "2019/01_RepSuf_Mie_09Ene2019"
-			%li
-				= link_to "Formato de Solicitud", controller: 'cal_descargar', action: 'archivo', id: "2019/formato_solicitud_rep_sufic_201902A"
-			%li
-				= link_to "Sobre las Inscripciones", controller: 'cal_descargar', action: 'archivo', id: "2019/SOBRE_INSCRIPCION_201902A"
-
-.border
-	= link_to "Secciones", {controller: '/admin/calificar', action: 'seleccionar_seccion'}, class: 'btn btn-outline-info btn-sm'
-
-
+	= render '/admin/principal_profesor/seleccionar_seccion'
 
 = render partial: '/admin/usuarios/datos_modal'
 

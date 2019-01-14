@@ -51,7 +51,7 @@ module Admin
 
 		def set_tab
 
-			session[params[:tipo]] = params[:valor]
+			session[params[:tipo]] = params[:id]
 
 			respond_to do |format|
 				format.html { redirect_to :back }
@@ -141,7 +141,10 @@ module Admin
 		end
 
 		def habilitar_calificar
+
+
 			if params[:id]
+				@seccion = Seccion.find 
 				numero, cal_materia_id, cal_semestre_id = params[:id].to_s.split(",")
 				@cal_secciones = CalSeccion.where(numero: numero, cal_materia_id: cal_materia_id, cal_semestre_id: cal_semestre_id).limit(1)
 			else

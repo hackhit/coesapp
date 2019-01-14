@@ -2,7 +2,8 @@ module Admin
   class SeccionesController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_admin_altos!
+    before_action :filtro_admin_profe, only: [:show]
+    before_action :filtro_admin_altos!, only: [:agregar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion, :desasignar_profesor_secundario]
     before_action :filtro_admin_mas_altos!, only: [:cambiar_capacidad, :create, :new, :create, :update]
     before_action :filtro_ninja!, only: [:destroy, :index]
 
@@ -12,6 +13,54 @@ module Admin
     # GET /secciones.json
     def index
       @secciones = Seccion.all
+    end
+
+    def importar_secciones
+      data = File.readlines("AlemIV.rtf") #read file into array
+      data.map! {|line| line.gsub(/world/, "ruby")} #invoke on each line gsub
+      File.open("test2.txt", "a") {|f| f.puts "Nueva Linea: #{data}"} #output data to other file
+    end
+
+    def calificar
+      1/0
+      @estudiantes = params[:est]
+      @estudiantes.each_pair do |ci,valores|
+        @inscripcionsecciones = @seccion.inscripcionsecciones.where(estudiante_id: id).limit(0).first
+        
+        if valores['pi']
+          tipo_estado_calificacion_id = 'PI'
+        else
+          if valores[:calificacion_final].to_f >= 10
+            tipo_estado_calificacion_id = 'AP'
+          else 
+            tipo_estado_calificacion_id = 'RE'
+          end
+        end
+        valores['tipo_estado_calificacion_id'] = tipo_estado_calificacion_id
+        unless @estudiante_seccion.update_attributes(valores)
+          flash[:danger] = "No se pudo guardar la calificación."
+          break
+        end
+
+      end
+      @seccion.calificada = true
+      calificada = @seccion.save
+
+      flash[:success] = "Calificaciones guardada satisfactoriamente." if calificada
+
+      if session[:administrador_id]
+        redirect_to principal_admin_index_path
+      else
+        redirect_to seccion_path(@estudiante_seccion.seccion)
+      end
+    end
+
+    def descargar_notas
+      pdf = DocumentosPDF.notas seccion
+      unless send_data pdf.render,:filename => "notas_#{seccion.asignatura_id}_#{seccion.numero}.pdf",:type => "application/pdf", :disposition => "attachment"
+          flash[:mensaje] = "en estos momentos no se pueden descargar las notas, intentelo luego."
+        end
+      # redirect_to :action => 'index'      
     end
 
     def cambiar_capacidad
@@ -68,6 +117,19 @@ module Admin
     # GET /secciones/1
     # GET /secciones/1.json
     def show
+      @estudiantes_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
+
+      @titulo = "Sección: #{@seccion.descripcion} - Período #{@seccion.periodo_id}"
+      if @seccion.asignatura.catedra_id.eql? 'IB' or @seccion.asignatura.catedra_id.eql? 'LIN' or @seccion.asignatura.catedra_id.eql? 'LE'
+        @p1 = 25 
+        @p2 =35
+        @p3 = 40
+      else
+        @p1 = @p2 =30
+        @p3 = 40
+      end
+
+      @secundaria = true if params[:secundaria]
     end
 
     # GET /secciones/new

@@ -260,7 +260,7 @@ module Admin
         if @usuario.update(usuario_params)
           
           flash[:success] = "Usuario actualizado con éxito"
-          format.html { redirect_to url_back}
+          format.html { redirect_back fallback_location: url_back}
           format.json { render :show, status: :ok, location: @usuario }
         else
           flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}"

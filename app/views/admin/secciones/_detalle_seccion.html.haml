@@ -16,7 +16,7 @@
 
 %p#text
 %h5= "Total de Estudiantes: #{@estudiantes_secciones.count}"
-= form_tag(controller: '/admin/calificar', action: "calificar") do
+= form_tag(controller: '/admin/secciones', action: "calificar") do
 	= hidden_field_tag "id", @seccion.id
 
 	= render partial: '/admin/secciones/tabla_inscripciones'

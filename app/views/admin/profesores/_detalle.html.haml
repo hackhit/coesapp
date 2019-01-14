@@ -16,6 +16,6 @@
 			%tbody
 				- @secciones.each do |s| 
 					%tr
-						%td= link_to_if (current_usuario.administrador.mas_altos?), s.descripcion, principal_admin_ver_seccion_admin_path, class: 'btn btn-sm btn-outline-info'
+						%td= link_to_if (current_usuario.administrador.mas_altos?), s.descripcion, ver_seccion_admin_principal_admin_path(s.id), class: 'btn btn-sm btn-outline-info'
 						%td= s.asignatura.departamento.descripcion
 						%td= s.periodo_id

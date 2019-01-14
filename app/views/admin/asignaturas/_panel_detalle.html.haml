@@ -75,22 +75,22 @@
 											= glyph 'download-alt'
 											= glyph 'list'
 
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Ver Detalle / Calificar'}
-										= link_to "", {href: principal_admin_ver_seccion_admin_path(seccion.id), class: 'btn btn-info btn-sm'},{role: 'button'} do
+									%b.tooltip-btn{'data_toggle': :tooltip, title: 'Ver Detalle / Calificar'}
+										= link_to "", {href: ver_seccion_admin_principal_admin_path(seccion.id), class: 'btn btn-info btn-sm'},{role: 'button'} do
 											= content_tag(:i, "", class: " icon-white")
 											= glyph 'eye-open'
 											= glyph 'list'
 											= glyph 'check'
 											
-									- if @current_admin and @current_admin.super?
+									- if current_usuario.administrador.maestros?
 										-if seccion.calificada
 											
-											%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=> 'Habilitar para Calificar Nuevamente'}
-												= link_to "", {href: "/principal_admin/habilitar_calificar?id=#{seccion.id}", class: 'btn btn-info btn-sm'},{role: 'button'} do
+											%b.tooltip-btn{'data_toggle': :tooltip, 'title': 'Habilitar para Calificar Nuevamente'}
+												= link_to habilitar_calificar_principal_admin(seccion.id), {class: 'btn btn-info btn-sm'}, {role: 'button'} do
 													= glyph 'off'
 													= glyph 'list'
 										
-										%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Eliminar Seccion'}
+										%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
 											= link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
 												= glyph 'trash'
 											
