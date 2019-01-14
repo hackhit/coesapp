@@ -12,10 +12,26 @@ Rails.application.routes.draw do
   end
 
   scope module: :admin do
-    resources :inscripcionperiodos
-    resources :tipo_secciones
-    resources :tipoasignaturas
-    resources :escuelas
+
+    get '/principal_admin/set_tab'
+    resources :principal_admin, only: :index do
+      member do 
+        get 'ver_seccion_admin'
+        get 'habilitar_calificar'
+      end
+    end
+
+    resources :principal_profesor, only: :index 
+    resources :principal_estudiante, only: :index
+
+    resources :tipo_secciones, :tipoasignaturas, :tipo_estado_calificaciones, :tipo_estado_inscripciones
+
+    resources :periodos, :planes, :escuelas, :departamentos, :catedras
+    
+    resources :inscripcionperiodos, :historialplanes
+
+    resources :catedradepartamentos, only: [:create, :destroy]
+
     resources :carteleras do
       member do
         get 'set_activa'
@@ -31,22 +47,6 @@ Rails.application.routes.draw do
 
       end
     end
-    # get '/descargar/acta_examen_excel'
-    # get '/descargar/kardex'
-    # get '/descargar/acta_examen'
-    # get '/descargar/constancia_inscripcion'
-
-    get '/principal_admin/index'
-    get '/principal_admin/set_tab'
-    get '/principal_admin/ver_seccion_admin'
-    get '/principal_admin/detalle_usuario'
-    get '/principal_admin/habilitar_calificar'
-
-    # resources :principal_admin, only: :index do
-    #   collection do 
-    #   end
-    # end
-
 
     resources :inscripcionsecciones do
       collection do 
@@ -62,34 +62,18 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :principal_profesor, only: :index
-    resources :principal_estudiante, only: :index
-
-    # get '/principal_profesor/index'
-    # get '/principal_estudiante/index'
-
-    post '/calificar/calificar'
-    get '/calificar/seleccionar_seccion'
-    get '/calificar/ver_seccion'
-    get '/calificar/descargar_notas'
-
-    # get '/historial_plan/index'
-    # post '/historial_plan/create'
-    # post '/historial_plan/update'
-
-    resources :historialplanes
-
-    resources :catedradepartamentos, only: [:create, :destroy]
-
     resources :secciones do
       collection do
         post 'cambiar_capacidad'
         post 'cambiar_profe_seccion'
         post 'agregar_profesor_secundario'
+        get 'importar_secciones'
       end
       member do
         get 'desasignar_profesor_secundario'
         get 'seleccionar_profesor'
+        post 'calificar'
+        get 'descargar_notas'
       end
     end
 
@@ -98,10 +82,7 @@ Rails.application.routes.draw do
         get 'set_activa'
       end
     end
-    resources :catedras
-    resources :tipo_estado_calificaciones
-    resources :tipo_estado_inscripciones
-    resources :departamentos
+
     resources :combinaciones
     resources :usuarios do
       collection do
@@ -117,21 +98,7 @@ Rails.application.routes.draw do
         get 'resetear_contrasena'
       end
     end
-    resources :periodos
-    resources :planes
   end
   
   root to: 'visitors#index'
 end
-
-
-
-  # resources :wa_messages, only: [:index] do
-  #   member do
-  #     get 'set_unread'
-  #   end
-  #   collection do
-  #     post 'receive'
-  #     post 'send_message'
-  #   end  
-  # end
