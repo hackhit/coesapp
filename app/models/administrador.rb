@@ -21,6 +21,16 @@ class Administrador < ApplicationRecord
 	validates :escuela_id,  presence: true, if: -> {self.admin_escuela?}
 
 	# FUNCIONES
+	def asignaturas
+		if self.escuela_id
+			return Asignatura.where(escuela_id: self.escuela_id)
+		elsif self.departamento_id 
+			return Asignatura.where(escuela_id: self.departamento.escuela_id)
+		else
+			return Asignatura.all
+		end
+	end
+
 	def planes
 		if self.escuela_id
 			return Plan.where(escuela_id: self.escuela_id)
@@ -61,6 +71,15 @@ class Administrador < ApplicationRecord
 		else
 			Departamento.all
 		end
+	end
+
+	def catedras
+		pdto_ids = self.departamentos.ids
+
+		cds = Catedradepartamento.where(departamento_id: pdto_ids).collect{|cd| cd.catedra_id}
+
+		Catedra.find cds
+
 	end
 
 	def maestros?

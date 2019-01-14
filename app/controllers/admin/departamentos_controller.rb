@@ -11,7 +11,7 @@ module Admin
     # GET /departamentos
     # GET /departamentos.json
     def index
-      @departamentos = current_admin.departamentos#.select("departamentos.*")#.joins(:departamentos)# Departamento.all
+      @departamentos = current_admin.departamentos #.select("departamentos.*")#.joins(:departamentos)# Departamento.all
       @titulo = 'Departamentos'
     end
 

@@ -11,7 +11,7 @@ module Admin
     # GET /catedras.json
     def index
       @titulo = "Cátedras"
-      @catedras = Catedra.all
+      @catedras = current_admin.catedras #Catedra.all
     end
 
     # GET /catedras/1
