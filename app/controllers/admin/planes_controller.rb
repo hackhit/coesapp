@@ -11,7 +11,7 @@ module Admin
     # GET /planes.json
     def index
       @titulo = "Planes de Estudio"
-      @planes = Plan.all
+      @planes = current_admin.planes#Plan.all
     end
 
     # GET /planes/1

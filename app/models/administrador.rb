@@ -21,6 +21,16 @@ class Administrador < ApplicationRecord
 	validates :escuela_id,  presence: true, if: -> {self.admin_escuela?}
 
 	# FUNCIONES
+	def planes
+		if self.escuela_id
+			return Plan.where(escuela_id: self.escuela_id)
+		elsif self.departamento_id 
+			return Plan.where(escuela_id: self.departamento.escuela_id)
+		else
+			return Plan.all
+		end
+	end
+
 	def escuelas
 		if self.escuela_id
 			return Escuela.where(id: self.escuela_id)
