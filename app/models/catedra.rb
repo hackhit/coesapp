@@ -21,7 +21,7 @@ class Catedra < ApplicationRecord
 	before_save :set_to_upcase
 
 	def descripcion_completa
-		"#{self.descripcion.titleize} (#{departamento.descripcion_completa})"
+		"#{self.descripcion.titleize}"
 	end
 
 	protected

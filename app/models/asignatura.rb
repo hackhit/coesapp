@@ -38,7 +38,7 @@ class Asignatura < ApplicationRecord
 		return self.activa #self.activa.eql? true ? true : false
 	end
 	def descripcion_completa
-		"#{descripcion.titleize} #{catedra.descripcion_completa}"
+		"#{descripcion.titleize} - #{catedra.descripcion_completa} - #{departamento.descripcion_completa}"
 	end
 
 	def descripcion_reversa
