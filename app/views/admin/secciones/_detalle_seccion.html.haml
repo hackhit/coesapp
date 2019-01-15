@@ -4,9 +4,8 @@
 
 - @calificada = false if @admin
 
-- @calificada = true if (@admin and @admin.taquilla?)
+- @calificada = true if (@admin and @admin.taquilla?) or @secundaria
 
-- @calificada = true if @secundaria
 	 
 - @es_periodo1 = true
 
@@ -14,10 +13,6 @@
 
 - @es_periodo3 = false
 
-%p#text
-%h5= "Total de Estudiantes: #{@estudiantes_secciones.count}"
-= form_tag(controller: '/admin/secciones', action: "calificar") do
-	= hidden_field_tag "id", @seccion.id
 
-	= render partial: '/admin/secciones/tabla_inscripciones'
+= render '/admin/secciones/tabla_inscripciones'
 														

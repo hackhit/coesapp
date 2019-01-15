@@ -1,4 +1,4 @@
-- if @admin and @admin.super? and @estudiante.combinaciones.count < 3
+- if @admin and @admin.altos? and @estudiante.planes.count < 3
   %br
   %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Combinación de Idiomas'}
     = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nueva_combinacion').modal();", 'data_toggle' => 'modal' }) do

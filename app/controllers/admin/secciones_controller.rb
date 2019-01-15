@@ -22,22 +22,28 @@ module Admin
     end
 
     def calificar
-      1/0
+
       @estudiantes = params[:est]
       @estudiantes.each_pair do |ci,valores|
-        @inscripcionsecciones = @seccion.inscripcionsecciones.where(estudiante_id: id).limit(0).first
-        
+        @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).limit(1).first
         if valores['pi']
           tipo_estado_calificacion_id = 'PI'
+        elsif valores['np']
+          tipo_estado_calificacion_id = 'NP'
         else
-          if valores[:calificacion_final].to_f >= 10
+          if @seccion.asignatura.absoluta?
+            tipo_estado_calificacion_id = valores[:calificacion_final]
+            valores[:calificacion_final] = 0
+          elsif valores[:calificacion_final].to_f >= 10
+            tipo_estado_calificacion_id = 'A'
+          else
             tipo_estado_calificacion_id = 'AP'
-          else 
-            tipo_estado_calificacion_id = 'RE'
           end
         end
-        valores['tipo_estado_calificacion_id'] = tipo_estado_calificacion_id
-        unless @estudiante_seccion.update_attributes(valores)
+        @inscripcionseccion.tipo_estado_calificacion_id = tipo_estado_calificacion_id
+        @inscripcionseccion.calificacion_final = valores[:calificacion_final]
+
+        unless @inscripcionseccion.save
           flash[:danger] = "No se pudo guardar la calificación."
           break
         end
@@ -117,19 +123,12 @@ module Admin
     # GET /secciones/1
     # GET /secciones/1.json
     def show
-      @estudiantes_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
+      @inscripciones_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 
       @titulo = "Sección: #{@seccion.descripcion} - Período #{@seccion.periodo_id}"
-      if @seccion.asignatura.catedra_id.eql? 'IB' or @seccion.asignatura.catedra_id.eql? 'LIN' or @seccion.asignatura.catedra_id.eql? 'LE'
-        @p1 = 25 
-        @p2 =35
-        @p3 = 40
-      else
-        @p1 = @p2 =30
-        @p3 = 40
-      end
 
       @secundaria = true if params[:secundaria]
+      @admin = current_admin
     end
 
     # GET /secciones/new

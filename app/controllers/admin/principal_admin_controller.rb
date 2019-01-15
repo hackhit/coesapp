@@ -50,8 +50,7 @@ module Admin
 		end
 
 		def set_tab
-
-			session[params[:tipo]] = params[:id]
+			session[params[:tipo]] = params[:valor]
 
 			respond_to do |format|
 				format.html { redirect_to :back }
@@ -60,6 +59,7 @@ module Admin
 		end
 
 		def index
+			@admin = current_admin
 			@usuario = current_usuario
 			@principal_admin_add_asig = true
 			@periodo_actual_id = session[:parametros]['periodo_actual_id']

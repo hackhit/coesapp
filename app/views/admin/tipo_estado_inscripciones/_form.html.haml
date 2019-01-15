@@ -1,5 +1,10 @@
 = form_for @tipo_estado_inscripcion, html: { class: 'form-horizontal' } do |f|
   .form-group
+    = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
+    .col-md-10
+      = f.text_field :id, class: 'text_field form-control upcase', autofocus: true, placeholder: "ALE", size: 3, required: true, maxlength: 3
+      %small.text-muted.font-italic Máximo 3 catacteres alfabéticos (Caracteres Especiales y Numéricos No permitidos)
+  .form-group
     = f.label :descripcion, class: 'control-label col-md-2'
     .col-md-10
       = f.text_field :descripcion, class: 'text_field form-control'
@@ -7,3 +12,11 @@
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'
       = link_to t('.cancel', default: t("helpers.links.cancel")), tipo_estado_inscripciones_path, class: 'btn btn-default'
+
+:javascript
+
+  $('.upcase').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().replace(/[^a-zA-Z]/g,'') );
+    node.val(node.val().toUpperCase());
+    });      

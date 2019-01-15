@@ -13,8 +13,11 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
-    get '/principal_admin/set_tab'
+    # get '/principal_admin/set_tab'
     resources :principal_admin, only: :index do
+      collection do
+        get 'set_tab'
+      end
       member do 
         get 'ver_seccion_admin'
         get 'habilitar_calificar'

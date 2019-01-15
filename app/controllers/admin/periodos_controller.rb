@@ -38,7 +38,7 @@ module Admin
 
       respond_to do |format|
         if @periodo.save
-          format.html { redirect_to @periodo, notice: 'Periodo was successfully created.' }
+          format.html { redirect_to @periodo, notice: 'Periodo creado con éxito.' }
           format.json { render :show, status: :created, location: @periodo }
         else
           flash[:danger] = "Error al intentar generar el periodo: #{@periodo.errors.full_messages.to_sentence}."
@@ -54,7 +54,7 @@ module Admin
     def update
       respond_to do |format|
         if @periodo.update(periodo_params)
-          format.html { redirect_to @periodo, notice: 'Periodo was successfully updated.' }
+          format.html { redirect_to @periodo, notice: 'Periodo actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @periodo }
         else
           flash[:danger] = "Error al intentar actualizar el periodo: #{@periodo.errors.full_messages.to_sentence}."
@@ -69,7 +69,7 @@ module Admin
     def destroy
       @periodo.destroy
       respond_to do |format|
-        format.html { redirect_to periodos_url, notice: 'Periodo was successfully destroyed.' }
+        format.html { redirect_to periodos_url, notice: 'Periodo eliminado satisfactoriamente.' }
         format.json { head :no_content }
       end
     end

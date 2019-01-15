@@ -1,4 +1,4 @@
-- if @admin and @admin.super? and @estudiante.planes.count < 3
+- if @admin and @admin.altos? and @estudiante.planes.count < 3
   %br  
   %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nuevo Plan de Estudio'}
     = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nuevo_plan_periodo').modal();", 'data_toggle' => 'modal' }) do

@@ -32,10 +32,10 @@ module Admin
 
       respond_to do |format|
         if @tipo_estado_inscripcion.save
-          format.html { redirect_to @tipo_estado_inscripcion, notice: 'Tipo estado inscripcion was successfully created.' }
+          format.html { redirect_to @tipo_estado_inscripcion, notice: 'Tipo estado inscripcion creado con éxito.' }
           format.json { render :show, status: :created, location: @tipo_estado_inscripcion }
         else
-          format.html { render :new }
+          format.html { render :new, danger: @tipo_estado_inscripcion.errors.full_messages.to_sentence  }
           format.json { render json: @tipo_estado_inscripcion.errors, status: :unprocessable_entity }
         end
       end
@@ -46,10 +46,10 @@ module Admin
     def update
       respond_to do |format|
         if @tipo_estado_inscripcion.update(tipo_estado_inscripcion_params)
-          format.html { redirect_to @tipo_estado_inscripcion, notice: 'Tipo estado inscripcion was successfully updated.' }
+          format.html { redirect_to @tipo_estado_inscripcion, notice: 'Tipo estado inscripcion actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @tipo_estado_inscripcion }
         else
-          format.html { render :edit }
+          format.html { render :edit, danger: @tipo_estado_inscripcion.errors.full_messages.to_sentence   }
           format.json { render json: @tipo_estado_inscripcion.errors, status: :unprocessable_entity }
         end
       end
@@ -60,7 +60,7 @@ module Admin
     def destroy
       @tipo_estado_inscripcion.destroy
       respond_to do |format|
-        format.html { redirect_to tipo_estado_inscripciones_url, notice: 'Tipo estado inscripcion was successfully destroyed.' }
+        format.html { redirect_to tipo_estado_inscripciones_url, notice: 'Tipo estado inscripcion eliminada satisfactoriamente.' }
         format.json { head :no_content }
       end
     end

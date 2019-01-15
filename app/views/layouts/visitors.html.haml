@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1.0"}
+    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}
     %title= content_for?(:title) ? yield(:title) : 'Coesapp'
     %meta{:name => "description", :content => "#{content_for?(:description) ? yield(:description) : 'Coesapp'}"}
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => 'reload'

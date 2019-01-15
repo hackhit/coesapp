@@ -32,10 +32,10 @@ module Admin
 
       respond_to do |format|
         if @tipo_estado_calificacion.save
-          format.html { redirect_to @tipo_estado_calificacion, notice: 'Tipo estado calificacion was successfully created.' }
+          format.html { redirect_to @tipo_estado_calificacion, notice: 'Tipo estado calificacion creado con éxito.' }
           format.json { render :show, status: :created, location: @tipo_estado_calificacion }
         else
-          format.html { render :new }
+          format.html { render :new, flash: {danger: @tipo_estado_calificacion.errors.full_messages.to_sentence } }
           format.json { render json: @tipo_estado_calificacion.errors, status: :unprocessable_entity }
         end
       end
@@ -46,10 +46,10 @@ module Admin
     def update
       respond_to do |format|
         if @tipo_estado_calificacion.update(tipo_estado_calificacion_params)
-          format.html { redirect_to @tipo_estado_calificacion, notice: 'Tipo estado calificacion was successfully updated.' }
+          format.html { redirect_to @tipo_estado_calificacion, notice: 'Tipo estado calificacion actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @tipo_estado_calificacion }
         else
-          format.html { render :edit }
+          format.html { render :edit, flash: {danger: @tipo_estado_calificacion.errors.full_messages.to_sentence} }
           format.json { render json: @tipo_estado_calificacion.errors, status: :unprocessable_entity }
         end
       end
@@ -60,7 +60,7 @@ module Admin
     def destroy
       @tipo_estado_calificacion.destroy
       respond_to do |format|
-        format.html { redirect_to tipo_estado_calificaciones_url, notice: 'Tipo estado calificacion was successfully destroyed.' }
+        format.html { redirect_to tipo_estado_calificaciones_url, notice: 'Tipo estado calificacion eliminado con éxito.' }
         format.json { head :no_content }
       end
     end

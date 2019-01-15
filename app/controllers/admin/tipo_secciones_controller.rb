@@ -33,7 +33,7 @@ module Admin
 
       respond_to do |format|
         if @tipo_seccion.save
-          format.html { redirect_to @tipo_seccion, notice: 'Tipo seccion was successfully created.' }
+          format.html { redirect_to @tipo_seccion, notice: 'Tipo seccion creada con éxito.' }
           format.json { render :show, status: :created, location: @tipo_seccion }
         else
           format.html { render :new }
@@ -47,7 +47,7 @@ module Admin
     def update
       respond_to do |format|
         if @tipo_seccion.update(tipo_seccion_params)
-          format.html { redirect_to @tipo_seccion, notice: 'Tipo seccion was successfully updated.' }
+          format.html { redirect_to @tipo_seccion, notice: 'Tipo seccion actualizada con éxito.' }
           format.json { render :show, status: :ok, location: @tipo_seccion }
         else
           format.html { render :edit }
@@ -61,7 +61,7 @@ module Admin
     def destroy
       @tipo_seccion.destroy
       respond_to do |format|
-        format.html { redirect_to tipo_secciones_url, notice: 'Tipo seccion was successfully destroyed.' }
+        format.html { redirect_to tipo_secciones_url, notice: 'Tipo seccion eliminada satisfactoriamente.' }
         format.json { head :no_content }
       end
     end

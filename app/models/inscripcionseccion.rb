@@ -1,6 +1,7 @@
 class Inscripcionseccion < ApplicationRecord
 	# SET GLOBALES:
-	# self.table_name = 'inscripciones_en_secciones'
+	NOPRESENTO = 'NP'
+	PI = 'PI'
 	# ASOCIACIONES: 
 	belongs_to :seccion
 	belongs_to :estudiante, primary_key: :usuario_id
@@ -24,7 +25,7 @@ class Inscripcionseccion < ApplicationRecord
 	scope :retirados, -> {where "tipo_estado_inscripcion_id = ?", 'RET'}
 	scope :aprobados, -> {where "tipo_estado_calificacion_id = ?", 'AP'}
 	scope :reprobados, -> {where "tipo_estado_calificacion_id = ?", 'RE'}
-	scope :perdidos, -> {where "tipo_estado_calificacion_id = ?", 'PI'}
+	scope :perdidos, -> {where "tipo_estado_calificacion_id = ?", PI}
 	scope :sin_calificar, -> {where "tipo_estado_calificacion_id = ?", 'SC'}
 
 
@@ -55,11 +56,14 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def reprobada?
-		return tipo_estado_calificacion_id.eql? 'RE'
+		return aplazada?
+	end
+	def aplazada?
+		return tipo_estado_calificacion_id.eql? 'AP'
 	end
 
 	def aprobada?
-		return tipo_estado_calificacion_id.eql? 'AP'
+		return tipo_estado_calificacion_id.eql? 'A'
 	end
 
 	def calificacion_completa?
@@ -76,8 +80,31 @@ class Inscripcionseccion < ApplicationRecord
 		return aux
 	end
 
+	def no_presento?
+		tipo_estado_calificacion_id.eql? NOPRESENTO
+	end
+
+
+	def calificacion_en_letras
+
+		valor = ''
+		if retirada?
+			valor = 'RET'
+		elsif pi?
+			valor = PI
+		elsif seccion.asignatura.absoluta?
+			valor = tipo_estado_inscripcion_id 
+		else
+			valor = colocar_nota
+		end
+		return valor
+	end
+
+
+
+
 	def pi?
-		tipo_estado_calificacion_id.eql? 'PI'
+		tipo_estado_calificacion_id.eql? PI
 	end
 
 	def colocar_nota
@@ -93,7 +120,7 @@ class Inscripcionseccion < ApplicationRecord
 		if retirada?
 			tipo = 'RT'
 		elsif pi?
-			tipo = 'PI'
+			tipo = PI
 		elsif calificacion_final.nil?
 			tipo = 'PD'
 		else
@@ -114,6 +141,12 @@ class Inscripcionseccion < ApplicationRecord
 			valor = 'RETIRADA'
 		elsif pi?
 			valor = 'PERDIDA POR INASISTENCIA'
+		elsif seccion.asignatura.absoluta?
+			if tipo_estado_inscripcion_id.eql? 'A'
+				valor = 'APROBADO'
+			else
+				valor = 'APLAZADO'
+			end
 		elsif calificacion_final.nil?
 			valor = 'POR DEFINIR'
 		else
@@ -160,7 +193,7 @@ class Inscripcionseccion < ApplicationRecord
 			when 20
 				valor = "VEINTE"
 			else
-				valor = "SIN VALOR"
+				valor = "POR DEFINIR"
 			end						
 		end
 		return valor

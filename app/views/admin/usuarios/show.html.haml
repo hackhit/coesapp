@@ -31,10 +31,9 @@
   .nav.nav-tabs
     = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: 'nav-item nav-link'
     - if @estudiante
-      = link_to 'Plan de Estudio y Combinaciones de Idiomas', "#estudios", "data-toggle"=> "tab", class: 'nav-item nav-link'
-      = link_to 'Historial Académico', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link'
+      = link_to 'Historial Académico (Estudiante)', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link'
     - if @profesor
-      = link_to 'Detalles Académicos', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link'
+      = link_to 'Detalles Académicos (Profesor)', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link'
     - if @administrador
       = link_to 'Administrador', "#administrador", "data-toggle"=> "tab", class: 'nav-item nav-link'
       
@@ -43,16 +42,15 @@
     .border.mt-3.p-3
       = render partial: '/admin/usuarios/personales_contacto'
   - if @estudiante
-    .tab-pane#estudios
+    .tab-pane#historial
       .border.mt-3.p-3
         = render '/admin/historialplanes/index'
         = render '/admin/combinaciones/index'
-    .tab-pane#historial
       = render partial: '/admin/estudiantes/historial_academico'
 
   - if @profesor
     .tab-pane#profesor
-      = render partial: '/admin/profesores/detalle'
+      = render partial: '/admin/profesores/show'
 
   - if current_usuario.administrador.mas_altos? and @administrador
     .tab-pane#administrador

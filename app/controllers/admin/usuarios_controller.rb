@@ -24,7 +24,7 @@ module Admin
 
     def index
       @titulo = 'Usuarios'
-      @admin = current_usuario.administrador
+      @admin = current_admin
 
       if params[:search]
         @usuarios = Usuario.search(params[:search]).limit(50)
@@ -152,7 +152,7 @@ module Admin
       @administrador = @usuario.administrador
 
       # @secciones_estudiantes = CalEstudianteSeccion.where(:cal_estudiante_ci => @estudiante.cal_usuario_ci)   
-      @admin = Administrador.find session[:administrador_id]
+      @admin = current_admin
 
       @periodos = Periodo.order("id DESC").all
 

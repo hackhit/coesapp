@@ -1,21 +1,41 @@
 
 .border.p-3
-	=link_to principal_profesor_index_path, class: 'btn btn-sm btn-outline-secondary' do
+	- @back = session[:administrador_id] ? principal_admin_index_path : principal_profesor_index_path 
+	=link_to @back, class: 'btn btn-sm btn-outline-secondary' do
 		= glyph 'chevron-left'
 		Regresar
 
-	-if true #@seccion.calificada
+	%table.table.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+		%thead
+			%tr
+				%th Asignatura
+				%th Profesor
+				%th Tipo de Calificación
+				%th Tipo de Sección
+				%th Id
+				%th U. Créditos
+
+		%tbody
+			%tr
+				%td= "#{@seccion.asignatura.descripcion}"
+				%td= "#{@seccion.descripcion_profesor_asignado}"
+				%td= "#{@seccion.asignatura.calificacion.titleize}"
+				%td= "#{@seccion.tipo_seccion.descripcion.titleize}"
+				%td= "#{@seccion.numero}"
+				%td= "#{@seccion.asignatura.creditos}"
+
+
+	-if @seccion.calificada
 		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success pull-right btn-sm ml-2" do
 			= glyph 'download'
 			Descargar notas
 
-	= render partial: '/admin/secciones/detalle_seccion'
+	= render '/admin/secciones/detalle_seccion'
 
-
-	=link_to principal_profesor_index_path, class: 'btn btn-sm btn-outline-secondary' do
+	=link_to @back, class: 'btn btn-sm btn-outline-secondary mt-3' do
 		= glyph 'chevron-left'
 		Regresar
-	-if true #@seccion.calificada
+	-if @seccion.calificada
 		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success pull-right btn-sm ml-2" do
 			= glyph 'download'
 			Descargar notas

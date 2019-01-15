@@ -1,10 +1,13 @@
-.text-center
-	.bg-info.mb-4.p-2
+
+	
+.row.bg-info.mb-4.p-2.text-center
+	.col-md-2= image_tag :logo_ucv#, {style: "width:50%;"}
+	.col-md-8
 		%h3 Universidad Central de Venezuela
 		%h3 Facultad de Humanidades y Educación
 		%h1 Sistema de Control de Estudios
-		%h3 COES-FHE 
-
+		%h3.text-dark COES-FHE 
+	.col-md-2= image_tag :logo_ucv#, {style: "width:50%;"}
 
 - @carteleras.each do |c| 
 	.border.m-2.p-2

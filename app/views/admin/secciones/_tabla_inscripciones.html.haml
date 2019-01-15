@@ -1,135 +1,136 @@
+%h5= "Total de Estudiantes: #{@inscripciones_secciones.count}"
+= form_tag(calificar_seccion_path) do
+	= hidden_field_tag "id", @seccion.id
 
-%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
-	%thead			
-		%tr
-			%th #
-			%th Estudiante
-			- if @seccion.reparacion? or @seccion.suficiencia?
-				%th Definitiva
-			- elsif @seccion.asignatura_id.eql? 'SERCOM'
+	%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+		%thead			
+			%tr
+				%th #
+				%th Estudiante
 				- unless @calificada
-					%th Reprobado
-					%th Aprobado
-				- else
-					%th Estado
-			- else
-				%th
-					- unless @calificada 
-						PI
+					- if @seccion.asignatura.numerica?
+						%th Definitiva
 					- else
-						Estado
-				%th.span2 Trimestre I
-				%th.border-right.border-dark= "(#{@p1}%)"
-				%th.span2 Trimestre II
-				%th.border-right.border-dark= "(#{@p2}%)"
-				%th.span2 Trimestre III
-				%th.border-right.border-dark= "(#{@p3}%)"
-				%th Definitiva
+						%th Aprobado
+						%th Aplazado
+					%th PI
+					- if @seccion.tipo_seccion_id.eql? TipoSeccion::DIFERIDA
+						%th= TipoSeccion::DIFERIDA
+				- else
+					%th Definitiva
+				%th Estado
+		%tbody
+			- @inscripciones_secciones.each_with_index do |es,i|
+				- retirada = es.retirada?  
+				- @calificacion = 'bg-success' if es.aprobada?
+				- @calificacion = 'bg-error' if (es.aplazada? or es.pi? or retirada)
+				- @muted = retirada ? "text-muted" : ""
 
-	%tbody
-		- @estudiantes_secciones.each_with_index do |es,i|
-			- retirada = es.retirada?  
-			- tipo_calificacion = 'success' if es.aprobada?
-			- tipo_calificacion = 'error' if (es.reprobada? or es.pi? or retirada)
-			- tipo_calificacion = 'info' if @seccion.periodo_id.eql? '2016-02A' and es.confirmar_inscripcion.eql? 1
-			- muted = retirada ? "muted" : ""
-
-			%tr{class: "#{tipo_calificacion} #{muted}"}
-				%td= i+1
-				%td
-					= "(#{es.estudiante_id})"
-					= link_to_if @admin, es.estudiante.usuario.apellido_nombre, {action: 'detalle_usuario', controller: 'principal_admin', ci: es.estudiante_id}
-					%span.badge= 'Retirada' if retirada
-				- if @seccion.reparacion? or @seccion.suficiencia?
+				%tr{class: "#{@calificacion} #{@muted}"}
+					%td= i+1
 					%td
-						= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: (@calificada or retirada), value: es.calificacion_final.to_i, class: 'span9', required: true, :step => 0.1, :in => 0...21}
-				
-				- elsif @seccion.asignatura_id.eql? 'SERCOM'
+						= "(#{es.estudiante_id})"
+						= link_to_if @admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
+						%span.badge= 'Retirada' if retirada
+
 					- unless @calificada
-						%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 0, (es.tipo_estado_calificacion_id.eql? 'RE'), required: true, disabled: retirada
-						%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 20, (es.tipo_estado_calificacion_id.eql? 'AP'), required: true, disabled: retirada				
-					- else
-						%td
-							%b= retirada ? 'Retirada' : es.tipo_estado_calificacion.descripcion 					
-				- else
-					%td
-						- unless @calificada 
-							= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {:onclick => "pi(#{es.estudiante_id})", disabled: retirada}
+						- if @seccion.asignatura.numerica?
+							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: (@calificada or retirada), value: es.calificacion_final.to_i, class: 'number_field', required: true, :step => 1, :in => 0...21, onchange: "calcular($(this).val(), #{es.estudiante_id});"}
 						- else
-							= es.tipo_estado_calificacion.descripcion
-					%td=number_field_tag "[est][#{es.estudiante_id}]primera_calificacion", {}, {class: 'span9', required: @es_periodo1, :step => 0.1, :in => 0...21, value: es.primera_calificacion, disabled: (@calificada or es.pi? or retirada), :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
-					%td.border-right.border-dark
-						%p{id: "#{es.estudiante_id}primera__calificacion_text"}
-							= sprintf( "%0.01f", es.primera_calificacion*@p1/100) if es.primera_calificacion
-					%td 
-						=number_field_tag "[est][#{es.estudiante_id}]segunda_calificacion", {}, {class: 'span9', required: @es_periodo2, :step => 0.1, :in => 0...21, disabled: (@calificada or es.pi? or retirada), value: es.segunda_calificacion, :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
-					%td.border-right.border-dark
-						%p{id: "#{es.estudiante_id}_segunda_calificacion_text"}
-							= sprintf( "%0.01f", es.segunda_calificacion*@p2/100) if es.segunda_calificacion
-					%td= number_field_tag "[est][#{es.estudiante_id}]tercera_calificacion", {}, {class: 'span9', required: @es_periodo3, :step => 0.1, :in => 0...21, value: es.tercera_calificacion, disabled: (@calificada or es.pi? or retirada), :onchange => "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'A', (es.tipo_estado_calificacion_id.eql? 'RE'), required: true, disabled: retirada
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'AP', (es.tipo_estado_calificacion_id.eql? 'AP'), required: true, disabled: retirada
 
-					%td.border-right.border-dark
-						%p{id: "#{es.estudiante_id}_tercera_calificacion_text"}
-							= sprintf( "%0.01f", es.tercera_calificacion*@p3/100) if es.tercera_calificacion
-					%td
-						- valor = es.pi? ? es.tipo_estado_calificacion.descripcion : es.calificacion_final.to_i
-						- valor = 'Retirada' if retirada
-						= text_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {:readonly => true, disabled: @calificada, value: valor , class: 'span9'}
+						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {:onclick => "pi(#{es.estudiante_id})", disabled: retirada}
+						- if @seccion.tipo_seccion_id.eql? TipoSeccion::DIFERIDA
+							%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.no_presento?, {onclick: "pi(#{es.estudiante_id})", disabled: retirada}
+					- else
+						%td= es.calificacion_final
+					%td= text_field_tag "[est][#{es.estudiante_id}]calificacion_en_letras", {}, {:readonly => true, disabled: true, value: es.calificacion_en_letras , class: 'form-control text_field form-control-sm'}
 
-.well.well-small
-	-unless @calificada 
-		= submit_tag "Guardar", id: "submit", class: "btn btn-success pull-right", :disable_with => "Espere...", :data => {:confirm => 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
+	.well.well-small
+		-unless @calificada 
+			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", :disable_with => "Espere...", :data => {:confirm => 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
 :javascript
 
 	function pi(ci){
 
 		if ($("#_est_"+ci+"pi").prop('checked') == true){
-
-			$("#_est_"+ci+"primera_calificacion").prop( "disabled", true );	
-			$("#_est_"+ci+"segunda_calificacion").prop( "disabled", true );
-			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", true );
-
-			$("#_est_"+ci+"primera_calificacion").val("");
-			$("#_est_"+ci+"segunda_calificacion").val("");
-			$("#_est_"+ci+"tercera_calificacion").val("");			
-
-			$("#_est_"+ci+"primera_calificacion").prop( "required", false );	
-			$("#_est_"+ci+"segunda_calificacion").prop( "required", false );
-			$("#_est_"+ci+"tercera_calificacion").prop( "required", false );
-
-			$("#_est_"+ci+"calificacion_final").val("Perdida por Inasistencia");
-			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", true );
+			$("#_est_"+ci+"calificacion_en_letras").val("PERDIDA POR INASISTENCIA");
 				
 		}else{
-			$("#_est_"+ci+"primera_calificacion").prop( "disabled", false );	
-			$("#_est_"+ci+"segunda_calificacion").prop( "disabled", false );
-			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", false );
-
-			$("#_est_"+ci+"primera_calificacion").prop( "required", true );	
-			$("#_est_"+ci+"segunda_calificacion").prop( "required", true );
-			$("#_est_"+ci+"tercera_calificacion").prop( "required", true );	
-
+			$("#_est_"+ci+"calificacion_en_letras").val("POR DEFINIR");
 			$("#_est_"+ci+"calificacion_final").val("");
-			$("#_est_"+ci+"tercera_calificacion").prop( "disabled", false );
 		}
 
 	}
 
-	function calcular(p1,p2,p3,ci){
-		var nota1 = document.getElementById("_est_"+ci+"primera_calificacion").value;
-		var nota2 = document.getElementById("_est_"+ci+"segunda_calificacion").value;
-		var nota3 = document.getElementById("_est_"+ci+"tercera_calificacion").value;
-		var porcen1 = (p1*nota1)/100;
-		porcen1 =  Math.round(porcen1 * 10) / 10;
-		var porcen2 = (p2*nota2)/100;
-		porcen2 =  Math.round(porcen2 * 10) / 10;		
-		var porcen3 = (p3*nota3)/100;
-		porcen3 =  Math.round(porcen3 * 10) / 10;		
-		$("#"+ci+"primera__calificacion_text").text(porcen1);
-		$("#"+ci+"_segunda_calificacion_text").text(porcen2);
-		$("#"+ci+"_tercera_calificacion_text").text(porcen3);
-		var final = (porcen1+porcen2+porcen3).toFixed(0);
-		
-		$("#_est_"+ci+"calificacion_final").val(final);
+	function calcular(valor, ci){
+
+	switch (valor) {
+		case '1':
+			final = "CERO UNO";
+			break;
+		case '2':
+			final = "CERO DOS";
+			break;
+		case '3':
+			final = "CERO TRES";
+			break;
+		case '4':
+			final = "CERO CUATRO";
+			break;
+		case '5':
+			final = "CERO CINCO";
+			break;
+		case '6':
+			final = "CERO SEIS";
+			break;
+		case '7':
+			final = "CERO SIETE";
+			break;
+		case '8':
+			final = "CERO OCHO";
+			break;
+		case '9':
+			final = "CERO NUEVE";
+			break;
+		case '10':
+			final = "DIEZ";
+			break;
+		case '11':
+			final = "ONCE";
+			break;
+		case '12':
+			final = "DOCE";
+			break;
+		case '13':
+			final = "TRECE";
+			break;
+		case '14':
+			final = "CATORCE";
+			break;
+		case '15':
+			final = "QUINCE";
+			break;
+		case '16':
+			final = "DIEZ Y SEIS";
+			break;
+		case '17':
+			final = "DIEZ Y SIETE";
+			break;
+		case '18':
+			final = "DIEZ Y OCHO";
+			break;
+		case '19':
+			final = "DIEZ Y NUEVE";
+			break;
+		case '20':
+			final = "VEINTE";
+			break;
+		default:
+		final = "POR DEFINIR";
+	}
+			
+		$("#_est_"+ci+"calificacion_en_letras").val(final);
 
 	}															
