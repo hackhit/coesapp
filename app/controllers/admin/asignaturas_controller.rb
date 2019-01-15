@@ -30,6 +30,8 @@ module Admin
     def new
       @titulo = 'Nueva Asignatura'
       @asignatura = Asignatura.new
+      @departamentos = current_admin.departamentos
+      @departamentos = Departamento.all unless @departamentos
     end
 
     # GET /asignaturas/1/edit
@@ -96,7 +98,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def asignatura_params
-        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos, :tipoasignatura_id)
+        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos, :tipoasignatura_id, :calificacion)
       end
   end
 end
