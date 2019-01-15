@@ -11,7 +11,7 @@
   .form-group
     = f.label :departamento_id, class: 'control-label col-md-2'
     .col-md-10
-      = f.select(:departamento_id, Departamento.all.collect{|o| [ "#{o.escuela_id} - #{o.id} - #{o.descripcion}", o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})
+      = f.select(:departamento_id, Departamento.all.collect{|o| [ "#{o.escuela.descripcion} - #{o.descripcion}", o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})
   .form-group
     = f.label :catedra_id, class: 'control-label col-md-2'
     .col-md-10
