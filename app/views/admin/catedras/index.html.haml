@@ -28,7 +28,7 @@
           %table.table
             - catedra.departamentos.each do |c| 
               %tr
-                %td= c.descripcion
+                %td= c.descripcion_completa.upcase
         %td= catedra.asignaturas.count
         %td= catedra.secciones.count
         %td= catedra.inscripcionsecciones.count

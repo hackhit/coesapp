@@ -17,7 +17,7 @@
               .form-group
                 = f.label :catedra_id, class: 'control-label col-md-2', value: 'Cátedra:'
                 .col-md-12
-                  = f.select(:catedra_id, @catedras_disponibles.collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})
+                  = f.select(:catedra_id, @catedras_disponibles.collect{|o| [ "#{o.id} - #{o.descripcion}", o.id ] }, { include_blank: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})
             - else
               .form-group
                 = f.label :departamento, class: 'control-label col-md-2'

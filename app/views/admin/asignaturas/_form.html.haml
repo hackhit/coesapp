@@ -11,11 +11,11 @@
   .form-group
     = f.label :departamento_id, class: 'control-label col-md-2'
     .col-md-10
-      = f.select(:departamento_id, Departamento.all.collect{|o| [ o.descripcion.titleize, o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})
+      = f.select(:departamento_id, Departamento.all.collect{|o| [ "#{o.id} - #{o.descripcion}", o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})
   .form-group
     = f.label :catedra_id, class: 'control-label col-md-2'
     .col-md-10
-      = f.select(:catedra_id, Catedra.all.collect{|o| [ o.descripcion.titleize, o.id ] }, { prompt: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})
+      = f.select(:catedra_id, Catedra.all.collect{|o| [ "#{o.id} - #{o.descripcion}", o.id ] }, { prompt: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})
   .form-group
     = f.label :tipo, class: 'control-label col-md-2', value: 'Tipo de asignatura'
     .col-md-10

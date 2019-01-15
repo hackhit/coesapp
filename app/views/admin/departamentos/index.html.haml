@@ -6,6 +6,7 @@
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
+      %th Escuela
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
       %th Cátedra
@@ -24,13 +25,14 @@
 
     - @departamentos.each do |departamento|
       %tr
+        %td= departamento.escuela_id
         %td= departamento.id
         %td= departamento.descripcion
         %td
           %table.table
             - departamento.catedras.each do |c| 
               %tr
-                %td= c.descripcion
+                %td= "#{c.id} - #{c.descripcion}"
         %td= departamento.asignaturas.count
         %td= departamento.secciones.count
         %td= departamento.inscripcionsecciones.count
