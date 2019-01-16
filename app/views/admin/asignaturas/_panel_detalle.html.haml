@@ -62,18 +62,19 @@
 									%span.badge.badge-info Por calificar
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
 										%span.badge.badge-dark= seccion.total_sin_calificar
-							- if @current_admin and @current_admin.altos? 
+							- if @current_admin #and @current_admin.altos? 
 								%td
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
-										= link_to acta_examen_excel_descargar_path(seccion.id), class: 'btn btn-info btn-success btn-sm', role: :button do
-											= glyph 'download-alt'
-											= glyph 'list'
-											X
+									- if @current_admin and @current_admin.altos? 
+										%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
+											= link_to acta_examen_excel_descargar_path(seccion.id), class: 'btn btn-info btn-success btn-sm', role: :button do
+												= glyph 'download-alt'
+												= glyph 'list'
+												X
 
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen'}
-										= link_to acta_examen_descargar_path(seccion.id), class: 'btn btn-info btn-sm', role: :button do
-											= glyph 'download-alt'
-											= glyph 'list'
+										%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen'}
+											= link_to acta_examen_descargar_path(seccion.id), class: 'btn btn-info btn-sm', role: :button do
+												= glyph 'download-alt'
+												= glyph 'list'
 
 									%b.tooltip-btn{'data_toggle': :tooltip, title: 'Ver Detalle / Calificar'}
 										= link_to seccion_path(seccion), class: 'btn btn-info btn-sm', role: :button do
@@ -81,10 +82,10 @@
 											= glyph 'eye-open'
 											= glyph 'list'
 											= glyph 'check'
-											
-									%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
-										= link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
-											= glyph 'trash'
+									- if seccion.estudiantes.count < 1
+										%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
+											= link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
+												= glyph 'trash'
 									- if current_usuario.administrador.maestros?
 										-if seccion.calificada											
 											%b.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar para Calificar Nuevamente'}

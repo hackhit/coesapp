@@ -2,8 +2,8 @@ module Admin
   class AsignaturasController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_admin_mas_altos!, except: [:destroy]
-    before_action :filtro_ninja!, only: [:destroy]
+    #before_action :filtro_admin_mas_altos!, except: [:destroy]
+    #before_action :filtro_ninja!, only: [:destroy]
 
     before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa]
 
@@ -37,7 +37,8 @@ module Admin
     # GET /asignaturas/1/edit
     def edit
       @titulo = "Editando #{@asignatura.descripcion}"
-
+      @departamentos = current_admin.departamentos
+      @departamentos = Departamento.all unless @departamentos
     end
 
     # POST /asignaturas

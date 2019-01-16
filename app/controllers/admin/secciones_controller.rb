@@ -5,7 +5,7 @@ module Admin
     before_action :filtro_admin_profe, only: [:show]
     before_action :filtro_admin_altos!, only: [:agregar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion, :desasignar_profesor_secundario]
     before_action :filtro_admin_mas_altos!, only: [:cambiar_capacidad, :create, :new, :create, :update]
-    before_action :filtro_ninja!, only: [:destroy, :index]
+    #before_action :filtro_ninja!, only: [:destroy, :index]
 
     before_action :set_seccion, except: [:index, :new, :create, :habilitar_calificar]
 
@@ -19,7 +19,7 @@ module Admin
       if params[:id]
         @secciones = Seccion.where(id: params[:id])
       else
-        periodo_actual_id = Periodo.find session[:parametros][:periodo_actual_id]
+        periodo_actual_id = Periodo.find session[:parametros]['periodo_actual_id']
         @secciones = periodo_actual_id.secciones.calificadas
       end
       total = 0
