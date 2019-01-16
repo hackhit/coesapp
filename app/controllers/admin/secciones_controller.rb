@@ -7,12 +7,37 @@ module Admin
     before_action :filtro_admin_mas_altos!, only: [:cambiar_capacidad, :create, :new, :create, :update]
     before_action :filtro_ninja!, only: [:destroy, :index]
 
-    before_action :set_seccion, except: [:index, :new, :create]
+    before_action :set_seccion, except: [:index, :new, :create, :habilitar_calificar]
 
     # GET /secciones
     # GET /secciones.json
     def index
       @secciones = Seccion.all
+    end
+
+    def habilitar_calificar
+      if params[:id]
+        @secciones = Seccion.where(id: params[:id])
+      else
+        periodo_actual_id = Periodo.find session[:parametros][:periodo_actual_id]
+        @secciones = periodo_actual_id.secciones.calificadas
+      end
+      total = 0
+      error = 0
+      @secciones.each do |seccion|
+        seccion.calificada = false
+        seccion.inscripcionsecciones.each{|es| es.tipo_estado_calificacion_id = 'SC'; es.save}
+        if seccion.save
+          total += 1
+        else
+          error += 1
+        end
+        flash[:info] = "Sin asignaturas por habilitar" if (total == 0)
+        flash[:success] = "#{total} asignatura(s) habilitada(s) para calificar" if total > 0  
+        flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
+      end
+
+      redirect_to principal_admin_index_path
     end
 
     def importar_secciones
@@ -28,6 +53,7 @@ module Admin
         @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).limit(1).first
         if valores['pi']
           tipo_estado_calificacion_id = 'PI'
+          valores[:calificacion_final] = 0
         elsif valores['np']
           tipo_estado_calificacion_id = 'NP'
         else

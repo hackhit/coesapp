@@ -10,6 +10,10 @@
     %dt.label.label-default Tipo
     %dd
       %pre.prettyprint= @asignatura.tipoasignatura.descripcion.titleize
+    %dt.label.label-default= model_class.human_attribute_name(:calificacion)
+    %dd
+      %pre.prettyprint= @asignatura.calificacion.titleize
+
     %dt.label.label-default= model_class.human_attribute_name(:departamento_id)
     %dd
       %pre.prettyprint= @asignatura.departamento.descripcion.titleize

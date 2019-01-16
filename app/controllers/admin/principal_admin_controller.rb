@@ -140,36 +140,6 @@ module Admin
 
 		end
 
-		def habilitar_calificar
-
-
-			if params[:id]
-				@seccion = Seccion.find 
-				numero, cal_materia_id, cal_semestre_id = params[:id].to_s.split(",")
-				@cal_secciones = CalSeccion.where(numero: numero, cal_materia_id: cal_materia_id, cal_semestre_id: cal_semestre_id).limit(1)
-			else
-				cal_semestre_actual_id = CalSemestre.find session[:cal_parametros][:semestre_actual]
-				@cal_secciones = cal_semestre_actual_id.cal_secciones.calificadas
-			end
-			total = 0
-			error = 0
-			@cal_secciones.each do |cal_seccion|
-				cal_seccion.calificada = false
-				cal_seccion.cal_estudiantes_secciones.each{|es| es.cal_tipo_estado_calificacion_id = 'SC'; es.save}
-				if cal_seccion.save
-					total += 1
-				else
-					error += 1
-				end
-				flash[:info] = "Sin asignaturas por habilitar" if (total == 0)
-				flash[:success] = "#{total} asignatura(s) habilitada(s) para calificar" if total > 0  
-				flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
-			end
-
-			redirect_to :action => 'index'		
-		end
-
-
 		def reader_pdf
 			require 'rubygems'
 			require 'pdf-reader'

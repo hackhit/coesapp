@@ -21,9 +21,10 @@
 				%th Estado
 		%tbody
 			- @inscripciones_secciones.each_with_index do |es,i|
-				- retirada = es.retirada?  
-				- @calificacion = 'bg-success' if es.aprobada?
-				- @calificacion = 'bg-error' if (es.aplazada? or es.pi? or retirada)
+				- retirada = es.retirada?
+				- desactivada = @calificada || retirada || es.pi? || es.no_presento?
+				- @calificacion = 'table-success' if es.aprobada?
+				- @calificacion = 'table-danger' if (es.aplazada? || es.pi? || retirada)
 				- @muted = retirada ? "text-muted" : ""
 
 				%tr{class: "#{@calificacion} #{@muted}"}
@@ -35,31 +36,58 @@
 
 					- unless @calificada
 						- if @seccion.asignatura.numerica?
-							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: (@calificada or retirada), value: es.calificacion_final.to_i, class: 'number_field', required: true, :step => 1, :in => 0...21, onchange: "calcular($(this).val(), #{es.estudiante_id});"}
-						- else
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'A', (es.tipo_estado_calificacion_id.eql? 'RE'), required: true, disabled: retirada
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'AP', (es.tipo_estado_calificacion_id.eql? 'AP'), required: true, disabled: retirada
 
-						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {:onclick => "pi(#{es.estudiante_id})", disabled: retirada}
+							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: desactivada, value: es.calificacion_final, class: 'form-control form-control-sm', required: true, :step => 1, :in => 0...21, onchange: "calcular($(this).val(), #{es.estudiante_id});"}
+						- else
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'A', (es.tipo_estado_calificacion_id.eql? 'RE'), required: true, disabled: desactivada, onchange: "calcular_absoluto(#{es.estudiante_id});"
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'AP', (es.tipo_estado_calificacion_id.eql? 'AP'), required: true, disabled: desactivada, onchange: "calcular_absoluto(#{es.estudiante_id});"
+
+						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_resto(#{es.estudiante_id})", disabled: retirada || @calificada || es.no_presento? }
+
 						- if @seccion.tipo_seccion_id.eql? TipoSeccion::DIFERIDA
-							%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.no_presento?, {onclick: "pi(#{es.estudiante_id})", disabled: retirada}
+							%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.no_presento?, {onclick: "desactivar_resto(#{es.estudiante_id})", disabled: retirada || @calificada || es.pi?}
+
 					- else
 						%td= es.calificacion_final
-					%td= text_field_tag "[est][#{es.estudiante_id}]calificacion_en_letras", {}, {:readonly => true, disabled: true, value: es.calificacion_en_letras , class: 'form-control text_field form-control-sm'}
+					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {:readonly => true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
 
-	.well.well-small
-		-unless @calificada 
-			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", :disable_with => "Espere...", :data => {:confirm => 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
+	%hr
+		- unless @calificada 
+			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
 :javascript
 
-	function pi(ci){
-
-		if ($("#_est_"+ci+"pi").prop('checked') == true){
-			$("#_est_"+ci+"calificacion_en_letras").val("PERDIDA POR INASISTENCIA");
-				
+	function calcular_absoluto(ci){
+		if ($("input[name='[est]["+ci+"]calificacion_final']:checked").val() == 'A'){
+			$("#_"+ci+"calificacion_en_letras").val("APROBADO");
+		}else if ($("input[name='[est]["+ci+"]calificacion_final']:checked").val() == 'AP'){
+			$("#_"+ci+"calificacion_en_letras").val("APLAZADO");
 		}else{
-			$("#_est_"+ci+"calificacion_en_letras").val("POR DEFINIR");
-			$("#_est_"+ci+"calificacion_final").val("");
+			$("#_"+ci+"calificacion_en_letras").val("");
+		}
+	}
+
+	function desactivar_resto(ci){
+
+		if ($("#_est_"+ci+"np").prop('checked') == true){
+			$("#_"+ci+"calificacion_en_letras").val("NO PRESENTÓ");
+			$("#_est_"+ci+"pi").prop('disabled', true);
+		}else if ($("#_est_"+ci+"pi").prop('checked') == true){
+			$("#_"+ci+"calificacion_en_letras").val("PÉRDIDA POR INASISTENCIA");
+			$("#_est_"+ci+"calificacion_final").prop('disabled', true);
+			$("#_est_"+ci+"calificacion_final").prop('readonly', true);
+			$("#_est_"+ci+"calificacion_final").prop('required', false);
+			$("#_est_"+ci+"calificacion_final_A").prop('disabled', true);
+			$("#_est_"+ci+"calificacion_final_AP").prop('disabled', true);
+			$("#_est_"+ci+"np").prop('disabled', true);
+		}else{
+			$("#_"+ci+"calificacion_en_letras").val("POR DEFINIR");
+			$("#_est_"+ci+"calificacion_final").prop('disabled', false);
+			$("#_est_"+ci+"calificacion_final").prop('readonly', false);
+			$("#_est_"+ci+"calificacion_final").prop('required', true);
+			$("#_est_"+ci+"calificacion_final_A").prop('disabled', false);
+			$("#_est_"+ci+"calificacion_final_AP").prop('disabled', false);
+			$("#_est_"+ci+"pi").prop('disabled', false);
+			$("#_est_"+ci+"np").prop('disabled', false);
 		}
 
 	}
@@ -131,6 +159,6 @@
 		final = "POR DEFINIR";
 	}
 			
-		$("#_est_"+ci+"calificacion_en_letras").val(final);
+		$("#_"+ci+"calificacion_en_letras").val(final);
 
 	}															

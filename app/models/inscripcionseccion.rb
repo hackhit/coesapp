@@ -140,7 +140,7 @@ class Inscripcionseccion < ApplicationRecord
 		if retirada?
 			valor = 'RETIRADA'
 		elsif pi?
-			valor = 'PERDIDA POR INASISTENCIA'
+			valor = 'PÉRDIDA POR INASISTENCIA'
 		elsif seccion.asignatura.absoluta?
 			if tipo_estado_inscripcion_id.eql? 'A'
 				valor = 'APROBADO'

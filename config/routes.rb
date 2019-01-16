@@ -20,7 +20,6 @@ Rails.application.routes.draw do
       end
       member do 
         get 'ver_seccion_admin'
-        get 'habilitar_calificar'
       end
     end
 
@@ -67,6 +66,7 @@ Rails.application.routes.draw do
 
     resources :secciones do
       collection do
+        get 'habilitar_calificar'
         post 'cambiar_capacidad'
         post 'cambiar_profe_seccion'
         post 'agregar_profesor_secundario'
@@ -75,8 +75,9 @@ Rails.application.routes.draw do
       member do
         get 'desasignar_profesor_secundario'
         get 'seleccionar_profesor'
-        post 'calificar'
+        post :calificar
         get 'descargar_notas'
+        get 'habilitar_calificar'
       end
     end
 

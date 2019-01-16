@@ -26,7 +26,7 @@
 
 
 	-if @seccion.calificada
-		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success pull-right btn-sm ml-2" do
+		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2 mb-md-2" do
 			= glyph 'download'
 			Descargar notas
 
@@ -36,6 +36,6 @@
 		= glyph 'chevron-left'
 		Regresar
 	-if @seccion.calificada
-		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success pull-right btn-sm ml-2" do
+		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2" do
 			= glyph 'download'
 			Descargar notas
