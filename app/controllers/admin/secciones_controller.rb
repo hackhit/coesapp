@@ -19,7 +19,7 @@ module Admin
       if params[:id]
         @secciones = Seccion.where(id: params[:id])
       else
-        periodo_actual_id = Periodo.find session[:parametros][:periodo_actual_id]
+        periodo_actual_id = Periodo.find session[:parametros]['periodo_actual_id']
         @secciones = periodo_actual_id.secciones.calificadas
       end
       total = 0
