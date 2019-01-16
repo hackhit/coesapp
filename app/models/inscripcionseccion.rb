@@ -2,6 +2,7 @@ class Inscripcionseccion < ApplicationRecord
 	# SET GLOBALES:
 	NOPRESENTO = 'NP'
 	PI = 'PI'
+	RETIRADA = TipoEstadoInscripcion::RETIRADA
 	# ASOCIACIONES: 
 	belongs_to :seccion
 	belongs_to :estudiante, primary_key: :usuario_id
@@ -21,8 +22,8 @@ class Inscripcionseccion < ApplicationRecord
 	scope :del_periodo, lambda { |periodo_id| joins(:seccion).where "periodo_id = ?", periodo_id}
 
 	scope :en_reparacion, -> {joins(:seccion).where "numero LIKE ?", 'R'}
-	scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", 'RET'}
-	scope :retirados, -> {where "tipo_estado_inscripcion_id = ?", 'RET'}
+	scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
+	scope :retirados, -> {where "tipo_estado_inscripcion_id = ?", RETIRADA}
 	scope :aprobados, -> {where "tipo_estado_calificacion_id = ?", 'AP'}
 	scope :reprobados, -> {where "tipo_estado_calificacion_id = ?", 'RE'}
 	scope :perdidos, -> {where "tipo_estado_calificacion_id = ?", PI}
@@ -59,11 +60,28 @@ class Inscripcionseccion < ApplicationRecord
 		return aplazada?
 	end
 	def aplazada?
-		return tipo_estado_calificacion_id.eql? 'AP'
+		if seccion.asignatura.absoluta?
+			return (tipo_estado_calificacion_id.eql? 'AP' or no_presento?)
+		elsif no_presento? and calificacion_final < 10
+			return true
+		else 
+			return tipo_estado_calificacion_id.eql? 'AP'
+		end
 	end
 
 	def aprobada?
-		return tipo_estado_calificacion_id.eql? 'A'
+		if seccion.asignatura.absoluta?
+			if no_presento?
+				return false
+			else
+				tipo_estado_calificacion_id.eql? 'A'
+			end	
+		elsif no_presento?
+			return calificacion_final > 10
+		else
+			tipo_estado_calificacion_id.eql? 'A'
+		end
+
 	end
 
 	def calificacion_completa?
@@ -84,24 +102,37 @@ class Inscripcionseccion < ApplicationRecord
 		tipo_estado_calificacion_id.eql? NOPRESENTO
 	end
 
+	def estado
+		if retirada?
+			return "Retirada"
+		elsif aprobada?
+			return 'Aprobada'
+		elsif aplazada?
+			return 'Aplazada'
+		else
+			return tipo_estado_calificacion.descripcion.titleize
+		end
 
-	def calificacion_en_letras
+	end
 
+	def valor_calificacion
 		valor = ''
 		if retirada?
-			valor = 'RET'
+			valor = RETIRADA
 		elsif pi?
 			valor = PI
 		elsif seccion.asignatura.absoluta?
-			valor = tipo_estado_inscripcion_id 
+			if no_presento?
+				valor = 'AP-NP'
+			else
+				valor = tipo_estado_calificacion_id
+			end
 		else
 			valor = colocar_nota
+			valor += " (NP)" if no_presento? 
 		end
 		return valor
 	end
-
-
-
 
 	def pi?
 		tipo_estado_calificacion_id.eql? PI
@@ -142,10 +173,11 @@ class Inscripcionseccion < ApplicationRecord
 		elsif pi?
 			valor = 'PÉRDIDA POR INASISTENCIA'
 		elsif seccion.asignatura.absoluta?
-			if tipo_estado_inscripcion_id.eql? 'A'
-				valor = 'APROBADO'
+
+			if no_presento?
+				valor = 'APLAZADO (NO PRESENTO)'
 			else
-				valor = 'APLAZADO'
+				valor = tipo_estado_calificacion.descripcion.upcase
 			end
 		elsif calificacion_final.nil?
 			valor = 'POR DEFINIR'
@@ -193,7 +225,7 @@ class Inscripcionseccion < ApplicationRecord
 			when 20
 				valor = "VEINTE"
 			else
-				valor = "POR DEFINIR"
+				valor = "SIN CALIFICACION"
 			end						
 		end
 		return valor
@@ -206,8 +238,8 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def retirada?
-		# return (cal_tipo_estado_inscripcion_id.eql? 'RET') ? true : false
-		tipo_estado_inscripcion_id.eql? 'RET'
+		# return (cal_tipo_estado_inscripcion_id.eql? RETIRADA) ? true : false
+		tipo_estado_inscripcion_id.eql? RETIRADA
 	end
 
 	protected

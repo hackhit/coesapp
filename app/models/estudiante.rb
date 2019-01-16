@@ -28,7 +28,7 @@ class Estudiante < ApplicationRecord
 	def inactivo?
 	# OJO: ESTA FUNCION DEBE CAMBIAR AL AGREGAR LA TABLA INSCRIPCION PERIDO!!!
 		total_asignaturas = self.inscripcionsecciones.del_periodo_actual.count
-		total_retiradas = inscripcionsecciones.del_periodo_actual.where(tipo_estado_inscripcion_id: 'RET').count
+		total_retiradas = inscripcionsecciones.del_periodo_actual.where(tipo_estado_inscripcion_id: TipoEstadoInscripcion::RETIRADA).count
 		(total_asignaturas > 0 and total_asignaturas == total_retiradas)
 	end
 

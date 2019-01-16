@@ -15,10 +15,12 @@
 						%th Aplazado
 					%th PI
 					- if @seccion.tipo_seccion_id.eql? TipoSeccion::DIFERIDA
-						%th= TipoSeccion::DIFERIDA
+						%th= Inscripcionseccion::NOPRESENTO
 				- else
 					%th Definitiva
-				%th Estado
+					%th Estado
+				%th Valor
+
 		%tbody
 			- @inscripciones_secciones.each_with_index do |es,i|
 				- retirada = es.retirada?
@@ -48,8 +50,10 @@
 							%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.no_presento?, {onclick: "desactivar_resto(#{es.estudiante_id})", disabled: retirada || @calificada || es.pi?}
 
 					- else
-						%td= es.calificacion_final
-					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {:readonly => true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
+						%td= es.valor_calificacion
+						%td= es.estado
+
+					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
 
 	%hr
 		- unless @calificada 

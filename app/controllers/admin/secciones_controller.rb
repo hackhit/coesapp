@@ -47,15 +47,14 @@ module Admin
     end
 
     def calificar
-
       @estudiantes = params[:est]
       @estudiantes.each_pair do |ci,valores|
         @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).limit(1).first
         if valores['pi']
-          tipo_estado_calificacion_id = 'PI'
+          tipo_estado_calificacion_id = Inscripcionseccion::PI
           valores[:calificacion_final] = 0
         elsif valores['np']
-          tipo_estado_calificacion_id = 'NP'
+          tipo_estado_calificacion_id = Inscripcionseccion::NOPRESENTO
         else
           if @seccion.asignatura.absoluta?
             tipo_estado_calificacion_id = valores[:calificacion_final]
@@ -83,7 +82,7 @@ module Admin
       if session[:administrador_id]
         redirect_to principal_admin_index_path
       else
-        redirect_to seccion_path(@estudiante_seccion.seccion)
+        redirect_to @seccion
       end
     end
 

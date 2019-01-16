@@ -8,4 +8,9 @@ class TipoSeccion < ApplicationRecord
 	# VALIDACIONES
 	validates :id, presence: true, uniqueness: true
 	validates :descripcion, presence: true
+
+	def diferida?
+		self.id.eql? DIFERIDA
+	end
+
 end

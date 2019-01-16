@@ -4,14 +4,7 @@
 
 - @calificada = false if @admin
 
-- @calificada = true if (@admin and @admin.taquilla?) or @secundaria
-
-	 
-- @es_periodo1 = true
-
-- @es_periodo2 = false
-
-- @es_periodo3 = false
+- @calificada = true if (@admin && @admin.taquilla?) || @secundaria
 
 
 = render '/admin/secciones/tabla_inscripciones'
