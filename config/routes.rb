@@ -8,6 +8,9 @@ Rails.application.routes.draw do
       get 'un_rol'
       get 'seleccionar_rol'
       get 'cerrar_sesion'
+      post 'olvido_clave_guardar'
+    end
+    member do
     end
   end
 
