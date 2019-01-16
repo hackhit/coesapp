@@ -2,8 +2,8 @@ module Admin
 
 	class DescargarController < ApplicationController
 		before_action :filtro_logueado
-		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria, :kardex]
-		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex]
+		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria]
+		before_action :filtro_administrador, except: [:programaciones, :cita_horaria]
 
 		def reportes
 			@cal_semestre_actual_id = session[:cal_parametros][:semestre_actual]

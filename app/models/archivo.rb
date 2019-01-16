@@ -408,6 +408,7 @@ class Archivo
 
 	def self.hacer_kardex(id)
 		# Variable Locales
+		require "pdf/simpletable"
 		estudiante = Estudiante.find id
 		periodos = Periodo.order("id ASC").all
 
