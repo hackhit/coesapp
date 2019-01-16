@@ -156,7 +156,7 @@ class Inscripcionseccion < ApplicationRecord
 			tipo = 'PD'
 		else
 
-			if cal_seccion.numero.include? 'R'
+			if seccion.numero.include? 'R'
 				tipo = calificacion_final.to_i > 9 ? 'RA' : 'RR'
 			else
 				tipo = calificacion_final.to_i > 9 ? 'NF' : 'AP'

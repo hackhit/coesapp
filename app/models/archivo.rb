@@ -33,7 +33,7 @@ class Archivo
 		pdf.add_image_from_file 'app/assets/images/logo_ucv.jpg', 275, 720, 50,nil
 
 		#texto del encabezado
-		pdf.add_text_wrap 50,705,510,to_utf16("UNIVERSIDAD CENTRAL DE VENEZUELA"), 10,:center
+		pdf.add_text_wrap 50,705,510,to_utf16("UNIVERSIDAD CENTRAL DE VENEZUELA").to_s, 10,:center
 		pdf.add_text_wrap 50,690,510,to_utf16("FACULTAD DE HUMANIDADES Y EDUCACIÓN"), 10,:center
 		pdf.add_text_wrap 50,675,510,to_utf16("ESCUELA DE IDIOMAS MODERNOS"), 10,:center
 		pdf.add_text_wrap 50,660,510,to_utf16("CONTROL DE ESTUDIOS"), 10,:center
@@ -408,6 +408,8 @@ class Archivo
 
 	def self.hacer_kardex(id)
 		# Variable Locales
+		require "rubygems"
+		require "pdf/writer"
 		require "pdf/simpletable"
 		estudiante = Estudiante.find id
 		periodos = Periodo.order("id ASC").all
@@ -422,10 +424,12 @@ class Archivo
 		pdf.margins_cm(1.8)
 
 		# Logos
-		# pdf.add_image_from_file "#{::Rails.root}/app/assets/images/logo_ucv.jpg", 275, 720, 50,nil
+
+		pdf.image "app/assets/logo_ucv.png"#, 275, 720, 50,nil
+		# pdf.image "/Users/danielmoros/Documents/desarrollo/fhe_ucv/coesapp/public/assets/logo_ucv_to_pdf-0dd52655ba31a8584f951361b8626afbab1c28d51d54af8c723df7934fcf9332.jpg"#, 275, 720, 50,nil
 
 		#texto del encabezado
-		pdf.add_text_wrap 50,705,510,to_utf16("UNIVERSIDAD CENTRAL DE VENEZUELA"), 12,:center
+		pdf.add_text_wrap 50,705,510, "UNIVERSIDAD CENTRAL DE VENEZUELA", 12,:center
 		pdf.add_text_wrap 50,690,510,to_utf16("FACULTAD DE HUMANIDADES Y EDUCACIÓN"), 12,:center
 		pdf.add_text_wrap 50,675,510,to_utf16("ESCUELA DE IDIOMAS MODERNOS"), 12,:center
 		pdf.add_text_wrap 50,660,510,to_utf16("CONTROL DE ESTUDIOS DE PREGRADO"), 12,:center
@@ -511,7 +515,7 @@ class Archivo
 						"creditos" => to_utf16("#{asig.creditos}"),
 						"final" => to_utf16("#{nota_final}"),
 						"final_alfa" => to_utf16("#{h.tipo_calificacion}"),
-						"seccion" => to_utf16("#{h.cal_seccion.numero}")
+						"seccion" => to_utf16("#{h.seccion.numero}")
 				 	}
 
 				end
