@@ -31,11 +31,11 @@
   .nav.nav-tabs
     = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: 'nav-item nav-link'
     - if @estudiante
-      = link_to 'Historial Académico (Estudiante)', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link'
+      = link_to 'Como Estudiante', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link'
     - if @profesor
-      = link_to 'Detalles Académicos (Profesor)', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link'
+      = link_to 'Como Profesor', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link'
     - if @administrador
-      = link_to 'Administrador', "#administrador", "data-toggle"=> "tab", class: 'nav-item nav-link'
+      = link_to 'Como Administrador', "#administrador", "data-toggle"=> "tab", class: 'nav-item nav-link'
       
 .tab-content
   .tab-pane#personales
