@@ -53,7 +53,7 @@ module Admin
       else
         respond_to do |format|
           if @asignatura.save
-            format.html { redirect_to @asignatura, notice: 'Asignatura generada con éxito.' }
+            format.html { redirect_to @asignatura}
             format.json { render :show, status: :created, location: @asignatura }
           else
             flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."

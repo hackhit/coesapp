@@ -1,5 +1,5 @@
 
-class Archivo
+class ExportarPdf
 	include Prawn::View
 
 	def self.to_utf16(valor)

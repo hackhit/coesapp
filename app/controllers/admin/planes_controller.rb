@@ -12,12 +12,26 @@ module Admin
     def index
       @titulo = "Planes de Estudio"
       @planes = current_admin.planes#Plan.all
+
+      # respond_to do |format|
+      #   format.html { render :index}
+        
+      #   format.pdf do
+
+      #     pdf = Archivo.hacer_kardex 15573230
+      #     send_data pdf.render,
+      #       filename: "export.pdf",
+      #       type: 'application/pdf',
+      #       disposition: 'inline'
+      #   end
+      # end
+
     end
 
     # GET /planes/1
     # GET /planes/1.json
     def show
-      @titulo = "Detalle del Plan de Estudio: #{@plan.descripcion_completa}"      
+      @titulo = "Detalle del Plan de Estudio: #{@plan.descripcion_completa}"
     end
 
     # GET /planes/new

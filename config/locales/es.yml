@@ -217,3 +217,7 @@ es:
   activerecord:
     errors:
       <<: *errors
+  flash:
+    actions:
+      create:
+        notice: "Tu %{resource_name} ha sido creado!"
