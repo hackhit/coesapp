@@ -2,9 +2,9 @@
 
 - @calificada = @seccion.calificada
 
-- @calificada = false if @admin
+- @calificada = false if current_admin
 
-- @calificada = true if (@admin && @admin.taquilla?) || @secundaria
+- @calificada = true if (current_admin && current_admin.taquilla?) || @secundaria
 
 
 = render '/admin/secciones/tabla_inscripciones'

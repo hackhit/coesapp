@@ -56,14 +56,14 @@
   .form-group
     = f.label :nombres, class: 'control-label col-md-2'
     .col-md-10
-      - if current_usuario.administrador and current_usuario.administrador.maestros?
+      - if current_admin.maestros?
         = f.text_field :nombres, required: true, class: 'text_field form-control upcase'
       - else
         .text_field.form-control.text-muted= @usuario.nombres
   .form-group
     = f.label :apellidos, class: 'control-label col-md-2'
     .col-md-10
-      - if current_usuario.administrador and current_usuario.administrador.maestros? #@current_admin and @current_admin.altos?
+      - if current_admin.maestros? #@current_admin and @current_admin.altos?
         = f.text_field :apellidos, required: true, class: 'text_field form-control upcase'
       - else
         .text_field.form-control.text-muted= @usuario.apellidos

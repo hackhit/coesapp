@@ -11,7 +11,7 @@
 						%th{style: 'width: 35%'} Profesores Secundarios
 						%th Capacidad
 						%th Estado
-						- if @admin and @admin.altos?
+						- if current_admin and current_admin.altos?
 							%th Opciones
 				%tbody
 					- @secciones.each do |seccion|
@@ -62,9 +62,9 @@
 									%span.badge.badge-info Por calificar
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
 										%span.badge.badge-dark= seccion.total_sin_calificar
-							- if @current_admin #and @current_admin.altos? 
+							- if current_admin #and current_admin.altos? 
 								%td
-									- if @current_admin and @current_admin.altos? 
+									- if current_admin and current_admin.altos? 
 										%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
 											= link_to acta_examen_excel_descargar_path(seccion.id), class: 'btn btn-info btn-success btn-sm', role: :button do
 												= glyph 'download-alt'
@@ -86,7 +86,7 @@
 										%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
 											= link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
 												= glyph 'trash'
-									- if current_usuario.administrador.maestros?
+									- if current_admin.maestros?
 										-if seccion.calificada											
 											%b.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar para Calificar Nuevamente'}
 												= link_to habilitar_calificar_seccion_path(seccion.id), {class: 'btn btn-info btn-sm'}, {role: 'button'} do

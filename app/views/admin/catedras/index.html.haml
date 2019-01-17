@@ -1,5 +1,5 @@
 - model_class = Catedra
-- if current_usuario and current_usuario.administrador.mas_altos?
+- if current_admin.mas_altos?
   = btn_add_success new_catedra_path, 'Agregar Nueva Cátedra', 'Nueva'
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
@@ -38,6 +38,6 @@
             = glyph 'info-sign'
           = link_to edit_catedra_path(catedra), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
             = glyph 'pencil'
-          - if current_usuario.administrador.ninja?
+          - if current_admin.ninja?
             = link_to catedra_path(catedra), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
               .text-danger= glyph 'trash'

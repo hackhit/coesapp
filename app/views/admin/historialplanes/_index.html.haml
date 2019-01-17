@@ -1,4 +1,4 @@
-- if @admin and @admin.altos? and @estudiante.planes.count < 3
+- if current_admin.altos? and @estudiante.planes.count < 3
   %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nuevo Plan de Estudio'}
     = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nuevo_plan_periodo').modal();", 'data_toggle' => 'modal' }) do
       = glyph "plus"
@@ -14,7 +14,7 @@
     %tr
       %th
         = hp.descripcion
-        - if @admin and @admin.super?
+        - if current_admin.mas_altos?
           %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar plan de estudio'}
             = link_to('javascript:void(0)', {onclick: "return $('##{hp.plan_id}_periodo').modal();", 'data_toggle' => 'modal'}) do
               = glyph 'edit'

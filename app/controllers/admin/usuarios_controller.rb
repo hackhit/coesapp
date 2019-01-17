@@ -24,7 +24,6 @@ module Admin
 
     def index
       @titulo = 'Usuarios'
-      @admin = current_admin
 
       if params[:search]
         @usuarios = Usuario.search(params[:search]).limit(50)
@@ -152,7 +151,6 @@ module Admin
       @administrador = @usuario.administrador
 
       # @secciones_estudiantes = CalEstudianteSeccion.where(:cal_estudiante_ci => @estudiante.cal_usuario_ci)   
-      @admin = current_admin
 
       @periodos = Periodo.order("id DESC").all
 
@@ -179,12 +177,10 @@ module Admin
         @titulo = "Nuevo Usuario"
       end
       @usuario = Usuario.new
-      @current_admin = current_admin
     end
 
     # GET /usuarios/1/edit
     def edit
-      @current_admin = current_admin
       @titulo = "Editar Usuario: #{@usuario.descripcion}"
     end
 

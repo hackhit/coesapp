@@ -33,7 +33,7 @@
 					%td= i+1
 					%td
 						= "(#{es.estudiante_id})"
-						= link_to_if @admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
+						= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
 						%span.badge= 'Retirada' if retirada
 
 					- unless @calificada

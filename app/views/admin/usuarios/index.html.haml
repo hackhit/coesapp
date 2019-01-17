@@ -2,12 +2,12 @@
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
-      - if @admin.maestros? 
+      - if current_admin.maestros? 
         %th.span3 Roles
       %th Plan
       %th.span4 Nombre y Apellido
       %th Cédula
-      - if @admin.ninja? 
+      - if current_admin.ninja? 
         %th Contraseña
       %th Correo Electrónico
       %th Móvil
@@ -28,12 +28,12 @@
 
         %td= link_to u.nombre_completo, u
         %td= u.ci
-        - if @admin.ninja?  
+        - if current_admin.ninja?  
           %td= u.password
         %td= u.email
         %td= u.telefono_movil
         %td
-          - if @admin and @admin.super?
+          - if current_admin
             - if u.estudiante
               - if u.estudiante.inscrito?
                 = btn_toggle 'btn-outline-success', 'download', constancia_inscripcion_descargar_path(u), "Descargar Constancia de Inscripción", ''

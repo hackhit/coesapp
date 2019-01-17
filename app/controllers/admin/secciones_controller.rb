@@ -153,7 +153,6 @@ module Admin
       @titulo = "Sección: #{@seccion.descripcion} - Período #{@seccion.periodo_id}"
 
       @secundaria = true if params[:secundaria]
-      @admin = current_admin
     end
 
     # GET /secciones/new

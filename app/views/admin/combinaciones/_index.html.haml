@@ -1,4 +1,4 @@
-- if @admin and @admin.altos? and @estudiante.planes.count < 3
+- if current_admin and current_admin.altos? and @estudiante.planes.count < 3
   %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Combinación de Idiomas'}
     = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nueva_combinacion').modal();", 'data_toggle' => 'modal' }) do
       = glyph 'plus'
@@ -14,7 +14,7 @@
     %tr
       %th
         = combinacion.descripcion
-        - if @admin and @admin.super?
+        - if current_admin and current_admin.mas_altos?
           %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar'}
             = link_to('javascript:void(0)', {onclick: "return $('#combinacion_#{combinacion.periodo_id}').modal();", 'data_toggle' => 'modal'}) do
               = glyph 'edit'

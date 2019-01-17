@@ -11,14 +11,14 @@
 			%th TRIM II
 			%th TRIM III
 			%th Definitiva
-			- if @admin
+			- if current_admin
 				%th Opciones
 	- @secciones_periodo.each do |est_sec_per|
 		- tipo_calificacion = 'success' if est_sec_per.tipo_estado_calificacion_id.eql? 'AP'
 		- tipo_calificacion = 'error' if (est_sec_per.tipo_estado_calificacion_id.eql? 'RE' or est_sec_per.tipo_estado_calificacion_id.eql? 'PI' or est_sec_per.retirada?)
 		-# tipo_calificacion = 'info' if (@periodo.id.eql? '2016-02A' and est_sec_per.confirmar_inscripcion.eql? 1)
 		%tbody
-			- if @admin
+			- if current_admin
 				%tr{class: tipo_calificacion, id: est_sec_per.id}
 					- aux = est_sec_per.seccion.asignatura.anno
 					- aux = "--" if aux.eql? 0
@@ -30,7 +30,7 @@
 						
 					%td= est_sec_per.seccion.numero
 					%td= est_sec_per.seccion.asignatura.creditos
-					- if @admin
+					- if current_admin
 						%td= est_sec_per.seccion.profesor.descripcion if est_sec_per.seccion.profesor
 						%td=raw est_sec_per.seccion.profesores.collect{|p| p.descripcion}.join(" </br> ") if est_sec_per.seccion.profesores.count > 0
 					- else
@@ -41,7 +41,7 @@
 					%td= est_sec_per.segunda_calificacion
 					%td= est_sec_per.tercera_calificacion
 					%td= est_sec_per.calificacion_final
-					- if @admin
+					- if current_admin
 						%td
 							- if est_sec_per.retirada?
 								= simple_toggle "/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
