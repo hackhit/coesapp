@@ -1,4 +1,4 @@
-= button_to '¿Olvidaste tu contraseña?', olvido_clave_visitors_path, class: 'btn btn-sm btn-outline-warning mr-2'
+= link_to '¿Olvidaste tu contraseña?', 'javascript:void(0)', class: 'btn btn-sm btn-outline-warning mr-2', onclick: "$('#olvido_clave').modal();", 'data_toggle' => 'modal'
 = form_tag(validar_visitors_path, class: 'form-inline my-2 my-lg-0' ) do
   = text_field_tag 'usuario[ci]', nil, {class: 'form-control mr-sm-2', placeholder: 'Cédula de Identidad'}
   = password_field_tag 'usuario[password]', nil, {class: 'form-control mr-sm-2', placeholder: 'Contraseña'}

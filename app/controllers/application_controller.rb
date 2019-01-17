@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
 	protect_from_forgery
 	helper_method :current_usuario 
+	helper_method :current_admin
 
 	private  
 

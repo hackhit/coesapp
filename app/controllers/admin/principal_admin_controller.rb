@@ -59,12 +59,11 @@ module Admin
 		end
 
 		def index
-			@admin = current_admin
 			@usuario = current_usuario
 			@principal_admin_add_asig = true
 			@periodo_actual_id = session[:parametros]['periodo_actual_id']
 			@escuelas = current_admin.escuelas
-			@editar_asignaturas = true if current_usuario.administrador.mas_altos?
+			@editar_asignaturas = true if current_admin.mas_altos?
 		end
 		
 		def seleccionar_profesor
@@ -90,8 +89,6 @@ module Admin
 		end
 
 		def ver_seccion_admin
-			@admin = Administrador.find session[:administrador_id]
-
 			@seccion = Seccion.find params[:id]
 			@estudiantes_secciones = @seccion.inscripcionsecciones.sort_by{|es| es.estudiante.usuario.apellidos}
 			@titulo = "Sección: #{@seccion.descripcion} - Período: #{@seccion.periodo_id}"

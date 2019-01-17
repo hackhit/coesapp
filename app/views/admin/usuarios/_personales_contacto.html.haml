@@ -1,5 +1,5 @@
 %br
-- if current_usuario.administrador.maestros?
+- if current_admin.maestros?
 	= btn_edit_primary edit_usuario_path(@usuario), "Actualizar datos personales y de contacto", 'Actualizar'
 
 %br
@@ -10,13 +10,13 @@
 	%li
 		%b Cédula de Identidad:
 		= @usuario.id
-		- if current_usuario.administrador.maestros?
+		- if current_admin.maestros?
 			= simple_icon_toggle_modal_edit "Editar cédula de identidad de #{@nickname}", 'cambiar_cedula'
 		
 	%li
 		%b Nombre:	
 		= @usuario.nombre_completo
-	- if current_usuario.administrador.ninja?
+	- if current_admin.ninja?
 		%li
 			%b Contraseña:
 			= @usuario.password

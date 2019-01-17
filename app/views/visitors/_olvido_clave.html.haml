@@ -1,0 +1,17 @@
+.modal.fade#olvido_clave{'aria-labelledby': "myModalLabel", 'aria-hidden': false}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info.text-center
+        %h4 ¡Atención!
+        Ingrese los datos para recuperar su clave
+      .modal-body    
+        =form_tag olvido_clave_guardar_visitors_path do 
+          %p
+            %label
+              Cédula de Identidad
+            =text_field_tag :id, nil, {class: 'text_field form-control', autofocus: true}
+          .modal-footer
+            =link_to 'javascript:void(0)', class: 'btn btn-outline-secondary', data: {dismiss: 'modal'} do
+              = glyph 'chevron-left'
+              Cancelar
+            =submit_tag "Siguiente", class: 'ml-md-3 btn btn-outline-success'

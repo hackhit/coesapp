@@ -13,8 +13,8 @@
 			- @escuelas.each do |esc|
 				- esc_activo = (session[:esc_id].eql? esc.id) ? "active show" : ""
 				.tab-pane.fade{"aria-labelledby" => "pills-escuelas-tab", role: :tabpanel, class: esc_activo, id: "esc_#{esc.id}"}
-					- if @current_admin.admin_departamento?
-						- @departamentos = current_usuario.administrador.departamentos
+					- if current_admin.admin_departamento?
+						- @departamentos = current_admin.departamentos
 					- else
 						- @departamentos = esc.departamentos
 					= render '/admin/principal_admin/tabs_estructura/departamentos'

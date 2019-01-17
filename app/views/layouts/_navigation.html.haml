@@ -10,14 +10,14 @@
       %span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       %ul.navbar-nav.mr-auto
-        - if session[:administrador_id] and current_usuario.administrador.maestros?
+        - if current_admin.maestros?
           %li.nav-item{class: "#{'active' if controller_name.eql? 'periodos'}"}
             = link_to 'Periodos', periodos_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'escuelas'}"}
             = link_to 'Escuelas', escuelas_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'carteleras'}"}
             = link_to 'Cartelera', carteleras_path, class: 'nav-link'
-        - if session[:administrador_id] and current_usuario.administrador.mas_altos?
+        - if current_admin.mas_altos?
           %li.nav-item{class: "#{'active' if controller_name.eql? 'planes'}"}
             = link_to 'Planes', planes_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'departamentos'}"}
@@ -26,7 +26,7 @@
             = link_to 'Cátedras', catedras_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'asignaturas'}"}
             = link_to 'Asignaturas', asignaturas_path, class: 'nav-link'
-        - if session[:administrador_id] and current_usuario.administrador.maestros?
+        - if current_admin.maestros?
           %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
             %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
               Usuarios
@@ -36,7 +36,7 @@
               = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
               = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
               = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
-      - if session[:administrador_id] and current_usuario.administrador
+      - if current_admin
         = form_tag(usuarios_path,{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
           = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
           %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar

@@ -5,14 +5,14 @@
       - @usuario.roles_generales.each do |r| 
         %td
           = r.to_s.titleize
-          - if current_usuario.administrador.ninja?
+          - if current_admin.ninja?
             = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: "Eliminar rol como #{r.titleize}"  do
               = link_to "#{delete_rol_usuario_path(@usuario)}?#{r.downcase}=true", class: 'btn btn-sm', data: { confirm: 'Esta acción eliminará irreversiblemente todas las asociaciones del rol de usuario como asignaturas y calificaciones. ¿Está Seguro?'} do
                 .text-danger= glyph 'trash'
 
 
 
-- if current_usuario.administrador.maestros?
+- if current_admin.maestros?
   %h6
     Agregar Roles:
     - unless @estudiante
@@ -52,12 +52,12 @@
     .tab-pane#profesor
       = render partial: '/admin/profesores/show'
 
-  - if current_usuario.administrador.mas_altos? and @administrador
+  - if current_admin.mas_altos? and @administrador
     .tab-pane#administrador
       .border.mt-3.p-3
         %b
           = @administrador.descripcion
-          - if current_usuario.administrador.maestros?
+          - if current_admin.maestros?
             = render '/admin/usuarios/set_administrador' 
             = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Cambiar tipo de Administrador' do
               = link_to "javascript:void(0)", onclick: "$('#set_admin').modal();", class: 'btn ml-2 btn-sm' do
