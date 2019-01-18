@@ -31,7 +31,9 @@ class ExportarPdf
 			pdf.text "<b>Periodo:</b> #{periodo.id}", size: 10, inline_format: true
 			pdf.move_down 5
 
-			secciones_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
+			# secciones_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
+			secciones_periodo = inscripcionsecciones.del_periodo periodo.id
+
 			if secciones_periodo.count > 0
 				data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Convocatoria</b>", "<b>Créditos</b>", "<b>Final</b>", "<b>Final_alfa</b>", "<b>Sección</b>"]]
 

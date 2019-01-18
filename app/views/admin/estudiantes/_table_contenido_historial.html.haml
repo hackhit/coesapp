@@ -1,15 +1,16 @@
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 	%thead
 		%tr
-			%th Año
+			/ %th Año
 			%th Asignatura
 			%th Sección
 			%th UC
 			%th Profesor Princial
 			%th Profesor(es) Secundario(s)
-			%th TRIM I
-			%th TRIM II
-			%th TRIM III
+			- if false
+				%th TRIM I
+				%th TRIM II
+				%th TRIM III
 			%th Definitiva
 			- if current_admin
 				%th Opciones
@@ -18,37 +19,37 @@
 		- tipo_calificacion = 'error' if (est_sec_per.tipo_estado_calificacion_id.eql? 'RE' or est_sec_per.tipo_estado_calificacion_id.eql? 'PI' or est_sec_per.retirada?)
 		-# tipo_calificacion = 'info' if (@periodo.id.eql? '2016-02A' and est_sec_per.confirmar_inscripcion.eql? 1)
 		%tbody
-			- if current_admin
-				%tr{class: tipo_calificacion, id: est_sec_per.id}
-					- aux = est_sec_per.seccion.asignatura.anno
-					- aux = "--" if aux.eql? 0
-					%td= aux
-					%td
-						= est_sec_per.seccion.asignatura.descripcion
-						%span.badge.badge-dark= est_sec_per.seccion.asignatura.id_uxxi
-						%span.badge= 'Retirada' if est_sec_per.retirada?
-						
-					%td= est_sec_per.seccion.numero
-					%td= est_sec_per.seccion.asignatura.creditos
-					- if current_admin
-						%td= est_sec_per.seccion.profesor.descripcion if est_sec_per.seccion.profesor
-						%td=raw est_sec_per.seccion.profesores.collect{|p| p.descripcion}.join(" </br> ") if est_sec_per.seccion.profesores.count > 0
-					- else
-						%td= est_sec_per.seccion.profesor.usuario.apellido_nombre if est_sec_per.seccion.profesor
-						%td=raw est_sec_per.seccion.profesores.collect{|p| p.usuario.apellido_nombre}.join(" </br>") if est_sec_per.seccion.profesores.count > 0
+			%tr{class: tipo_calificacion, id: est_sec_per.id}
+				- aux = est_sec_per.seccion.asignatura.anno
+				- aux = "--" if aux.eql? 0
+				/ %td= aux
+				%td
+					= est_sec_per.seccion.asignatura.descripcion
+					%span.badge.badge-dark= est_sec_per.seccion.asignatura.id_uxxi
+					%span.badge= 'Retirada' if est_sec_per.retirada?
+					
+				%td= est_sec_per.seccion.numero
+				%td= est_sec_per.seccion.asignatura.creditos
+				- if current_admin
+					%td= est_sec_per.seccion.profesor.descripcion if est_sec_per.seccion.profesor
+					%td=raw est_sec_per.seccion.profesores.collect{|p| p.descripcion}.join(" </br> ") if est_sec_per.seccion.profesores.count > 0
+				- else
+					%td= est_sec_per.seccion.profesor.usuario.apellido_nombre if est_sec_per.seccion.profesor
+					%td=raw est_sec_per.seccion.profesores.collect{|p| p.usuario.apellido_nombre}.join(" </br>") if est_sec_per.seccion.profesores.count > 0
 
+				- if false
 					%td= est_sec_per.primera_calificacion
 					%td= est_sec_per.segunda_calificacion
 					%td= est_sec_per.tercera_calificacion
-					%td= est_sec_per.calificacion_final
-					- if current_admin
-						%td
-							- if est_sec_per.retirada?
-								= simple_toggle "/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
-							- else
-								= simple_toggle "/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=RET", '', 'Retirar Asignatura', 'danger', 'remove'
+				%td= est_sec_per.calificacion_final
+				- if current_admin
+					%td
+						- if est_sec_per.retirada?
+							= simple_toggle "/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
+						- else
+							= simple_toggle "/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=RET", '', 'Retirar Asignatura', 'danger', 'remove'
 
-							%b.tooltip-btn.ml-1{'data_toggle'=>'tooltip', 'title'=>'Eliminar Asignatura'}
-								= link_to(est_sec_per, {class: 'btn-danger btn-sm', :method => :delete, :data => {:confirm => "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }}, method: :delete) do
-									= glyph 'trash'
+						%b.tooltip-btn.ml-1{'data_toggle'=>'tooltip', 'title'=>'Eliminar Asignatura'}
+							= link_to(est_sec_per, {class: 'btn-danger btn-sm', :method => :delete, :data => {:confirm => "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }}, method: :delete) do
+								= glyph 'trash'
 

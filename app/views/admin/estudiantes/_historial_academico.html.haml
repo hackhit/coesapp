@@ -15,6 +15,7 @@
 	#accordion
 		- @periodos.each do |periodo|
 			- @secciones_periodo = @inscripciones.del_periodo periodo.id
+			-# @secciones_periodo = @inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
 			- if @secciones_periodo.count > 0
 				.card
 					.card-header{id: "heading#{periodo.id}"}

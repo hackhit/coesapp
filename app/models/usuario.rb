@@ -71,7 +71,7 @@ class Usuario < ApplicationRecord
 
 	def nombre_completo
 		if nombres and apellidos
-			"#{nombres}, #{apellidos}"
+			"#{nombres} #{apellidos}"
 		else
 			""
 		end
