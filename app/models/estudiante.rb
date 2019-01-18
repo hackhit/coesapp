@@ -3,6 +3,7 @@ class Estudiante < ApplicationRecord
 	belongs_to :usuario, foreign_key: :usuario_id 
 	belongs_to :tipo_estado_inscripcion
 	belongs_to :escuela
+	belongs_to :citahoraria, optional: true
 
 	has_many :historialplanes	
 	accepts_nested_attributes_for :historialplanes
@@ -22,7 +23,7 @@ class Estudiante < ApplicationRecord
 	validates :usuario_id, presence: true, uniqueness: true
 
 	# SCOPES:
-	scope :con_cita_horaria, -> {where "cita_horaria_id IS NOT NULL"}
+	scope :con_cita_horaria, -> {where "citahoraria_id IS NOT NULL"}
 
 	# FUNCIONES:
 	def inactivo?

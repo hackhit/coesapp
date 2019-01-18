@@ -1,6 +1,6 @@
 class Citahoraria < ApplicationRecord
 	# ASOCIACIONES:
-	belongs_to :estudiante
+	has_many :estudiantes
 
 	# FUNCIONES:
 	def descripcion 
