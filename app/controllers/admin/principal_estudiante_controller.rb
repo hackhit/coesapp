@@ -7,7 +7,7 @@ module Admin
 			@usuario = Usuario.find session[:estudiante_id]
 			@estudiante = @usuario.estudiante #Estudiante.where(usuario_ci: session[:usuario_id]).limit(1).first
 			@periodo_actual = ParametroGeneral.periodo_actual_id
-			@titulo = "#{@usuario.nombre_completo} - Período: #{@periodo_actual}"
+			@titulo = "#{@usuario.nombre_completo} - Período: #{@periodo_actual} - #{@estudiante.escuela.descripcion.titleize}"
 
 			@periodos = Periodo.order("inicia DESC").all
 

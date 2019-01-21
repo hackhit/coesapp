@@ -17,7 +17,7 @@
 	- if @estudiante.combinaciones.count < 1 and not @estudiante.tipo_estado_inscripcion_id.eql? 'NUEVO' 
 		= render partial: 'estudiante/actualizar_idiomas'
 
-	-if @estudiante.cita_horaria
+	-if @estudiante.citahoraria
 		.border.m-md-3.p-md-3
 			%h5 Cita Horaria:
 			%p
