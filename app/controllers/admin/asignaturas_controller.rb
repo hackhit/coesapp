@@ -17,6 +17,7 @@ module Admin
     def index
       @titulo = 'Asignaturas'
       @departamentos = current_admin.departamentos
+      @departamentos = Departamento.all unless @departamentos
 
     end
 
@@ -56,6 +57,7 @@ module Admin
             format.html { redirect_to @asignatura}
             format.json { render :show, status: :created, location: @asignatura }
           else
+            @departamentos = current_admin.departamentos
             flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
             format.html { render :new }
             format.json { render json: @asignatura.errors, status: :unprocessable_entity }
@@ -75,6 +77,7 @@ module Admin
           format.json { render :show, status: :ok, location: @asignatura }
         else
           flash[:danger] = "Error al intentar actualizar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
+          @departamentos = current_admin.departamentos
           format.html { render :edit }
           format.json { render json: @asignatura.errors, status: :unprocessable_entity }
         end
