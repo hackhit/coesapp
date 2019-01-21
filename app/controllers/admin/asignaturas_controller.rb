@@ -57,6 +57,7 @@ module Admin
             format.html { redirect_to @asignatura}
             format.json { render :show, status: :created, location: @asignatura }
           else
+            @titulo = 'Nueva Asignatura'
             @departamentos = current_admin.departamentos
             flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
             format.html { render :new }
@@ -77,6 +78,7 @@ module Admin
           format.json { render :show, status: :ok, location: @asignatura }
         else
           flash[:danger] = "Error al intentar actualizar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
+          @titulo = "Editando #{@asignatura.descripcion}"
           @departamentos = current_admin.departamentos
           format.html { render :edit }
           format.json { render json: @asignatura.errors, status: :unprocessable_entity }
