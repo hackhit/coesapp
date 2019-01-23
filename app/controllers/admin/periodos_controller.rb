@@ -38,10 +38,21 @@ module Admin
 
       respond_to do |format|
         if @periodo.save
-          format.html { redirect_to @periodo, notice: 'Periodo creado con éxito.' }
+          flash[:success] = flash[:danger] = ''
+
+          params[:escuelas].each do |escuela_id|
+            if @periodo.escuelaperiodos.create!(escuela_id: escuela_id)
+              flash[:success] += "Escuela #{escuela_id} vinculada al período con éxito. " 
+            else
+              flash[:danger] = "Error al intentar vincular escuela con el período. "
+            end
+          end
+          flash[:danger] = nil if flash[:danger].blank?
+          flash[:info] = nil if flash[:info].blank?
+          format.html { redirect_to @periodo, notice: 'Período creado con éxito.' }
           format.json { render :show, status: :created, location: @periodo }
         else
-          flash[:danger] = "Error al intentar generar el periodo: #{@periodo.errors.full_messages.to_sentence}."
+          flash[:error] = "Error al intentar generar el periodo: #{@periodo.errors.full_messages.to_sentence}."
 
           format.html { render :new }
           format.json { render json: @periodo.errors, status: :unprocessable_entity }
@@ -52,12 +63,34 @@ module Admin
     # PATCH/PUT /periodos/1
     # PATCH/PUT /periodos/1.json
     def update
+      # periodo_actual_id = session[:periodo_actual_id]
+      flash[:info] = flash[:danger] = ''
+      Escuela.all.each do |escuela|
+        if params[:escuelas].include? escuela.id
+          unless @periodo.escuelas.include? escuela
+            if @periodo.escuelaperiodos.create!(escuela_id: escuela.id)
+              flash[:info] += "Escuelas #{escuela.descripcion} vinculada con éxito. \n" 
+            else
+              flash[:danger] += "No se pudo vincular la escuela #{escuela.descripcion}"
+            end
+          end
+        elsif @periodo.escuelas.include? escuela 
+          if escuela.secciones_en_periodo? @periodo.id 
+            flash[:danger] += "No se puede excluir la escuela de #{escuela.descripcion} porque tiene asociadas secciones. Por favor, elimine primero toda sección asociada a ésta para el período solicitado."
+          else
+            flash[:info] += "#{escuela.descripcion} desvinculada del período. " if @periodo.escuelaperiodos.where(escuela_id: escuela.id).first.destroy
+          end
+        end
+      end
+
       respond_to do |format|
         if @periodo.update(periodo_params)
-          format.html { redirect_to @periodo, notice: 'Periodo actualizado con éxito.' }
+          flash[:danger] = nil if flash[:danger].blank?
+          flash[:info] = nil if flash[:info].blank?
+          format.html { redirect_to @periodo, notice: 'Período actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @periodo }
         else
-          flash[:danger] = "Error al intentar actualizar el periodo: #{@periodo.errors.full_messages.to_sentence}."
+          flash[:error] = "Error al intentar actualizar el período: #{@periodo.errors.full_messages.to_sentence}."
           format.html { render :edit }
           format.json { render json: @periodo.errors, status: :unprocessable_entity }
         end
@@ -67,10 +100,16 @@ module Admin
     # DELETE /periodos/1
     # DELETE /periodos/1.json
     def destroy
-      @periodo.destroy
-      respond_to do |format|
-        format.html { redirect_to periodos_url, notice: 'Periodo eliminado satisfactoriamente.' }
-        format.json { head :no_content }
+      if @periodo.tiene_secciones?
+        flash[:danger] = "No es posible eliminar el período ya que aún posee secciones vinculadas. Por favor elimine éstas y acontinuación elimine el período."
+        redirect_back fallback_location: periodos_url
+      else
+        @periodo.destroy
+        redirect_to periodos_url, notice: 'Período eliminado satisfactoriamente.' 
+        # respond_to do |format|
+        #   format.html { }
+        #   format.json { head :no_content }
+        # end
       end
     end
 
@@ -82,7 +121,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def periodo_params
-        params.require(:periodo).permit(:id, :inicia, :culmina)
+        params.require(:periodo).permit(:id, :inicia, :culmina, :tipo)
       end
   end
 end

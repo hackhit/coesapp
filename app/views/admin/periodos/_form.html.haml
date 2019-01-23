@@ -1,19 +1,61 @@
 = form_for @periodo, html: { class: 'form-horizontal' } do |f|
-  .form-group
-    = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
-    .col-md-3
-      = f.text_field :id, class: 'text_field form-control', autofocus: true, required: true, placeholder: "2018-02A"
-  .form-group
-    = f.label :inicia, class: 'control-label col-md-2'
-    .col-md-3
-      = f.date_field :inicia, class: 'text_field form-control', required: true
-  .form-group
-    = f.label :culmina, class: 'control-label col-md-2'
-    .col-md-3
-      = f.date_field :culmina, class: 'text_field form-control', required: true
-  .form-group
-    .col-md-offset-2.col-md-10
-      = link_to periodos_path, class: 'btn btn-outline-secondary' do
-        = glyph 'chevron-left'
-        = t('.cancel', default: t("helpers.links.cancel"))
-      = f.submit nil, class: 'btn btn-outline-success ml-2'
+  .col-md-12
+    .row
+      .col-md-6.border
+        .m-md-3.p-md-3
+          %h5.text-center.titulo Datos del período:
+          .form-group
+            = f.label :id, class: 'control-label col-md-6', value: 'Identificador'
+            .col-md-12
+              = f.text_field :id, class: 'text_field form-control', autofocus: true, required: true, placeholder: "2018-02A"
+          .form-group
+            = f.label :tipo, class: 'control-label col-md-6', value: 'Tipo de Periodo'
+            .col-md-12
+              .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+                - Periodo.tipos.map do |k,v| 
+                  %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+                    = radio_button_tag '[periodo]tipo', k, (@periodo.tipo.eql? k), required: true
+                    = k[0].upcase
+          .form-group
+            = f.label :inicia, class: 'control-label col-md-6'
+            .col-md-12
+              = f.date_field :inicia, class: 'text_field form-control', required: true
+      .col-md-6.border
+        .m-md-3.p-md-3
+          %h5.text-center.titulo Escuelas para este período:
+          .form-group.opciones
+            - @escuelas = @periodo.escuelas
+            = check_box_tag nil, nil, false, {id: 'todos'}
+            Todas/niguna
+            %br
+            - Escuela.all.each do |e| 
+              = check_box_tag "escuelas[]", e.id, (@escuelas.include? e), {required: true}
+              = e.descripcion
+              %br
+    .form-group.m-md-3
+      .col-md-offset-2.col-md-10
+        = link_to periodos_path, class: 'btn btn-outline-secondary' do
+          = glyph 'chevron-left'
+          = t('.cancel', default: t("helpers.links.cancel"))
+        = f.submit nil, class: 'btn btn-outline-success ml-2'
+
+:javascript
+
+  $(function(){
+      var todos = $('#todos');
+      todos.change(function(){
+        if(todos.is(':checked')) {
+          $(':checkbox').prop('checked', true); 
+        }else {
+          $(':checkbox').prop('checked', false);
+        }
+      });
+      var requiredCheckboxes = $('.opciones :checkbox[required]');
+      requiredCheckboxes.change(function(){
+          if(requiredCheckboxes.is(':checked')) {
+              requiredCheckboxes.removeAttr('required');
+          } else {
+              requiredCheckboxes.prop('required', 'required');
+          }
+      });
+  });

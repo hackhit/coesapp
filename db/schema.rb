@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_18_172346) do
+ActiveRecord::Schema.define(version: 2019_01_22_214430) do
 
-  create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
     t.string "departamento_id"
     t.string "escuela_id"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["usuario_id"], name: "index_administradores_on_usuario_id"
   end
 
-  create_table "asignaturas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "asignaturas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.integer "anno"
     t.integer "orden"
@@ -40,14 +40,14 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["tipoasignatura_id"], name: "index_asignaturas_on_tipoasignatura_id"
   end
 
-  create_table "carteleras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "carteleras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "contenido"
     t.boolean "activa", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "catedradepartamentos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "catedradepartamentos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "departamento_id"
     t.string "catedra_id"
     t.integer "orden"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["departamento_id"], name: "index_catedradepartamentos_on_departamento_id"
   end
 
-  create_table "catedras", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "catedras", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.integer "orden"
     t.datetime "created_at", null: false
@@ -67,13 +67,13 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["id"], name: "index_catedras_on_id"
   end
 
-  create_table "citahorarias", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "citahorarias", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "fecha", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "combinaciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "combinaciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "estudiante_id"
     t.string "periodo_id"
     t.string "idioma1_id"
@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["periodo_id"], name: "index_combinaciones_on_periodo_id"
   end
 
-  create_table "departamentos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "departamentos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.string "escuela_id", null: false
     t.datetime "created_at", null: false
@@ -97,14 +97,25 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["id"], name: "index_departamentos_on_id"
   end
 
-  create_table "escuelas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "escuelaperiodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "periodo_id"
+    t.string "escuela_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["escuela_id", "periodo_id"], name: "index_escuelaperiodos_on_escuela_id_and_periodo_id", unique: true
+    t.index ["escuela_id"], name: "index_escuelaperiodos_on_escuela_id"
+    t.index ["periodo_id", "escuela_id"], name: "index_escuelaperiodos_on_periodo_id_and_escuela_id", unique: true
+    t.index ["periodo_id"], name: "index_escuelaperiodos_on_periodo_id"
+  end
+
+  create_table "escuelas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_escuelas_on_id"
   end
 
-  create_table "estudiantes", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "estudiantes", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "tipo_estado_inscripcion_id"
     t.string "escuela_id", null: false
     t.boolean "activo", default: false
@@ -117,7 +128,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["usuario_id"], name: "index_estudiantes_on_usuario_id"
   end
 
-  create_table "historialplanes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "historialplanes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "estudiante_id"
     t.string "periodo_id"
     t.string "plan_id"
@@ -129,7 +140,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["plan_id"], name: "index_historialplanes_on_plan_id"
   end
 
-  create_table "inscripcionperiodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "inscripcionperiodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "periodo_id", null: false
     t.string "estudiante_id", null: false
     t.string "tipo_estado_inscripcion_id", null: false
@@ -142,7 +153,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["tipo_estado_inscripcion_id"], name: "index_inscripcionperiodos_on_tipo_estado_inscripcion_id"
   end
 
-  create_table "inscripcionsecciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "inscripcionsecciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "seccion_id"
     t.string "estudiante_id"
     t.string "tipo_estado_calificacion_id"
@@ -163,22 +174,23 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["tipoasignatura_id"], name: "index_inscripcionsecciones_on_tipoasignatura_id"
   end
 
-  create_table "parametros_generales", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "parametros_generales", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "valor"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_parametros_generales_on_id"
   end
 
-  create_table "periodos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "periodos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "inicia"
     t.date "culmina"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "tipo", null: false
     t.index ["id"], name: "index_periodos_on_id"
   end
 
-  create_table "planes", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "planes", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.string "escuela_id", null: false
     t.datetime "created_at", null: false
@@ -187,13 +199,13 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["id"], name: "index_planes_on_id"
   end
 
-  create_table "profesores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "profesores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "departamento_id"
     t.index ["departamento_id"], name: "index_profesores_on_departamento_id"
     t.index ["usuario_id"], name: "index_profesores_on_usuario_id"
   end
 
-  create_table "seccion_profesores_secundarios", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "seccion_profesores_secundarios", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "profesor_id"
     t.bigint "seccion_id"
     t.datetime "created_at", null: false
@@ -204,7 +216,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["seccion_id"], name: "index_seccion_profesores_secundarios_on_seccion_id"
   end
 
-  create_table "secciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "secciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "numero"
     t.string "asignatura_id"
     t.string "periodo_id"
@@ -221,35 +233,35 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["tipo_seccion_id"], name: "index_secciones_on_tipo_seccion_id"
   end
 
-  create_table "tipo_estado_calificaciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "tipo_estado_calificaciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_tipo_estado_calificaciones_on_id"
   end
 
-  create_table "tipo_estado_inscripciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "tipo_estado_inscripciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_tipo_estado_inscripciones_on_id"
   end
 
-  create_table "tipo_secciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "tipo_secciones", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_tipo_secciones_on_id"
   end
 
-  create_table "tipoasignaturas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "tipoasignaturas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "descripcion"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_tipoasignaturas_on_id"
   end
 
-  create_table "usuarios", primary_key: "ci", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT", force: :cascade do |t|
+  create_table "usuarios", primary_key: "ci", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "nombres"
     t.string "apellidos"
     t.string "email"
@@ -262,40 +274,42 @@ ActiveRecord::Schema.define(version: 2019_01_18_172346) do
     t.index ["ci"], name: "index_usuarios_on_ci"
   end
 
-  add_foreign_key "administradores", "departamentos", name: "administradores_ibfk_3", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "administradores", "escuelas", name: "administradores_ibfk_1", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "administradores", "usuarios", primary_key: "ci", name: "administradores_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "asignaturas", "catedras", name: "asignaturas_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "asignaturas", "departamentos", name: "asignaturas_ibfk_3", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "asignaturas", "tipoasignaturas", name: "asignaturas_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "catedradepartamentos", "catedras", name: "catedradepartamentos_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "catedradepartamentos", "departamentos", name: "catedradepartamentos_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "combinaciones", "departamentos", column: "idioma1_id", name: "combinaciones_ibfk_3", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "combinaciones", "departamentos", column: "idioma2_id", name: "combinaciones_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "combinaciones", "estudiantes", primary_key: "usuario_id", name: "combinaciones_ibfk_4", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "combinaciones", "periodos", name: "combinaciones_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "departamentos", "escuelas", name: "departamentos_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "administradores", "departamentos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "administradores", "escuelas", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "administradores", "usuarios", primary_key: "ci", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "asignaturas", "catedras", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "asignaturas", "departamentos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "asignaturas", "tipoasignaturas", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "catedradepartamentos", "catedras", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "catedradepartamentos", "departamentos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "departamentos", column: "idioma1_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "departamentos", column: "idioma2_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "periodos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "departamentos", "escuelas", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "escuelaperiodos", "escuelas", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "escuelaperiodos", "periodos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "estudiantes", "citahorarias", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "estudiantes", "escuelas", name: "estudiantes_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "estudiantes", "usuarios", primary_key: "ci", name: "estudiantes_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", name: "historialplanes_ibfk_3", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", name: "inscripcionperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionperiodos", "periodos", name: "inscripcionperiodos_ibfk_3", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", name: "inscripcionperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_4", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "tipo_estado_calificaciones", name: "inscripcionsecciones_ibfk_3", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipo_estado_inscripciones", name: "inscripcionsecciones_ibfk_5", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipoasignaturas", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "planes", "escuelas", name: "planes_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "profesores", "departamentos", name: "profesores_ibfk_1", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "profesores", "usuarios", primary_key: "ci", name: "profesores_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "seccion_profesores_secundarios", "profesores", primary_key: "usuario_id", name: "seccion_profesores_secundarios_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "seccion_profesores_secundarios", "secciones", name: "seccion_profesores_secundarios_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "secciones", "asignaturas", name: "secciones_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "secciones", "periodos", name: "secciones_ibfk_3", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "secciones", "profesores", primary_key: "usuario_id", name: "secciones_ibfk_4", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "secciones", "tipo_secciones", name: "secciones_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "estudiantes", "escuelas", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "estudiantes", "usuarios", primary_key: "ci", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "periodos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "planes", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionperiodos", "periodos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "secciones", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "tipo_estado_calificaciones", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipo_estado_inscripciones", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipoasignaturas", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "planes", "escuelas", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "profesores", "departamentos", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "profesores", "usuarios", primary_key: "ci", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "seccion_profesores_secundarios", "profesores", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "seccion_profesores_secundarios", "secciones", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "asignaturas", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "periodos", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "profesores", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "tipo_secciones", on_update: :cascade, on_delete: :cascade
 end

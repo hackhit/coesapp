@@ -1,18 +1,33 @@
 - model_class = Periodo
-.fieldset
+.fieldset.border.m-md-3.p-md-3
   %dl
-    %dt.label.label-default= model_class.human_attribute_name(:id)
+    %dt Identificador
     %dd
       %pre.prettyprint= @periodo.id
   %dl
-    %dt.label.label-default= model_class.human_attribute_name(:inicia)
+    %dt Tipo
     %dd
-      %pre.prettyprint= @periodo.inicia
-    %dt.label.label-default= model_class.human_attribute_name(:culmina)
+      %pre.prettyprint= @periodo.tipo.titleize
+  %dl
+    %dt= model_class.human_attribute_name(:inicia)
     %dd
-      %pre.prettyprint= @periodo.culmina
+      %pre.prettyprint= l(@periodo.inicia, format: :long)
+  %dl
+    %dt Escuelas:
+  %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+    %thead
+      %tr
+        %th Identificador
+        %th Descripción
+    %tbody
+      - @periodo.escuelas.each do |escuela| 
+        %tr
+          %td= escuela.id
+          %td= escuela.descripcion
 
 .form-group
-  = link_to t('.back', default: t("helpers.links.back")), periodos_path, class: 'btn btn-default'
-  = link_to t('.edit', default: t("helpers.links.edit")), edit_periodo_path(@periodo), class: 'btn btn-default'
-  = link_to t('.destroy', default: t("helpers.links.destroy")), periodo_path(@periodo), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger'
+  = btn_atras periodos_path
+  = btn_edit_primary edit_periodo_path(@periodo), 'Editar Período', "Editar"
+  = link_to periodo_path(@periodo), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger btn-sm' do
+    = glyph 'trash'
+    = t('.destroy', default: t("helpers.links.destroy"))

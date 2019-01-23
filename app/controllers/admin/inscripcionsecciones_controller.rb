@@ -32,7 +32,7 @@ module Admin
 			@estudiante = Estudiante.find params[:id]
 			@titulo = "Inscripción para el período #{@periodo_actual_id} - Paso 2 - Seleccionar Secciones"
 			if @inscripciones.count > 2
-				flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path @inscripciones.first.estudiante}' class='btn btn-primary btn-small'>aquí</a> para para mayor información y realizar ajustes sobre las asignaturas" 
+				flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el período actual. Por favor haga clic <a href='#{usuario_path @inscripciones.first.estudiante}' class='btn btn-primary btn-small'>aquí</a> para para mayor información y realizar ajustes sobre las asignaturas" 
 				redirect_to action: 'buscar_estudiante', id: params[:id]
 			else
 				@escuelas = current_admin.escuelas	
