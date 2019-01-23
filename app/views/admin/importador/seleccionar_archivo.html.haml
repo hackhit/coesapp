@@ -1,0 +1,23 @@
+
+.border.p-md-3
+  %h5
+    = btn_atras principal_admin_index_path
+    Paso1 (Selección de Archivo):
+.border.p-md-3.m-md-3
+  = form_tag({controller: :importador, action: :importar}, multipart: true, class: 'form-horizontal') do
+    .form-group
+      .col-md-10
+        %label Seleccione el archivo a Importar (recuerde el formato es CSV):
+      .col-md-10
+        = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
+        =# file_field 'archivo', 'datafile', {required: true, class: 'btn', :accept => 'application/pdf'}
+        =# file_field_tag 'file', :accept => 'text/html', :class => 'upload', :value => 'index.html'
+
+    .form-group
+      .col-md-10
+        %label Seleccione Objeto a Importar:
+      .col-md-10
+        = select nil, :objeto, %w(Periodo Departamento Catedra Catedradepartamento Inscripcionseccion SeccionProfesorSecundario Asignatura Seccion Usuario Estudiante Profesor Plan), {:prompt => 'Seleccione Objeto Destino'}, { class: 'form-control', required: true }
+    .form-group
+      .col-md-offset-2.col-md-10
+        = submit_tag "Cargar", {class: 'btn btn-outline-success btn-sm', disable_with: "Cargando..."}

@@ -16,7 +16,10 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
-    # get '/principal_admin/set_tab'
+    get '/importador/seleccionar_archivo'
+    post '/importador/vista_previa'
+    post '/importador/importar'
+
     resources :principal_admin, only: :index do
       collection do
         get 'set_tab'
