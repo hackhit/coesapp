@@ -60,6 +60,11 @@ module ApplicationHelper
 		btn_success 'plus', href, title_tooltip, value
 	end
 
+
+	def btn_atras href
+		btn_toggle 'btn-outline-secondary', 'chevron-left', href, 'Regresar', 'Regresar'
+	end
+
 	def btn_edit_primary href, title_tooltip, value
 		btn_toggle 'btn-outline-primary', 'edit', href, title_tooltip, value
 	end
