@@ -21,7 +21,7 @@ Escuela.create([{id: 'ARTE', descripcion: 'ARTES'},
 	{id: 'LETR', descripcion: 'LETRAS'},
 	{id: 'PSIC', descripcion: 'PSICOLOGÍA'} ])
 
-Tipoasignatura.create([{id: :L, descripcion: :obtativa}, {id: :O, descripcion: :electiva}, {id: :B, descripcion: :obligatoria}, {id: :P, descripcion: :proyecto}])
+Tipoasignatura.create([{id: :OP, descripcion: :optativa}, {id: :L, descripcion: :electiva}, {id: :OB, descripcion: :obligatoria}, {id: :P, descripcion: :proyecto}])
 p "#{Tipoasignatura.count} Tipo Asignaturas Creadas!"
 
 ParametroGeneral.create([{id: 'PERIODO_ACTUAL_ID', valor: '2018-02A'}, {id: 'ACTIVAR_PROGRAMACIONES', valor: 'ENCENDIDAS'}])
