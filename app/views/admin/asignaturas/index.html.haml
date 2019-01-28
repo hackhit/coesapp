@@ -1,57 +1,80 @@
 - if current_admin.mas_altos?
   = btn_add_success new_asignatura_path, 'Agregar Nueva Agirnatura', 'Nueva'
+.row
+  .col-md-3
+    .p-md-2.mt-md-2.bg-success
+      = text_field_tag 'filtro', nil ,{onkeyup: "filtrar();", placeholder: "Filtrar Contenido...", class: 'form-control'}
+      %a#text.text-light.p-1
+    %nav.mt-md-3
+      .nav.nav-pills.flex-column{role: :tablist, "aria-orientation": :vertical}
+        - @departamentos.each_with_index do |dep,i|
+          -activa = (i.eql? 0) ? "active" : ""
+          = link_to dep.descripcion_completa, "#dep_#{dep.id}", "data-toggle"=> "tab", class: "#{activa} nav-item nav-link"
+  .col-md-9
+    .tab-content{style: 'max-height: 400px;overflow-y: scroll;'}
+      - @departamentos.each_with_index do |dep,i|
+        -activa = (i.eql? 0) ? "active" : ""
+        .tab-pane{class: activa, id: "dep_#{dep.id}"}
+          %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+            %thead
+              %tr
+                %th ID
+                %th Descripción
+                %th Cátedra
+                %th Año
+                %th Tipo
+                %th U. Créditos
+                %th Cód. UXXI
+                %th Secciones
+                %th{style: 'width:15%;'} Opciones
 
-%nav.mt-3
-  .nav.nav-tabs
-    - @departamentos.each_with_index do |dep,i|
-      -activa = (i.eql? 0) ? "active" : ""
-      = link_to dep.descripcion_completa, "#dep_#{dep.id}", "data-toggle"=> "tab", class: "#{activa} nav-item nav-link"
-
-.tab-content
-  - @departamentos.each_with_index do |dep,i|
-    -activa = (i.eql? 0) ? "active" : ""
-    .tab-pane{class: activa, id: "dep_#{dep.id}"}
-      %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-        %thead
-          %tr
-            %th ID
-            %th Descripción
-            %th Cátedra
-            %th Año
-            %th Tipo
-            %th U. Créditos
-            %th Cód. UXXI
-            %th Secciones
-            %th{style: 'width:15%;'} Opciones
-
-        - dep.asignaturas.order("orden ASC").each do |asignatura|
-          - activa = asignatura.activa ? 'table-success' : ''
-          %tr{class: activa}
-            %td= asignatura.id
-            %td= asignatura.descripcion
-            %td= asignatura.catedra.descripcion
-            %td= asignatura.anno
-            %td= asignatura.tipoasignatura.descripcion.titleize
-            %td= asignatura.creditos
-            %td= asignatura.id_uxxi
-            %td
-              %table
-                %tr
-                  - asignatura.secciones.each do |s| 
-                    %td= s.numero
-            %td
-              .float-right
-                = link_to edit_asignatura_path(asignatura), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-                  = glyph 'pencil'
-              - if false
-                .float-right
-                  = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-                    .text-danger= glyph 'trash'
-              - @asignatura = asignatura
-              .float-right.mt-1= render '/admin/asignaturas/onoffswitch'
+            - dep.asignaturas.order("orden ASC").each do |asignatura|
+              - activa = asignatura.activa ? 'table-success' : ''
+              %tr.filtrables{class: activa}
+                %td= asignatura.id
+                %td= asignatura.descripcion
+                %td= asignatura.catedra.descripcion
+                %td= asignatura.anno
+                %td= asignatura.tipoasignatura.descripcion.titleize
+                %td= asignatura.creditos
+                %td= asignatura.id_uxxi
+                %td
+                  %table
+                    %tr
+                      - asignatura.secciones.each do |s| 
+                        %td= s.numero
+                %td
+                  .float-right
+                    = link_to edit_asignatura_path(asignatura), class: 'btn btn-xs', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+                      = glyph 'pencil'
+                  - if false
+                    .float-right
+                      = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-xs', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+                        .text-danger= glyph 'trash'
+                  - @asignatura = asignatura
+                  .float-right.mt-1= render '/admin/asignaturas/onoffswitch'
+    
 
 
 :javascript
+
+  function filtrar() {
+    var filtro = $('#filtro').val().toLowerCase() 
+    var total_mach = 0
+    var ids = ""
+    $("tr.filtrables").each(function(){
+      var temp = $(this).text().toLowerCase();
+      if (temp.match(filtro) == null) {
+        $(this).hide();
+      }else {
+        $(this).show();
+        total_mach += 1;
+        ids = ids + $(this).find('td').first().text() + ",";
+      }
+      $('#text').text(total_mach+" coincidencias");
+    });
+  };
+
 
   function switches(url, id){
     $.ajax({
