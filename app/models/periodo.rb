@@ -14,7 +14,7 @@ class Periodo < ApplicationRecord
 
 	# VALIDACIONES:
     validates :id, presence: true, uniqueness: true
-    validates :inicia, presence: true, uniqueness: true
+    validates :inicia, presence: true#, uniqueness: true
 
 	# FUNCIONES:
 	def tiene_secciones?
