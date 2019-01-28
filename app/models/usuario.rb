@@ -47,11 +47,11 @@ class Usuario < ApplicationRecord
 	end
 
 	def mujer?
-		return self.sexo.eql? 'F'
+		return self.sexo.eql? 'Femenino'
 	end
 
 	def hombre?
-		return self.sexo.eql? 'M'
+		return self.sexo.eql? 'Masculino'
 	end
 
 	def genero
