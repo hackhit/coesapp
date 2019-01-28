@@ -49,25 +49,6 @@ Rails.application.configure do
   # number of complex assets.
   config.assets.debug = true
 
-  # config.action_mailer.smtp_settings = {
-  #   address: "smtp.gmail.com",
-  #   port: 587,
-  #   domain: Rails.application.secrets.domain_name,
-  #   authentication: "plain",
-  #   enable_starttls_auto: true,
-  #   user_name: Rails.application.secrets.email_provider_username,
-  #   password: Rails.application.secrets.email_provider_password
-  # }
-
-  # config.action_mailer.delivery_method = :mailgun
-  # config.action_mailer.mailgun_settings = {
-  #     api_key: "key-fa31682342a1c189e54204b6bf46c776",
-  #     domain: "https://api.mailgun.net/v3/aceim.ucv.ve"
-
-  #     domain: "sandbox610c8f4cb85a4a1fbfbfe9bb2be82900.mailgun.org"
-
-  # }
-
   config.action_mailer.smtp_settings = {
     address: Rails.application.secrets.address,
     port: 587,
@@ -77,6 +58,17 @@ Rails.application.configure do
     user_name: Rails.application.secrets.email_provider_username,
     password: Rails.application.secrets.email_provider_password
   }
+
+
+  # config.action_mailer.smtp_settings = {
+  #   address: Rails.application.secrets.address,
+  #   port: 587,
+  #   domain: Rails.application.secrets.domain_name,
+  #   authentication: "plain",
+  #   enable_starttls_auto: true,
+  #   user_name: Rails.application.secrets.email_provider_username,
+  #   password: Rails.application.secrets.email_provider_password
+  # }
 
   # ActionMailer Config
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
