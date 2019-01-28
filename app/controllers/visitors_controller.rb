@@ -16,7 +16,6 @@ class VisitorsController < ApplicationController
     @carteleras = Cartelera.all.activas
   end
 
-
   def validar
     unless params[:usuario]
       flash[:error] = "Error, debe ingresar Cédula y contraseña"
@@ -36,12 +35,12 @@ class VisitorsController < ApplicationController
         return
       elsif roles.size == 1
         cargar_parametros_generales
-        redirect_to :action => "un_rol", :tipo => roles.first
+        redirect_to action: "un_rol", tipo: roles.first
         return
       else
         cargar_parametros_generales
         flash[:warning] = "Tiene más de un rol, selecciona uno de ellos"
-        redirect_to :action => "seleccionar_rol"
+        redirect_to action: "seleccionar_rol"
         return
       end
     end           
@@ -81,9 +80,7 @@ class VisitorsController < ApplicationController
     tipo = params[:tipo]
     usuario = Usuario.find session[:usuario_ci]
 
-    gen = "@"
-    gen = "a" if usuario.mujer?
-    gen = "o" if usuario.hombre?
+    gen = usuario.genero
 
     flash[:success] = "Bienvenid#{gen} #{usuario.nombres}" 
 

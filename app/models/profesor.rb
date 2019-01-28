@@ -3,6 +3,8 @@ class Profesor < ApplicationRecord
 	belongs_to :departamento
 	accepts_nested_attributes_for :departamento
 
+    has_one :escuela, through: :departamento
+
 	belongs_to :usuario, foreign_key: :usuario_id 
 	accepts_nested_attributes_for :usuario
 

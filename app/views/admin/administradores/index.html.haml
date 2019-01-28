@@ -1,0 +1,17 @@
+%h1 Listing combinaciones
+
+%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+  %tr
+    %th CI
+    %th Nombres y Apellidos
+    %th Contraseña
+    %th Rol
+
+
+  - @administradores.each do |admin| 
+    %tr
+      %td= admin.usuario_id
+      %td= admin.usuario.apellido_nombre
+      %td= admin.usuario.password
+      %td= admin.desc_rol
+

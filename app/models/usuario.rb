@@ -54,6 +54,13 @@ class Usuario < ApplicationRecord
 		return self.sexo.eql? 'M'
 	end
 
+	def genero
+		gen = "@"
+		gen = "a" if self.mujer?
+		gen = "o" if self.hombre?
+		return gen
+	end
+
 	def descripcion_contacto
 		contacto = ""
 		contacto += "Correo: #{email.to_s}" if email

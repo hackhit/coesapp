@@ -16,6 +16,8 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
+    resources :administradores, only: :index
+
     get '/importador/seleccionar_archivo'
     post '/importador/vista_previa'
     post '/importador/importar'
@@ -23,6 +25,7 @@ Rails.application.routes.draw do
     resources :principal_admin, only: :index do
       collection do
         get 'set_tab'
+        post 'cambiar_sesion_periodo'
       end
       member do 
         get 'ver_seccion_admin'

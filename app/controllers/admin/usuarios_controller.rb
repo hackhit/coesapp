@@ -144,8 +144,6 @@ module Admin
     # GET /usuarios/1
     # GET /usuarios/1.json
     def show
-      @periodo_actual_id = session[:parametros]['periodo_actual_id']
-
       @estudiante = @usuario.estudiante
       @profesor = @usuario.profesor
       @administrador = @usuario.administrador

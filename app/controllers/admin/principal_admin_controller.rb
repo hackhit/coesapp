@@ -4,11 +4,11 @@ module Admin
 		before_action :filtro_administrador
 
 		def cambiar_sesion_periodo
-			periodo_actual = Periodo.find params[:nuevo].first
 
-			session[:parametros][:periodo_actual] = periodo_actual.id
-			# session[:parametros][:semestre_anterior] = periodo_anterior.id
-			redirect_to controller: 'principal_admin'
+			session['periodo_actual_id'] = params[:nuevo]
+			@current_periodo = Periodo.find session['periodo_actual_id']
+			flash[:success] = "Periodo cambiado con éxito al #{current_periodo.id}" 
+			redirect_back fallback_location: periodos_path
 		end
 
 		def nueva_seccion_admin
@@ -61,7 +61,6 @@ module Admin
 		def index
 			@usuario = current_usuario
 			@principal_admin_add_asig = true
-			@periodo_actual_id = session[:parametros]['periodo_actual_id']
 			@escuelas = current_admin.escuelas
 			@editar_asignaturas = true if current_admin.mas_altos?
 		end

@@ -1,10 +1,13 @@
+.float-right.text-info.pt-md-2
+	=link_to_if current_admin, "Periodo: #{current_periodo.id}", 'javascript:void(0)', {onclick: "return $('#cambiar_sesion_periodo').modal();", 'data_toggle': :modal, class: 'dropdown-item text-info'}
+
 %h5.text-light.bg-dark.text-center.p-2.border.border-info
 	
 	= raw (@titulo ? @titulo : action_name.titleize)
 
 	- if current_admin and current_admin.mas_altos?
 		= content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Inscribir Estudiante Existente', 'data-placement': :rigth do
-			= link_to buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success btn-sm float-left ml-1' do
+			= link_to buscar_estudiante_inscripcionsecciones_path, class: 'btn-success btn-sm float-left ml-md-1' do
 				= glyph 'plus'
 				= glyph 'education'
 

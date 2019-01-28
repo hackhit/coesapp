@@ -1,25 +1,31 @@
-.modal.hide.fade#cambiar_sesion_periodo{'aria-hidden'=> false}
+.modal.fade#cambiar_sesion_periodo{'aria-hidden': true, role: :dialog, tabindex: "-1" }
   .modal-dialog
     .modal-content
-      .modal-header
-        %h5.alert.alert-info
-          Cambio de Período en su sesión
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×
+        %h4.text-center Cambio de Período en su Sesión de Usuario
       .modal-body
 
-        = form_tag({controller: 'cal_principal_admin', action: 'cambiar_sesion_periodo'}, class: 'form-horizontal') do
+        = form_tag({controller: 'principal_admin', action: 'cambiar_sesion_periodo'}, class: 'form-horizontal') do
           .modal-body
             .control-group
-              %label.control-label
+              %span.control-label
                 Período Actual:
-              .controls
-                = text_field_tag :actual, session[:parametros]['periodo_actual_id'], readonly: true, disabled: true
 
+              .controls
+                = text_field_tag :actual, current_periodo.id, readonly: true, disabled: true, class: 'form-control'
+            %br
             .control-group
-              %label.control-label
+              %span.control-label
                 Nueva Período:
               .controls
-                = collection_select :nuevo, nil, CalSemestre.order('id desc').all, :id, :id, {:prompt => 'Seleccione Período'}, { class: 'input', required: true }
+                - if current_escuela and current_escuela.periodos.count > 0
+                  - periodos = current_escuela.periodos.order('inicia DESC').reject{|pe| pe.eql? current_periodo}
+                - else
+                  - periodos = Periodo.order('inicia DESC').all.reject{|pe| pe.eql? current_periodo}
+                = collection_select nil, :nuevo, periodos, :id, :id, {:prompt => 'Seleccione Período'}, { class: 'form-control', required: true }
 
           .modal-footer
-            %a.btn{data: {dismiss: 'modal'}} Cancelar
-            = submit_tag 'Guardar', class: 'btn btn-primary'
+            %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Guardar', class: 'btn btn-sm btn-outline-primary'

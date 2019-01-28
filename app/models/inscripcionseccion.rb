@@ -18,7 +18,7 @@ class Inscripcionseccion < ApplicationRecord
 
 	# SCOPES:
 	# scope :confirmados, -> {where "confirmar_inscripcion = ?", 1}
-	scope :del_periodo_actual, -> {joins(:seccion).where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
+	# scope :del_periodo_actual, -> {joins(:seccion).where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
 	scope :del_periodo, lambda { |periodo_id| joins(:seccion).where "periodo_id = ?", periodo_id}
 
 	scope :en_reparacion, -> {joins(:seccion).where "numero LIKE ?", 'R'}

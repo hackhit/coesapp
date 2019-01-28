@@ -3,7 +3,7 @@
   .border.p-2
     = form_for @seccion, {class: 'form-horizontal', id: "nueva_seccion_#{@mat.id}"} do |f|
       = hidden_field_tag "[seccion]asignatura_id", @mat.id
-      = hidden_field_tag "[seccion]periodo_id", @periodo_actual_id
+      = hidden_field_tag "[seccion]periodo_id", current_periodo.id
       .row
         .col-md-2
 

@@ -5,15 +5,13 @@ module Admin
 		before_action :filtro_ninja!, only: [:destroy]
 		
 		def buscar_estudiante
-			@periodo_actual_id = ParametroGeneral.periodo_actual_id
-
 			if params[:id]
-				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
+				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
 				if @inscripciones.count > 2
 					flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path(params[:id])}' class='btn btn-primary btn-sm'>aquí</a> para mayor información y realizar ajustes sobre las asignaturas" 
 				end
 			end
-			@titulo = "Inscripción para el período #{@periodo_actual_id} - Paso 1 - Buscar Estudiante"
+			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 1 - Buscar Estudiante"
 			@estudiantes = Estudiante.all.sort_by{|e| e.usuario.apellidos}
 		end
 
@@ -24,24 +22,23 @@ module Admin
 			@row = 'row'
 			@col2 = 'col-2'
 			@col10 = 'col-10'
-			@periodo_actual_id = ParametroGeneral.periodo_actual_id
-			@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => @periodo_actual_id)
+			@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
 
 			@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} if @inscripciones
 
 			@estudiante = Estudiante.find params[:id]
-			@titulo = "Inscripción para el período #{@periodo_actual_id} - Paso 2 - Seleccionar Secciones"
+			@titulo = "Inscripción para el período #{current_periodo} - Paso 2 - Seleccionar Secciones"
 			if @inscripciones.count > 2
 				flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el período actual. Por favor haga clic <a href='#{usuario_path @inscripciones.first.estudiante}' class='btn btn-primary btn-small'>aquí</a> para para mayor información y realizar ajustes sobre las asignaturas" 
 				redirect_to action: 'buscar_estudiante', id: params[:id]
 			else
 				@escuelas = current_admin.escuelas	
-				@secciones_disponibles = Seccion.del_periodo_actual
+				@secciones_disponibles = Seccion.del_periodo current_periodo.id
 			end
 		end
 
 		def inscribir
-			@periodo_actual_id = ParametroGeneral.periodo_actual_id
+
 			secciones = params[:secciones]
 			guardadas = 0
 			id = params[:id]
@@ -64,10 +61,9 @@ module Admin
 
 		def resumen
 			id = params[:id]
-			@periodo_actual_id = ParametroGeneral.periodo_actual_id
 			@estudiante = Estudiante.find id
-			@secciones = @estudiante.secciones.del_periodo_actual
-			@titulo = "Inscripción para el período #{@periodo_actual_id} - Paso 3 - Resultados y Resumen: #{@estudiante.usuario.descripcion}"
+			@secciones = @estudiante.secciones.del_periodo current_periodo.id
+			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 3 - Resultados y Resumen: #{@estudiante.usuario.descripcion}"
 
 		end
 

@@ -14,10 +14,9 @@
 					%td
 						-if seccion.calificada
 							%span.badge.badge-success Calificada
-							%span.badge.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Aprobados'}= seccion.total_aprobados
-							%span.badge.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Reprobados'}= seccion.total_reprobados
-
-							%span.badge.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Perdidas Por Inasistencias'}= seccion.total_perdidos
+							%span.badge.tooltip-btn{'data_toggle': :tooltip, title: 'Total Aprobados'}= seccion.total_aprobados
+							%span.badge.tooltip-btn{'data_toggle': :tooltip, title: 'Total Reprobados'}= seccion.total_reprobados
+							%span.badge.tooltip-btn{'data_toggle': :tooltip, title: 'Total Perdidas Por Inasistencias'}= seccion.total_perdidos
 						- else
 							%span.badge.badge-info Pendiente por calificar
 

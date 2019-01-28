@@ -1,5 +1,5 @@
 .tab-pane.fade{class: @mat_activa, id: "mat_#{@mat.id}", "aria-labelledby" => "mat_#{@mat.id}-tab", :role => "tabpanel"}
-
+	.text-muted= "Total Secciones:#{@secciones.count}"
 	.border
 		- if @secciones.count > 0
 			%table.table.table-bordered.table-striped.table-sm.table-hover

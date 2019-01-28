@@ -2,14 +2,14 @@
 	.modal-dialog
 		.modal-content
 			%h5.alert.alert-info
-				= "Inscribir a #{@estudiante.descripcion} en sección del periodo #{@periodo_actual_id}"
+				= "Inscribir a #{@estudiante.descripcion} en sección del periodo #{current_periodo.id}"
 			.modal-body
 				.border.p-3
 					= form_tag({controller: 'inscripcionsecciones', action: 'crear'},{class: 'form-horizontal'} ) do |f|
 						= hidden_field_tag :estudiante_id, @estudiante.usuario_id
 						=#grouped_collection_select(:cal_seccion, :id, CalMateria.all.sort_by{|m| m.cal_categoria.orden and m.cal_categoria.id} , :cal_secciones, :descripcion_reversa, :id, :descripcion, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2'}) 
 
-						-secciones = Seccion.del_periodo @periodo_actual_id 
+						-secciones = Seccion.del_periodo current_periodo.id 
 						.form-group
 							.col-md-2
 								%b Estudiante:

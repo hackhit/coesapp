@@ -7,7 +7,7 @@
 			- @asignaturas.each do |mat|
 				- @mat_activa = (session[:mat_id].eql? mat.id) ? "active" : ""
 				- @mat = mat
-				- @sin_secciones = mat.secciones.where(:periodo_id => @periodo_actual_id).count < 1
+				- @sin_secciones = mat.secciones.where(:periodo_id => current_periodo.id).count < 1
 
 				- if @principal_admin_add_asig
 					= render '/admin/principal_admin/tabs_estructura/tab_asig_admin'
@@ -19,9 +19,9 @@
 		#v-pills-tabContent.tab-content
 			- @asignaturas.each do |mat|
 				- @mat_activa = (session[:mat_id].eql? mat.id) ? "active show" : ""
-				- @secciones = mat.secciones.where(:periodo_id => @periodo_actual_id)
+				- @secciones = mat.secciones.where(:periodo_id => current_periodo.id)
 				- @mat = mat
-				- @sin_secciones = mat.secciones.where(:periodo_id => @periodo_actual_id).count < 1
+				- @sin_secciones = mat.secciones.where(:periodo_id => current_periodo.id).count < 1
 
 				- if @principal_admin_add_asig
 					= render '/admin/asignaturas/panel_detalle'

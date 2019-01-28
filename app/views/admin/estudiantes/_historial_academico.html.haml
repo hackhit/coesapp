@@ -8,7 +8,7 @@
 					%td= btn_success 'download', constancia_inscripcion_descargar_path(@estudiante.id), "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción'
 					%td= btn_success 'download', constancia_estudio_descargar_path(@estudiante.id), "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
 
-				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección del periodo actual: #{@periodo_actual_id}", "Inscribir en seccion del #{@periodo_actual_id}", 'estudiante_seccion'
+				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección del periodo actual: #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", 'estudiante_seccion'
 				= render partial: '/admin/inscripcionsecciones/form'
 	%b Registro de Historial Académico:
 
