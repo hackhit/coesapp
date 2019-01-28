@@ -1,1 +1,1 @@
-json.partial! "asignaturas/asignatura", asignatura: @asignatura
+json.partial! "/admin/asignaturas/asignatura", asignatura: @asignatura

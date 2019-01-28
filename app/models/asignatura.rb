@@ -55,6 +55,6 @@ class Asignatura < ApplicationRecord
 	end
 
 	def set_to_upcase
-		self.descripcion = self.descripcion.upcase
+		self.descripcion = self.descripcion.strip.upcase
 	end
 end
