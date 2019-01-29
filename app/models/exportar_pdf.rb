@@ -35,7 +35,8 @@ class ExportarPdf
 			pdf.text "<b>Periodo:</b> #{periodo.id}", size: 10, inline_format: true
 			pdf.move_down 5	
 
-			inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).order("secciones.asignatura_id")
+			# inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).order("secciones.asignatura_id")
+			inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.descripcion <=> b.descripcion}
 			# inscripcionsecciones_periodos = inscripcionsecciones.del_periodo periodo.id
 
 			if inscripcionsecciones_periodos.count > 0
@@ -51,8 +52,9 @@ class ExportarPdf
 
 			end
 			if data
-				t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'})
-				t.columns(1).position = :left
+				t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
+				t.columns(1..1).position = 'left'
+				# t.columns(1..1).width = '100px'
 				t.draw
 			end
 
