@@ -4,7 +4,7 @@
 			%td= btn_success 'download', kardex_descargar_path(@estudiante.id), "Descargar Kardex de #{@nickname}", 'Kardex'
 			- if current_admin
 
-				- if @estudiante.inscrito?
+				- if @estudiante.inscrito? current_periodo.id
 					%td= btn_success 'download', constancia_inscripcion_descargar_path(@estudiante.id), "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción'
 					%td= btn_success 'download', constancia_estudio_descargar_path(@estudiante.id), "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
 

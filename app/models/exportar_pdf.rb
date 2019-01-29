@@ -7,7 +7,7 @@ class ExportarPdf
 		pdf = Prawn::Document.new(top_margin: 20)
 
 		estudiante = Estudiante.find id
-		periodos = Periodo.order("id ASC").all
+		periodos = estudiante.escuela.periodos.order("inicia DESC")
 		inscripcionsecciones = estudiante.inscripcionsecciones.joins(:seccion).order("asignatura_id ASC, numero DESC")
 
 		pdf.image "app/assets/images/logo_ucv.png", position: :center, height: 50, valign: :top
@@ -31,8 +31,8 @@ class ExportarPdf
 			pdf.text "<b>Periodo:</b> #{periodo.id}", size: 10, inline_format: true
 			pdf.move_down 5
 
-			# secciones_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
-			secciones_periodo = inscripcionsecciones.del_periodo periodo.id
+			secciones_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
+			# secciones_periodo = inscripcionsecciones.del_periodo periodo.id
 
 			if secciones_periodo.count > 0
 				data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Convocatoria</b>", "<b>Créditos</b>", "<b>Final</b>", "<b>Final_alfa</b>", "<b>Sección</b>"]]
@@ -46,11 +46,13 @@ class ExportarPdf
 				end
 
 			end
-			t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center })
-			t.draw
+			if data
+				t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center })
+				t.draw
+			end
 
       		t = Time.new
-
+      	end
       	# pdf.start_page_numbering(250, 15, 7, nil, to_utf16("#{t.day} / #{t.month} / #{t.year}       Página: <PAGENUM> de <TOTALPAGENUM>"), 1)
 
 		pdf.move_down 20
@@ -61,8 +63,6 @@ class ExportarPdf
 		pdf.text "________________", size: 11, align: :right
 		pdf.move_down 5
 		pdf.text "Firma Autorizada", size: 11, align: :right
-
-		end
 
 		return pdf
 	end

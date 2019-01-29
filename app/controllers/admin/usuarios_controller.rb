@@ -150,7 +150,7 @@ module Admin
 
       # @secciones_estudiantes = CalEstudianteSeccion.where(:cal_estudiante_ci => @estudiante.cal_usuario_ci)   
 
-      @periodos = Periodo.order("id DESC").all
+      @periodos = @estudiante.escuela.periodos.order("inicia DESC") #Periodo.order("id DESC").all
 
       @inscripciones = @estudiante.inscripcionsecciones if @estudiante
 
@@ -158,7 +158,7 @@ module Admin
       @idiomas1 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
       @idiomas2 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
       @nickname = @usuario.nickname.capitalize
-      inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante and @estudiante.inactivo?
+      inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante and @estudiante.inactivo? current_periodo.id
       @titulo = "Detalle de Usuario: #{@usuario.descripcion} #{inactivo}"
 
     end

@@ -19,7 +19,9 @@
           %table.table        
             - u.roles.each do |rol| 
               %tr
-                %td= rol
+                %td
+                  = rol
+                  = "(#{u.estudiante.escuela.descripcion.titleize})" if u.estudiante
         %td
           - if u.estudiante and u.estudiante.ultimo_plan
             = u.estudiante.ultimo_plan  
@@ -35,7 +37,7 @@
         %td
           - if current_admin
             - if u.estudiante
-              - if u.estudiante.inscrito?
+              - if u.estudiante.inscrito? current_periodo.id
                 = btn_toggle 'btn-outline-success', 'download', constancia_inscripcion_descargar_path(u), "Descargar Constancia de Inscripción", ''
               - else
                 = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'

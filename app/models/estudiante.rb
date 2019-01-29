@@ -26,19 +26,19 @@ class Estudiante < ApplicationRecord
 	scope :con_cita_horaria, -> {where "citahoraria_id IS NOT NULL"}
 
 	# FUNCIONES:
-	def inactivo?
+	def inactivo? periodo_id
 	# OJO: ESTA FUNCION DEBE CAMBIAR AL AGREGAR LA TABLA INSCRIPCION PERIDO!!!
-		total_asignaturas = self.inscripcionsecciones.del_periodo_actual.count
-		total_retiradas = inscripcionsecciones.del_periodo_actual.where(tipo_estado_inscripcion_id: TipoEstadoInscripcion::RETIRADA).count
+		total_asignaturas = (self.inscripcionsecciones.del_periodo periodo_id).count
+		total_retiradas = (self.inscripcionsecciones.del_periodo periodo_id).where(tipo_estado_inscripcion_id: TipoEstadoInscripcion::RETIRADA).count
 		(total_asignaturas > 0 and total_asignaturas == total_retiradas)
 	end
 
-	def inscrito?
-		inscripcionsecciones.del_periodo_actual.count > 1
+	def inscrito? periodo_id
+		(inscripcionsecciones.del_periodo(periodo_id)).count > 1
 	end
 
-	def valido_para_inscribir?
-		! inscrito?
+	def valido_para_inscribir? periodo_id
+		!(inscrito? periodo_id)
 	end
 
 	def ultimo_plan
