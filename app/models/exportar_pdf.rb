@@ -7,8 +7,11 @@ class ExportarPdf
 		pdf = Prawn::Document.new(top_margin: 20)
 
 		estudiante = Estudiante.find id
-		periodos = estudiante.escuela.periodos.order("inicia DESC")
+		# periodos = estudiante.escuela.periodos.order("inicia DESC")
 		inscripcionsecciones = estudiante.inscripcionsecciones.joins(:seccion).order("asignatura_id ASC, numero DESC")
+		periodo_ids = estudiante.inscripcionsecciones.joins(:seccion).group(:periodo_id).count.keys
+		periodos = Periodo.where(id: periodo_ids)
+		
 
 		pdf.image "app/assets/images/logo_ucv.png", position: :center, height: 50, valign: :top
 		pdf.move_down 5
@@ -28,16 +31,17 @@ class ExportarPdf
 		pdf.move_down 10
 
 		periodos.each do |periodo|
+			pdf.move_down 15
 			pdf.text "<b>Periodo:</b> #{periodo.id}", size: 10, inline_format: true
-			pdf.move_down 5
+			pdf.move_down 5	
 
-			secciones_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
-			# secciones_periodo = inscripcionsecciones.del_periodo periodo.id
+			inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).order("secciones.asignatura_id")
+			# inscripcionsecciones_periodos = inscripcionsecciones.del_periodo periodo.id
 
-			if secciones_periodo.count > 0
+			if inscripcionsecciones_periodos.count > 0
 				data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Convocatoria</b>", "<b>Créditos</b>", "<b>Final</b>", "<b>Final_alfa</b>", "<b>Sección</b>"]]
 
-				secciones_periodo.each do |h|
+				inscripcionsecciones_periodos.each do |h|
 					sec = h.seccion
 					asig = sec.asignatura
 					aux = asig.descripcion
@@ -47,7 +51,8 @@ class ExportarPdf
 
 			end
 			if data
-				t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center })
+				t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'})
+				t.columns(1).position = :left
 				t.draw
 			end
 

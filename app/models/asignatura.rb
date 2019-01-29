@@ -9,6 +9,7 @@ class Asignatura < ApplicationRecord
 	# ENUMERADAS CONSTANTES
 	enum calificacion: [:numerica, :absoluta]
 
+	has_one :escuela, through: :departamento
 	has_many :secciones
 	accepts_nested_attributes_for :secciones
 
