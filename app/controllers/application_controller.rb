@@ -66,7 +66,6 @@ class ApplicationController < ActionController::Base
 		ParametroGeneral.all.each{|registro|
 			session[:parametros][registro.id.downcase.to_sym] = registro.valor.strip
 		}
-		session['periodo_actual_id'] = inicial_current_periodo.id 
 	end
 
 	def filtro_ninja!
