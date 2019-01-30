@@ -15,7 +15,7 @@ module Admin
 
 			pdf = ExportarPdf.hacer_kardex params[:id]
 			unless send_data pdf.render, filename: "kardex_#{params[:id]}.pdf", type: "application/pdf", disposition: "attachment"
-				flash[:mensaje] = "En estos momentos no se pueden descargar el kardex, intentelo luego."
+				flash[:error] = "En estos momentos no se pueden descargar el kardex, intentelo luego."
 			end
 			
 		end
@@ -23,7 +23,7 @@ module Admin
 		def constancia_inscripcion
 			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], current_periodo.id
 			unless send_data pdf.render,:filename => "constancia_inscripcion_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
-				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
 			return
 			
@@ -32,12 +32,11 @@ module Admin
 		def constancia_estudio
 			pdf = ExportarPdf.hacer_constancia_estudio params[:id], current_periodo.id
 			unless send_data pdf.render,:filename => "constancia_estudio_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
-				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
 			return
 			
 		end
-
 
 		def programaciones
 			id = params[:id]
