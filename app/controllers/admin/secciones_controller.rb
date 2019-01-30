@@ -12,7 +12,8 @@ module Admin
     # GET /secciones
     # GET /secciones.json
     def index
-      @secciones = Seccion.all
+      @titulo = "Secciones del Periodo: #{current_periodo.id}"
+      @secciones = Seccion.joins(:asignatura).del_periodo(current_periodo.id).order('descripcion ASC')#Seccion.all
     end
 
     def habilitar_calificar
@@ -158,6 +159,10 @@ module Admin
     # GET /secciones/new
     def new
       @seccion = Seccion.new
+      if params[:asignatura_id]
+        @mat = Asignatura.find params[:asignatura_id]
+        @departamentos = @mat.escuela.departamentos
+      end
     end
 
     # GET /secciones/1/edit

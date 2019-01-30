@@ -6,17 +6,17 @@
       = hidden_field_tag "[seccion]periodo_id", current_periodo.id
       .row
         .col-md-2
-
           = f.text_field :numero, placeholder: 'Id. Sección...', class: 'form-control text_field upcase form-control-sm', maxlength: 3, required: true
-        .col-md-3
+        .col-md-2
           .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
             - TipoSeccion.order("created_at DESC").all.each do |ts| 
               
               %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: ts.descripcion.titleize}
                 = radio_button_tag '[seccion]tipo_seccion_id', ts.id, false, required: true
                 = ts.id
-        .col-md-4
-
+        .col-md-1
+          = f.number_field :capacidad, placeholder: 'Capa...', class: 'form-control form-control-sm', maxlength: 3, required: true, value: 30, step: 1
+        .col-md-3
           = grouped_collection_select :seccion, :profesor_id, @departamentos, :profesores, :descripcion, :id, :descripcion, {include_blank: 'Selecciona Departamento...', required: true}, { class: 'selects2 form-control text_field form-control-sm'}
         .col-md-2
           = f.submit 'Agregar', class: 'btn btn-outline-success btn-sm'

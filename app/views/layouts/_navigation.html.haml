@@ -35,6 +35,8 @@
             = link_to 'Cátedras', catedras_path, class: 'nav-link'
           %li.nav-item{class: "#{'active' if controller_name.eql? 'asignaturas'}"}
             = link_to 'Asignaturas', asignaturas_path, class: 'nav-link'
+          %li.nav-item{class: "#{'active' if controller_name.eql? 'secciones'}"}
+            = link_to 'Secciones', secciones_path, class: 'nav-link'            
         - if current_admin and current_admin.maestros?
           %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
             %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
