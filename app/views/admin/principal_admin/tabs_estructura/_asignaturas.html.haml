@@ -2,7 +2,7 @@
 	Seleccione la Asignatura:
 	=# tooltip_link_to 'Agregar Nueva Asignatura', 'plus', 'success', new_asignatura_path if @principal_admin_add_asig
 .row
-	.col-2
+	.col-5
 		#v-pills-tab.nav.flex-column.nav-pills{"aria-orientation" => "vertical", role: :tablist}
 			- @asignaturas.each do |mat|
 				- @mat_activa = (session[:mat_id].eql? mat.id) ? "active" : ""
@@ -15,7 +15,7 @@
 				- elsif @admin_inscripcion
 					= render '/admin/inscripcionsecciones/tab_estructura_deps_asig_inscripcion'
 
-	.col-10
+	.col-7
 		#v-pills-tabContent.tab-content
 			- @asignaturas.each do |mat|
 				- @mat_activa = (session[:mat_id].eql? mat.id) ? "active show" : ""
