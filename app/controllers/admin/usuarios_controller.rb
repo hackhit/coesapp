@@ -12,7 +12,7 @@ module Admin
     # GET /usuarios.json
 
     def busquedas
-      @usuarios = Usuario.search(params[:term])
+      # @usuarios = Usuario.search(params[:term])
       if params[:estudiantes]
         @usuarios = Usuario.search(params[:term]).reject{|u| u.estudiante.nil?} 
       elsif params[:profesores]

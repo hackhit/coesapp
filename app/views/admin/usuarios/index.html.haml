@@ -38,8 +38,7 @@
             - if u.estudiante
               - if u.estudiante.inscrito? current_periodo.id
                 = btn_toggle 'btn-outline-success', 'download', constancia_inscripcion_descargar_path(u), "Descargar Constancia de Inscripción", ''
-              - else
-                = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'
+              = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'
               = btn_success 'download', kardex_descargar_path(u), "Descargar Kardex", 'Kardex'
               
               %b.tooltip-btn{'data_toggle'=>'tooltip', title: "Resetear Contraseña"}

@@ -6,35 +6,39 @@ module Admin
 		# before_action :filtro_ninja!, only: [:destroy]
 		
 		def buscar_estudiante
-			if params[:id]
-				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
-				if @inscripciones.count > 2
-					flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path(params[:id])}' class='btn btn-primary btn-sm'>aquí</a> para mayor información y realizar ajustes sobre las asignaturas" 
-				end
-			end
+			# if params[:id]
+			# 	@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
+			# 	if @inscripciones.count > 2
+			# 		flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path(params[:id])}' class='btn btn-primary btn-sm'>aquí</a> para mayor información y realizar ajustes sobre las asignaturas" 
+			# 	end
+			# end
 			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 1 - Buscar Estudiante"
-			@estudiantes = Estudiante.all.sort_by{|e| e.usuario.apellidos}
+			estudiantes = Estudiante.all.sort_by{|e| e.usuario.apellidos}
+			@estudiantes = estudiantes
 		end
 
 		def seleccionar
-			@vertical = 'flex-column'
-			@orientacion = "vertical"
-			@admin_inscripcion = true 
-			@row = 'row'
-			@col2 = 'col-2'
-			@col10 = 'col-10'
-			@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
+			unless estudiante = Estudiante.where(usuario_id: params[:id]).limit(1).first
+				flash[:info] = "El estudiante no encontrado"
+				redirect_to action: 'buscar_estudiante'#, id: params[:id]
+			else 
+				@vertical = 'flex-column'
+				@orientacion = "vertical"
+				@admin_inscripcion = true 
+				@row = 'row'
+				@col2 = 'col-2'
+				@col10 = 'col-10'
+				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
 
-			@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} if @inscripciones
+				@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} if @inscripciones
 
-			@estudiante = Estudiante.find params[:id]
-			@titulo = "Inscripción para el período #{current_periodo} - Paso 2 - Seleccionar Secciones"
-			if @inscripciones.count > 2
-				flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el período actual. Por favor haga clic <a href='#{usuario_path @inscripciones.first.estudiante}' class='btn btn-primary btn-small'>aquí</a> para para mayor información y realizar ajustes sobre las asignaturas" 
-				redirect_to action: 'buscar_estudiante', id: params[:id]
-			else
-				@escuelas = current_admin.escuelas	
-				@secciones_disponibles = Seccion.del_periodo current_periodo.id
+				@titulo = "Inscripción para el período #{current_periodo} - Paso 2 - Seleccionar Secciones"
+
+				escuelas = Escuela.where(id: estudiante.escuela_id)# current_admin.escuelas	
+				@escuelas = escuelas
+				@estudiante = estudiante
+				secciones_disponibles = estudiante.escuela.secciones.del_periodo(current_periodo.id)
+				@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
 			end
 		end
 
@@ -98,7 +102,7 @@ module Admin
 			es = Inscripcionseccion.find params[:id]
 			est = es.estudiante 
 			if es.destroy
-				flash[:info] = "Estudiante eliminado satisfactoriamente"
+				flash[:info] = "Inscripción eliminado satisfactoriamente"
 			else
 				flash[:danger] = "El estudiante no pudo ser eliminado: #{es.errors.full_messages.to_sentence}"
 			end

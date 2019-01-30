@@ -23,14 +23,17 @@
 						%th Departamento
 						%th Cátedra
 						%th Sección
-						%th Período
+						%th Opciones
+
 				%tbody
 					- @inscripciones.each do |ins| 
 						%tr
 							%td= ins.seccion.asignatura.departamento.descripcion
 							%td= ins.seccion.asignatura.catedra.descripcion
 							%td= ins.seccion.descripcion
-							%td= ins.seccion.periodo_id
+							%td								
+								= link_to(ins, {:method => :delete, :data => {:confirm => "Se perderan los datos, ¿Está seguro de esta acción?" }}) do
+									.text-danger= glyph 'trash'
 :javascript
 	function chequear_total_seleccionados(){
 		var total = $('input:radio:checked').length

@@ -50,6 +50,6 @@
 							= simple_toggle "/coesapp/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=RET", '', 'Retirar Asignatura', 'danger', 'remove'
 
 						%b.tooltip-btn.ml-1{'data_toggle'=>'tooltip', 'title'=>'Eliminar Asignatura'}
-							= link_to(est_sec_per, {class: 'btn-danger btn-sm', :method => :delete, :data => {:confirm => "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }}, method: :delete) do
+							= link_to(est_sec_per, {class: 'btn-danger btn-sm', :method => :delete, :data => {:confirm => "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }}) do
 								= glyph 'trash'
 
