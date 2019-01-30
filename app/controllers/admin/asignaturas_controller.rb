@@ -19,6 +19,15 @@ module Admin
       @departamentos = current_admin.departamentos
       @departamentos = Departamento.all unless @departamentos
 
+      @escuelas = current_admin.escuelas
+
+      @vertical = 'flex-column'
+      @orientacion = "vertical"
+      @admin_inscripcion = true 
+      @row = 'row'
+      @col2 = 'col-md-2'
+      @col10 = 'col-md-10'
+
     end
 
     # GET /asignaturas/1

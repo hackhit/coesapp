@@ -17,4 +17,19 @@
 						- @departamentos = current_admin.departamentos
 					- else
 						- @departamentos = esc.departamentos
-					= render '/admin/principal_admin/tabs_estructura/departamentos'
+
+					- if controller_name.eql? 'asignaturas'
+						.row= render '/admin/asignaturas/tabla_asignatura'
+					- else
+						= render '/admin/principal_admin/tabs_estructura/departamentos'
+
+:javascript
+
+	function set_tab(tipo, id){
+		$.ajax({
+			url: "#{set_tab_principal_admin_index_path}", 
+			data: {tipo: tipo, valor: id}, 
+			dataType: 'json', 
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
+			});
+	}
