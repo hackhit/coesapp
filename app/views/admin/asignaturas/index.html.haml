@@ -41,7 +41,7 @@
                 %td
                   %table
                     %tr
-                      - asignatura.secciones.each do |s| 
+                      - asignatura.secciones.del_periodo(current_periodo).each do |s| 
                         %td= s.numero
                 %td
                   .float-right

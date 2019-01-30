@@ -11,8 +11,17 @@ module Admin
 			@cal_usuario = session[:cal_usuario]
 		end
 
+		def kardex
+
+			pdf = ExportarPdf.hacer_kardex params[:id]
+			unless send_data pdf.render, filename: "kardex_#{params[:id]}.pdf", type: "application/pdf", disposition: "attachment"
+				flash[:mensaje] = "En estos momentos no se pueden descargar el kardex, intentelo luego."
+			end
+			
+		end
+
 		def constancia_inscripcion
-			pdf = CalArchivo.hacer_constancia_inscripcion params[:id]
+			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], current_periodo.id
 			unless send_data pdf.render,:filename => "constancia_inscripcion_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
 				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
@@ -20,8 +29,8 @@ module Admin
 			
 		end
 
-		def contancia_estudio
-			pdf = CalArchivo.hacer_constancia_estudio params[:id]
+		def constancia_estudio
+			pdf = ExportarPdf.hacer_constancia_estudio params[:id], current_periodo.id
 			unless send_data pdf.render,:filename => "constancia_estudio_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
 				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
@@ -98,15 +107,6 @@ module Admin
 			unless send_file excel, :type => "application/vnd.ms-excel", :x_sendfile => true, :stream => false, :filename => "acta_excel_seccion_#{params[:id].to_s}.xls",:disposition => "attachment"
 				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
-			
-		end
-
-		def kardex
-
-			pdf = ExportarPdf.hacer_kardex params[:id]
-			unless send_data pdf.render, filename: "kardex_#{params[:id]}.pdf", type: "application/pdf", disposition: "attachment"
-		    	flash[:mensaje] = "En estos momentos no se pueden descargar el kardex, intentelo luego."
-		    end
 			
 		end
 

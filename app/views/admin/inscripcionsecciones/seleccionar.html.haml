@@ -12,7 +12,7 @@
 		%h6.titulo Selección:
 		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones_disponibles, borrar_seleccion: true}
 
-		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-primary', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
+		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-success', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
 
 	- if @inscripciones.count > 0
 		.border.p-3
