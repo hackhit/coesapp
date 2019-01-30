@@ -33,7 +33,9 @@ Rails.application.routes.draw do
     end
 
     resources :principal_profesor, only: :index 
-    resources :principal_estudiante, only: :index
+    resources :principal_estudiante, only: :index do
+      post 'actualizar_idiomas'
+    end
 
     resources :tipo_secciones, :tipoasignaturas, :tipo_estado_calificaciones, :tipo_estado_inscripciones
 

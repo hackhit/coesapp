@@ -1,0 +1,67 @@
+.modal.fade#actualizar_idiomas{'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false}
+	.modal-dialog
+		.modal-content
+			- if session[:cal_administrador]
+				.modal-header
+					<button type="button" class="close fade" data-dismiss="modal" aria-hidden="true">×</button>
+			.alert.alert-info
+				%h4 IMPORTANTE:
+				Por favor indique el par de idiomas correspondientes a su carrera. Esta Información será usada para brindarle una mejor experiencia con el sistema.
+			
+			.modal-header
+				#myModalLabel 
+					%h3 Actualizar Idiomas
+			.modal-body
+
+				=form_tag(principal_estudiante_actualizar_idiomas_path(@estudiante.usuario_id), class: "form-horizontal")  do 
+					=# hidden_field_tag :ci, @estudiante.usuario_ci  
+					.form-group
+						%label.control-label.col-md-3 Idioma 1
+						.col-md-12
+							= collection_select :estudiante, :idioma1, @idiomas, :id, :descripcion, {:prompt => true}, { class: 'form-control', :onchange => "ver_select(this.value)", required: true }
+					.form-group.hide#divIdioma2{style: 'display:none;'}
+						%label.control-label.col-md-3 Idioma 2
+						.col-md-12
+							= collection_select :estudiante, :idioma2, @idiomas, :id, :descripcion, {:prompt => true}, { class: 'form-control hide',id: 'idioma2', :onchange => "$('#actualizar_btn').show();", required: true}
+
+					.modal-footer 
+						.form-group
+							.col-md-offset-2.col-md-10
+								=submit_tag 'Actualizar', class: "btn btn-primary", id: 'actualizar_btn', style: 'display:none;'
+
+
+	- if session[:estudiante_id]
+		:javascript
+			$(document).ready(function() {
+				$("#actualizar_idiomas").modal({keyboard: false});
+			});
+
+
+:javascript
+
+	function ver_select(val){
+
+		$("#idioma2 option[value='']").remove();
+		$("#idioma2 option[value=ALE]").remove();
+		$("#idioma2 option[value=FRA]").remove();		
+		$("#idioma2 option[value=ING]").remove();
+		$("#idioma2 option[value=ITA]").remove();
+		$("#idioma2 option[value=POR]").remove();
+
+		$("#idioma2").append('<option value="">Por favor seleccione</option>');
+		$("#idioma2").append('<option value="ALE">Alemán</option>');
+		$("#idioma2").append('<option value="FRA">Francés</option>');
+		$("#idioma2").append('<option value="ING">Inglés</option>');
+		$("#idioma2").append('<option value="ITA">Italiano</option>');
+		$("#idioma2").append('<option value="POR">Portugués</option>');
+
+		$("#idioma2 option[value="+val+"]").remove();
+		$('#divIdioma2').show();
+
+		if (val == ''){
+		$('#divIdioma2').hide();
+		$('#actualizar_btn').hide();
+
+		
+		}
+	}

@@ -1,6 +1,5 @@
 = render partial: '/admin/usuarios/datos_modal'
 .border
-	
 	- if @estudiante.combinaciones.count > 0
 		.border.p-md-3.m-md-3
 			%h5 Combinación de Idiomas:
@@ -15,7 +14,7 @@
 			
 
 	- if @estudiante.combinaciones.count < 1 and not @estudiante.tipo_estado_inscripcion_id.eql? 'NUEVO' 
-		= render partial: 'estudiante/actualizar_idiomas'
+		= render '/admin/estudiantes/actualizar_idiomas'
 
 	-if @estudiante.citahoraria
 		.border.m-md-3.p-md-3
