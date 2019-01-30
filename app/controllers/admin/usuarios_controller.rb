@@ -150,7 +150,7 @@ module Admin
 
       # @secciones_estudiantes = CalEstudianteSeccion.where(:cal_estudiante_ci => @estudiante.cal_usuario_ci)   
 
-      @periodos = @estudiante.escuela.periodos.order("inicia DESC") #Periodo.order("id DESC").all
+      @periodos = @estudiante.escuela.periodos.order("inicia DESC") if @estudiante#Periodo.order("id DESC").all
 
       @inscripciones = @estudiante.inscripcionsecciones if @estudiante
 
