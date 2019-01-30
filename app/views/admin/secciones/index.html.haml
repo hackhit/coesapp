@@ -11,6 +11,7 @@
         %th Periodo
         %th Escuela
         %th Departamento
+        %th Código
         %th Asignatura
         %th Total/Insc
         %th Califi
@@ -22,6 +23,7 @@
           %td= seccion.periodo_id
           %td= seccion.asignatura.escuela.descripcion
           %td= seccion.asignatura.departamento.descripcion
+          %td= seccion.asignatura.id_uxxi
           %td= seccion.asignatura.descripcion
           %td= "#{seccion.capacidad} / #{seccion.inscripcionsecciones.count}"
           %td= seccion.calificada ? 'Sí' : 'No'
