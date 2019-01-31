@@ -18,7 +18,7 @@ module Admin
       @titulo = 'Asignaturas'
       @departamentos = current_admin.departamentos
       @departamentos = Departamento.all unless @departamentos
-
+      @seccion = Seccion.new
       @escuelas = current_admin.escuelas
 
       @vertical = 'flex-column'

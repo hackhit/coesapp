@@ -25,7 +25,8 @@
                 - asignatura.secciones.del_periodo(current_periodo).each do |s| 
                   %td= s.numero
                 %td.tooltip-btn{'data_toggle': :tooltip, title: 'Agregar Sección'}
-                  = link_to "#{new_seccion_path}?asignatura_id=#{asignatura.id}&back=#{asignaturas_path}" do
+                  =# link_to "#{new_seccion_path}?asignatura_id=#{asignatura.id}&back=#{asignaturas_path}" do
+                  = link_to 'javascript:void(0)', onclick: "$('#_seccionasignatura_id').val('#{asignatura.id}');$('#nueva_seccion_titulo').html('Nueva Sección para #{asignatura.descripcion}');$('#nueva_seccion').modal();" do
                     .text-success= glyph :plus
           %td
             .row
