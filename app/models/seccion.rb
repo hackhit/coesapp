@@ -30,6 +30,9 @@ class Seccion < ApplicationRecord
 
 
 	# FUNCIONES:
+	def calificada_valor
+		self.calificada ? 'Sí' : 'No'
+	end
 
 	def self.ttl
 

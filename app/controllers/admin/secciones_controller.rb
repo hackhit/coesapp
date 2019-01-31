@@ -159,8 +159,10 @@ module Admin
     # GET /secciones/new
     def new
       @seccion = Seccion.new
+      @titulo = 'Nueva sección'
       if params[:asignatura_id]
         @mat = Asignatura.find params[:asignatura_id]
+        @titulo = "Nueva sección en #{@mat.descripcion.titleize}"
         @departamentos = @mat.escuela.departamentos
       end
     end
@@ -179,7 +181,14 @@ module Admin
       respond_to do |format|
         if @seccion.save
           flash[:success] = 'Sección creada con éxito'
-          format.html { redirect_back fallback_location: principal_admin_index_path }
+          format.html {
+            if params[:back]
+              url = params[:back]
+            else
+              url = principal_admin_index_path
+            end
+            redirect_to url
+             }
           format.json { render :show, status: :created, location: @seccion }
         else
           flash[:danger] = "Error al intentar generar la sección: #{@seccion.errors.full_messages.to_sentence}."

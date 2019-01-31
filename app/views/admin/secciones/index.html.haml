@@ -15,7 +15,6 @@
         %th Asignatura
         %th Total/Insc
         %th Califi
-        %th Opciones
     %tbody
       - @secciones.each do |seccion|
         %tr.filtrables
@@ -26,10 +25,9 @@
           %td= seccion.asignatura.id_uxxi
           %td= seccion.asignatura.descripcion
           %td= "#{seccion.capacidad} / #{seccion.inscripcionsecciones.count}"
-          %td= seccion.calificada ? 'Sí' : 'No'
-          %td
-            = link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}", class: 'btn btn-sm btn-outline-success' do
-              = glyph :plus
+          %td= seccion.calificada_valor
+          =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
+          =# glyph :plus
 
 =# link_to t('.new', default: t("helpers.links.new")), new_seccion_path, class: 'btn btn-primary'
 

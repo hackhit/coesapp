@@ -10,7 +10,8 @@
 - if @escuelas.count > 1
   = render '/admin/principal_admin/tabs_estructura/escuelas'
 - else
-  .row= render 'admin/asignaturas/tabla_asignatura'
+  - @asignaturas = @escuelas.first.asignaturas
+  = render 'admin/asignaturas/index_colocar_tabla'
 
 
 :javascript

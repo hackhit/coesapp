@@ -19,7 +19,8 @@
 						- @departamentos = esc.departamentos
 
 					- if controller_name.eql? 'asignaturas'
-						.row= render '/admin/asignaturas/tabla_asignatura'
+						- @asignaturas = esc.asignaturas.order(:descripcion)
+						= render '/admin/asignaturas/index_colocar_tabla'
 					- else
 						= render '/admin/principal_admin/tabs_estructura/departamentos'
 

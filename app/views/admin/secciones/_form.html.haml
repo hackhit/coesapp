@@ -4,8 +4,10 @@
     = form_for @seccion, {class: 'form-horizontal', id: "nueva_seccion_#{@mat.id}"} do |f|
       = hidden_field_tag "[seccion]asignatura_id", @mat.id
       = hidden_field_tag "[seccion]periodo_id", current_periodo.id
+      = hidden_field_tag "back", params[:back] if params[:back]
       .row
-        .col-md-2
+        - ids = "Ids ya registrados en éste período: #{@mat.secciones.del_periodo(current_periodo).collect{|s| s.numero}.to_sentence}"
+        .col-md-2.tooltip-btn{'data_toggle': :tooltip, title: ids}
           = f.text_field :numero, placeholder: 'Id. Sección...', class: 'form-control text_field upcase form-control-sm', maxlength: 3, required: true
         .col-md-2
           .btn-group.btn-group-toggle{"data-toggle" => "buttons"}

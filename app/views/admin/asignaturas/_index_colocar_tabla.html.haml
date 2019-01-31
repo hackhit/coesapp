@@ -1,0 +1,41 @@
+.tab-content
+  %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+    %thead
+      %tr
+        %th ID
+        %th Descripción
+        %th Departamento
+        %th Cátedra
+        %th Tipo
+        %th U. Créditos
+        %th Secciones
+        %th{style: 'width:120px;'} Opciones
+    - @asignaturas.each do |asignatura| 
+      %tbody
+        %tr.filtrables
+          %td= asignatura.id_uxxi
+          %td= asignatura.descripcion
+          %td= asignatura.departamento.descripcion
+          %td= asignatura.catedra.descripcion
+          %td= asignatura.tipoasignatura.descripcion.titleize
+          %td= asignatura.creditos
+          %td
+            %table
+              %tr
+                - asignatura.secciones.del_periodo(current_periodo).each do |s| 
+                  %td= s.numero
+                %td.tooltip-btn{'data_toggle': :tooltip, title: 'Agregar Sección'}
+                  = link_to "#{new_seccion_path}?asignatura_id=#{asignatura.id}&back=#{asignaturas_path}" do
+                    .text-success= glyph :plus
+          %td
+            .row
+              .tooltip-btn{'data_toggle': :tooltip, title: 'Editar Asignatura'}
+                = link_to edit_asignatura_path(asignatura), class: 'btn btn-sm ml-md-3 mr-md-1', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+                  = glyph 'pencil'
+
+
+              - if false
+                = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+                  .text-danger= glyph 'trash'
+              - @asignatura = asignatura
+              .mt-1= render '/admin/asignaturas/onoffswitch'
