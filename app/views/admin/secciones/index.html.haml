@@ -4,34 +4,68 @@
   .col-md-3
     %span#text.align-middle
 
-  %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-    %thead
-      %tr
-        %th #
-        %th Periodo
-        %th Escuela
-        %th Departamento
-        %th Código
-        %th Asignatura
-        %th Total/Insc
-        %th Califi
-    %tbody
-      - @secciones.each do |seccion|
-        %tr.filtrables
-          %td= seccion.numero
-          %td= seccion.periodo_id
-          %td= seccion.asignatura.escuela.descripcion
-          %td= seccion.asignatura.departamento.descripcion
-          %td= seccion.asignatura.id_uxxi
-          %td= seccion.asignatura.descripcion
-          %td= "#{seccion.capacidad} / #{seccion.inscripcionsecciones.count}"
-          %td= seccion.calificada_valor
-          =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
-          =# glyph :plus
 
+%seccion.content-area
+  .table-area
+    %table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
+      %thead#ordinal-thead
+        %tr
+          %th #
+          %th Escuela
+          %th Departamento
+          %th Código
+          %th Asignatura
+          %th Profesor
+          %th Total/Insc
+          %th Califi
+      %thead#special-thead
+        %tr
+          %th #
+          %th Escuela
+          %th Departamento
+          %th Código
+          %th Asignatura
+          %th Profesor          
+          %th Total/Insc
+          %th Califi
+      %tbody
+        - @secciones.each do |seccion|
+          %tr.filtrables
+            %td= seccion.numero
+            %td= seccion.asignatura.escuela.descripcion
+            %td= seccion.asignatura.departamento.descripcion
+            %td= seccion.asignatura.id_uxxi
+            %td= seccion.asignatura.descripcion
+            %td
+              = seccion.descripcion_profesor_asignado
+              = link_to 'javascript:void(0)', onclick: "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Cambiar para #{seccion.descripcion}');$('#editar_profesor').modal();" do
+                .text-success= glyph :pencil
+
+
+            %td= seccion.capacidad_vs_inscritos
+            %td= seccion.calificada_valor
+            =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
+            =# glyph :plus
+
+= render 'admin/secciones/modal_seleccionar_profesor'
 =# link_to t('.new', default: t("helpers.links.new")), new_seccion_path, class: 'btn btn-primary'
 
 :javascript
+  $(function(){
+    $(window).scroll(function(){
+      var aTop = $('#text').height();
+      if($(this).scrollTop()>=100){
+        var spec = $('#special-thead')
+        spec.css('display', 'table');
+        $('').css('width', '5em;')
+        $('#ordinal-thead').hide();
+      }else{
+        $('#special-thead').hide();
+        $('#ordinal-thead').show();
+      }
+    });
+  });
+
 
   function filtrar() {
     var filtro = $('#filtro').val().toLowerCase() 

@@ -20,6 +20,16 @@ class Administrador < ApplicationRecord
 	validates :departamento_id,  presence: true, if: -> {self.admin_departamento?}
 	validates :escuela_id,  presence: true, if: -> {self.admin_escuela?}
 
+	def pertenece_a_escuela
+		if self.escuela
+			return self.escuela
+		elsif self.departamento
+			return self.departamento.escuela
+		else
+			return nil
+		end
+	end
+
 	# FUNCIONES
 	def asignaturas
 		if self.escuela_id

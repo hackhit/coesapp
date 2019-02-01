@@ -13,7 +13,13 @@ module Admin
     # GET /secciones.json
     def index
       @titulo = "Secciones del Periodo: #{current_periodo.id}"
-      @secciones = Seccion.joins(:asignatura).del_periodo(current_periodo.id).order('descripcion ASC')#Seccion.all
+      if escuela = current_admin.pertenece_a_escuela
+        @secciones = escuela.secciones.joins(:asignatura).del_periodo(current_periodo.id).order('descripcion ASC')
+        @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
+      else
+        @secciones = Seccion.joins(:asignatura).del_periodo(current_periodo.id).order('descripcion ASC')#Seccion.all
+        @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos')
+      end
     end
 
     def habilitar_calificar
@@ -126,12 +132,22 @@ module Admin
 
     def cambiar_profe_seccion
       @seccion.profesor_id = params[:profesor_id]
-      if @seccion.save
-        flash[:success] = "Cambio realizado con éxito"
+
+      if params[:secundario]
+        if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
+          flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
+        else
+          flash[:error] = "No se pudo agregar la Asignatura"
+          render action: 'seleccionar_profesor_secundario'
+        end
       else
-        flash[:error] = "no se pudo guardar los cambios"
+        if @seccion.save
+          flash[:success] = "Cambio realizado con éxito"
+        else
+          flash[:error] = "no se pudo guardar los cambios"
+        end
       end
-      redirect_to principal_admin_index_path
+      redirect_to secciones_path
     end
 
     def desasignar_profesor_secundario

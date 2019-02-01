@@ -30,6 +30,11 @@ class Seccion < ApplicationRecord
 
 
 	# FUNCIONES:
+
+	def capacidad_vs_inscritos
+		"#{self.capacidad} / #{total_estudiantes}"
+	end
+
 	def calificada_valor
 		self.calificada ? 'Sí' : 'No'
 	end
@@ -159,15 +164,6 @@ a = {"709109110" => "ALEMI",
  		p "*".center(300, "*")
  		p " #{total} ".center(300, "*")
  		p "*".center(300, "*")
-
-
-
-
-
-	
-
-
-
 		
 	end
 

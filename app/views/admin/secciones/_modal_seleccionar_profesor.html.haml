@@ -1,0 +1,32 @@
+.modal.fade#editar_profesor{'aria-hidden': true, role: :dialog}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×      
+        %h4.text-center#editar_profesor_titulo
+      .modal-body.border.p-2
+        = form_tag({action: 'cambiar_profe_seccion', controller: '/admin/secciones'}, class: "form-horizontal", id: 'profesor') do
+          =hidden_field_tag :id
+          =hidden_field_tag :principal, true
+          .form-group
+            %h5.control-label.col-md-2 Profesor:
+            .col-md-10
+            = select_tag :profesor_id, options_from_collection_for_select(@profesores, :id, :descripcion_apellido, nil), class: 'selects2 form-control text-field', required: true, include_blank: '--- Ninguna Selección ---'
+          .modal-footer 
+            %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag "Guardar", id: "submit", class: "btn btn-sm btn-outline-success", :disable_with => "Espere..."
+
+:javascript
+
+  $(document).ready(function() {
+
+    $( ".selects2" ).select2({
+      placeholder: "--Escriba datos del estudiante para buscarlo--",
+      theme: "bootstrap",
+      cache: true
+
+    });
+
+    
+  });

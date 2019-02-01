@@ -4,6 +4,8 @@ class Escuela < ApplicationRecord
 	has_many :departamentos
 	accepts_nested_attributes_for :departamentos
 	has_many :asignaturas, through: :departamentos
+	
+	has_many :profesores, through: :departamentos
 
 	has_many :secciones, through: :asignaturas
 
