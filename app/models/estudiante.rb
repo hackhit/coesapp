@@ -34,7 +34,7 @@ class Estudiante < ApplicationRecord
 	end
 
 	def inscrito? periodo_id
-		(inscripcionsecciones.del_periodo(periodo_id)).count > 1
+		(inscripcionsecciones.del_periodo(periodo_id)).count > 0
 	end
 
 	def valido_para_inscribir? periodo_id
