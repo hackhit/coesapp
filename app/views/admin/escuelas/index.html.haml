@@ -6,14 +6,23 @@
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
-      %th= model_class.human_attribute_name(:created_at)
-      %th=t '.actions', default: t("helpers.actions")
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Secciones Periodo actual'} Sec
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Inscritos Periodo actual'} Inscr
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Aprobados Periodo actual'} Apro
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Aplazados Periodo actual'} Aplz
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Reparaciones Periodo actual'} Rep
+      %th Opciones
   %tbody
     - @escuelas.each do |escuela|
       %tr
         %td= escuela.id
         %td= escuela.descripcion
-        %td=l escuela.created_at, format: :long
+        %td= escuela.secciones.del_periodo(current_periodo.id).count
+        - ins = escuela.inscripcionsecciones.del_periodo(current_periodo.id)
+        %td= ins.count
+        %td= ins.aprobados.count
+        %td= ins.reprobados.count
+        %td= ins.en_reparacion.count
         %td
           = link_to escuela_path(escuela), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

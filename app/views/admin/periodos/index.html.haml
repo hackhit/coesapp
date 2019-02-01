@@ -8,21 +8,11 @@
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:inicia)
       %th= model_class.human_attribute_name(:culmina)
-      %th
-        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de secciones por periodo' do
-          Seccs
-      %th
-        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de inscripciones por periodo' do
-          Inscs
-
-      %th
-        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de aprobados por periodo' do
-          Apro
-      %th
-        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de reprobados por periodo' do
-          Rep
-
-      %th=t '.actions', default: t("helpers.actions")
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de secciones'} Seccs
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de inscripciones'} Inscs
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de aprobados'} Apro
+      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de Aplazados'} Aplaz
+      %th Opciones
   %tbody
     - @periodos.each do |periodo|
       %tr

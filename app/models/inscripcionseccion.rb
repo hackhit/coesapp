@@ -19,13 +19,13 @@ class Inscripcionseccion < ApplicationRecord
 	# SCOPES:
 	# scope :confirmados, -> {where "confirmar_inscripcion = ?", 1}
 	# scope :del_periodo_actual, -> {joins(:seccion).where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
-	scope :del_periodo, lambda { |periodo_id| joins(:seccion).where "periodo_id = ?", periodo_id}
+	scope :del_periodo, lambda { |periodo_id| joins(:seccion).where "secciones.periodo_id = ?", periodo_id}
 
-	scope :en_reparacion, -> {joins(:seccion).where "numero LIKE ?", 'R'}
+	scope :en_reparacion, -> {joins(:seccion).where "secciones.tipo_seccion_id = ?", TipoSeccion::REPARACION}
 	scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
 	scope :retirados, -> {where "tipo_estado_inscripcion_id = ?", RETIRADA}
-	scope :aprobados, -> {where "tipo_estado_calificacion_id = ?", 'AP'}
-	scope :reprobados, -> {where "tipo_estado_calificacion_id = ?", 'RE'}
+	scope :aprobados, -> {where "tipo_estado_calificacion_id = ?", 'A'}
+	scope :reprobados, -> {where "tipo_estado_calificacion_id = ?", 'AP'}
 	scope :perdidos, -> {where "tipo_estado_calificacion_id = ?", PI}
 	scope :sin_calificar, -> {where "tipo_estado_calificacion_id = ?", 'SC'}
 

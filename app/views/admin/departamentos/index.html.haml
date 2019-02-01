@@ -10,15 +10,9 @@
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
       %th Cátedra
-      %th
-        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de asignaturas para el periodo actual' do
-          Asigs
-      %th 
-        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de secciones para el periodo actual' do
-          Seccs
-      %th
-        = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de inscripciones para el periodo actual' do
-          Inscr
+      %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de asignaturas para el periodo actual'} Asigs
+      %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de secciones para el periodo actual'} Seccs 
+      %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de inscripciones para el periodo actual'} Inscr
       %th Actividad
       %th Opciones
   %tbody
@@ -34,8 +28,8 @@
               %tr
                 %td= "#{c.id} - #{c.descripcion}"
         %td= departamento.asignaturas.count
-        %td= departamento.secciones.count
-        %td= departamento.inscripcionsecciones.count
+        %td= departamento.secciones.del_periodo(current_periodo.id).count
+        %td= departamento.inscripcionsecciones.del_periodo(current_periodo.id).count
         %td=l departamento.updated_at, format: :short
         %td
           = link_to departamento_path(departamento), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do

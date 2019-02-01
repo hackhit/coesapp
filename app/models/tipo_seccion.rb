@@ -1,5 +1,7 @@
 class TipoSeccion < ApplicationRecord
 	DIFERIDA = 'ND'
+	REPARACION = 'NR'
+	SUFICIENCIA = 'NS'
 
 	# ASOCIACIONES
 	has_many :secciones
