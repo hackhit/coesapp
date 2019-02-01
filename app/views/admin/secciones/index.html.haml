@@ -55,9 +55,8 @@
     $(window).scroll(function(){
       var aTop = $('#text').height();
       if($(this).scrollTop()>=100){
-        var spec = $('#special-thead')
+        var spec = $('#special-thead');
         spec.css('display', 'table');
-        $('').css('width', '5em;')
         $('#ordinal-thead').hide();
       }else{
         $('#special-thead').hide();
