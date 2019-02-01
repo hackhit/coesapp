@@ -14,7 +14,7 @@ module Admin
     def index
       @titulo = "Secciones del Periodo: #{current_periodo.id}"
       if escuela = current_admin.pertenece_a_escuela
-        @secciones = escuela.secciones.joins(:asignatura).del_periodo(current_periodo.id).order('descripcion ASC')
+        @secciones = escuela.secciones.joins(:asignatura).del_periodo(current_periodo.id).order('asignaturas.descripcion ASC')
         @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
       else
         @secciones = Seccion.joins(:asignatura).del_periodo(current_periodo.id).order('descripcion ASC')#Seccion.all
