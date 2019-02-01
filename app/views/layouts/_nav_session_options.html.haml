@@ -5,7 +5,7 @@
     .dropdown-menu.dropdown-menu-right.float-right{"aria-labelledby" => "SessionDropdown", style: "position:absolute;"}
       = link_to 'Datos Personales', edit_usuario_path(session[:usuario_ci]), class: 'dropdown-item'
       .dropdown-divider
-      = link_to 'Cerrar Sessión', cerrar_sesion_visitors_path, class: 'dropdown-item'
+      = link_to 'Cerrar Sesión', cerrar_sesion_visitors_path, class: 'dropdown-item'
 
 - else
   = render 'layouts/inicio_sesion_form'
