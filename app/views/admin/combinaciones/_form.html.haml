@@ -25,7 +25,7 @@
             %label.control-label
               Periodo:
             .controls 
-              = f.collection_select :periodo_id, Periodo.order("id DESC").all, :id, :id, {}, {class: 'form-control text_field'}
+              = f.collection_select :periodo_id, @periodos, :id, :id, {}, {class: 'form-control text_field'}
 
         .modal-footer
           %a.btn{data: {dismiss: 'modal'}} Cancelar

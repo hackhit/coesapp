@@ -144,7 +144,8 @@ module Admin
     # GET /usuarios/1
     # GET /usuarios/1.json
     def show
-      @estudiante = @usuario.estudiante
+      est = @usuario.estudiante
+      @estudiante = est
       @profesor = @usuario.profesor
       @administrador = @usuario.administrador
 
@@ -153,8 +154,13 @@ module Admin
       @inscripciones = @estudiante.inscripcionsecciones if @estudiante
 
       # @secciones = CalSeccion.where(:cal_periodo_id => cal_semestre_actual_id)
-      @idiomas1 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-      @idiomas2 = Departamento.all.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
+
+      if est
+        @idiomas2 = @idiomas1 = est.escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
+        @planes = est.escuela.planes
+        @periodos = est.escuela.periodos.order('inicia DESC')
+      end
+      
       @nickname = @usuario.nickname.capitalize
       inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante and @estudiante.inactivo? current_periodo.id
       @titulo = "Detalle de Usuario: #{@usuario.descripcion} #{inactivo}"

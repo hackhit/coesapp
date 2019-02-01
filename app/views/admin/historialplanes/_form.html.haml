@@ -12,14 +12,14 @@
         .form-group
           %label.control-label.col-md-6 Plan de Estudio:
           .col-md-10
-            = f.select(:plan_id, Plan.all.collect{|o| [ o.descripcion_completa, o.id ] }, { include_blank: 'Selecciona Plan de Estudio...'}, {class: "form-control text_field", required: true})
+            = f.select(:plan_id, @planes.collect{|o| [ o.descripcion_completa, o.id ] }, { include_blank: 'Selecciona Plan de Estudio...'}, {class: "form-control text_field", required: true})
 
             =# f.collection_select :plan_id, Plan.all, :id, :descripcion_completa, {required: true, class: 'text_field form-control'}
 
         .form-group
           %label.control-label.col-md-6 Desde el Periodo:
           .col-md-10 
-            = f.select(:periodo_id, Periodo.all.collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Periodo...'}, {class: "form-control text_field", required: true})
+            = f.select(:periodo_id, @periodos.collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Periodo...'}, {class: "form-control text_field", required: true})
 
             =# f.collection_select :periodo_id, Periodo.order("id DESC").all, :id, :id, {required: true, class: 'text_field form-control'}
 
