@@ -7,7 +7,7 @@ class Asignatura < ApplicationRecord
 	# belongs_to :catedra_departamento, class_name: 'CatedraDepartamento', foreign_key: [:catedra_id, :departamento_id], primary_key: [:catedra_id, :departamento_id]
 
 	# ENUMERADAS CONSTANTES
-	enum calificacion: [:numerica, :absoluta]
+	enum calificacion: [:numerica, :absoluta, :numerica3]
 
 	has_one :escuela, through: :departamento
 	has_many :secciones

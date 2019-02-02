@@ -705,7 +705,7 @@ class Archivo
 		data = []
 		inscripcionsecciones.each_with_index do |i_s,i|
 			usuario = i_s.estudiante.usuario
-			@sheet.row(i+3).concat  [usuario.ci, i_s.nombre_estudiante_con_retiro, usuario.correo_electronico, usuario.telefono_movil]
+			@sheet.row(i+3).concat  [usuario.ci, i_s.nombre_estudiante_con_retiro, usuario.email, usuario.telefono_movil]
 		end
 
 		file_name = "reporte_seccion.xls"

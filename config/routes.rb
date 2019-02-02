@@ -57,7 +57,8 @@ Rails.application.routes.draw do
         get 'acta_examen'
         get 'constancia_inscripcion'
         get 'constancia_estudio'
-
+        get 'listado_seccion'
+        get 'notas_seccion'
       end
     end
 

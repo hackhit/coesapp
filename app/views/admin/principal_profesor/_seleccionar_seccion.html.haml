@@ -1,15 +1,17 @@
 .border.p-3
-	%h5 Por Calificar
+	%h6 Secciones
 	%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 		%thead
 			%tr
 				%th Sección
+				%th Periodo
 				%th Asignatura
 				%th Estado
 		%tbody
 			- @secciones.each do |seccion|
 				%tr
 					%td= link_to seccion.descripcion, "#{seccion_path(seccion)}?calificar=true", class: 'btn btn-sm btn-outline-success'
+					%td= seccion.periodo_id
 					%td= seccion.asignatura.descripcion_completa
 					%td
 						-if seccion.calificada

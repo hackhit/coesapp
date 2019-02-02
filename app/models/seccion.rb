@@ -5,6 +5,7 @@ class Seccion < ApplicationRecord
 	belongs_to :periodo
 	belongs_to :tipo_seccion
 	belongs_to :profesor, optional: true 
+	has_one :escuela, through: :asignatura
 
 	has_many :inscripcionsecciones, dependent: :delete_all
 	accepts_nested_attributes_for :inscripcionsecciones

@@ -1,0 +1,27 @@
+.border.mt-3.p-3
+	%h5= "Secciones (#{@secciones.count}):"
+	%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+		%thead
+			%tr
+				%th Descripcion
+				%th Periodo
+				%th Asignatura
+				%th Estado
+
+		%tbody
+			- @secciones.each do |seccion|
+				- @calificar = '?calificar=true' if (current_admin and current_admin.mas_altos?) or !seccion.calificada
+				%tr
+					%td= link_to seccion.descripcion, "#{seccion_path(seccion)}#{@calificar}", class: 'btn btn-sm btn-outline-info'
+					%td= seccion.periodo_id
+					%td= seccion.asignatura.descripcion_completa
+					%td
+						-if seccion.calificada
+							%span.badge.badge-secondary Calificada
+							%span.badge.badge-info.tooltip-btn{'data_toggle': :tooltip, title: 'Total Aprobados'}= seccion.total_estudiantes
+							%span.badge.badge-success.tooltip-btn{'data_toggle': :tooltip, title: 'Total Aprobados'}= seccion.total_aprobados
+
+							%span.badge.badge-danger.tooltip-btn{'data_toggle': :tooltip, title: 'Total Reprobados'}= seccion.total_reprobados
+							%span.badge.badge-danger.tooltip-btn{'data_toggle': :tooltip, title: 'Total Perdidas Por Inasistencias'}= seccion.total_perdidos
+						- else
+							%span.badge.badge-info Pendiente por calificar

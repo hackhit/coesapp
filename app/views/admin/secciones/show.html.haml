@@ -14,7 +14,6 @@
 				%th Tipo de Sección
 				%th Id
 				%th U. Créditos
-
 		%tbody
 			%tr
 				%td= "#{@seccion.asignatura.descripcion}"
@@ -26,9 +25,14 @@
 
 
 	-if @seccion.calificada
-		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2 mb-md-2" do
+		= link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2 mb-md-2" do
 			= glyph 'download'
 			Descargar notas
+
+	= link_to listado_seccion_descargar_path(@seccion.id), class: "mr-md-2 btn btn-outline-success float-right" do
+		= glyph 'download'
+		Descargar listado (Excel)
+
 
 	= render '/admin/secciones/detalle_seccion'
 
@@ -36,6 +40,6 @@
 		= glyph 'chevron-left'
 		Regresar
 	-if @seccion.calificada
-		=link_to descargar_notas_seccion_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2" do
+		=link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2" do
 			= glyph 'download'
 			Descargar notas

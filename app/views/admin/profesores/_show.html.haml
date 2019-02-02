@@ -1,21 +1,24 @@
+- @secciones = @profesor.secciones.order('periodo_id DESC')
+- @secciones_secundarias = @profesor.secciones_secundarias.order('periodo_id DESC')
 .border.mt-3.p-3
 	%h6 
 		Departamento:
 		= @profesor.departamento.descripcion
 
-- @secciones = @profesor.secciones.order('periodo_id DESC')
 - if @secciones.count > 0
-	.border.mt-3.p-3
-		%h5= "Secciones (#{@secciones.count}):"
-		%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+	= render 'admin/secciones/tabla_secciones'
+
+-if @secciones_secundarias and @secciones_secundarias.all.count > 0
+	.border.p-3
+		%h6 Para Participar
+
+		%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 			%thead
 				%tr
-					%th Descripcion
-					%th Departamento
-					%th Periodo
+					%th Sección
+					%th Asignatura
 			%tbody
-				- @secciones.each do |s| 
+				- @secciones_secundarias.each do |seccion|
 					%tr
-						%td= link_to_if (current_admin.mas_altos?), s.descripcion, ver_seccion_admin_principal_admin_path(s.id), class: 'btn btn-sm btn-outline-info'
-						%td= s.asignatura.departamento.descripcion
-						%td= s.periodo_id
+						%td= link_to seccion.descripcion, "#{seccion_path(seccion)}?secundaria=true", class: 'btn btn-sm btn-outline-success'
+						%td= seccion.asignatura.descripcion_completa

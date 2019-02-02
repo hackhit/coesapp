@@ -93,14 +93,6 @@ module Admin
       end
     end
 
-    def descargar_notas
-      pdf = DocumentosPDF.notas seccion
-      unless send_data pdf.render,:filename => "notas_#{seccion.asignatura_id}_#{seccion.numero}.pdf",:type => "application/pdf", :disposition => "attachment"
-          flash[:mensaje] = "en estos momentos no se pueden descargar las notas, intentelo luego."
-        end
-      # redirect_to :action => 'index'      
-    end
-
     def cambiar_capacidad
       @seccion.capacidad = params[:capacidad]
       @seccion.save

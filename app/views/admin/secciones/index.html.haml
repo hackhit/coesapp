@@ -43,7 +43,21 @@
 
 
             %td= seccion.capacidad_vs_inscritos
-            %td= seccion.calificada_valor
+            %td
+              = seccion.calificada_valor
+
+              -if seccion.calificada
+                = link_to notas_seccion_descargar_path(seccion.id), class: "btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2" do
+                  = glyph 'download'
+
+              = link_to listado_seccion_descargar_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
+                = glyph 'download'
+                X
+
+              = link_to seccion_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-primary float-right" do
+                = glyph 'info-sign'
+
+
             =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
             =# glyph :plus
 
