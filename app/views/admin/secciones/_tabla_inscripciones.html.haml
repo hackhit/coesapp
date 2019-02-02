@@ -8,7 +8,12 @@
 				%th #
 				%th Estudiante
 				- unless @calificada
-					- if @seccion.asignatura.numerica?
+					- if @seccion.asignatura.numerica3?
+						%th 1era.
+						%th 2da.
+						%th 3era.
+						%th Definitiva
+					- elsif @seccion.asignatura.numerica?
 						%th Definitiva
 					- else
 						%th Aprobado
@@ -37,12 +42,23 @@
 						%span.badge= 'Retirada' if retirada
 
 					- unless @calificada
-						- if @seccion.asignatura.numerica?
 
-							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: desactivada, value: es.calificacion_final, class: 'form-control form-control-sm', required: true, :step => 1, :in => 0...21, onchange: "calcular($(this).val(), #{es.estudiante_id});"}
+						- if @seccion.asignatura.numerica3?
+
+							%td= number_field_tag "[est][#{es.estudiante_id}]primera_calificacion", {}, {disabled: desactivada, value: es.primera_calificacion, class: 'form-control form-control-sm', required: true, :step => 1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+
+							%td= number_field_tag "[est][#{es.estudiante_id}]segunda_calificacion", {}, {disabled: desactivada, value: es.segunda_calificacion, class: 'form-control form-control-sm', required: true, :step => 1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+
+							%td= number_field_tag "[est][#{es.estudiante_id}]tercera_calificacion", {}, {disabled: desactivada, value: es.tercera_calificacion, class: 'form-control form-control-sm', required: true, :step => 1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+
+							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: desactivada, value: es.calificacion_final, class: 'form-control form-control-sm', required: true, :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
+
+						- elsif @seccion.asignatura.numerica?
+
+							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {disabled: desactivada, value: es.calificacion_final, class: 'form-control form-control-sm', required: true, :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
 						- else
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'A', (es.tipo_estado_calificacion_id.eql? 'RE'), required: true, disabled: desactivada, onchange: "calcular_absoluto(#{es.estudiante_id});"
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'AP', (es.tipo_estado_calificacion_id.eql? 'AP'), required: true, disabled: desactivada, onchange: "calcular_absoluto(#{es.estudiante_id});"
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'A', (es.tipo_estado_calificacion_id.eql? 'RE'), required: true, disabled: desactivada, onchange: "absoluto_letras(#{es.estudiante_id});"
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 'AP', (es.tipo_estado_calificacion_id.eql? 'AP'), required: true, disabled: desactivada, onchange: "absoluto_letras(#{es.estudiante_id});"
 
 						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_resto(#{es.estudiante_id})", disabled: retirada || @calificada || es.no_presento? }
 
@@ -60,7 +76,7 @@
 			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
 :javascript
 
-	function calcular_absoluto(ci){
+	function absoluto_letras(ci){
 		if ($("input[name='[est]["+ci+"]calificacion_final']:checked").val() == 'A'){
 			$("#_"+ci+"calificacion_en_letras").val("APROBADO");
 		}else if ($("input[name='[est]["+ci+"]calificacion_final']:checked").val() == 'AP'){
@@ -96,7 +112,7 @@
 
 	}
 
-	function calcular(valor, ci){
+	function numero_a_letras(valor, ci){
 
 	switch (valor) {
 		case '1':
@@ -165,4 +181,25 @@
 			
 		$("#_"+ci+"calificacion_en_letras").val(final);
 
-	}															
+	}
+
+
+	function calcular(p1,p2,p3,ci){
+		var nota1 = document.getElementById("_est_"+ci+"primera_calificacion").value;
+		var nota2 = document.getElementById("_est_"+ci+"segunda_calificacion").value;
+		var nota3 = document.getElementById("_est_"+ci+"tercera_calificacion").value;
+		var porcen1 = (p1*nota1)/100;
+		porcen1 =  Math.round(porcen1 * 10) / 10;
+		var porcen2 = (p2*nota2)/100;
+		porcen2 =  Math.round(porcen2 * 10) / 10;		
+		var porcen3 = (p3*nota3)/100;
+		porcen3 =  Math.round(porcen3 * 10) / 10;		
+		$("#"+ci+"_calificacion_primera_text").text(porcen1);
+		$("#"+ci+"_calificacion_segunda_text").text(porcen2);
+		$("#"+ci+"_calificacion_tercera_text").text(porcen3);
+		var final = (porcen1+porcen2+porcen3).toFixed(0);
+		
+		$("#_est_"+ci+"calificacion_final").val(final);
+		numero_a_letras(final, ci);
+
+	}			

@@ -161,6 +161,16 @@ module Admin
 
       @titulo = "Sección: #{@seccion.descripcion} - Período #{@seccion.periodo_id}"
 
+      if @seccion.asignatura.catedra_id.eql? 'IB' or @seccion.asignatura.catedra_id.eql? 'LIN' or @seccion.asignatura.catedra_id.eql? 'LE'
+        @p1 = 25 
+        @p2 =35
+        @p3 = 40
+      else
+        @p1 = @p2 =30
+        @p3 = 40
+      end
+
+
       @secundaria = true if params[:secundaria]
     end
 

@@ -33,7 +33,7 @@
         - Asignatura.calificaciones.map do |k,v| 
           %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
             = radio_button_tag '[asignatura]calificacion', k, false, required: true
-            = k[0].upcase
+            = k.upcase
   .form-group
     = f.label :id_uxxi, class: 'control-label col-md-2', value: 'Código Uxxi'
     .col-md-10
