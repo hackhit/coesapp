@@ -32,6 +32,10 @@ gem 'summernote-rails', '~> 0.8.10.0'
 
 # gem 'glyphicons-rails'
 
+gem "react_on_rails", "11.1.4" # Update to the current version
+gem "webpacker", "~> 3" # Newer versions might be supported
+
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
