@@ -1,8 +1,13 @@
+
 .tab-pane.fade{class: @mat_activa, id: "mat_#{@mat.id}", "aria-labelledby" => "mat_#{@mat.id}-tab", :role => "tabpanel"}
-	.text-muted= "Total Secciones:#{@secciones.count}"
-	.border
+	.border.p-md-2
+		%b
+			= "Total Secciones:#{@secciones.count}"
+			= link_to 'javascript:void(0)', onclick: "$('#_seccionasignatura_id').val('#{@mat.id}');$('#nueva_seccion_titulo').html('Nueva Sección para #{@mat.descripcion}');$('#nueva_seccion').modal();", class: 'tooltip-btn float-left mr-md-3 btn btn-sm btn-outline-success', 'data_toggle': :tooltip, title: 'Agregar Sección' do
+				.text-success= glyph :plus
+		
 		- if @secciones.count > 0
-			%table.table.table-bordered.table-striped.table-sm.table-hover
+			%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 				%thead
 					%tr
 						%th T
@@ -21,10 +26,9 @@
 							%td
 								= "#{seccion.descripcion_profesor_asignado}"
 								- if @editar_asignaturas
-									%b.tooltip-btn{'data_toggle': :tooltip, title: 'Actualizar Tutor-Calificador'}
+									.tooltip-btn{'data_toggle': :tooltip, title: 'Actualizar Tutor-Calificador'}
 										= link_to seleccionar_profesor_seccion_path(seccion.id), {role: 'button'} do
 											= glyph 'pencil'
-											= glyph 'user'
 
 							%td
 								-seccion.profesores.each do |p|
@@ -32,32 +36,22 @@
 										= p.descripcion
 										- if @editar_asignaturas
 
-											%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Desasignar Este Profesor'}
-												
+											%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Desasignar Este Profesor'}
 												= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
-													%span.glyphicon.glyphicon-minus.text-danger
-													%span.glyphicon.glyphicon-user.text-danger
+													%i.glyphicon.glyphicon-minus.text-danger
 
-								%b.tooltip-btn{'data_toggle': :tooltip, title: 'Agregar Profesor Secundario'}
-									- if @editar_asignaturas
-										= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true", {class: 'btn-success btn-sm'},{role: 'button'} do
-											= glyph 'plus'
-											= glyph 'user'
+								- if @editar_asignaturas
+									%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Agregar Profesor Secundario'}
+										= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true",{role: 'button'} do
+											%i.glyphicon.glyphicon-plus.text-success
 							%td
 								- @seccion = seccion
 								= render '/admin/secciones/cambiar_capacidad'
 
 							%td
-								-if seccion.calificada 
-									%span.badge.badge-success Calificada
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Aprobados'}
-										%span.badge
-											= seccion.total_aprobados
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Reprobados'}
-										%span.badge
-											= seccion.total_reprobados
-									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Perdidas Por Inasistencias'}																		
-										%span.badge= seccion.total_perdidos
+								-if seccion.calificada
+									= colocar_numeros_seccion seccion
+
 								- else
 									%span.badge.badge-info Por calificar
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
@@ -92,8 +86,3 @@
 												= link_to habilitar_calificar_seccion_path(seccion.id), {class: 'btn btn-info btn-sm'}, {role: 'button'} do
 													= glyph 'off'
 													= glyph 'list'
-										
-											
-		- if @editar_asignaturas
-			- @seccion = Seccion.new
-			=render partial: '/admin/secciones/form'

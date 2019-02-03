@@ -34,6 +34,25 @@ module ApplicationHelper
 		end
 	end
 
+	def colocar_numeros_seccion seccion
+		capture_haml do
+			haml_tag :span, class: 'badge badge-secondary' do haml_concat 'Calificada' end
+			haml_tag :span, class: 'badge badge-info tooltip-btn', 'data_toggle': :tooltip, title: 'Total Inscritos' do
+				haml_concat "#{seccion.total_estudiantes}"
+			end
+			haml_tag :span, class: 'badge badge-success tooltip-btn', 'data_toggle': :tooltip, title: 'Total Aprobados' do
+				haml_concat "#{seccion.total_aprobados}"
+			end
+			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Total Aplazados' do
+				haml_concat "#{seccion.total_reprobados}"
+			end
+			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Total Pérdidas por Inasistencia' do
+				haml_concat "#{seccion.total_perdidos}"
+			end
+		end
+
+	end
+
 	def btn_tooltip_link_to title_tooltip, title, icon_name, btn_type, path
 		content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: title_tooltip do
 			link_to path, class: "btn #{btn_type}" do

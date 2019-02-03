@@ -17,11 +17,6 @@
 					%td= seccion.asignatura.descripcion_completa
 					%td
 						-if seccion.calificada
-							%span.badge.badge-secondary Calificada
-							%span.badge.badge-info.tooltip-btn{'data_toggle': :tooltip, title: 'Total Aprobados'}= seccion.total_estudiantes
-							%span.badge.badge-success.tooltip-btn{'data_toggle': :tooltip, title: 'Total Aprobados'}= seccion.total_aprobados
-
-							%span.badge.badge-danger.tooltip-btn{'data_toggle': :tooltip, title: 'Total Reprobados'}= seccion.total_reprobados
-							%span.badge.badge-danger.tooltip-btn{'data_toggle': :tooltip, title: 'Total Perdidas Por Inasistencias'}= seccion.total_perdidos
+							= colocar_numeros_seccion seccion
 						- else
 							%span.badge.badge-info Pendiente por calificar
