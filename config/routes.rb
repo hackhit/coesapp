@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
 
+  get 'hello_world', to: 'hello_world#index'
   resources :visitors, only: [:index] do
     collection do
       post :validar

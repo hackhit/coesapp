@@ -32,7 +32,7 @@ gem 'summernote-rails', '~> 0.8.10.0'
 
 # gem 'glyphicons-rails'
 
-gem "react_on_rails", "11.1.4" # Update to the current version
+gem "react_on_rails", "11.2.2" # Update to the current version
 gem "webpacker", "~> 3" # Newer versions might be supported
 
 
@@ -56,3 +56,5 @@ group :test do
   gem 'chromedriver-helper'
 end
 
+
+gem 'mini_racer', platforms: :ruby
