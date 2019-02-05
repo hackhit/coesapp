@@ -45,8 +45,7 @@
 										= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true",{role: 'button'} do
 											%i.glyphicon.glyphicon-plus.text-success
 							%td
-								- @seccion = seccion
-								= render '/admin/secciones/cambiar_capacidad'
+								= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: seccion}
 
 							%td
 								-if seccion.calificada

@@ -99,14 +99,15 @@ module Admin
 
     def set_profesor
 
-      unless pr = @usuario.profesor
+      if pr = @usuario.profesor
+      else
         pr = Profesor.new
         pr.usuario_id = @usuario.id
       end
 
       pr.departamento_id = params[:profesor][:departamento_id]
       if pr.save
-        flash[:success] = 'Administrador guardado con éxito'
+        flash[:success] = 'Profesor guardado con éxito'
       else
         flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}."
       end

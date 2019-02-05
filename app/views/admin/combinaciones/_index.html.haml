@@ -20,7 +20,7 @@
               = glyph 'edit'
           %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Eliminar'}
             = link_to(combinacion, method: :delete, 'data-confirm' => '¿Está seguro de eliminar la combinación de idiomas para el estudiante?', class: 'text-danger') do
-              = glyph 'remove'
+              = glyph 'trash'
           .modal.hide.fade{tabindex: "-1", role: "dialog", 'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false, id: "combinacion_#{combinacion.periodo_id}"}
             - @combinacion = combinacion
             = render '/admin/combinaciones/form'
