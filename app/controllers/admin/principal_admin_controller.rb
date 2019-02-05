@@ -63,6 +63,7 @@ module Admin
 			@principal_admin_add_asig = true
 			@escuelas = current_admin.escuelas
 			@editar_asignaturas = true if current_admin.mas_altos?
+			@seccion = Seccion.new
 		end
 		
 		def seleccionar_profesor
