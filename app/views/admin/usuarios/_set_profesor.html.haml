@@ -1,14 +1,20 @@
-.modal.hide.fade#set_profesor{'aria-hidden'=> false}
+.modal.hide.fade#set_profesor{'aria-hidden': false, tabindex: '-1'}
   .modal-dialog
     .modal-content
-      .alert.alert-info.text-center
-        %h6 Registrar como profesor a:
+      .alert.alert-info.text-center        
+        %h6 
+          - if @profesor
+            Cambiar de departamento a:
+          - else
+            Registrar como profesor a:
         %h6.text-italic= @usuario.nombre_completo 
         <button type="button" class="close fade" data-dismiss="modal" aria-hidden="true">×</button>
       .modal-body
 
         = form_tag(set_profesor_usuario_path, class: 'form-horizontal') do
           = hidden_field_tag :id, @usuario.id
+          = hidden_field_tag :cambiar_dpto, true if @profesor
+
           .modal-body
 
             .form-group

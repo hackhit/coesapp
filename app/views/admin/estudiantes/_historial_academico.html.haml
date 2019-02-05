@@ -1,5 +1,5 @@
 .border.mt-3.p-3
-	%table.mt-3.mb-3
+	%table.mt-3.mb-3.flex-column
 		%tr
 			%td= btn_success 'download', kardex_descargar_path(@estudiante.id), "Descargar Kardex de #{@nickname}", 'Kardex'
 			- if @estudiante.inscrito? current_periodo.id

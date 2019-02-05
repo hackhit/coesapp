@@ -5,6 +5,12 @@
 		Departamento:
 		= @profesor.departamento.descripcion
 
+		- if current_admin and current_admin.maestros?
+			= simple_icon_toggle_modal_edit 'Cambiar a Profesor #{@nickname} de Escuela', 'set_profesor'
+			= render partial: '/admin/usuarios/set_profesor'
+
+
+
 - if @secciones.count > 0
 	= render 'admin/secciones/tabla_secciones'
 

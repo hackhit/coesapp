@@ -99,7 +99,8 @@ module Admin
 
     def set_profesor
 
-      unless pr = @usuario.profesor
+      if pr = @usuario.profesor
+      else
         pr = Profesor.new
         pr.usuario_id = @usuario.id
       end
