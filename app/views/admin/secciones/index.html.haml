@@ -18,6 +18,7 @@
           %th Profesor
           %th Total/Insc
           %th Califi
+          %th Opciones
       %thead#special-thead
         %tr
           %th #
@@ -28,6 +29,7 @@
           %th Profesor          
           %th Total/Insc
           %th Califi
+          %th Opciones
       %tbody
         - @secciones.each do |seccion|
           %tr.filtrables
@@ -45,6 +47,11 @@
             %td= seccion.capacidad_vs_inscritos
             %td
               = seccion.calificada_valor
+            %td
+              - if seccion.estudiantes.count < 1
+                %b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
+                  = link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm mr-md-2 float-right', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
+                    = glyph 'trash'
 
               -if seccion.calificada
                 = link_to notas_seccion_descargar_path(seccion.id), class: "btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2" do
