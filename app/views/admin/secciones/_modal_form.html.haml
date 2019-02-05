@@ -10,7 +10,7 @@
           = hidden_field_tag "[seccion]asignatura_id"
           =# text_field_tag "[seccion]asignatura_id"
           = hidden_field_tag "[seccion]periodo_id", current_periodo.id
-          = hidden_field_tag "back", asignaturas_path
+          = hidden_field_tag "back", asignaturas_path if controller_name.eql? 'asignaturas'
 
           .form-group
             = f.label :id, class: 'control-label col-md-3', value: 'Identificador'
