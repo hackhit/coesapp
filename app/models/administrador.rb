@@ -97,11 +97,11 @@ class Administrador < ApplicationRecord
 	end
 
 	def mas_altos?
-		self.ninja? or self.super? or self.admin_escuela?
+		self.maestros? or self.admin_escuela?
 	end
 
 	def altos?
-		self.ninja? or self.super? or self.admin_escuela? or self.admin_departamento?
+		self.mas_altos? or self.admin_departamento?
 	end
 
 	def descripcion

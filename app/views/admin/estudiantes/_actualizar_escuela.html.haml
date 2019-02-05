@@ -1,0 +1,24 @@
+.modal.fade#actualizar_escuela{'aria-hidden': true, role: :dialog}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×      
+        %h4.text-center Cambio de Escuela
+      .text-center.alert.alert-warning Toma en cuenta que el cambio de escuela tiene implicaciones sobre el estudiante
+      .modal-body.border.p-2
+        =form_tag( cambiar_estudiante_escuela_principal_admin_path(@estudiante.id), class: "form-horizontal")  do
+          .form-group
+            %label.control-label.col-md-3 Escuela 
+            .col-md-12
+              = collection_select nil, :escuela_id, Escuela.all.reject{|e| e.id.eql? @estudiante.escuela_id}, :id, :descripcion, {prompt: 'Selecciona Departamento...'}, { class: ' form-control form-control-sm', required: true}
+          .modal-footer 
+            %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Registrar', class: 'btn btn-outline-success btn-sm', data: {confirm: 'Está seguro de esta acción. Afectará los registros siguientes del estudiante'}
+
+
+
+
+
+
+

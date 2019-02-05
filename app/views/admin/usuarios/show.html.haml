@@ -10,8 +10,6 @@
               = link_to "#{delete_rol_usuario_path(@usuario)}?#{r.downcase}=true", class: 'btn btn-sm', data: { confirm: 'Esta acción eliminará irreversiblemente todas las asociaciones del rol de usuario como asignaturas y calificaciones. ¿Está Seguro?'} do
                 .text-danger= glyph 'trash'
 
-
-
 - if current_admin.maestros?
   %h6
     Agregar Roles:
@@ -30,12 +28,9 @@
 %nav
   .nav.nav-tabs
     = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: 'nav-item nav-link'
-    - if @estudiante
-      = link_to 'Como Estudiante', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link'
-    - if @profesor
-      = link_to 'Como Profesor', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link'
-    - if @administrador
-      = link_to 'Como Administrador', "#administrador", "data-toggle"=> "tab", class: 'nav-item nav-link'
+    = link_to 'Como Estudiante', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link' if @estudiante
+    = link_to 'Como Profesor', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link' if @profesor
+    = link_to 'Como Administrador', "#administrador", "data-toggle"=> "tab", class: 'nav-item nav-link' if @administrador
       
 .tab-content
   .tab-pane#personales
@@ -44,7 +39,12 @@
   - if @estudiante
     .tab-pane#historial
       .border.mt-3.p-3
-        = render '/admin/historialplanes/index'
+        %h6.alert.alert-info.pb-ms-3
+          = "Escuela: #{@estudiante.escuela.descripcion}"
+          - if current_admin.maestros?
+            = simple_icon_toggle_modal_edit 'Cambiar de Escuela', 'actualizar_escuela'
+            = render '/admin/estudiantes/actualizar_escuela'
+        = render '/admin/historialplanes/index'            
         = render '/admin/combinaciones/index'
       = render partial: '/admin/estudiantes/historial_academico'
 

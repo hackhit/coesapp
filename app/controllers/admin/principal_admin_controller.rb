@@ -3,6 +3,18 @@ module Admin
 		before_action :filtro_logueado
 		before_action :filtro_administrador
 
+
+		def cambiar_estudiante_escuela
+			@estudiante = Estudiante.find params[:id]
+			@estudiante.escuela_id = params[:escuela_id]
+			if @estudiante.save
+				flash[:success] = '¡Cambio de Escuela exitoso!'
+			else
+				flash[:danger] = 'Error al intentar cambiar el Idioma. Por favor verifique e inténtelo de nuevo.'
+			end
+			redirect_to usuario_path(@estudiante.id)
+		end
+
 		def cambiar_sesion_periodo
 
 			session['periodo_actual_id'] = params[:nuevo]
