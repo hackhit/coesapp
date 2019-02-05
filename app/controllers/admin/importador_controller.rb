@@ -6,6 +6,13 @@ module Admin
 			@titulo = "Importador - Paso1"
 		end
 
+		def importar
+			total = ImportCsv.importar_de_archivo params[:datafile].tempfile, params[:objeto]
+			flash[:success] = "Total de #{params[:objeto].pluralize} agregadas: #{total}"
+			redirect_to action: 'seleccionar_archivo'
+
+		end
+
 		# def vista_previa
 
 		# 	@csv = ImportCsv.preview params[:datafile].tempfile
@@ -16,11 +23,14 @@ module Admin
 		# 	# ImportCsv.import_from_file params[:datafile].tempfile, params[:objeto]
 		# end
 
-		def importar
-			total = ImportCsv.importar_de_archivo params[:datafile].tempfile, params[:objeto]
-			flash[:success] = "Total de #{params[:objeto].pluralize} agregadas: #{total}"
-			redirect_to action: 'seleccionar_archivo'
+		def seleccionar_archivo_secciones
+			@titulo = "Importador de Archivos de Secciones"
+		end
 
+		def importar_seccion
+			flash[:info] = ImportCsv.importar_secciones params[:datafile].tempfile, params[:objeto]
+
+			redirect_to action: 'seleccionar_archivo_secciones'
 		end
 
 	end

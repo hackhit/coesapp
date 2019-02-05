@@ -23,6 +23,8 @@ class Seccion < ApplicationRecord
     validates :numero, presence: true
 	validates_uniqueness_of :numero, scope: [:periodo_id, :asignatura_id], message: 'La sección ya existe, inténtalo de nuevo!', field_name: false
 
+	before_create :default_tipo_seccion
+
     # SCOPES:
 	scope :calificadas, -> {where "calificada IS TRUE"}
 	scope :sin_calificar, -> {where "calificada IS FALSE"}
@@ -254,5 +256,11 @@ a = {"709109110" => "ALEMI",
 	end
 
 	# FUNCIONES PROTEGIDAS
+
+	protected
+
+	def default_tipo_seccion
+		self.tipo_seccion_id ||= 'NF'
+	end
 
 end

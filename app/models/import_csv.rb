@@ -130,6 +130,71 @@ class ImportCsv
 		
 	end
 
+	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes
+		"</br><b>Resumen:</b> 
+			</br></br>Total Nuevos Inscritos: <b>#{inscritos}</b>
+			</br>Total Existentes: <b>#{existentes}</b>
+			</br>Total Nuevas Secciones: <b>#{nuevas_secciones}</b>
+			<hr></hr>Total Secciones No Creadas: <b>#{secciones_no_creadas.count}</b>
+			</br><i>Detalle:</i></br>#{secciones_no_creadas.to_sentence} 
+			<hr></hr>Total Asignaturas Inexistentes: <b>#{asignaturas_inexistentes.uniq.count}</b>
+			</br><i>Detalle:</i></br> #{asignaturas_inexistentes.uniq.to_sentence}
+			<hr></hr>Total Estudiantes Inexistentes: <b>#{estudiantes_inexistentes.uniq.count}</b>
+			</br><i>Detalle:</i></br> #{estudiantes_inexistentes.uniq.to_sentence}"
+	end
+
+	def self.importar_secciones url, objecto, periodo_id='2018-02S'
+		require 'csv'
+
+		csv_text = File.read(url)
+		total_inscritos = 0
+		total_existentes = 0
+		estudiantes_no_inscritos = []
+		total_nuevas_secciones = 0
+		secciones_no_creadas = []
+		estudiantes_inexistentes = []
+		asignaturas_inexistentes = []
+
+		self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes
+
+		csv = CSV.parse(csv_text, headers: true)
+			csv.each do |row|
+				begin
+					if a = Asignatura.where(id_uxxi: row.field(1)).limit(1).first
+						
+						unless s = Seccion.where(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id).limit(1).first
+						
+							total_nuevas_secciones += 1 if s = Seccion.create!(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id, tipo_seccion_id: 'NF')
+						end
+
+						if s
+							if Estudiante.where(usuario_id: row.field(0)).count <= 0
+
+								estudiantes_inexistentes << row.field(0)
+
+							elsif s.inscripcionsecciones.where(estudiante_id: row.field(0)).count <= 0
+								if s.inscripcionsecciones.create!(estudiante_id: row.field(0))
+									total_inscritos += 1
+								else
+									estudiantes_no_inscritos << row.field(0)
+								end
+							else
+								total_existentes += 1
+							end
+
+						else
+							secciones_no_creadas << row.to_hash
+						end
+					else
+						asignaturas_inexistentes << row.field(1)
+					end
+				rescue Exception => e
+					return "Error excepcional: #{e.to_sentence}. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes}"
+				end
+			end
+		return "Proceso de importación completado con éxito. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes}"
+
+	end
 
 	def self.importar_de_archivo url, objecto
 		
