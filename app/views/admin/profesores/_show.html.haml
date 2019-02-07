@@ -18,7 +18,7 @@
 
 		- if @secciones_calificadas.count > 0
 			- @secciones = @secciones_calificadas
-			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'calificadas', titulo: 'Calificadas'}
+			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'calificadas', titulo: 'Histórico de Calificadas'}
 
 		-if @secciones_secundarias and @secciones_secundarias.count > 0
 			- @secciones = @secciones_secundarias
