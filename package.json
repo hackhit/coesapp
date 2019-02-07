@@ -7,9 +7,11 @@
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-on-rails": "11.2.2"
+    "react-on-rails": "11.2.2",
+    "react-tabs": "^3.0.0"
   },
   "devDependencies": {
+    "prettier": "1.16.4",
     "webpack-dev-server": "2.11.2"
   }
 }

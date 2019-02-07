@@ -1,5 +1,6 @@
 module Admin
 	class PrincipalAdminController < ApplicationController
+
 		before_action :filtro_logueado
 		before_action :filtro_administrador
 

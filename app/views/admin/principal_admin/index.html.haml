@@ -3,8 +3,13 @@
 		Período Académico: 
 		= "#{current_periodo.id}"
 - if current_admin.altos?
-	.border.p-3= render '/admin/principal_admin/tabs_estructura/escuelas'
+	.border.p-3
+		=# render '/admin/principal_admin/tabs_estructura/escuelas'
+		- @escuela = { name: 'Escuela de Idiomas Modernos'}
+		=# react_component("HelloWorld", props: @hello_world_props, prerender: false) 
+		= react_component("NavItem", props: @escuela, prerender: false)
 
-= render partial: '/admin/usuarios/datos_modal'
 
-= render 'admin/secciones/modal_form'
+=# render partial: '/admin/usuarios/datos_modal'
+
+=# render 'admin/secciones/modal_form'
