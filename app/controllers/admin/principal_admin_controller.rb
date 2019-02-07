@@ -76,7 +76,7 @@ module Admin
 			@usuario = current_usuario
 			@principal_admin_add_asig = true
 			@escuelas = current_admin.escuelas
-			@editar_asignaturas = true if current_admin.mas_altos?
+			@editar_asignaturas = true if current_admin.altos?
 			@seccion = Seccion.new
 		end
 		
