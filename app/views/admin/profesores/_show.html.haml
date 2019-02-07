@@ -14,30 +14,12 @@
 	#accordion
 		- if @secciones_pendientes.count > 0
 			- @secciones = @secciones_pendientes
-			.card
-				.card-header{id: "heading_pendientes"}
-					%h5.mb-0
-						= link_to "Por Calificar", "#collapse_pendientes", {"aria-controls": "collapse_pendientes", "aria-expanded": :true, "data-target": "#collapse_pendientes", "data-toggle": :collapse, class: "btn btn-link"}
-				.collapse{id: "collapse_pendientes", "aria-labelledby" => "heading_pendientes", "data-parent" => "#accordion"}
-					.card-body
-						= render 'admin/secciones/tabla_secciones'
+			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'pendientes', titulo: 'Pendientes Por Calificar'}
 
 		- if @secciones_calificadas.count > 0
 			- @secciones = @secciones_calificadas
-			.card
-				.card-header{id: "heading_calificadas"}
-					%h5.mb-0
-						= link_to "Calificadas", "#collapse_calificadas", {"aria-controls": "collapse_calificadas", "aria-expanded": :false, "data-target": "#collapse_calificadas", "data-toggle": :collapse, class: "btn btn-link"}
-				.collapse{id: "collapse_calificadas", "aria-labelledby" => "heading_calificadas", "data-parent" => "#accordion"}
-					.card-body
-						= render 'admin/secciones/tabla_secciones'
+			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'calificadas', titulo: 'Calificadas'}
 
 		-if @secciones_secundarias and @secciones_secundarias.count > 0
 			- @secciones = @secciones_secundarias
-			.card
-				.card-header{id: "heading_secundarias"}
-					%h5.mb-0
-						= link_to "Como Participante", "#collapse_secundarias", {"aria-controls": "collapse_secundarias", "aria-expanded": :false, "data-target": "#collapse_secundarias", "data-toggle": :collapse, class: "btn btn-link"}
-				.collapse{id: "collapse_secundarias", "aria-labelledby" => "heading_secundarias", "data-parent" => "#accordion"}
-					.card-body
-						= render 'admin/secciones/tabla_secciones'
+			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'secundarias', titulo: 'Como Participante'}
