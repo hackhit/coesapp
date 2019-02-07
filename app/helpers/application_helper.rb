@@ -1,5 +1,17 @@
 module ApplicationHelper
 
+	def add_card_header tipo, titulo
+		capture_haml do
+			haml_tag :div, class: 'card' do
+				haml_tag :div, class: 'card-header', id: "heading_#{tipo}" do
+					haml_tag :h5, class: 'mb-0' do
+						link_to titulo, "#collapse_#{tipo}", {"aria-controls": "collapse_#{tipo}", "aria-expanded": :true, "data-target": "#collapse_#{tipo}", "data-toggle": :collapse, class: "btn btn-link"}
+					end
+				end
+			end
+		end		
+	end
+
 	def colocar_nav_tab name, objetos, contenido = nil, vertical = false
 		if vertical
 			verti = 'flex-column'
