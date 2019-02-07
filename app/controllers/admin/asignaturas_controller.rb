@@ -55,7 +55,6 @@ module Admin
     # POST /asignaturas.json
     def create
       @asignatura = Asignatura.new(asignatura_params)
-
       catdep = Catedradepartamento.where(departamento_id: asignatura_params[:departamento_id], catedra_id: asignatura_params[:catedra_id]).limit(1).first
       unless catdep
         flash[:danger] = "No se pudo encontrar la asociación Cátedra-Departamento. Seleccione el departamento y la cátedra apropiadamente o primero agregue la cátedra (+ Cátedra) en la <a class='btn btn-info btn-sm' href='#{departamento_path(asignatura_params[:departamento_id])}'>Asignatura</a> para luego generar las asignaturas respectivas."
@@ -63,6 +62,7 @@ module Admin
       else
         respond_to do |format|
           if @asignatura.save
+            info_bitacora_crud @asignatura, Bitacora::CREACION
             format.html { redirect_to @asignatura}
             format.json { render :show, status: :created, location: @asignatura }
           else
@@ -83,6 +83,7 @@ module Admin
     def update
       respond_to do |format|
         if @asignatura.update(asignatura_params)
+          info_bitacora_crud @asignatura, Bitacora::ACTUALIZACION
           format.html { redirect_to @asignatura, notice: 'Asignatura actulizada con éxito.' }
           format.json { render :show, status: :ok, location: @asignatura }
         else
@@ -99,6 +100,7 @@ module Admin
     # DELETE /asignaturas/1.json
     def destroy
       @asignatura.destroy
+      info_bitacora_crud @asignatura, Bitacora::ELIMINACION
       respond_to do |format|
         format.html { redirect_to asignaturas_url, notice: 'Asignatura eliminada satisfactoriamente.' }
         format.json { head :no_content }

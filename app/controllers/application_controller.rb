@@ -2,22 +2,34 @@ class ApplicationController < ActionController::Base
 	protect_from_forgery
 	helper_method :current_usuario 
 	helper_method :current_admin
+	helper_method :current_profesor
+	helper_method :current_estudiante
 	helper_method :current_periodo
 	helper_method :current_escuela
 
 	private  
 
-	def info_bitacora(descripcion, estudiante_ci = nil)
-	  usuario_ci = session[:usuario_ci]
-	  estudiante_ci = session[:estudiante_ci]
-	  administrador_ci = session[:administrador_id] ? session[:administrador].usuario_ci : nil                     
+	def info_bitacora_crud objeto, metodo, est_id = nil, prof_id = nil, admin_id = nil 
+		descripcion = Bitacora.tipos.key metodo
+		info_bitacora "#{descripcion.upcase} de #{objeto.class.name.titleize} con id: #{objeto.id} " , metodo, nil, nil, est_id, prof_id, admin_id 
+	end
+
+	def info_bitacora (descripcion, tipo = nil, usuario_ci = nil,  comentario = nil, estudiante_id = nil, profesor_id = nil, admin_id = nil)
+	  if usuario_ci.nil?
+	  	usuario_ci = current_usuario ? current_usuario.id : nil
+	  end
+
+	  estudiante_id = current_estudiante ? current_estudiante.id : nil
+	  administrador_id = current_admin ? current_admin.id : nil
 		
 	  Bitacora.info(
-	    :descripcion => descripcion, 
-	    usuario_ci: usuario_ci,
-	    :estudiante_usuario_ci =>estudiante_ci,
-	    :administrador_usuario_ci =>administrador_ci,
-	    :ip_origen => request.remote_ip
+	    descripcion: descripcion, 
+	    tipo: tipo,
+	    usuario_id: usuario_ci,
+	    estudiante_id: estudiante_id,
+	    administrador_id: administrador_id,
+	    profesor_id: profesor_id,
+	    ip_origen: request.remote_ip
 	    )
 	end
 
@@ -27,6 +39,14 @@ class ApplicationController < ActionController::Base
 
 	def current_admin
 		@current_admin ||= Administrador.find(session[:administrador_id]) if session[:administrador_id]
+	end
+
+	def current_profesor
+		@current_profesor ||= Profesor.find(session[:profesor_id]) if session[:profesor_id]
+	end
+
+	def current_estudiante
+		@current_admin ||= Estudiante.find(session[:estudiante_id]) if session[:estudiante_id]
 	end
 
 	def current_periodo

@@ -7,7 +7,9 @@ module Admin
 		def cambiar_estudiante_escuela
 			@estudiante = Estudiante.find params[:id]
 			@estudiante.escuela_id = params[:escuela_id]
+
 			if @estudiante.save
+				info_bitacora 'Cambio de Escuela a Estudiante', Bitacora::ACTUALIZACION
 				flash[:success] = '¡Cambio de Escuela exitoso!'
 			else
 				flash[:danger] = 'Error al intentar cambiar el Idioma. Por favor verifique e inténtelo de nuevo.'
@@ -16,7 +18,6 @@ module Admin
 		end
 
 		def cambiar_sesion_periodo
-
 			session['periodo_actual_id'] = params[:nuevo]
 			@current_periodo = Periodo.find session['periodo_actual_id']
 			flash[:success] = "Periodo cambiado con éxito al #{current_periodo.id}" 
@@ -34,6 +35,7 @@ module Admin
 			@asignatura = Asignatura.find @asignatura_id
 			@seccion = @asignatura.secciones.new(params[:seccion])
 			if @seccion.save
+				info_bitacora "Creación de Sección con id: #{@seccion.id}" , Bitacora::CREACION
 				flash[:success] = "Seccion agregada con éxito"
 			else
 				flash[:error] = "No se pudo agregar la nueva sección. Por favor verifique: #{@seccion.errors.full_messages.join(' ')}"
@@ -89,6 +91,7 @@ module Admin
 
 			@seccion.profesor_id = params[:profesor_id]
 			if @seccion.save
+				info_bitacora "Cambio de profesor a: (#{@seccion.descripcion_profesor_asignado}) en Sección: #{@seccion.id}" , Bitacora::ACTUALIZACION
 				flash[:success] = "Cambio realizado con éxito"
 			else
 				flash[:error] = "no se pudo guardar los cambios"
@@ -144,8 +147,10 @@ module Admin
 
 			end
 			@seccion.calificada = true
-			flash[:success] = "Calificaciones guardada satisfactoriamente." if @seccion.save
-			redirect_to :action => "index"
+			if @seccion.save
+				flash[:success] = "Calificaciones guardada satisfactoriamente."
+			end
+			redirect_to action: "index"
 
 		end
 

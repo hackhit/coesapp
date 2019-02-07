@@ -25,9 +25,10 @@ module Admin
     def habilitar_calificar
       if params[:id]
         @secciones = Seccion.where(id: params[:id])
+        info_bitacora "Seccion: #{params[:id]} habilitada para calificar" , Bitacora::ACTUALIZACION
       else
-        periodo_actual_id = Periodo.find session[:parametros]['periodo_actual_id']
-        @secciones = periodo_actual_id.secciones.calificadas
+        @secciones = current_periodo.secciones.calificadas
+        info_bitacora "Secciones del periodo: #{current_periodo.id} habilitada para calificar" , Bitacora::ACTUALIZACION
       end
       total = 0
       error = 0
@@ -75,7 +76,9 @@ module Admin
         @inscripcionseccion.tipo_estado_calificacion_id = tipo_estado_calificacion_id
         @inscripcionseccion.calificacion_final = valores[:calificacion_final]
 
-        unless @inscripcionseccion.save
+        if @inscripcionseccion.save
+          info_bitacora "Calificado Estudiante: #{@estudiante_seccion.estudiante.descripcion}, Seccion id: (#{@estudiante_seccion.seccion_id})" , Bitacora::ACTUALIZACION
+        else
           flash[:danger] = "No se pudo guardar la calificación."
           break
         end
@@ -83,8 +86,10 @@ module Admin
       end
       @seccion.calificada = true
       calificada = @seccion.save
-
-      flash[:success] = "Calificaciones guardada satisfactoriamente." if calificada
+      if calificada
+        flash[:success] = "Calificaciones guardada satisfactoriamente."
+        info_bitacora "Seccion Calificada, id: (#{@seccion.id})" , Bitacora::ACTUALIZACION
+      end
 
       if session[:administrador_id]
         redirect_to principal_admin_index_path
@@ -128,12 +133,14 @@ module Admin
       if params[:secundario]
         if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
           flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
+          info_bitacora "Profesor secundario ci: #{params[:profesor_id]} agregado a seccion: (#{@seccion.id})" , Bitacora::ACTUALIZACION
         else
           flash[:error] = "No se pudo agregar la Asignatura"
           render action: 'seleccionar_profesor_secundario'
         end
       else
         if @seccion.save
+          info_bitacora "Profesor principal ci: #{params[:profesor_id]} agregado a seccion: (#{@seccion.id})" , Bitacora::ACTUALIZACION
           flash[:success] = "Cambio realizado con éxito"
         else
           flash[:error] = "no se pudo guardar los cambios"
@@ -199,6 +206,8 @@ module Admin
       respond_to do |format|
         if @seccion.save
           flash[:success] = 'Sección creada con éxito'
+          info_bitacora_crud @seccion, Bitacora::CREACION
+
           format.html {
             if params[:back]
               url = params[:back]
@@ -221,6 +230,7 @@ module Admin
     def update
       if @seccion.update(seccion_params)
         flash[:success] = 'Sección actualizada con éxito.'
+        info_bitacora_crud @seccion, Bitacora::ACTUALIZACION
       else
         flash[:danger] = "Error al intentar actualizar la sección: #{@seccion.errors.full_messages.to_sentence}."
       end
@@ -230,6 +240,7 @@ module Admin
     # DELETE /secciones/1
     # DELETE /secciones/1.json
     def destroy
+      info_bitacora_crud @seccion, Bitacora::ELIMINACION
       @seccion.destroy
       respond_to do |format|
       

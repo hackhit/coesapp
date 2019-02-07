@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  comentario: MyText
+  descripcion: MyString
+  estudiante: one
+  administrador: one
+  usuario: one
+  ip_origen: MyString
+  tipo: 1
+
+two:
+  comentario: MyText
+  descripcion: MyString
+  estudiante: two
+  administrador: two
+  usuario: two
+  ip_origen: MyString
+  tipo: 1

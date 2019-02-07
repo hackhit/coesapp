@@ -38,6 +38,7 @@ module Admin
 
       respond_to do |format|
         if @escuela.save
+          info_bitacora_crud @escuela, Bitacora::CREACION
           format.html { redirect_to @escuela, notice: 'Escuela creada con éxito.' }
           format.json { render :show, status: :created, location: @escuela }
         else
@@ -52,6 +53,7 @@ module Admin
     def update
       respond_to do |format|
         if @escuela.update(escuela_params)
+          info_bitacora_crud @escuela, Bitacora::ACTUALIZACION
           format.html { redirect_to @escuela, notice: 'Escuela actualizada con éxito.' }
           format.json { render :show, status: :ok, location: @escuela }
         else
@@ -66,6 +68,7 @@ module Admin
     def destroy
       @escuela.destroy
       respond_to do |format|
+        info_bitacora_crud @escuela, Bitacora::ELIMINACION
         format.html { redirect_to escuelas_url, notice: 'Escuela eliminada satisfactoriamente.' }
         format.json { head :no_content }
       end

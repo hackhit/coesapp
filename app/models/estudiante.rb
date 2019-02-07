@@ -9,6 +9,9 @@ class Estudiante < ApplicationRecord
 	accepts_nested_attributes_for :historialplanes
 	has_many :planes, through: :historialplanes, source: :plan
 
+	has_many :bitacoras
+	accepts_nested_attributes_for :bitacoras
+	
 	has_many :inscripcionsecciones
 	accepts_nested_attributes_for :inscripcionsecciones
 	

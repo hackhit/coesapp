@@ -45,6 +45,7 @@ module Admin
       est.escuela_id = params[:estudiante][:escuela_id]
       if est.save
         flash[:success] = 'Estudiante registrado con éxito'
+        info_bitacora_crud est, Bitacora::CREACION
       else
         flash[:danger] = "Error: #{est.errors.full_messages.to_sentence}."
       end
@@ -72,6 +73,7 @@ module Admin
       end
 
       if a.save
+        info_bitacora_crud a, Bitacora::CREACION
         flash[:success] = 'Administrador guardado con éxito'
       else
         flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}."
@@ -90,8 +92,9 @@ module Admin
       else
         flash[:danger] = "Error: Rol no encontrado."
       end
-      if u
-        flash[:info] = "Rol Eliminado." if u.destroy 
+      if u and u.destroy
+        flash[:info] = "Rol Eliminado." 
+        info_bitacora_crud u, Bitacora::ELIMINACION
       end
       redirect_back fallback_location: principal_admin_index_path
         
@@ -107,6 +110,7 @@ module Admin
 
       pr.departamento_id = params[:profesor][:departamento_id]
       if pr.save
+        info_bitacora_crud pr, Bitacora::CREACION, nil, @usuario.id
         flash[:success] = 'Profesor guardado con éxito'
       else
         flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}."

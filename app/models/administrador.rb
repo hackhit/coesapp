@@ -15,6 +15,9 @@ class Administrador < ApplicationRecord
 
 	belongs_to :escuela, optional: true
 
+	has_many :bitacoras
+	accepts_nested_attributes_for :bitacoras
+
 	# VALIDACIONES
 	validates :usuario_id,  presence: true, uniqueness: true
 	validates :departamento_id,  presence: true, if: -> {self.admin_departamento?}

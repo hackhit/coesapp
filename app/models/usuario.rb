@@ -9,6 +9,9 @@ class Usuario < ApplicationRecord
 	has_one :estudiante
 	has_one :profesor
 
+	has_many :bitacoras
+	accepts_nested_attributes_for :bitacoras
+
 	# TRIGGERS:
 	after_initialize :set_default_sexo, :if => :new_record?
 	before_save :upcase_nombres
