@@ -7,30 +7,31 @@ class ApplicationController < ActionController::Base
 	helper_method :current_periodo
 	helper_method :current_escuela
 
-	private  
+	private
 
-	def info_bitacora_crud objeto, metodo, est_id = nil, prof_id = nil, admin_id = nil 
-		descripcion = Bitacora.tipos.key metodo
-		info_bitacora "#{descripcion.upcase} de #{objeto.class.name.titleize} con id: #{objeto.id} " , metodo, nil, nil, est_id, prof_id, admin_id 
+	def info_bitacora_crud tipo, objeto, comentario = nil
+		descripcion = Bitacora.tipos.key tipo
+		info_bitacora "#{descripcion.upcase} de #{objeto.class.name.titleize} con id: #{objeto.id} ", tipo, objeto, comentario
 	end
 
-	def info_bitacora (descripcion, tipo = nil, usuario_ci = nil,  comentario = nil, estudiante_id = nil, profesor_id = nil, admin_id = nil)
-	  if usuario_ci.nil?
-	  	usuario_ci = current_usuario ? current_usuario.id : nil
-	  end
+	def info_bitacora (descripcion, tipo = nil, objeto = nil, comentario = nil)
+		tipo_objeto = id_objeto = nil
+		if objeto.eql? 'Session'
+			tipo_objeto = objeto 
+		elsif !objeto.nil?
+			id_objeto = objeto.id
+			tipo_objeto = objeto.class.name
+		end
 
-	  estudiante_id = current_estudiante ? current_estudiante.id : nil
-	  administrador_id = current_admin ? current_admin.id : nil
-		
-	  Bitacora.info(
-	    descripcion: descripcion, 
-	    tipo: tipo,
-	    usuario_id: usuario_ci,
-	    estudiante_id: estudiante_id,
-	    administrador_id: administrador_id,
-	    profesor_id: profesor_id,
-	    ip_origen: request.remote_ip
-	    )
+		Bitacora.create!(
+			descripcion: descripcion, 
+			tipo: tipo,
+			usuario_id: current_usuario.id,
+			comentario: comentario,
+			id_objeto: id_objeto,
+			tipo_objeto: tipo_objeto,
+			ip_origen: request.remote_ip
+		)
 	end
 
 	def current_usuario

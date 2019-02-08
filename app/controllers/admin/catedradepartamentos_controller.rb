@@ -14,6 +14,7 @@ module Admin
 
       respond_to do |format|
         if @catedradepartamento.save
+          info_bitacora "Vinculación de catedra #{@catedradepartamento.catedra.descripcion} con el departamento", Bitacora::CREACION, @catedradepartamento.departamento
           format.html { redirect_back fallback_location: departamentos_path, success: 'Cátedra y departamento enlazados con éxito.'}
           format.json { render :show, status: :created, location: @catedradepartamento }
         else
@@ -26,6 +27,7 @@ module Admin
     # DELETE /admin/catedradepartamentos/1
     # DELETE /admin/catedradepartamentos/1.json
     def destroy
+      info_bitacora "Desvinculación de catedra #{@catedradepartamento.catedra.descripcion} con el departamento", Bitacora::CREACION, @catedradepartamento.departamento
       @catedradepartamento.destroy
       respond_to do |format|
         format.html { redirect_back fallback_location: departamentos_path, notice: 'Relación cátedra departamento eliminada.'}

@@ -41,6 +41,7 @@ module Admin
 
       respond_to do |format|
         if @departamento.save
+          info_bitacora_crud Bitacora::CREACION, @departamento
           format.html { redirect_to @departamento, notice: 'Departamento creado con éxito.' }
           format.json { render :show, status: :created, location: @departamento }
         else
@@ -56,6 +57,7 @@ module Admin
     def update
       respond_to do |format|
         if @departamento.update(departamento_params)
+          info_bitacora_crud Bitacora::ACTUALIZACION, @departamento
           format.html { redirect_to @departamento, notice: 'Departamento actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @departamento }
         else
@@ -68,6 +70,7 @@ module Admin
     # DELETE /departamentos/1
     # DELETE /departamentos/1.json
     def destroy
+      info_bitacora_crud Bitacora::ELIMINACION, @departamento
       @departamento.destroy
       respond_to do |format|
         format.html { redirect_to departamentos_url, notice: 'Departamento eliminado satisfactoriamente.' }

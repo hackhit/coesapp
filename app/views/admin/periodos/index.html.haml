@@ -7,7 +7,6 @@
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:inicia)
-      %th= model_class.human_attribute_name(:culmina)
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de secciones'} Seccs
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de inscripciones'} Inscs
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de aprobados'} Apro
@@ -18,7 +17,6 @@
       %tr
         %td= periodo.id
         %td=l periodo.inicia
-        %td=l periodo.culmina
         %td= periodo.secciones.count
         %td= periodo.inscripcionsecciones.count
         %td= Inscripcionseccion.del_periodo(periodo.id).aprobados.count

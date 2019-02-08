@@ -1,12 +1,12 @@
 - @secciones = @profesor.secciones.order('periodo_id DESC')
 - @secciones_secundarias = @profesor.secciones_secundarias.order('periodo_id DESC')
 .border.mt-3.p-3
-	%h6.ml-md-3
+	%h6.alert.alert-info.pb-ms-3
 		Departamento:
-		= @profesor.departamento.descripcion
+		= @profesor.departamento.descripcion_completa
 
 		- if current_admin and current_admin.maestros?
-			= simple_icon_toggle_modal_edit 'Cambiar a Profesor #{@nickname} de Escuela', 'set_profesor'
+			= simple_icon_toggle_modal_edit "Cambiar a Profesor #{@nickname} de Escuela", 'set_profesor'
 			= render partial: '/admin/usuarios/set_profesor'
 
 	%hr

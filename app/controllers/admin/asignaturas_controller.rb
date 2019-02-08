@@ -62,7 +62,7 @@ module Admin
       else
         respond_to do |format|
           if @asignatura.save
-            info_bitacora_crud @asignatura, Bitacora::CREACION
+            info_bitacora_crud Bitacora::CREACION, @asignatura
             format.html { redirect_to @asignatura}
             format.json { render :show, status: :created, location: @asignatura }
           else
@@ -83,7 +83,7 @@ module Admin
     def update
       respond_to do |format|
         if @asignatura.update(asignatura_params)
-          info_bitacora_crud @asignatura, Bitacora::ACTUALIZACION
+          info_bitacora_crud Bitacora::ACTUALIZACION, @asignatura
           format.html { redirect_to @asignatura, notice: 'Asignatura actulizada con éxito.' }
           format.json { render :show, status: :ok, location: @asignatura }
         else
@@ -100,7 +100,7 @@ module Admin
     # DELETE /asignaturas/1.json
     def destroy
       @asignatura.destroy
-      info_bitacora_crud @asignatura, Bitacora::ELIMINACION
+      info_bitacora_crud Bitacora::ELIMINACION, @asignatura
       respond_to do |format|
         format.html { redirect_to asignaturas_url, notice: 'Asignatura eliminada satisfactoriamente.' }
         format.json { head :no_content }

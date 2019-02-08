@@ -32,6 +32,7 @@ module Admin
 
       respond_to do |format|
         if @tipo_estado_inscripcion.save
+          info_bitacora_crud Bitacora::CREACION, @tipo_estado_inscripcion
           format.html { redirect_to @tipo_estado_inscripcion, notice: 'Tipo estado inscripcion creado con éxito.' }
           format.json { render :show, status: :created, location: @tipo_estado_inscripcion }
         else
@@ -46,6 +47,7 @@ module Admin
     def update
       respond_to do |format|
         if @tipo_estado_inscripcion.update(tipo_estado_inscripcion_params)
+          info_bitacora_crud Bitacora::ACTUALIZACION, @tipo_estado_inscripcion
           format.html { redirect_to @tipo_estado_inscripcion, notice: 'Tipo estado inscripcion actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @tipo_estado_inscripcion }
         else
@@ -58,6 +60,7 @@ module Admin
     # DELETE /tipo_estado_inscripciones/1
     # DELETE /tipo_estado_inscripciones/1.json
     def destroy
+      info_bitacora_crud Bitacora::ELIMINACION, @tipo_estado_inscripcion
       @tipo_estado_inscripcion.destroy
       respond_to do |format|
         format.html { redirect_to tipo_estado_inscripciones_url, notice: 'Tipo estado inscripcion eliminada satisfactoriamente.' }

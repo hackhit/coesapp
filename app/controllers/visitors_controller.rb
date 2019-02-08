@@ -27,7 +27,7 @@ class VisitorsController < ApplicationController
     reset_session
     if usuario = Usuario.autenticar(login, clave)
       session[:usuario_ci] = usuario.id
-      info_bitacora 'Inicio de sessión', Bitacora::SESSION
+      info_bitacora 'Inicio de sessión', nil, 'Session'
       roles = usuario.roles_generales
       if roles.size == 0
         reset_session
@@ -58,7 +58,7 @@ class VisitorsController < ApplicationController
 
   def cerrar_sesion
     usuario = Usuario.find session[:usuario_ci]
-    info_bitacora 'Fin de sessión', Bitacora::SESSION
+    info_bitacora 'Fin de sessión', nil, 'Session'
     msg = "¡Hasta pronto #{usuario.nombres}!"
     reset_session
     flash[:success] = msg
@@ -69,7 +69,7 @@ class VisitorsController < ApplicationController
     usuario = Usuario.where(ci: params[:id]).limit(1).first
     if usuario
       ApplicationMailer.olvido_clave(usuario).deliver  
-      info_bitacora 'Solicitó recuperación de clave', Bitacora::SESSION
+      info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
       m = usuario.email
       flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
     else

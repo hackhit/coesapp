@@ -33,6 +33,7 @@ module Admin
 
       respond_to do |format|
         if @tipoasignatura.save
+          info_bitacora_crud Bitacora::CREACION, @tipoasignatura
           format.html { redirect_to @tipoasignatura, notice: 'Tipo asignatura creada con éxito.' }
           format.json { render :show, status: :created, location: @tipoasignatura }
         else
@@ -47,6 +48,7 @@ module Admin
     def update
       respond_to do |format|
         if @tipoasignatura.update(tipoasignatura_params)
+          info_bitacora_crud Bitacora::ACTUALIZACION, @tipoasignatura
           format.html { redirect_to @tipoasignatura, notice: 'Tipo asignatura editada con éxito.' }
           format.json { render :show, status: :ok, location: @tipoasignatura }
         else
@@ -59,6 +61,7 @@ module Admin
     # DELETE /tipoasignaturas/1
     # DELETE /tipoasignaturas/1.json
     def destroy
+      info_bitacora_crud Bitacora::ELIMINACION, @tipoasignatura
       @tipoasignatura.destroy
       respond_to do |format|
         format.html { redirect_to tipoasignaturas_url, notice: 'Tipo asignatura eliminada satisfactoriamente.' }

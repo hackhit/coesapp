@@ -38,6 +38,7 @@ module Admin
 
       respond_to do |format|
         if @catedra.save
+          info_bitacora_crud Bitacora::CREACION, @catedra
           format.html { redirect_to @catedra, notice: 'Catedra creada con éxito.' }
           format.json { render :show, status: :created, location: @catedra }
         else
@@ -53,6 +54,7 @@ module Admin
     def update
       respond_to do |format|
         if @catedra.update(catedra_params)
+          info_bitacora_crud Bitacora::ACTUALIZACION, @catedra
           format.html { redirect_to @catedra, notice: 'Catedra actualizada con éxito.' }
           format.json { render :show, status: :ok, location: @catedra }
         else
@@ -65,6 +67,7 @@ module Admin
     # DELETE /catedras/1
     # DELETE /catedras/1.json
     def destroy
+      info_bitacora_crud Bitacora::ELIMINACION, @catedra
       @catedra.destroy
       respond_to do |format|
         format.html { redirect_to catedras_url, notice: 'Catedra eliminada.' }

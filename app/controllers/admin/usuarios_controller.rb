@@ -45,7 +45,7 @@ module Admin
       est.escuela_id = params[:estudiante][:escuela_id]
       if est.save
         flash[:success] = 'Estudiante registrado con éxito'
-        info_bitacora_crud est, Bitacora::CREACION
+        info_bitacora_crud Bitacora::CREACION, est
       else
         flash[:danger] = "Error: #{est.errors.full_messages.to_sentence}."
       end
@@ -73,7 +73,7 @@ module Admin
       end
 
       if a.save
-        info_bitacora_crud a, Bitacora::CREACION
+        info_bitacora_crud Bitacora::CREACION, a
         flash[:success] = 'Administrador guardado con éxito'
       else
         flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}."
@@ -94,7 +94,7 @@ module Admin
       end
       if u and u.destroy
         flash[:info] = "Rol Eliminado." 
-        info_bitacora_crud u, Bitacora::ELIMINACION
+        info_bitacora_crud Bitacora::ELIMINACION, u
       end
       redirect_back fallback_location: principal_admin_index_path
         
@@ -107,10 +107,16 @@ module Admin
         pr = Profesor.new
         pr.usuario_id = @usuario.id
       end
+      
+      anterior = pr.departamento if params[:cambiar_dpto]
 
       pr.departamento_id = params[:profesor][:departamento_id]
       if pr.save
-        info_bitacora_crud pr, Bitacora::CREACION, nil, @usuario.id
+        if params[:cambiar_dpto]
+          info_bitacora "Cambio de escuela de #{anterior.descripcion_completa} a #{pr.departamento.descripcion_completa}", Bitacora::CREACION, pr
+        else
+          info_bitacora_crud Bitacora::CREACION, pr
+        end
         flash[:success] = 'Profesor guardado con éxito'
       else
         flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}."
@@ -123,6 +129,7 @@ module Admin
       @usuario.password = @usuario.ci
       
       if @usuario.save
+        info_bitacora 'Reseteo de contraseña', Bitacora::ACTUALIZACION, @usuario
         flash[:success] = "Contraseña reseteada corréctamente"
       else
         flash[:error] = "no se pudo resetear la contraseña"
@@ -137,7 +144,7 @@ module Admin
         if params[:cedula].eql? session[:administrador_id]
           session[:administrador_id] = session[:usuario_ci] = @usuario.id
         end
-
+        info_bitacora 'Cambio de CI', Bitacora::ACTUALIZACION, @usuario
         flash[:success] = "Cambio de cédula de identidad correcto."
       else
         flash[:error] = "Error excepcional: #{@usuario.errors.full_messages.to_sentence}."
@@ -164,6 +171,12 @@ module Admin
         @idiomas2 = @idiomas1 = est.escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
         @planes = est.escuela.planes
         @periodos = est.escuela.periodos.order('inicia DESC')
+      end
+
+      if @profesor
+        @secciones_pendientes = @profesor.secciones.sin_calificar.order('periodo_id DESC, numero ASC')
+        @secciones_calificadas = @profesor.secciones.calificadas.order('periodo_id DESC, numero ASC')
+        @secciones_secundarias = @profesor.secciones_secundarias.order('periodo_id DESC, numero ASC')
       end
       
       @nickname = @usuario.nickname.capitalize
@@ -200,6 +213,7 @@ module Admin
           flash[:success] = 'Usuario creado con éxito.'
           if params[:estudiante_set]
             if e = Estudiante.create(usuario_id: @usuario.id, escuela_id: params[:estudiante][:escuela_id])
+              info_bitacora_crud Bitacora::CREACION, e
               flash[:success] = 'Estudiante creado con éxito.' 
             else
               flash[:danger] = "Error: #{e.errors.full_messages.to_sentence}"
@@ -219,6 +233,7 @@ module Admin
             end
 
             if a.save
+              info_bitacora_crud Bitacora::CREACION, a
               flash[:success] = 'Administrador creado con éxito.'
             else
               flash[:danger] = "Error: #{a.errors.full_messages.to_sentence}"
@@ -229,6 +244,7 @@ module Admin
             pr.departamento_id = params[:profesor][:departamento_id]
 
             if pr.save
+              info_bitacora_crud Bitacora::CREACION, pr
               flash[:success] = 'Profesor creado con éxito.'
             else
               flash[:danger] = "Error: #{pr.errors.full_messages.to_sentence}"
@@ -261,7 +277,7 @@ module Admin
           url_back = principal_profesor_index_path
         end
         if @usuario.update(usuario_params)
-          
+          info_bitacora_crud Bitacora::ACTUALIZACION, @usuario
           flash[:success] = "Usuario actualizado con éxito"
           format.html { redirect_back fallback_location: url_back}
           format.json { render :show, status: :ok, location: @usuario }
@@ -277,6 +293,7 @@ module Admin
     # DELETE /usuarios/1
     # DELETE /usuarios/1.json
     def destroy
+      info_bitacora_crud Bitacora::ELIMINACION, @usuario
       @usuario.destroy
       respond_to do |format|
         format.html { redirect_to usuarios_url, notice: 'Usuario eliminado satisfactoriamente.' }

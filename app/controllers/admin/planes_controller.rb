@@ -52,6 +52,7 @@ module Admin
 
       respond_to do |format|
         if @plan.save
+          info_bitacora_crud Bitacora::CREACION, @plan
           format.html { redirect_to @plan, notice: 'Plan creado con éxtio.' }
           format.json { render :show, status: :created, location: @plan }
         else
@@ -68,6 +69,7 @@ module Admin
     def update
       respond_to do |format|
         if @plan.update(plan_params)
+          info_bitacora_crud Bitacora::ACTUALIZACION, @plan
           format.html { redirect_to @plan, notice: 'Plan actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @plan }
         else
@@ -81,6 +83,7 @@ module Admin
     # DELETE /planes/1
     # DELETE /planes/1.json
     def destroy
+      info_bitacora_crud Bitacora::ELIMINACION, @plan
       @plan.destroy
       respond_to do |format|
         format.html { redirect_to planes_url, notice: 'Plan eliminado correctamente.' }

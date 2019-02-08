@@ -38,11 +38,13 @@ module Admin
 
       respond_to do |format|
         if @periodo.save
+          info_bitacora_crud Bitacora::CREACION, @periodo
           flash[:success] = flash[:danger] = ''
 
           params[:escuelas].each do |escuela_id|
             if @periodo.escuelaperiodos.create!(escuela_id: escuela_id)
-              flash[:success] += "Escuela #{escuela_id} vinculada al período con éxito. " 
+              flash[:success] += "Escuela #{escuela_id} vinculada al período con éxito. "
+              info_bitacora "Escuela con id: #{escuela_id} vinculada al periodo", Bitacora::ACTUALIZACION, @periodo
             else
               flash[:danger] = "Error al intentar vincular escuela con el período. "
             end
@@ -70,6 +72,7 @@ module Admin
           unless @periodo.escuelas.include? escuela
             if @periodo.escuelaperiodos.create!(escuela_id: escuela.id)
               flash[:info] += "Escuelas #{escuela.descripcion} vinculada con éxito. \n" 
+              info_bitacora "Escuela con id: #{escuela.id} VINCULADA al periodo", Bitacora::ACTUALIZACION, @periodo
             else
               flash[:danger] += "No se pudo vincular la escuela #{escuela.descripcion}"
             end
@@ -79,12 +82,14 @@ module Admin
             flash[:danger] += "No se puede excluir la escuela de #{escuela.descripcion} porque tiene asociadas secciones. Por favor, elimine primero toda sección asociada a ésta para el período solicitado."
           else
             flash[:info] += "#{escuela.descripcion} desvinculada del período. " if @periodo.escuelaperiodos.where(escuela_id: escuela.id).first.destroy
+            info_bitacora "Escuela con id: #{escuela.id} DESVICULADA al periodo", Bitacora::ACTUALIZACION, @periodo
           end
         end
       end
 
       respond_to do |format|
         if @periodo.update(periodo_params)
+          info_bitacora_crud Bitacora::ACTUALIZACION, @periodo
           flash[:danger] = nil if flash[:danger].blank?
           flash[:info] = nil if flash[:info].blank?
           format.html { redirect_to @periodo, notice: 'Período actualizado con éxito.' }
@@ -104,6 +109,10 @@ module Admin
         flash[:danger] = "No es posible eliminar el período ya que aún posee secciones vinculadas. Por favor elimine éstas y acontinuación elimine el período."
         redirect_back fallback_location: periodos_url
       else
+        info_bitacora_crud Bitacora::ELIMINACION, @periodo
+        if @periodo.id.eql? session['periodo_actual_id']
+          session['periodo_actual_id'] = inicial_current_periodo #current_admin.escuela.periodos.order(inicia: :asc).last
+        end
         @periodo.destroy
         redirect_to periodos_url, notice: 'Período eliminado satisfactoriamente.' 
         # respond_to do |format|

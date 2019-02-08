@@ -6,10 +6,11 @@ module Admin
 
 		def cambiar_estudiante_escuela
 			@estudiante = Estudiante.find params[:id]
+			anterior_escuela = @estudiante.escuela.descripcion
 			@estudiante.escuela_id = params[:escuela_id]
 
 			if @estudiante.save
-				info_bitacora 'Cambio de Escuela a Estudiante', Bitacora::ACTUALIZACION
+				info_bitacora "Cambio de Escuela de #{anterior_escuela} a #{@estudiante.escuela.descripcion}", Bitacora::ACTUALIZACION, @estudiante
 				flash[:success] = '¡Cambio de Escuela exitoso!'
 			else
 				flash[:danger] = 'Error al intentar cambiar el Idioma. Por favor verifique e inténtelo de nuevo.'
@@ -35,7 +36,7 @@ module Admin
 			@asignatura = Asignatura.find @asignatura_id
 			@seccion = @asignatura.secciones.new(params[:seccion])
 			if @seccion.save
-				info_bitacora "Creación de Sección con id: #{@seccion.id}" , Bitacora::CREACION
+				info_bitacora "Creación de Sección con id: #{@seccion.id}" , Bitacora::CREACION, @seccion
 				flash[:success] = "Seccion agregada con éxito"
 			else
 				flash[:error] = "No se pudo agregar la nueva sección. Por favor verifique: #{@seccion.errors.full_messages.join(' ')}"
@@ -89,9 +90,10 @@ module Admin
 		def cambiar_profe_seccion 
 			@seccion = Seccion.find params[:id]
 
+			anterior_profe = @seccion.descripcion_profesor_asignado
 			@seccion.profesor_id = params[:profesor_id]
 			if @seccion.save
-				info_bitacora "Cambio de profesor a: (#{@seccion.descripcion_profesor_asignado}) en Sección: #{@seccion.id}" , Bitacora::ACTUALIZACION
+				info_bitacora "Cambio de profesor de #{anterior_profe} a (#{@seccion.descripcion_profesor_asignado}) en Sección: #{@seccion.id}" , Bitacora::ACTUALIZACION, @seccion
 				flash[:success] = "Cambio realizado con éxito"
 			else
 				flash[:error] = "no se pudo guardar los cambios"

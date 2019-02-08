@@ -32,6 +32,8 @@ module Admin
 
       respond_to do |format|
         if @tipo_estado_calificacion.save
+          info_bitacora_crud Bitacora::CREACION, @tipo_estado_calificacion
+
           format.html { redirect_to @tipo_estado_calificacion, notice: 'Tipo estado calificacion creado con éxito.' }
           format.json { render :show, status: :created, location: @tipo_estado_calificacion }
         else
@@ -46,6 +48,7 @@ module Admin
     def update
       respond_to do |format|
         if @tipo_estado_calificacion.update(tipo_estado_calificacion_params)
+          info_bitacora_crud Bitacora::ACTUALIZACION, @tipo_estado_calificacion
           format.html { redirect_to @tipo_estado_calificacion, notice: 'Tipo estado calificacion actualizado con éxito.' }
           format.json { render :show, status: :ok, location: @tipo_estado_calificacion }
         else
@@ -58,6 +61,7 @@ module Admin
     # DELETE /tipo_estado_calificaciones/1
     # DELETE /tipo_estado_calificaciones/1.json
     def destroy
+      info_bitacora_crud Bitacora::ELIMINACION, @tipo_estado_calificacion
       @tipo_estado_calificacion.destroy
       respond_to do |format|
         format.html { redirect_to tipo_estado_calificaciones_url, notice: 'Tipo estado calificacion eliminado con éxito.' }

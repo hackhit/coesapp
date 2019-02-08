@@ -25,7 +25,7 @@ module Admin
     def habilitar_calificar
       if params[:id]
         @secciones = Seccion.where(id: params[:id])
-        info_bitacora "Seccion: #{params[:id]} habilitada para calificar" , Bitacora::ACTUALIZACION
+        info_bitacora "Seccion: #{params[:id]} habilitada para calificar" , Bitacora::ACTUALIZACION, @secciones.first
       else
         @secciones = current_periodo.secciones.calificadas
         info_bitacora "Secciones del periodo: #{current_periodo.id} habilitada para calificar" , Bitacora::ACTUALIZACION
@@ -77,7 +77,7 @@ module Admin
         @inscripcionseccion.calificacion_final = valores[:calificacion_final]
 
         if @inscripcionseccion.save
-          info_bitacora "Calificado Estudiante: #{@estudiante_seccion.estudiante.descripcion}, Seccion id: (#{@estudiante_seccion.seccion_id})" , Bitacora::ACTUALIZACION
+          info_bitacora "Calificado Estudiante: #{@estudiante_seccion.estudiante.descripcion}, Seccion id: (#{@estudiante_seccion.seccion_id})" , Bitacora::ACTUALIZACION, @inscripcionseccion
         else
           flash[:danger] = "No se pudo guardar la calificación."
           break
@@ -88,7 +88,7 @@ module Admin
       calificada = @seccion.save
       if calificada
         flash[:success] = "Calificaciones guardada satisfactoriamente."
-        info_bitacora "Seccion Calificada, id: (#{@seccion.id})" , Bitacora::ACTUALIZACION
+        info_bitacora "Sección Calificada" , Bitacora::ACTUALIZACION, @seccion
       end
 
       if session[:administrador_id]
@@ -106,7 +106,10 @@ module Admin
     def agregar_profesor_secundario
       unless @seccion.nil?
         if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
+          sp = @seccion.sesecciones_profesores_secundarios.where(profesor_id: params[:profesor_id]).first
           flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
+          info_bitacora "Agregado como profesor secunadario Seccion" , Bitacora::CREACION, sp
+
         else
           flash[:error] = "No se pudo agregar la Asignatura"
           render action: 'seleccionar_profesor_secundario'
@@ -132,15 +135,17 @@ module Admin
 
       if params[:secundario]
         if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
+          sp = @seccion.sesecciones_profesores_secundarios.where(profesor_id: params[:profesor_id]).first
           flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
-          info_bitacora "Profesor secundario ci: #{params[:profesor_id]} agregado a seccion: (#{@seccion.id})" , Bitacora::ACTUALIZACION
+          info_bitacora "Agregado como profesor secunadario Seccion" , Bitacora::CREACION, sp
         else
           flash[:error] = "No se pudo agregar la Asignatura"
           render action: 'seleccionar_profesor_secundario'
         end
       else
         if @seccion.save
-          info_bitacora "Profesor principal ci: #{params[:profesor_id]} agregado a seccion: (#{@seccion.id})" , Bitacora::ACTUALIZACION
+          info_bitacora "Profesor principal ci: #{params[:profesor_id]} agregado a seccion: (#{@seccion.id})" , Bitacora::ACTUALIZACION, @seccion
+
           flash[:success] = "Cambio realizado con éxito"
         else
           flash[:error] = "no se pudo guardar los cambios"
@@ -206,7 +211,7 @@ module Admin
       respond_to do |format|
         if @seccion.save
           flash[:success] = 'Sección creada con éxito'
-          info_bitacora_crud @seccion, Bitacora::CREACION
+          info_bitacora_crud Bitacora::CREACION, @seccion
 
           format.html {
             if params[:back]
@@ -230,7 +235,7 @@ module Admin
     def update
       if @seccion.update(seccion_params)
         flash[:success] = 'Sección actualizada con éxito.'
-        info_bitacora_crud @seccion, Bitacora::ACTUALIZACION
+        info_bitacora_crud Bitacora::ACTUALIZACION, @seccion
       else
         flash[:danger] = "Error al intentar actualizar la sección: #{@seccion.errors.full_messages.to_sentence}."
       end
@@ -240,7 +245,7 @@ module Admin
     # DELETE /secciones/1
     # DELETE /secciones/1.json
     def destroy
-      info_bitacora_crud @seccion, Bitacora::ELIMINACION
+      info_bitacora_crud Bitacora::ELIMINACION, @seccion
       @seccion.destroy
       respond_to do |format|
       

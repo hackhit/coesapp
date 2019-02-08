@@ -10,7 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_22_214430) do
+ActiveRecord::Schema.define(version: 2019_02_07_132203) do
+
+  create_table "actividad", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "instrucciones", null: false
+    t.integer "cantidad_preguntas", limit: 1
+    t.string "curso_idioma_id", limit: 10, null: false
+    t.string "curso_tipo_categoria_id", limit: 10, null: false
+    t.string "curso_tipo_nivel_id", limit: 10, null: false
+    t.string "tipo_actividad_id", limit: 20, null: false
+    t.index ["curso_idioma_id", "curso_tipo_categoria_id", "curso_tipo_nivel_id"], name: "fk_actividad_curso1_idx"
+    t.index ["tipo_actividad_id"], name: "fk_actividad_tipo_actividad1_idx"
+  end
+
+  create_table "adjunto", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "archivo"
+    t.integer "actividad_id", null: false
+    t.string "original_filename"
+    t.index ["actividad_id"], name: "fk_adjunto_actividad1_idx"
+  end
+
+  create_table "administrador", primary_key: "usuario_ci", id: :string, limit: 20, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "tipo_rol_id"
+    t.string "tipo_administrador_id"
+    t.index ["usuario_ci"], name: "administrador_usuario_ci"
+  end
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -19,6 +43,16 @@ ActiveRecord::Schema.define(version: 2019_01_22_214430) do
     t.index ["departamento_id"], name: "index_administradores_on_departamento_id"
     t.index ["escuela_id"], name: "index_administradores_on_escuela_id"
     t.index ["usuario_id"], name: "index_administradores_on_usuario_id"
+  end
+
+  create_table "archivo", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "nombre"
+    t.text "url"
+    t.string "bloque_horario_id", limit: 10
+    t.string "idioma_id", limit: 10
+    t.string "tipo_nivel_id", limit: 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "asignaturas", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -38,6 +72,39 @@ ActiveRecord::Schema.define(version: 2019_01_22_214430) do
     t.index ["departamento_id"], name: "index_asignaturas_on_departamento_id"
     t.index ["id"], name: "index_asignaturas_on_id"
     t.index ["tipoasignatura_id"], name: "index_asignaturas_on_tipoasignatura_id"
+  end
+
+  create_table "aula", id: :string, limit: 20, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "tipo_ubicacion_id", limit: 10, null: false
+    t.string "descripcion"
+    t.integer "conjunto_disponible", default: 1, null: false
+    t.integer "usada", default: 0, null: false
+    t.index ["tipo_ubicacion_id"], name: "fk_aula_tipo_ubicacion1"
+  end
+
+  create_table "bitacora", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.datetime "fecha", null: false
+    t.text "descripcion", null: false
+    t.string "usuario_ci", limit: 20
+    t.string "estudiante_usuario_ci", limit: 20
+    t.string "administrador_usuario_ci", limit: 20
+    t.string "ip_origen", limit: 45
+    t.index ["administrador_usuario_ci"], name: "fk_bitacora_administrador1"
+    t.index ["estudiante_usuario_ci"], name: "fk_bitacora_estudiante1"
+    t.index ["usuario_ci"], name: "fk_bitacora_usuario1"
+  end
+
+  create_table "bitacoras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "comentario"
+    t.string "descripcion"
+    t.string "usuario_id"
+    t.string "id_objeto"
+    t.string "tipo_objeto"
+    t.string "ip_origen"
+    t.integer "tipo", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["usuario_id"], name: "index_bitacoras_on_usuario_id"
   end
 
   create_table "carteleras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -295,12 +362,19 @@ ActiveRecord::Schema.define(version: 2019_01_22_214430) do
     t.index ["ci"], name: "index_usuarios_on_ci"
   end
 
+  add_foreign_key "actividad", "curso", column: "curso_idioma_id", primary_key: "idioma_id", name: "actividad_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "actividad", "curso", column: "curso_tipo_categoria_id", primary_key: "tipo_categoria_id", name: "actividad_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "actividad", "curso", column: "curso_tipo_nivel_id", primary_key: "tipo_nivel_id", name: "actividad_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "actividad", "tipo_actividad", name: "actividad_ibfk_2"
+  add_foreign_key "adjunto", "actividad", name: "adjunto_ibfk_1"
+  add_foreign_key "administrador", "usuario", column: "usuario_ci", primary_key: "ci", name: "administrador_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "administradores", "departamentos", name: "administradores_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "administradores", "escuelas", name: "administradores_ibfk_1", on_update: :cascade, on_delete: :nullify
   add_foreign_key "administradores", "usuarios", primary_key: "ci", name: "administradores_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "catedras", name: "asignaturas_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "departamentos", name: "asignaturas_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "tipoasignaturas", name: "asignaturas_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "aula", "tipo_ubicacion", name: "aula_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "catedradepartamentos", "catedras", name: "catedradepartamentos_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "catedradepartamentos", "departamentos", name: "catedradepartamentos_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "combinaciones", "departamentos", column: "idioma1_id", name: "combinaciones_ibfk_3", on_update: :cascade, on_delete: :cascade

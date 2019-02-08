@@ -43,6 +43,7 @@ module Admin
     def create
       @combinacion = Combinacion.new(combinacion_params)
       if @combinacion.save
+        info_bitacora_crud Bitacora::CREACION, @combinacion
         flash[:success] = "Combinación de idiomas agregada exitosamente."
       else
         flash[:error] = "#{@combinacion.errors.full_messages.join(' ')}"
@@ -55,6 +56,7 @@ module Admin
     def update
 
       if @combinacion.update_attributes(combinacion_params)
+        info_bitacora_crud Bitacora::ACTUALIZACION, @combinacion
         flash[:success] = "Combinación de idiomas actualizada con éxito."
       else
         flash[:error] = "#{@combinacion.errors.full_messages.join(' ')}"
@@ -66,6 +68,7 @@ module Admin
     # DELETE /combinaciones/1.json
     def destroy
       id = @combinacion.estudiante_id
+      info_bitacora_crud Bitacora::ELIMINACION, @combinacion
       @combinacion.destroy
       flash[:info] = "Combinación de idiomas eliminada satisfactoriamente."
       redirect_to usuario_path(id)
