@@ -77,7 +77,7 @@ module Admin
         @inscripcionseccion.calificacion_final = valores[:calificacion_final]
 
         if @inscripcionseccion.save
-          info_bitacora "Calificado Estudiante: #{@estudiante_seccion.estudiante.descripcion}, Seccion id: (#{@estudiante_seccion.seccion_id})" , Bitacora::ACTUALIZACION, @inscripcionseccion
+          info_bitacora "Calificado Estudiante: #{@inscripcionseccion.estudiante.descripcion}, Seccion id: (#{@inscripcionseccion.seccion_id})" , Bitacora::ACTUALIZACION, @inscripcionseccion
         else
           flash[:danger] = "No se pudo guardar la calificación."
           break
