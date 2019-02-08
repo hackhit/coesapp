@@ -18,7 +18,7 @@
 					.form-group
 						%label.control-label.col-md-3 Idioma 1
 						.col-md-12
-							= collection_select :estudiante, :idioma1, @idiomas, :id, :descripcion, {:prompt => true}, { class: 'form-control', :onchange => "ver_select(this.value)", required: true }
+							= collection_select :estudiante, :idioma1, @idiomas, :id, :descripcion, {prompt: true}, { class: 'form-control', onchange: "ver_select(this.value)", required: true }
 					.form-group.hide#divIdioma2{style: 'display:none;'}
 						%label.control-label.col-md-3 Idioma 2
 						.col-md-12

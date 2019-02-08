@@ -1,9 +1,9 @@
 = form_for @asignatura, html: { class: 'form-horizontal' } do |f|
   .form-group
-    = f.label :id, class: 'control-label col-md-2', value: 'Identificador'
+    = f.label :id_uxxi, class: 'control-label col-md-2', value: 'Código Uxxi'
     .col-md-10
-      = f.text_field :id, class: 'text_field form-control col-md-2 upcase', autofocus: true, placeholder: "ALEI", size: 10, required: true, maxlength: 10
-      %small.text-muted.font-italic Máximo 10 catacteres alfanuméricos (Caracteres Especiales No permitidos)
+      = f.text_field :id_uxxi, class: 'form-control upcase', autofocus: true, placeholder: "0705115338", size: 10, required: true, maxlength: 12
+      %small.text-muted.font-italic Máximo 12 catacteres alfanuméricos (Caracteres Especiales No permitidos)
   .form-group
     = f.label :descripcion, class: 'control-label col-md-2', value: 'Descripción'
     .col-md-10
@@ -11,33 +11,36 @@
   .form-group
     = f.label :departamento_id, class: 'control-label col-md-2'
     .col-md-10
-      = f.select(:departamento_id, @departamentos.order("escuela_id ASC, descripcion ASC").collect{|o| [ "#{o.escuela.descripcion} - #{o.descripcion}", o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control text_field", required: true})
+      =# f.select(:departamento_id, @departamentos.order("escuela_id ASC, descripcion ASC").collect{|o| [ "#{o.escuela.descripcion} - #{o.descripcion}", o.id ] }, { include_blank: 'Selecciona Departamento...'}, {class: "form-control", required: true})
+
+      =# grouped_collection_select :profesor, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {:prompt => "-- Seleccione Departamento --"}, { class: 'selects2 form-control text_field'}
+
+      = grouped_collection_select :asignatura, :departamento_id, @escuelas, :departamentos, :descripcion, :id, :descripcion, {:prompt => "Selecciona Departamento..."}, { class: 'form-control text_field', onchange: 'set_catedra()'}
   .form-group
     = f.label :catedra_id, class: 'control-label col-md-2'
     .col-md-10
-      = f.select(:catedra_id, Catedra.all.collect{|o| [ "#{o.id} - #{o.descripcion}", o.id ] }, { prompt: 'Selecciona Cátedra...'}, {class: "form-control text_field", required: true})
+      =# f.select(:catedra_id, Catedra.all.collect{|o| [ "#{o.id} - #{o.descripcion}", o.id ] }, { prompt: 'Selecciona Cátedra...'}, {class: "form-control", required: true})
+      = grouped_collection_select :asignatura, :catedra_id, @departamentos, :catedras, :descripcion, :id, :descripcion, {:prompt => "Selecciona Cátedra..."}, { class: 'selects2 form-control hideble'}
+
   .form-group
     = f.label :tipo, class: 'control-label col-md-2', value: 'Tipo de asignatura'
     .col-md-10
-      .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
-        - Tipoasignatura.order("created_at DESC").all.each do |asignatura| 
-          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: asignatura.descripcion.titleize}
-            = radio_button_tag '[asignatura]tipoasignatura_id', asignatura.id, false, required: true
-            = asignatura.id
-      =# f.select(:tipoasignatura_id, Tipoasignatura.all.collect{|tipo| [tipo.descripcion.titleize,tipo.id]}, {prompt: 'Selecciona tipo Asignatura...'}, {required: true, class: "form-control text_field"})
+      / .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+      - Tipoasignatura.order("created_at DESC").all.each do |asignatura| 
+        %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: asignatura.descripcion.titleize}
+          = radio_button_tag '[asignatura]tipoasignatura_id', asignatura.id, (asignatura.id.eql? @asignatura.tipoasignatura_id), required: true
+          = asignatura.id
+      =# f.select(:tipoasignatura_id, Tipoasignatura.all.collect{|tipo| [tipo.descripcion.titleize,tipo.id]}, {prompt: 'Selecciona tipo Asignatura...'}, {required: true, class: "form-control"})
 
   .form-group
     = f.label :tipo, class: 'control-label col-md-2', value: 'Tipo de calificación'
     .col-md-10
-      .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
-        - Asignatura.calificaciones.map do |k,v| 
-          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-            = radio_button_tag '[asignatura]calificacion', k, false, required: true
-            = k.upcase
-  .form-group
-    = f.label :id_uxxi, class: 'control-label col-md-2', value: 'Código Uxxi'
-    .col-md-10
-      = f.text_field :id_uxxi, class: 'text_field form-control'
+      / .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+      - Asignatura.calificaciones.map do |k,v| 
+        %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+          = radio_button_tag '[asignatura]calificacion', k, (k.eql? @asignatura.calificacion), required: true
+          = k.upcase
+
   .form-group
     = f.label :creditos, class: 'control-label col-md-2', value: 'Créditos'
     .col-md-10
@@ -49,6 +52,15 @@
 
 
 :javascript
+  function set_catedra(){
+
+    $("#asignatura_catedra_id optgroup").hide();
+    var dep = $("#asignatura_departamento_id option:selected").text();
+
+    $("#asignatura_catedra_id optgroup[label='" + dep + "']").show();
+    $("#asignatura_catedra_id").val('');
+    $("#asignatura_catedra_id").show();
+  }
 
   $('.upcase').on('input',function(evt){ 
     var node = $(this);

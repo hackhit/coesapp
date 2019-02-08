@@ -42,6 +42,7 @@ module Admin
       @asignatura = Asignatura.new
       @departamentos = current_admin.departamentos
       @departamentos = Departamento.all unless @departamentos
+      @escuelas = current_admin.escuelas
     end
 
     # GET /asignaturas/1/edit
@@ -49,17 +50,20 @@ module Admin
       @titulo = "Editando #{@asignatura.descripcion}"
       @departamentos = current_admin.departamentos
       @departamentos = Departamento.all unless @departamentos
+      @escuelas = current_admin.escuelas
     end
 
     # POST /asignaturas
     # POST /asignaturas.json
     def create
+
       @asignatura = Asignatura.new(asignatura_params)
       catdep = Catedradepartamento.where(departamento_id: asignatura_params[:departamento_id], catedra_id: asignatura_params[:catedra_id]).limit(1).first
       unless catdep
         flash[:danger] = "No se pudo encontrar la asociación Cátedra-Departamento. Seleccione el departamento y la cátedra apropiadamente o primero agregue la cátedra (+ Cátedra) en la <a class='btn btn-info btn-sm' href='#{departamento_path(asignatura_params[:departamento_id])}'>Asignatura</a> para luego generar las asignaturas respectivas."
         redirect_back fallback_location: asignaturas_path 
       else
+        @asignatura.id = @asignatura.id_uxxi
         respond_to do |format|
           if @asignatura.save
             info_bitacora_crud Bitacora::CREACION, @asignatura
@@ -68,6 +72,8 @@ module Admin
           else
             @titulo = 'Nueva Asignatura'
             @departamentos = current_admin.departamentos
+            @departamentos = Departamento.all unless @departamentos
+            @escuelas = current_admin.escuelas
             flash[:danger] = "Error al intentar generar la asignatura: #{@asignatura.errors.full_messages.to_sentence}."
             format.html { render :new }
             format.json { render json: @asignatura.errors, status: :unprocessable_entity }
@@ -82,6 +88,7 @@ module Admin
     # PATCH/PUT /asignaturas/1.json
     def update
       respond_to do |format|
+        asignatura_params[:id] = asignatura_params[:id_uxxi]
         if @asignatura.update(asignatura_params)
           info_bitacora_crud Bitacora::ACTUALIZACION, @asignatura
           format.html { redirect_to @asignatura, notice: 'Asignatura actulizada con éxito.' }

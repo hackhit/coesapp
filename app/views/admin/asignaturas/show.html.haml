@@ -1,6 +1,9 @@
 - model_class = Asignatura
 .fieldset
   %dl
+    %dt.label.label-default= model_class.human_attribute_name(:id_uxxi)
+    %dd
+      %pre.prettyprint= @asignatura.id_uxxi
     %dt.label.label-default= model_class.human_attribute_name(:descripcion)
     %dd
       %pre.prettyprint= @asignatura.descripcion
@@ -20,9 +23,6 @@
     %dt.label.label-default= model_class.human_attribute_name(:catedra_id)
     %dd
       %pre.prettyprint= @asignatura.catedra.descripcion.titleize
-    %dt.label.label-default= model_class.human_attribute_name(:id_uxxi)
-    %dd
-      %pre.prettyprint= @asignatura.id_uxxi
     %dt.label.label-default= model_class.human_attribute_name(:creditos)
     %dd
       %pre.prettyprint= @asignatura.creditos

@@ -31,7 +31,7 @@ class Asignatura < ApplicationRecord
 
 	# TRIGGGERS:
 	before_save :set_uxxi_how_id
-	before_save :set_to_upcase
+	before_save :set_to_upcase, :if => :new_record?
 
 	# FUNCIONES:
 
@@ -52,10 +52,11 @@ class Asignatura < ApplicationRecord
 	protected
 	
 	def set_uxxi_how_id
-		self.id ||= self.id_uxxi
+		self.id_uxxi.strip!
+		self.id = self.id_uxxi
 	end
 
 	def set_to_upcase
-		self.descripcion = self.descripcion.strip.upcase
+		self.descripcion.strip.upcase.strip!
 	end
 end

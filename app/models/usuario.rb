@@ -122,8 +122,9 @@ class Usuario < ApplicationRecord
 	protected
 
 	def upcase_nombres
-		self.nombres.upcase!
-		self.apellidos.upcase!
+		self.ci.strip!
+		self.nombres.strip.upcase!
+		self.apellidos.strip.upcase!
 	end
 
 	def set_default_password

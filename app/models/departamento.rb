@@ -35,7 +35,8 @@ class Departamento < ApplicationRecord
 	protected
 
 	def set_to_upcase
-		self.descripcion = self.descripcion.upcase
+		self.id.strip!
+		self.descripcion = self.descripcion.upcase.strip
 	end
 
 end
