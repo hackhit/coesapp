@@ -13,7 +13,7 @@
 						%th T
 						%th Sec.
 						%th Profesor Tutor (Calificador)
-						%th{style: 'width: 35%'} Profesores Secundarios
+						%th{style: 'width: 25%'} Profesores Secundarios
 						%th Capacidad
 						%th Estado
 						- if current_admin and current_admin.altos?
@@ -31,19 +31,22 @@
 											= glyph 'pencil'
 
 							%td
-								-seccion.profesores.each do |p|
-									%p
-										= p.descripcion
-										- if @editar_asignaturas
+								%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md
+									-seccion.profesores.each do |p|
+										%tr
+											%td
+												= p.descripcion
+												- if @editar_asignaturas
+													%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Desasignar Este Profesor'}
+														= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
+															%i.glyphicon.glyphicon-minus.text-danger
 
-											%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Desasignar Este Profesor'}
-												= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
-													%i.glyphicon.glyphicon-minus.text-danger
-
-								- if @editar_asignaturas
-									%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Agregar Profesor Secundario'}
-										= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true",{role: 'button'} do
-											%i.glyphicon.glyphicon-plus.text-success
+									- if @editar_asignaturas
+										%tr
+											%td
+												%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Agregar Profesor Secundario'}
+													= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true",{role: 'button'} do
+														%i.glyphicon.glyphicon-plus.text-success
 							%td
 								= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: seccion}
 
@@ -57,31 +60,4 @@
 										%span.badge.badge-dark= seccion.total_sin_calificar
 							- if current_admin #and current_admin.altos? 
 								%td
-									- if current_admin and current_admin.altos? 
-										%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
-											= link_to acta_examen_excel_descargar_path(seccion.id), class: 'btn btn-info btn-success btn-sm', role: :button do
-												= glyph 'download-alt'
-												= glyph 'list'
-												X
-
-										%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen'}
-											= link_to acta_examen_descargar_path(seccion.id), class: 'btn btn-info btn-sm', role: :button do
-												= glyph 'download-alt'
-												= glyph 'list'
-
-									%b.tooltip-btn{'data_toggle': :tooltip, title: 'Ver Detalle / Calificar'}
-										= link_to seccion_path(seccion), class: 'btn btn-info btn-sm', role: :button do
-											= content_tag(:i, "", class: " icon-white")
-											= glyph 'eye-open'
-											= glyph 'list'
-											= glyph 'check'
-									- if seccion.estudiantes.count < 1
-										%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
-											= link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
-												= glyph 'trash'
-									- if current_admin.maestros?
-										-if seccion.calificada											
-											%b.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar para Calificar Nuevamente'}
-												= link_to habilitar_calificar_seccion_path(seccion.id), {class: 'btn btn-info btn-sm'}, {role: 'button'} do
-													= glyph 'off'
-													= glyph 'list'
+									= render partial: 'admin/asignaturas/panel_detalle_opciones', locals: {seccion: seccion}

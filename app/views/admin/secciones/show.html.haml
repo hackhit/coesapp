@@ -16,7 +16,7 @@
 				%th U. Créditos
 		%tbody
 			%tr
-				%td= "#{@seccion.asignatura.descripcion}"
+				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.asignatura.descripcion}", @seccion.asignatura
 				%td= "#{@seccion.descripcion_profesor_asignado}"
 				%td= "#{@seccion.asignatura.calificacion.titleize}"
 				%td= "#{@seccion.tipo_seccion.descripcion.titleize}"

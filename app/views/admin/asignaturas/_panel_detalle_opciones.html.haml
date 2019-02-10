@@ -1,0 +1,31 @@
+
+- if current_admin and current_admin.altos? 
+	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
+		= link_to acta_examen_excel_descargar_path(seccion.id), class: 'badge badge-info btn-success btn-sm p-md-1', role: :button do
+			= glyph 'download-alt'
+			= glyph 'list'
+			X
+
+	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen'}
+		= link_to acta_examen_descargar_path(seccion.id), class: 'badge badge-info btn-sm ml-md-1 p-md-1', role: :button do
+			= glyph 'download-alt'
+			= glyph 'list'
+
+
+%b.tooltip-btn{'data_toggle': :tooltip, title: 'Ver Detalle / Calificar'}
+	= link_to seccion_path(seccion), class: 'badge badge-info btn-sm ml-md-1 p-md-1', role: :button do
+		= content_tag(:i, "", class: " icon-white")
+		= glyph 'search'
+		= glyph 'check'
+- if seccion.estudiantes.count < 1
+
+	%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
+		= link_to "", {href: seccion_path(seccion), class: 'btn-outline-danger btn-sm ml-md-1 p-md-1', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
+			= glyph 'trash'
+- if current_admin.maestros?
+	-if seccion.calificada
+
+		%b.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar para Calificar Nuevamente'}
+			= link_to habilitar_calificar_seccion_path(seccion.id), {class: 'badge badge-info btn-sm ml-md-1 p-md-1'}, {role: 'button'} do
+				= glyph 'off'
+				= glyph 'list'

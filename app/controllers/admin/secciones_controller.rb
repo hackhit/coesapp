@@ -106,7 +106,7 @@ module Admin
     def agregar_profesor_secundario
       unless @seccion.nil?
         if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
-          sp = @seccion.sesecciones_profesores_secundarios.where(profesor_id: params[:profesor_id]).first
+          sp = @seccion.secciones_profesores_secundarios.where(profesor_id: params[:profesor_id]).first
           flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
           info_bitacora "Agregado como profesor secunadario Seccion" , Bitacora::CREACION, sp
 
@@ -135,7 +135,7 @@ module Admin
 
       if params[:secundario]
         if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
-          sp = @seccion.sesecciones_profesores_secundarios.where(profesor_id: params[:profesor_id]).first
+          sp = @seccion.secciones_profesores_secundarios.where(profesor_id: params[:profesor_id]).first
           flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
           info_bitacora "Agregado como profesor secunadario Seccion" , Bitacora::CREACION, sp
         else

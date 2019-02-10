@@ -27,7 +27,7 @@ class Seccion < ApplicationRecord
 
     # SCOPES:
 	scope :calificadas, -> {where "calificada IS TRUE"}
-	scope :sin_calificar, -> {where "calificada IS FALSE"}
+	scope :sin_calificar, -> {where "calificada IS NOT TRUE"}
 	scope :del_periodo, lambda { |periodo_id| where "periodo_id = ?", periodo_id}
 	# scope :del_periodo_actual, -> { where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
 
