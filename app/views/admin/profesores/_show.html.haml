@@ -14,12 +14,12 @@
 	#accordion
 		- if @secciones_pendientes.count > 0
 			- @secciones = @secciones_pendientes
-			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'pendientes', titulo: 'Pendientes Por Calificar'}
-
-		- if @secciones_calificadas.count > 0
-			- @secciones = @secciones_calificadas
-			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'calificadas', titulo: 'Histórico de Calificadas'}
+			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'pendientes', titulo: 'Como Profesor Principal'}
 
 		-if @secciones_secundarias and @secciones_secundarias.count > 0
 			- @secciones = @secciones_secundarias
 			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'secundarias', titulo: 'Como Participante'}
+
+		- if @secciones_calificadas.count > 0
+			- @secciones = @secciones_calificadas
+			= render partial: 'admin/profesores/card_seccion', locals: {tipo: 'calificadas', titulo: 'Histórico de Calificadas'}
