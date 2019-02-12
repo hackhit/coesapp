@@ -17,7 +17,12 @@
 		%tbody
 			%tr
 				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.asignatura.descripcion}", @seccion.asignatura
-				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.descripcion_profesor_asignado}", @seccion.profesor.usuario
+
+				%td
+					- if @seccion.profesor
+						= link_to_if (current_admin and current_admin.altos?), "#{@seccion.descripcion_profesor_asignado}", @seccion.profesor.usuario
+					- else
+						= @seccion.descripcion_profesor_asignado
 				%td= "#{@seccion.asignatura.calificacion.titleize}"
 				%td= "#{@seccion.tipo_seccion.descripcion.titleize}"
 				%td= "#{@seccion.numero}"
