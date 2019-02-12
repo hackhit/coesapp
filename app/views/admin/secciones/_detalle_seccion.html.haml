@@ -1,11 +1,37 @@
 =#link_to "Descargar listado (Excel)", {controller: 'descargar', action: 'listado_seccion', id: @seccion.id}, class: "btn btn-success pull-righ"
 
-- @calificada = @seccion.calificada
+-# @calificada = @seccion.calificada
 
-- @calificada = false if current_admin
+-# @cerrada = @seccion.cerrada
 
-- @calificada = true if (current_admin && current_admin.taquilla?) || @secundaria
+-# @calificada = false if current_admin
+
+-# @calificada = true if (current_admin && current_admin.taquilla?) || @secundaria
 
 
-= render '/admin/secciones/tabla_inscripciones'
-														
+- calificada = @seccion.calificada
+
+
+-# calificada = false if current_admin
+
+-# calificada = true if (current_admin && current_admin.taquilla?) || @secundaria
+
+%h5= "Total de Estudiantes: #{@inscripciones_secciones.count}"
+
+- if current_profesor
+	- if @seccion.profesor_id.eql? current_profesor.id and !calificada
+		= render partial: 'admin/secciones/por_calificar', locals: {inscripciones: @inscripciones_secciones}
+	- else
+		= render partial: 'admin/secciones/solo_lectura', locals: {inscripciones: @inscripciones_secciones}
+- elsif current_admin
+	- if @seccion.cerrada? and calificada
+		= render partial: 'admin/secciones/solo_lectura', locals: {inscripciones: @inscripciones_secciones}
+		= # Ojo: Incluir opciones para cambiar estado pero con mensaje de bitacora
+	- elsif !calificada
+		= render partial: 'admin/secciones/por_calificar', locals: {inscripciones: @inscripciones_secciones}
+	- else
+		- @por_cerrar = true
+		= render partial: 'admin/secciones/por_calificar', locals: {inscripciones: @inscripciones_secciones}
+
+
+

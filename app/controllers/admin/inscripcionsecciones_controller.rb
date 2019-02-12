@@ -50,7 +50,7 @@ module Admin
 			begin
 				secciones.each_pair do |sec_id, sec_num|
 					seccion = Seccion.find sec_id
-					if seccion.inscripcionsecciones.create!(estudiante_id: id, tipo_estado_inscripcion_id: 'INS')
+					if seccion.inscripcionsecciones.create!(estudiante_id: id)
 						guardadas += 1
 					else
 						flash[:error] = "#{es_se.errors.full_messages.join' | '}"
@@ -88,7 +88,6 @@ module Admin
 				ins = Inscripcionseccion.new
 				ins.estudiante_id = id
 				ins.seccion_id = seccion_id
-				ins.tipo_estado_inscripcion_id = 'INS'
 				if ins.save
 					flash[:success] = "Estudiante inscrito satisfactoriamente"
 				else
@@ -112,9 +111,23 @@ module Admin
 
 		def set_retirar
 			if es = Inscripcionseccion.find(params[:id])
-				es.tipo_estado_inscripcion_id = params[:valor]
+				estado_anterior = es.estado
+
+				# if params[:valor].eql? 0
+				# 	es.estado = es.estado_segun_calificacion
+				# else
+				# 	es.estado = Inscripcionseccion.estados.key params[:valor]
+				# end
+				es.estado = Inscripcionseccion.estados.key params[:valor].to_i
+				
 				if es.save
-					flash[:success] = "El cambio el valor de retiro de #{es.estudiante.usuario.nickname} de la sección #{es.seccion.descripcion} se realizó correctamente"
+					if es.retirado?
+						flash[:success] = "Se retiró a #{es.estudiante.usuario.nickname} de la sección #{es.seccion.descripcion}."
+						info_bitacora "Se retiró al estudiante #{es.estudiante.usuario.descripcion} de la sección #{es.seccion.descripcion}. Estado anterior: #{estado_anterior.upcase}" , Bitacora::ACTUALIZACION, es
+					else
+						flash[:success] = "Se reinscribió a #{es.estudiante.usuario.nickname} de la sección #{es.seccion.descripcion}."
+						info_bitacora "Se reinscribió al estudiante #{es.estudiante.usuario.descripcion} de la sección #{es.seccion.descripcion}. Estado anterior: #{estado_anterior.upcase}" , Bitacora::ACTUALIZACION, es
+					end
 				else
 					flash[:error] = "No se pudo cambiar el valor de retiro, intentelo de nuevo: #{es.errors.full_messages.join' | '}"
 				end				
@@ -125,17 +138,6 @@ module Admin
 
 		end
 
-		# private
-		# # Use callbacks to share common setup or constraints between actions.
-
-		# 	def set_seccion
-		# 		@seccion = Seccion.find(params[:id])
-		# 	end
-
-		# 	# Never trust parameters from the scary internet, only allow the white list through.
-		# 	def seccion_params
-		# 	params.require(:secciones).permit(:numero, :asignatura_id, :periodo_id, :profesor_id, :calificada, :capacidad).to_h
-		# 	end
 
 	end
 end

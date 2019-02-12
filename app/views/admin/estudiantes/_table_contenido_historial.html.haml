@@ -1,7 +1,6 @@
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md
 	%thead
 		%tr
-			/ %th Año
 			%th Asignatura
 			%th Sección
 			%th UC
@@ -14,19 +13,19 @@
 			%th Definitiva
 			- if current_admin
 				%th Opciones
-	- @secciones_periodo.each do |est_sec_per|
-		- tipo_calificacion = 'success' if est_sec_per.tipo_estado_calificacion_id.eql? 'AP'
-		- tipo_calificacion = 'error' if (est_sec_per.tipo_estado_calificacion_id.eql? 'RE' or est_sec_per.tipo_estado_calificacion_id.eql? 'PI' or est_sec_per.retirada?)
-		-# tipo_calificacion = 'info' if (@periodo.id.eql? '2016-02A' and est_sec_per.confirmar_inscripcion.eql? 1)
-		%tbody
-			%tr{class: tipo_calificacion, id: est_sec_per.id}
-				- aux = est_sec_per.seccion.asignatura.anno
-				- aux = "--" if aux.eql? 0
-				/ %td= aux
+	%tbody
+		- @secciones_periodo.each do |est_sec_per|
+			- retirado = est_sec_per.retirado?
+			- calificacion = 'table-success' if est_sec_per.aprobado?
+			- calificacion = 'table-danger' if (est_sec_per.aplazado? || retirado)
+			- muted = retirado ? "text-muted" : ""
+
+			-# tipo_calificacion = 'info' if (@periodo.id.eql? '2016-02A' and est_sec_per.confirmar_inscripcion.eql? 1)
+			%tr{class: "#{calificacion} #{muted}", id: est_sec_per.id}
 				%td
 					= est_sec_per.seccion.asignatura.descripcion
 					%span.badge.badge-dark= est_sec_per.seccion.asignatura.id_uxxi
-					%span.badge= 'Retirada' if est_sec_per.retirada?
+					.badge-info= 'Retirada' if est_sec_per.retirado?
 					
 				%td= est_sec_per.seccion.numero
 				%td= est_sec_per.seccion.asignatura.creditos
@@ -37,17 +36,19 @@
 					%td= est_sec_per.seccion.profesor.usuario.apellido_nombre if est_sec_per.seccion.profesor
 					%td=raw est_sec_per.seccion.profesores.collect{|p| p.usuario.apellido_nombre}.join(" </br>") if est_sec_per.seccion.profesores.count > 0
 
-				- if false
+				- if false #est_sec_per.seccion.asignatura.numerica3?
 					%td= est_sec_per.primera_calificacion
 					%td= est_sec_per.segunda_calificacion
 					%td= est_sec_per.tercera_calificacion
-				%td= est_sec_per.calificacion_final
+				%td= est_sec_per.valor_calificacion true
 				- if current_admin
 					%td
-						- if est_sec_per.retirada?
-							= simple_toggle "/coesapp/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
+						- if est_sec_per.retirado?
+							
+							=# simple_toggle "/coesapp/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
+							= simple_toggle "#{set_retirar_inscripcionseccion_path(est_sec_per)}?valor=0", '', 'Reinscribir Asignatura', 'success', 'ok'
 						- else
-							= simple_toggle "/coesapp/inscripcionsecciones/#{est_sec_per.id}/set_retirar?valor=RET", '', 'Retirar Asignatura', 'danger', 'remove'
+							= simple_toggle "#{set_retirar_inscripcionseccion_path(est_sec_per)}?valor=3", '', 'Retirar Asignatura', 'danger', 'remove'
 
 						%b.tooltip-btn.ml-1{'data_toggle'=>'tooltip', 'title'=>'Eliminar Asignatura'}
 							= link_to(est_sec_per, {class: 'btn-danger btn-sm', :method => :delete, :data => {:confirm => "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }}) do

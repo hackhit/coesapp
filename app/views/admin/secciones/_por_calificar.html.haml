@@ -1,0 +1,245 @@
+
+%br
+= form_tag(calificar_seccion_path) do
+	= hidden_field_tag "id", @seccion.id
+
+	%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+		%thead
+			%tr
+				= render 'admin/secciones/tabla_headers_tipo_seccion'
+				- if @por_cerrar
+					%th NR
+					- if @seccion.asignatura.absoluta?
+						%th Aprobado
+						%th Aplazado
+					- else
+						%th
+				%th
+
+		%tbody
+			- inscripciones.each_with_index do |es,i|
+				
+				- clases_retirada = es.retirado? ? 'table-danger text-muted' : ''
+
+				%tr{class: "#{clases_retirada}", id: "reg_#{es.estudiante_id}"}
+
+					= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion}
+
+					%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 0);"}
+					
+					- if @por_cerrar
+						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_otras_opciones(this, #{es.estudiante_id});"}
+
+						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 1);"}
+						- disable = !(es.diferido? or es.reparacion?)
+						- if @seccion.asignatura.absoluta?
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 1, (es.aprobado?), required: !disable, disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 2, (es.aplazado?), required: !disable, disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
+
+
+						- else
+							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: es.calificacion_posterior, class: 'form-control form-control-sm', required: !disable, disabled: disable,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
+					- else
+						%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.diferido?, {onclick: "desactivar_otras_opciones(this, #{es.estudiante_id});"}
+					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
+	%hr
+		- if @por_cerrar
+
+			= submit_tag "Guardar y Cerrar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?', value: 1}
+		- if current_profesor
+			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
+		- else
+			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right"
+:javascript
+	function desactivar_otros_inputs(obj, ci, nr){
+		var inputs = $('#reg_'+ci+' input')
+		var post = $('#_est_'+ci+'calificacion_posterior');
+		var post1 = $('#_est_'+ci+'calificacion_posterior_1');
+		var post2 = $('#_est_'+ci+'calificacion_posterior_2');
+		inputs.val('');
+		if ($(obj).prop('checked') == true){
+			inputs.prop('disabled', true);
+			inputs.prop('readonly', true);
+			inputs.prop('required', false);
+			$(obj).prop('disabled', false);
+			if(nr == 1){
+				post.prop('disabled', false);
+				post.prop('readonly', false);
+				post.prop('required', true);
+
+				post1.prop('disabled', false);
+				post1.prop('readonly', false);
+				post1.prop('required', true);
+
+				post2.prop('disabled', false);
+				post2.prop('readonly', false);
+				post2.prop('required', true);
+
+				numero_a_letras('0', ci);
+
+			}else{
+				numero_a_letras('-1', ci);
+			}
+
+		}else{
+			inputs.prop('disabled', false);
+			inputs.prop('readonly', false);
+			inputs.prop('required', true);
+			post.prop('disabled', true);
+			post.prop('readonly', true);
+			post.prop('required', false);
+
+			post1.prop('disabled', true);
+			post1.prop('readonly', true);
+			post1.prop('required', false);
+
+			post2.prop('disabled', true);
+			post2.prop('readonly', true);
+			post2.prop('required', false);
+
+
+			$(obj).prop('required', false);
+			numero_a_letras('0', ci);
+
+		}
+
+		$("#_"+ci+"calificacion_en_letras").prop('disabled', true);
+		$("#_"+ci+"calificacion_en_letras").prop('readonly', true);		
+	}
+
+	function desactivar_otras_opciones(obj, ci){
+		
+		var checks = $('#reg_'+ci+' input:checkbox');
+		
+		var cal_post = $('#_est_'+ci+'calificacion_posterior');
+		var post1 = $('#_est_'+ci+'calificacion_posterior_1');
+		var post2 = $('#_est_'+ci+'calificacion_posterior_2');
+		if ($(obj).prop('checked') == true){
+			checks.prop('disabled', true);
+			$(obj).prop('disabled', false);
+			cal_post.prop('disabled', false);
+			cal_post.prop('readonly', false);
+			cal_post.prop('required', true);
+			post1.prop('disabled', false);
+			post1.prop('readonly', false);
+			post1.prop('required', true);
+			post2.prop('disabled', false);
+			post2.prop('readonly', false);
+			post2.prop('required', true);
+		}else{
+			checks.prop('disabled', false);
+			cal_post.prop('disabled', true);
+			cal_post.prop('readonly', true);
+			cal_post.prop('required', false);
+			post1.prop('disabled', true);
+			post1.prop('readonly', true);
+			post1.prop('required', false);
+			post2.prop('disabled', true);
+			post2.prop('readonly', true);
+			post2.prop('required', false);	
+			numero_a_letras('0', ci);		
+		}
+	}
+
+	function numero_a_letras(valor, ci){
+
+	switch (valor) {
+		case '-1':
+			final = "PÉRDIDA POR INASISTENCIA";
+			break;		
+		case '1':
+			final = "CERO UNO";
+			break;
+		case '2':
+			final = "CERO DOS";
+			break;
+		case '3':
+			final = "CERO TRES";
+			break;
+		case '4':
+			final = "CERO CUATRO";
+			break;
+		case '5':
+			final = "CERO CINCO";
+			break;
+		case '6':
+			final = "CERO SEIS";
+			break;
+		case '7':
+			final = "CERO SIETE";
+			break;
+		case '8':
+			final = "CERO OCHO";
+			break;
+		case '9':
+			final = "CERO NUEVE";
+			break;
+		case '10':
+			final = "DIEZ";
+			break;
+		case '11':
+			final = "ONCE";
+			break;
+		case '12':
+			final = "DOCE";
+			break;
+		case '13':
+			final = "TRECE";
+			break;
+		case '14':
+			final = "CATORCE";
+			break;
+		case '15':
+			final = "QUINCE";
+			break;
+		case '16':
+			final = "DIEZ Y SEIS";
+			break;
+		case '17':
+			final = "DIEZ Y SIETE";
+			break;
+		case '18':
+			final = "DIEZ Y OCHO";
+			break;
+		case '19':
+			final = "DIEZ Y NUEVE";
+			break;
+		case '20':
+			final = "VEINTE";
+			break;
+		default:
+		final = "POR DEFINIR";
+	}
+		$("#_"+ci+"calificacion_en_letras").val(final);
+
+	}
+
+	function calcular(p1,p2,p3,ci){
+		var nota1 = document.getElementById("_est_"+ci+"primera_calificacion").value;
+		var nota2 = document.getElementById("_est_"+ci+"segunda_calificacion").value;
+		var nota3 = document.getElementById("_est_"+ci+"tercera_calificacion").value;
+		var porcen1 = (p1*nota1)/100;
+		porcen1 =  Math.round(porcen1 * 10) / 10;
+		var porcen2 = (p2*nota2)/100;
+		porcen2 =  Math.round(porcen2 * 10) / 10;
+		var porcen3 = (p3*nota3)/100;
+		porcen3 =  Math.round(porcen3 * 10) / 10;
+		$("#"+ci+"_calificacion_primera_text").text(porcen1);
+		$("#"+ci+"_calificacion_segunda_text").text(porcen2);
+		$("#"+ci+"_calificacion_tercera_text").text(porcen3);
+		var final = (porcen1+porcen2+porcen3).toFixed(0);
+		
+		$("#_est_"+ci+"calificacion_final").val(final);
+		numero_a_letras(final, ci);
+	}
+
+
+	function absoluto_letras(ci, obj){
+		if ($(obj).val() == 1){
+			$("#_"+ci+"calificacion_en_letras").val("APROBADO");
+		}else if ($(obj).val() == 2){
+			$("#_"+ci+"calificacion_en_letras").val("APLAZADO");
+		}else{
+			$("#_"+ci+"calificacion_en_letras").val("");
+		}
+	}

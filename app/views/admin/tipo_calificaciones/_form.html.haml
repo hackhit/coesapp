@@ -1,4 +1,4 @@
-= form_for @tipo_estado_calificacion, html: { class: 'form-horizontal' } do |f|
+= form_for @tipo_calificacion, html: { class: 'form-horizontal' } do |f|
   .form-group
     = f.label :id, class: 'control-label col-md-2', value: 'Identificador:'
     .col-md-10
@@ -11,7 +11,7 @@
   .form-group
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'
-      = link_to t('.cancel', default: t("helpers.links.cancel")), tipo_estado_calificaciones_path, class: 'btn btn-default'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), tipo_calificaciones_path, class: 'btn btn-default'
 
 :javascript
 

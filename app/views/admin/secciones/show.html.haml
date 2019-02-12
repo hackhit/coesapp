@@ -17,7 +17,7 @@
 		%tbody
 			%tr
 				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.asignatura.descripcion}", @seccion.asignatura
-				%td= "#{@seccion.descripcion_profesor_asignado}"
+				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.descripcion_profesor_asignado}", @seccion.profesor.usuario
 				%td= "#{@seccion.asignatura.calificacion.titleize}"
 				%td= "#{@seccion.tipo_seccion.descripcion.titleize}"
 				%td= "#{@seccion.numero}"
@@ -33,10 +33,8 @@
 		= glyph 'download'
 		Descargar listado (Excel)
 
-
 	= render '/admin/secciones/detalle_seccion'
-
-	=link_to @back, class: 'btn btn-sm btn-outline-secondary mt-3' do
+	=link_to @back, class: 'btn btn-sm btn-outline-secondary mt-1' do
 		= glyph 'chevron-left'
 		Regresar
 	-if @seccion.calificada

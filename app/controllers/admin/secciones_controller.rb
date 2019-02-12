@@ -56,42 +56,73 @@ module Admin
 
     def calificar
       @estudiantes = params[:est]
+      error = false
       @estudiantes.each_pair do |ci,valores|
         @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).limit(1).first
         if valores['pi']
-          tipo_estado_calificacion_id = Inscripcionseccion::PI
+          tipo_calificacion_id = Inscripcionseccion::PI
           valores[:calificacion_final] = 0
+          valores[:calificacion_posterior] = nil
+          estado = 2
         elsif valores['np']
-          tipo_estado_calificacion_id = Inscripcionseccion::NOPRESENTO
+          estado = (valores[:calificacion_final] and valores[:calificacion_final].to_f >= 10) ? 1 : 2
+          tipo_calificacion_id = Inscripcionseccion::DIFERIDO
+        elsif valores['nd']
+          if valores[:calificacion_posterior]
+            estado = valores[:calificacion_posterior].to_f >= 10 ? 1 : 2
+            tipo_calificacion_id = Inscripcionseccion::DIFERIDO
+          else
+            estado = (valores[:calificacion_final] and valores[:calificacion_final].to_f >= 10) ? 1 : 2
+            tipo_calificacion_id = Inscripcionseccion::FINAL
+          end
+        elsif valores['nr']
+          tipo_calificacion_id = Inscripcionseccion::REPARACION
+          estado = valores[:calificacion_posterior].to_f >= 10 ? 1 : 2
+          # valores[:calificacion_final] = nil
         else
+          tipo_calificacion_id = Inscripcionseccion::FINAL
+          valores[:calificacion_posterior] = nil
           if @seccion.asignatura.absoluta?
-            tipo_estado_calificacion_id = valores[:calificacion_final]
+            estado = valores[:calificacion_final]
             valores[:calificacion_final] = 0
           elsif valores[:calificacion_final].to_f >= 10
-            tipo_estado_calificacion_id = 'A'
+            estado = 1
           else
-            tipo_estado_calificacion_id = 'AP'
+            estado = 2
           end
         end
-        @inscripcionseccion.tipo_estado_calificacion_id = tipo_estado_calificacion_id
+        @inscripcionseccion.tipo_calificacion_id = tipo_calificacion_id
+        @inscripcionseccion.estado = estado #Inscripcioseccion.estados.key estado
+
+        @inscripcionseccion.calificacion_posterior = valores[:calificacion_posterior]
         @inscripcionseccion.calificacion_final = valores[:calificacion_final]
+
 
         if @inscripcionseccion.save
           info_bitacora "Calificado Estudiante: #{@inscripcionseccion.estudiante.descripcion}, Seccion id: (#{@inscripcionseccion.seccion_id})" , Bitacora::ACTUALIZACION, @inscripcionseccion
         else
-          flash[:danger] = "No se pudo guardar la calificación."
+          error = true
+          flash[:danger] = "No se pudo guardar la calificación: #{@inscripcionseccion.errors.full_messages.to_sentence}."
           break
         end
 
       end
-      @seccion.calificada = true
-      calificada = @seccion.save
-      if calificada
-        flash[:success] = "Calificaciones guardada satisfactoriamente."
-        info_bitacora "Sección Calificada" , Bitacora::ACTUALIZACION, @seccion
+
+      unless error
+        @seccion.calificada = true
+        @seccion.abierta = false if params[:commit].eql? "Guardar y Cerrar" 
+
+        if @seccion.save
+          flash[:success] = "Calificaciones guardada satisfactoriamente."
+          info_bitacora "Sección Calificada" , Bitacora::ACTUALIZACION, @seccion
+          if @seccion.cerrada?
+            flash[:success] += "Sección Cerrada."
+            info_bitacora "Sección Cerrada" , Bitacora::ACTUALIZACION, @seccion
+          end
+        end
       end
 
-      if session[:administrador_id]
+      if current_admin
         redirect_to principal_admin_index_path
       else
         redirect_to @seccion
@@ -262,7 +293,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def seccion_params
-        params.require(:seccion).permit(:numero, :asignatura_id, :periodo_id, :profesor_id, :calificada, :capacidad, :tipo_seccion_id)
+        params.require(:seccion).permit(:numero, :asignatura_id, :periodo_id, :profesor_id, :calificada, :capacidad, :tipo_seccion_id, :abierta)
       end
   end
 end

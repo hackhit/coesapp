@@ -40,7 +40,7 @@ Rails.application.routes.draw do
       post 'actualizar_idiomas'
     end
 
-    resources :tipo_secciones, :tipoasignaturas, :tipo_estado_calificaciones, :tipo_estado_inscripciones
+    resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones
 
     resources :periodos, :planes, :escuelas, :departamentos, :catedras
     
