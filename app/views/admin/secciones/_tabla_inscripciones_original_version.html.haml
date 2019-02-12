@@ -28,7 +28,7 @@
 
 	%tbody
 		- @estudiantes_secciones.each_with_index do |es,i|
-			- retirada = es.retirada?  
+			- retirada = es.retirado?  
 			- tipo_calificacion = 'success' if es.aprobada?
 			- tipo_calificacion = 'error' if (es.reprobada? or es.pi? or retirada)
 			- tipo_calificacion = 'info' if @seccion.periodo_id.eql? '2016-02A' and es.confirmar_inscripcion.eql? 1

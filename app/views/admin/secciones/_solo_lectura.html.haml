@@ -1,0 +1,28 @@
+
+%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+	%thead			
+		%tr
+			%th #
+			%th Estudiante
+			%th Definitiva
+			%th Estado
+			%th Valor
+
+	%tbody
+		- inscripciones.each_with_index do |es,i|
+			- retirado = es.retirado?
+			- calificacion = 'table-success' if es.aprobado?
+			- calificacion = 'table-danger' if (es.aplazado? || es.pi? || retirado)
+			- muted = retirado ? "text-muted" : ""
+
+			%tr{class: "#{calificacion} #{muted}"}
+				%td= i+1
+				%td
+					= "(#{es.estudiante_id})"
+					= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
+					%span.badge= 'Retirada' if retirado
+
+				%td= es.valor_calificacion true
+				%td= es.estado.upcase
+
+				%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}

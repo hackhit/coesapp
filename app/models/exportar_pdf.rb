@@ -55,7 +55,7 @@ class ExportarPdf
 
 	inscripciones.each_with_index do |h,i|
 		estado = h.tipo_estado_calificacion.descripcion.to_s
-		estado = 'Retirada' if h.retirada?
+		estado = 'Retirada' if h.retirado?
     	if seccion.asignatura.numerica3?
 			data << [i+1, h.estudiante_id,
 			h.estudiante.usuario.descripcion_apellido,
@@ -118,7 +118,7 @@ class ExportarPdf
 				asignatura.descripcion.titleize,
 				seccion.numero,
 				asignatura.creditos,
-				inscripcion.tipo_estado_inscripcion.descripcion]
+				inscripcion.estado_inscripcion]
 		end
 		
 		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
@@ -180,7 +180,7 @@ class ExportarPdf
 				asignatura.descripcion.titleize,
 				seccion.numero,
 				asignatura.creditos,
-				inscripcion.tipo_estado_inscripcion.descripcion]
+				inscripcion.estado_inscripcion]
 		end
 		
 		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
@@ -242,8 +242,8 @@ class ExportarPdf
 					sec = h.seccion
 					asig = sec.asignatura
 					aux = asig.descripcion
-					nota_final = h.calificacion_para_kardex
-					data << [asig.id_uxxi, h.descripcion, sec.tipo_convocatoria, asig.creditos, nota_final, h.tipo_calificacion, h.seccion.numero]
+					nota_final = h.valor_calificacion
+					data << [asig.id_uxxi, h.descripcion, h.tipo_convocatoria, asig.creditos, nota_final, h.tipo_calificacion_to_cod, h.seccion.numero]
 				end
 
 			end

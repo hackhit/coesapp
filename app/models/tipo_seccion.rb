@@ -1,7 +1,9 @@
 class TipoSeccion < ApplicationRecord
-	DIFERIDA = 'ND'
-	REPARACION = 'NR'
+
+	FINAL = 'NF'
 	SUFICIENCIA = 'NS'
+	EQ_EXTERNA = 'EE'
+	EQ_INTERNA = 'EI'
 
 	# ASOCIACIONES
 	has_many :secciones
@@ -10,9 +12,5 @@ class TipoSeccion < ApplicationRecord
 	# VALIDACIONES
 	validates :id, presence: true, uniqueness: true
 	validates :descripcion, presence: true
-
-	def diferida?
-		self.id.eql? DIFERIDA
-	end
 
 end

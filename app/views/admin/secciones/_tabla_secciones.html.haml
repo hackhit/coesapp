@@ -14,7 +14,7 @@
 				%tr
 					%td= link_to seccion.descripcion, "#{seccion_path(seccion)}#{@calificar}", class: 'btn btn-sm btn-outline-info'
 					%td= seccion.periodo_id
-					%td= seccion.asignatura.descripcion_completa
+					%td= seccion.asignatura.descripcion_completa.upcase
 					%td
 						-if seccion.calificada
 							= colocar_numeros_seccion seccion
