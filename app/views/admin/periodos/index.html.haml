@@ -19,8 +19,8 @@
         %td=l periodo.inicia
         %td= periodo.secciones.count
         %td= periodo.inscripcionsecciones.count
-        %td= Inscripcionseccion.del_periodo(periodo.id).aprobados.count
-        %td= Inscripcionseccion.del_periodo(periodo.id).reprobados.count
+        %td= Inscripcionseccion.del_periodo(periodo.id).aprobado.count
+        %td= Inscripcionseccion.del_periodo(periodo.id).aplazado.count
         %td
           = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
             = glyph 'pencil'
