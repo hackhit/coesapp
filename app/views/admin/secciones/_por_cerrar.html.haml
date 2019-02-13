@@ -35,100 +35,79 @@
 	%hr
 		= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere..."
 :javascript
+
 	function desactivar_otros_inputs(obj, ci, nr){
-		var inputs = $('#reg_'+ci+' input')
-		var post = $('#_est_'+ci+'calificacion_posterior');
-		var post1 = $('#_est_'+ci+'calificacion_posterior_1');
-		var post2 = $('#_est_'+ci+'calificacion_posterior_2');
-		inputs.val('');
-		if ($(obj).prop('checked') == true){
-			inputs.prop('disabled', true);
-			inputs.prop('readonly', true);
-			inputs.prop('required', false);
-			$(obj).prop('disabled', false);
-			if(nr == 1){
-				post.prop('disabled', false);
-				post.prop('readonly', false);
-				post.prop('required', true);
+		var checks, numeros, post, post1, post2, valor;
+		numeros = $('#reg_' + ci + ' input');
+		checks = $('#reg_' + ci + ' input:checkbox');
 
-				post1.prop('disabled', false);
-				post1.prop('readonly', false);
-				post1.prop('required', true);
+		post = $('#_est_' + ci + 'calificacion_posterior');
+		post1 = $('#_est_' + ci + 'calificacion_posterior_1');
+		post2 = $('#_est_' + ci + 'calificacion_posterior_2');
+		
+		numeros.val('');
+		checks.val('');
 
-				post2.prop('disabled', false);
-				post2.prop('readonly', false);
-				post2.prop('required', true);
+		valor = $(obj).prop('checked');
 
-				numero_a_letras('0', ci);
-
-			}else{
-				numero_a_letras('-1', ci);
-			}
-
-		}else{
-			inputs.prop('disabled', false);
-			inputs.prop('readonly', false);
-			inputs.prop('required', true);
-			post.prop('disabled', true);
-			post.prop('readonly', true);
-			post.prop('required', false);
-
-			post1.prop('disabled', true);
-			post1.prop('readonly', true);
-			post1.prop('required', false);
-
-			post2.prop('disabled', true);
-			post2.prop('readonly', true);
-			post2.prop('required', false);
+		numeros.prop('disabled', valor);
+		checks.prop('disabled', valor);
+		numeros.prop('required', !valor);
+		$(obj).prop('disabled', false);
 
 
-			$(obj).prop('required', false);
+		if(nr === 1){
+			post.prop('disabled', !valor);
+			post.prop('required', valor);
+
+			post1.prop('disabled', !valor);
+			post1.prop('required', valor);
+
+			post2.prop('disabled', !valor);
+			post2.prop('required', valor);
+
 			numero_a_letras('0', ci);
 
+		}else{
+			numero_a_letras('-1', ci);
 		}
-
 		$("#_"+ci+"calificacion_en_letras").prop('disabled', true);
 		$("#_"+ci+"calificacion_en_letras").prop('readonly', true);		
 	}
 
 	function desactivar_otras_opciones(obj, ci){
+		var checks, cal_post, post1, post2, valor;
+		checks = $('#reg_'+ci+' input:checkbox');
 		
-		var checks = $('#reg_'+ci+' input:checkbox');
-		
-		var cal_post = $('#_est_'+ci+'calificacion_posterior');
-		var post1 = $('#_est_'+ci+'calificacion_posterior_1');
-		var post2 = $('#_est_'+ci+'calificacion_posterior_2');
-		if ($(obj).prop('checked') == true){
-			checks.prop('disabled', true);
-			$(obj).prop('disabled', false);
-			cal_post.prop('disabled', false);
-			$('#reg_'+ci+' input').prop('required', false);
-			cal_post.prop('required', true);
-			post1.prop('disabled', false);
-			post2.prop('disabled', false);
+		cal_post = $('#_est_'+ci+'calificacion_posterior');
+		post1 = $('#_est_'+ci+'calificacion_posterior_1');
+		post2 = $('#_est_'+ci+'calificacion_posterior_2');
 
-
-		}else{
-			$('#reg_'+ci+' input').prop('required', true);
-			checks.prop('disabled', false);
-			cal_post.prop('disabled', true);
-			cal_post.prop('required', false);
-			post1.prop('disabled', true);
-
-
-			post2.prop('disabled', true);
-
-
-			numero_a_letras('0', ci);		
-		}
+		valor = $(obj).prop('checked')
+		checks.prop('disabled', valor);
+		$(obj).prop('disabled', false);
+		cal_post.prop('disabled', !valor);
+		cal_post.prop('required', valor);
+		post1.prop('disabled', !valor);
+		post2.prop('disabled', !valor);
+		$('#reg_'+ci+' input').prop('required', !valor);
+			
+		if (valor === true) numero_a_letras('0', ci);
+	
 	}
 
 	function numero_a_letras(valor, ci){
-
+	var final;
 	switch (valor) {
+		case 'A':
+			final = "APROBADO";
+			break;
+		case 'AP':
+			final = "APLAZADO";
+			break;
 		case '-1':
 			final = "PÉRDIDA POR INASISTENCIA";
-			break;		
+			break;
 		case '1':
 			final = "CERO UNO";
 			break;
@@ -197,19 +176,20 @@
 	}
 
 	function calcular(p1,p2,p3,ci){
-		var nota1 = document.getElementById("_est_"+ci+"primera_calificacion").value;
-		var nota2 = document.getElementById("_est_"+ci+"segunda_calificacion").value;
-		var nota3 = document.getElementById("_est_"+ci+"tercera_calificacion").value;
-		var porcen1 = (p1*nota1)/100;
+		var nota1, nota2, nota3, porcen1, porcen2, porcen3, final;
+		nota1 = document.getElementById("_est_"+ci+"primera_calificacion").value;
+		nota2 = document.getElementById("_est_"+ci+"segunda_calificacion").value;
+		nota3 = document.getElementById("_est_"+ci+"tercera_calificacion").value;
+		porcen1 = (p1*nota1)/100;
 		porcen1 =  Math.round(porcen1 * 10) / 10;
-		var porcen2 = (p2*nota2)/100;
+		porcen2 = (p2*nota2)/100;
 		porcen2 =  Math.round(porcen2 * 10) / 10;
-		var porcen3 = (p3*nota3)/100;
+		porcen3 = (p3*nota3)/100;
 		porcen3 =  Math.round(porcen3 * 10) / 10;
 		$("#"+ci+"_calificacion_primera_text").text(porcen1);
 		$("#"+ci+"_calificacion_segunda_text").text(porcen2);
 		$("#"+ci+"_calificacion_tercera_text").text(porcen3);
-		var final = (porcen1+porcen2+porcen3).toFixed(0);
+		final = (porcen1+porcen2+porcen3).toFixed(0);
 		
 		$("#_est_"+ci+"calificacion_final").val(final);
 		numero_a_letras(final, ci);
@@ -217,9 +197,9 @@
 
 
 	function absoluto_letras(ci, obj){
-		if ($(obj).val() == 1){
+		if ($(obj).val() === 1){
 			$("#_"+ci+"calificacion_en_letras").val("APROBADO");
-		}else if ($(obj).val() == 2){
+		}else if ($(obj).val() === 2){
 			$("#_"+ci+"calificacion_en_letras").val("APLAZADO");
 		}else{
 			$("#_"+ci+"calificacion_en_letras").val("");

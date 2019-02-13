@@ -404,7 +404,7 @@ class Archivo
 
 		@seccion.inscripcionsecciones.each_with_index do |es,i|
 			e = es.estudiante
-			@sheet.row(i+14).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, @seccion.tipo_convocatoria]
+			@sheet.row(i+14).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, es.tipo_convocatoria]
 		end
 
 		file_name = "reporte_#{@seccion.id}.xls"
