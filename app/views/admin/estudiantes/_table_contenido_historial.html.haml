@@ -23,9 +23,9 @@
 			-# tipo_calificacion = 'info' if (@periodo.id.eql? '2016-02A' and est_sec_per.confirmar_inscripcion.eql? 1)
 			%tr{class: "#{calificacion} #{muted}", id: est_sec_per.id}
 				%td
-					= est_sec_per.seccion.asignatura.descripcion
-					%span.badge.badge-dark= est_sec_per.seccion.asignatura.id_uxxi
-					.badge-info= 'Retirada' if est_sec_per.retirado?
+					= link_to_if current_admin, est_sec_per.seccion.asignatura.descripcion, est_sec_per.seccion
+					.badge.badge-dark= est_sec_per.seccion.asignatura.id_uxxi
+					.badge.badge-info= 'Retirada' if est_sec_per.retirado?
 					
 				%td= est_sec_per.seccion.numero
 				%td= est_sec_per.seccion.asignatura.creditos

@@ -214,14 +214,20 @@ class ExportarPdf
 			# inscripcionsecciones_periodos = inscripcionsecciones.del_periodo periodo.id
 
 			if inscripcionsecciones_periodos.count > 0
-				data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Convocatoria</b>", "<b>Créditos</b>", "<b>Final</b>", "<b>Final_alfa</b>", "<b>Sección</b>"]]
+				data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Créditos</b>", "<b>Sección</b>", "<b>Convocatoria</b>", "<b>Calif. Num.</b>", "<b>Calif. alfa</b>"]]
 
 				inscripcionsecciones_periodos.each do |h|
+
 					sec = h.seccion
 					asig = sec.asignatura
 					aux = asig.descripcion
-					nota_final = h.valor_calificacion
-					data << [asig.id_uxxi, h.descripcion, h.tipo_convocatoria, asig.creditos, nota_final, h.tipo_calificacion_to_cod, h.seccion.numero]
+					nota = h.valor_calificacion(false, 'F')
+					data << [asig.id_uxxi, h.descripcion, asig.creditos, h.seccion.numero, h.tipo_convocatoria('F'), nota, h.tipo_calificacion_to_cod]
+
+					if h.tiene_calificacion_posterior?
+						nota = h.valor_calificacion(false, 'P')
+						data << [asig.id_uxxi, h.descripcion, asig.creditos, h.seccion.numero, h.tipo_convocatoria('R'), nota, h.tipo_calificacion_to_cod]
+					end
 				end
 
 			end

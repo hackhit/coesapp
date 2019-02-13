@@ -102,14 +102,19 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 
-	def tipo_convocatoria
-		# aux = numero[0..1]
-		if self.reparacion?
-			return "RA2" #{aux}"
+	def tipo_convocatoria explicita = nil
+
+		if explicita.eql? 'F'
+			return "F#{seccion.periodo.valor_para_tipo_convocatoria}"
+		elsif explicita.eql? 'R'
+			return "R#{seccion.periodo.valor_para_tipo_convocatoria}"
 		else
-			return "FA2" #"F#{aux}"
+			if self.reparacion?
+				return "R#{seccion.periodo.valor_para_tipo_convocatoria}"
+			else
+				return "F#{seccion.periodo.valor_para_tipo_convocatoria}"
+			end
 		end
-		# return aux
 	end
 
 	# def calificacion_para_kardex
@@ -172,7 +177,7 @@ class Inscripcionseccion < ApplicationRecord
 
 	# end
 
-	def valor_calificacion tipo=false
+	def valor_calificacion incluir_tipo = false, final_o_posterior = nil
 		valor = ''
 		if retirado?
 			valor = '--'
@@ -183,19 +188,43 @@ class Inscripcionseccion < ApplicationRecord
 				valor = 'AP'
 			end
 		else
-			valor = colocar_nota
+			if final_o_posterior.eql? 'F'
+				valor = colocar_nota_final
+			elsif final_o_posterior.eql? 'P'	
+				valor = colocar_nota_posterior
+			else
+				valor = colocar_nota
+			end
 		end
-		valor += " (#{self.tipo_calificacion_id})" if self.tipo_calificacion_id and tipo and !retirado?
+		valor += " (#{self.tipo_calificacion_id})" if incluir_tipo and self.tipo_calificacion_id  and !self.retirado?
 		return valor
 	end
 
-	def colocar_nota
-		if (self.reparacion? || self.diferido?) and self.calificacion_posterior
-			return sprintf("%02i", self.calificacion_posterior)
-		elsif self.calificacion_final.nil?
+	def colocar_nota_final
+		if self.calificacion_final.nil?
 			return 'SN'
 		else
 			return sprintf("%02i", self.calificacion_final)
+		end		
+	end
+
+	def colocar_nota_posterior
+		if self.calificacion_final.nil?
+			return 'SN'
+		else
+			return sprintf("%02i", self.calificacion_posterior)
+		end		
+	end
+
+	def tiene_calificacion_posterior?
+		(self.reparacion? || self.diferido?) #and self.calificacion_posterior
+	end
+
+	def colocar_nota
+		if self.tiene_calificacion_posterior?
+			return self.colocar_nota_posterior
+		else
+			return self.colocar_nota_final
 		end
 	end
 
@@ -209,7 +238,7 @@ class Inscripcionseccion < ApplicationRecord
 			tipo = 'PD'
 		else
 
-			if seccion.numero.include? 'R'
+			if reparacion?
 				tipo = calificacion_final.to_i > 9 ? 'RA' : 'RR'
 			else
 				tipo = calificacion_final.to_i > 9 ? 'NF' : 'AP'

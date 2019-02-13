@@ -18,7 +18,19 @@ class Periodo < ApplicationRecord
 
 	# FUNCIONES:
 	def tiene_secciones?
-		self.secciones.count > 0 		
+		secciones.count > 0 		
+	end
+
+	def tipo_a_letra
+		tipo.to_s[0].upcase
+	end
+
+	def periodo_del_anno
+		"#{id.split('-').last[0..1]}"
+	end
+
+	def valor_para_tipo_convocatoria
+		"#{tipo_a_letra}#{periodo_del_anno.to_i}"
 	end
 
 	def anno
