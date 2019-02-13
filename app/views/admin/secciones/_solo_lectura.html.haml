@@ -22,7 +22,7 @@
 				%td
 					= "(#{es.estudiante_id})"
 					= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
-					.badge-info= 'Retirada' if retirado
+					.badge.badge-info= 'Retirada' if es.retirado?
 
 				%td= es.valor_calificacion true
 				%td= es.estado.upcase
