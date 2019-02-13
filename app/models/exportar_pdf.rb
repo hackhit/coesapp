@@ -16,7 +16,7 @@ class ExportarPdf
 		pdf.move_down 10
 
 		#instructor
-		pdf.text "Profesor: #{seccion.profesor.usuario.descripcion}", size: 10
+		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
 	 
 		pdf.move_down 10
 
