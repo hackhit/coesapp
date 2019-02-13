@@ -9,7 +9,7 @@ class Inscripcionseccion < ApplicationRecord
 	belongs_to :seccion
 	belongs_to :estudiante, primary_key: :usuario_id
 	belongs_to :tipo_calificacion
-	belongs_to :tipo_estado_inscripcion
+	# belongs_to :tipo_estado_inscripcion
 	belongs_to :tipoasignatura, optional: true
 	
 	# VARIABLES:
@@ -177,7 +177,7 @@ class Inscripcionseccion < ApplicationRecord
 		if retirado?
 			valor = '--'
 		elsif seccion.asignatura.absoluta?
-			if self.aprobada?
+			if self.aprobado?
 				valor = 'A'
 			else
 				valor = 'AP'

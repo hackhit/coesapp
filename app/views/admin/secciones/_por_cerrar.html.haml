@@ -25,8 +25,8 @@
 						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 1);"}
 						
 						- if @seccion.asignatura.absoluta?
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 1, (es.aprobado?), disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 2, (es.aplazado?), disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 1, (es.aprobado?), disabled: disable_porterior, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
+							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 2, (es.aplazado?), disabled: disable_porterior, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
 
 						- else
 							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: es.calificacion_posterior, class: 'form-control form-control-sm', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}

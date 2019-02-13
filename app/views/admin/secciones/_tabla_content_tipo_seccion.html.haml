@@ -17,8 +17,8 @@
 	%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {value: es.calificacion_final, placeholder: es.calificacion_final, class: 'form-control form-control-sm', required: !disable, disabled: disable, step: 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
 - else
 
-	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 2, (es.aplazado?), required: !disabled, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
-	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 1, (es.aprobado?), required: !disabled, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
+	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 2, (es.aplazado?), disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
+	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 1, (es.aprobado?), disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
 
 
 

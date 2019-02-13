@@ -48,7 +48,7 @@ module Admin
 			# 	end
 			# end
 			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 1 - Buscar Estudiante"
-			estudiantes = Estudiante.all.sort_by{|e| e.usuario.apellidos}
+			estudiantes = Estudiante.last(5).sort_by{|e| e.usuario.apellidos}
 			@estudiantes = estudiantes
 		end
 
