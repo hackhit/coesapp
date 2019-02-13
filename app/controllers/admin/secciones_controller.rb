@@ -34,7 +34,16 @@ module Admin
       error = 0
       @secciones.each do |seccion|
         seccion.calificada = false
-        seccion.inscripcionsecciones.each{|es| es.tipo_estado_calificacion_id = 'SC'; es.save}
+        seccion.abierta = true
+
+        seccion.inscripcionsecciones.each do |es|
+
+          es.tipo_calificacion_id = nil
+          es.calificacion_posterior = nil
+          es.estado = 'sin_calificar' unless es.retirado?
+          es.save
+
+        end
         if seccion.save
           total += 1
         else
@@ -92,7 +101,7 @@ module Admin
           end
         end
         @inscripcionseccion.tipo_calificacion_id = tipo_calificacion_id
-        @inscripcionseccion.estado = estado #Inscripcioseccion.estados.key estado
+        @inscripcionseccion.estado = Inscripcionseccion.estados.key estado
 
         @inscripcionseccion.calificacion_posterior = valores[:calificacion_posterior]
         @inscripcionseccion.calificacion_final = valores[:calificacion_final]
@@ -110,7 +119,7 @@ module Admin
 
       unless error
         @seccion.calificada = true
-        @seccion.abierta = false if params[:commit].eql? "Guardar y Cerrar" 
+        @seccion.abierta = false if params[:cerrar]
 
         if @seccion.save
           flash[:success] = "Calificaciones guardada satisfactoriamente."

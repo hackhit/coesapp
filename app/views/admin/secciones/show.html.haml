@@ -30,11 +30,11 @@
 
 
 	-if @seccion.calificada
-		= link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2 mb-md-2" do
+		= link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2" do
 			= glyph 'download'
-			Descargar notas
+			Descargar Acta de Notas
 
-	= link_to listado_seccion_descargar_path(@seccion.id), class: "mr-md-2 btn btn-outline-success float-right" do
+	= link_to listado_seccion_descargar_path(@seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
 		= glyph 'download'
 		Descargar listado (Excel)
 
@@ -42,7 +42,4 @@
 	=link_to @back, class: 'btn btn-sm btn-outline-secondary mt-1' do
 		= glyph 'chevron-left'
 		Regresar
-	-if @seccion.calificada
-		=link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-outline-success float-right mr-md-2" do
-			= glyph 'download'
-			Descargar notas
+

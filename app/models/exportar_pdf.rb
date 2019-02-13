@@ -2,85 +2,63 @@
 class ExportarPdf
 	include Prawn::View
 
-
-
   def self.notas(seccion)
 
-	# Variable Locales
-	pdf = Prawn::Document.new(top_margin: 20)
+		# Variable Locales
+		pdf = Prawn::Document.new(top_margin: 20)
 
-	#titulo
-	encabezado_central_con_logo pdf, "Coordinación Académica"
-	pdf.move_down 10
+		#titulo
+		encabezado_central_con_logo pdf, "Coordinación Académica"
+		pdf.move_down 10
 
-	pdf.text "Sección: #{seccion.descripcion} / Periodo: #{seccion.periodo_id} / U. Créditos: #{seccion.asignatura.creditos}", align: :center, size: 12 
+		pdf.text "Sección: #{seccion.descripcion} / Periodo: #{seccion.periodo_id} / U. Créditos: #{seccion.asignatura.creditos}", align: :center, size: 12 
 
-	pdf.move_down 10
-    
-    # pdf.add_image_from_file 'app/assets/images/logo_fhe_ucv.jpg', 465, 710, 50,nil
-    # pdf.add_image_from_file 'app/assets/images/logo_eim.jpg', 515, 710+10, 50,nil
-    # pdf.add_image_from_file 'app/assets/images/logo_ucv.jpg', 45, 710, 50,nil
- 
-    # #texto del encabezado
-    # pdf.add_text 100,745,to_utf16("Universidad Central de Venezuela"),11
-    # pdf.add_text 100,735,to_utf16("Facultad de Humanidades y Educación"),11
-    # pdf.add_text 100,725,to_utf16("Escuela de Idiomas Modernos"),11
-    # pdf.add_text 100,715,to_utf16("Coordinación Académica"),11
+		pdf.move_down 10
 
-    #instructor
-    pdf.text "Profesor: #{seccion.profesor.usuario.descripcion}", size: 10
- 
-	pdf.move_down 10
+		#instructor
+		pdf.text "Profesor: #{seccion.profesor.usuario.descripcion}", size: 10
+	 
+		pdf.move_down 10
 
-    if seccion.periodo_id.eql? '2016-02A'
-      inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
-    else
-      inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
-    end
-
-    # if seccion.asignatura.catedra_id.eql? 'IB' or seccion.asignatura.catedra_id.eql? 'LIN' or seccion.asignatura.catedra_id.eql? 'LE'
-    #   p1 = 25 
-    #   p2 =35
-    #   p3 = 40
-    # else
-    #   p1 = p2 =30
-    #   p3 = 40
-    # end
-
-    if seccion.asignatura.numerica3?
-		data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>1era. Calif</b>", "<b>2da. Calif</b>", "<b>3era. Calif</b>", "<b>Calif Final</b>", "<b>Estado</b>"]]
-	else
-		data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>Final</b>", "<b>Estado</b>"]]
-	end
-
-	inscripciones.each_with_index do |h,i|
-		estado = h.tipo_estado_calificacion.descripcion.to_s
-		estado = 'Retirada' if h.retirado?
-    	if seccion.asignatura.numerica3?
-			data << [i+1, h.estudiante_id,
-			h.estudiante.usuario.descripcion_apellido,
-			h.primera_calificacion.to_s,
-			h.segunda_calificacion.to_s,
-			h.tercera_calificacion.to_s,
-			h.calificacion_final.to_i.to_s,
-			estado
-			]
+		if seccion.periodo_id.eql? '2016-02A'
+		  inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
 		else
-			data << [i+1, h.estudiante_id,
-			h.estudiante.usuario.descripcion_apellido,
-			h.calificacion_final.to_i.to_s,
-			estado
-			]			
+		  inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 		end
+
+		if seccion.asignatura.numerica3?
+			data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>1era. Calif</b>", "<b>2da. Calif</b>", "<b>3era. Calif</b>", "<b>Calif Final</b>", "<b>Estado</b>"]]
+		else
+			data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>Final</b>", "<b>Estado</b>"]]
+		end
+
+		inscripciones.each_with_index do |h,i|
+			if seccion.asignatura.numerica3?
+				data << [i+1, h.estudiante.usuario.apellido_nombre,
+				h.estudiante_id,
+				h.primera_calificacion.to_s,
+				h.segunda_calificacion.to_s,
+				h.tercera_calificacion.to_s,
+				h.valor_calificacion,
+				h.estado.titleize
+				]
+			else
+				data << [i+1, 
+				h.estudiante.usuario.apellido_nombre,
+				h.estudiante_id,
+				h.valor_calificacion,
+				h.estado.titleize
+				]			
+			end
+		end
+		
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :justify, padding: 3, border_color: '818284'}, :column_widths => {1 => 250})
+		t.draw
+
+
+		# pdf.text "#{Time.now.strftime('%d/%m/%Y %I:%M%p')} - Página: 1 de 1"
+		return pdf
 	end
-	
-	t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
-	t.draw
-
-
-    # pdf.text "#{Time.now.strftime('%d/%m/%Y %I:%M%p')} - Página: 1 de 1"
-    return pdf
-  end
 
 
 
@@ -90,7 +68,7 @@ class ExportarPdf
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 
- 		inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
+		inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
 		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
 
 		pdf = Prawn::Document.new(top_margin: 20)
@@ -135,7 +113,7 @@ class ExportarPdf
 
 		pdf.move_down 20
 
-      	pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
+		pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
 		pdf.move_down 30
 		pdf.text "<b> --Válida para el período actual--</b>", size: 11, inline_format: true, align: :center
 		pdf.move_down 50
@@ -152,7 +130,7 @@ class ExportarPdf
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 
- 		inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
+		inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
 		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
 
 		pdf = Prawn::Document.new(top_margin: 20)
@@ -197,7 +175,7 @@ class ExportarPdf
 
 		pdf.move_down 20
 
-      	pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
+		pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
 		pdf.move_down 30
 		pdf.text "<b> --Válida para el período actual--</b>", size: 11, inline_format: true, align: :center
 		pdf.move_down 50
@@ -254,9 +232,9 @@ class ExportarPdf
 				t.draw
 			end
 
-      		t = Time.new
-      	end
-      	# pdf.start_page_numbering(250, 15, 7, nil, to_utf16("#{t.day} / #{t.month} / #{t.year}       Página: <PAGENUM> de <TOTALPAGENUM>"), 1)
+			t = Time.new
+		end
+		# pdf.start_page_numbering(250, 15, 7, nil, to_utf16("#{t.day} / #{t.month} / #{t.year}       Página: <PAGENUM> de <TOTALPAGENUM>"), 1)
 
 		pdf.move_down 20
 		pdf.text "<b>NOTA:</b> CUANDO EXISTA DISCREPANCIA ENTRE LOS DATOS CONTENIDOS EN LAS ACTAS DE EXAMENES Y ÉSTE COMPROBANTE, LOS PRIMEROS SE TENDRÁN COMO AUTÉNTICOS PARA CUALQUIER FIN.", size: 11, inline_format: true, align: :justify
@@ -286,7 +264,7 @@ class ExportarPdf
 
 		pdf.move_down 5
 
-		# return pdf		
+		# return pdf
 	end
 
 

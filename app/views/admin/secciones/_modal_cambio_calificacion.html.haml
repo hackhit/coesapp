@@ -1,0 +1,74 @@
+.modal.fade#cambio_calificacion{'aria-hidden': true, role: :dialog, tabindex: '-1'}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×      
+        %h4.text-center#nueva_seccion_titulo
+      .modal-body.border.p-2
+        = form_tag(cambiar_calificacion_inscripcionsecciones_path, class: "form-horizontal")  do
+          = hidden_field_tag "inscripcionseccion_id"
+
+          .form-group
+            %label.control-label.col-md-12 Calificación
+            .col-md-12
+              - if @seccion.asignatura.absoluta?
+                = radio_button_tag "calificacion", 2, false, required: true
+                = radio_button_tag "calificacion", 1, false, required: true
+              - else
+                = number_field_tag "calificacion", {}, {class: 'form-control form-control-sm', required: true, step: 1, in: 0...21}
+
+
+          .form-group
+            %label.control-label.col-md-12 Tipo de Calificación
+            .col-md-12
+              - TipoCalificacion.all.each do |tc| 
+                %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: tc.descripcion.titleize}
+                  = radio_button_tag 'tipo_calificacion_id', tc.id, false, required: true
+                  = tc.id
+
+          .form-group.border
+            
+            %h6.col-md-12.text-center.alert.alert-warning Descripción de motivo de la modificación
+            .col-md-12.mb-md-3
+              = text_area_tag 'comentario', nil, {class: 'form-control', rows: '4', required: true}
+          .modal-footer 
+            %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Registrar', class: 'btn btn-outline-success btn-sm'
+          
+
+
+:javascript
+
+  $(document).ready(function() {
+
+    $( ".selects2" ).select2({
+      ajax: {
+      url: "#{busquedas_usuarios_path}.json?profesores=true",
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        return {
+          results: data
+        };
+      }     
+      },
+      placeholder: "--Escriba datos del profesor para buscarlo--",
+      theme: "bootstrap",
+      cache: true,
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}
+
+    });
+    
+  });
+
+  $('.upcase').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().toUpperCase());
+    node.val(node.val().replace(/[^A-Z0-9]/g,'') );
+  });
+
+
+
+
+

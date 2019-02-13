@@ -4,52 +4,25 @@
 	= hidden_field_tag "id", @seccion.id
 
 	%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
-		%thead
-			%tr
-				= render 'admin/secciones/tabla_headers_tipo_seccion'
-				- if @por_cerrar
-					%th NR
-					- if @seccion.asignatura.absoluta?
-						%th Aprobado
-						%th Aplazado
-					- else
-						%th
-				%th
+		= render 'admin/secciones/tabla_headers_tipo_seccion'
 
 		%tbody
 			- inscripciones.each_with_index do |es,i|
-				
-				- clases_retirada = es.retirado? ? 'table-danger text-muted' : ''
+				- if es.retirado?
+					= render partial: 'admin/secciones/tabla_content_retirado',locals: {i: i, es: es}
+				- else
+					- disable = (es.diferido? || es.reparacion?)
+					%tr{id: "reg_#{es.estudiante_id}"}
 
-				%tr{class: "#{clases_retirada}", id: "reg_#{es.estudiante_id}"}
-
-					= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion}
-
-					%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 0);"}
-					
-					- if @por_cerrar
-						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_otras_opciones(this, #{es.estudiante_id});"}
-
-						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 1);"}
-						- disable = !(es.diferido? or es.reparacion?)
-						- if @seccion.asignatura.absoluta?
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 1, (es.aprobado?), required: !disable, disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 2, (es.aplazado?), required: !disable, disabled: disable, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
-
-
-						- else
-							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: es.calificacion_posterior, class: 'form-control form-control-sm', required: !disable, disabled: disable,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
-					- else
+						= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
+						
+						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 0);"}
+						
 						%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.diferido?, {onclick: "desactivar_otras_opciones(this, #{es.estudiante_id});"}
-					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
-	%hr
-		- if @por_cerrar
 
-			= submit_tag "Guardar y Cerrar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?', value: 1}
-		- if current_profesor
-			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
-		- else
-			= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right"
+						%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
+	%hr
+	= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
 :javascript
 	function desactivar_otros_inputs(obj, ci, nr){
 		var inputs = $('#reg_'+ci+' input')
@@ -118,25 +91,23 @@
 			checks.prop('disabled', true);
 			$(obj).prop('disabled', false);
 			cal_post.prop('disabled', false);
-			cal_post.prop('readonly', false);
+			$('#reg_'+ci+' input').prop('required', false);
 			cal_post.prop('required', true);
 			post1.prop('disabled', false);
-			post1.prop('readonly', false);
-			post1.prop('required', true);
 			post2.prop('disabled', false);
-			post2.prop('readonly', false);
-			post2.prop('required', true);
+
+
 		}else{
+			$('#reg_'+ci+' input').prop('required', true);
 			checks.prop('disabled', false);
 			cal_post.prop('disabled', true);
-			cal_post.prop('readonly', true);
 			cal_post.prop('required', false);
 			post1.prop('disabled', true);
-			post1.prop('readonly', true);
-			post1.prop('required', false);
+
+
 			post2.prop('disabled', true);
-			post2.prop('readonly', true);
-			post2.prop('required', false);	
+
+
 			numero_a_letras('0', ci);		
 		}
 	}

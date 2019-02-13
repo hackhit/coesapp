@@ -1,0 +1,28 @@
+%tr.table-danger.text-muted
+	%td= i+1
+	%td
+		= "(#{es.estudiante_id})"
+		= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
+		.badge-info= 'Retirada' if es.retirado?
+
+
+	- if @seccion.asignatura.numerica3?
+		%th 
+		%th 
+		%th 
+		%th 
+	- elsif @seccion.asignatura.numerica?
+		%th 
+	- else
+		%th 
+		%th 
+	%th
+	%th
+	- if @por_cerrar
+		%th
+		- if @seccion.asignatura.absoluta?
+			%th 
+			%th
+		- else
+			%th
+	%th= text_field_tag nil, {}, {readonly: true, disabled: true, value: 'RETIRADA', class: 'form-control form-control-sm'}

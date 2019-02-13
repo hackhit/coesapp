@@ -1,15 +1,24 @@
-%th #
-%th Estudiante
-- if @seccion.asignatura.numerica3?
-	%th 1era.
-	%th 2da.
-	%th 3era.
-	%th Definitiva
-- elsif @seccion.asignatura.numerica?
-	%th Definitiva
-- else
-	%th Aprobado
-	%th Aplazado
-%th PI
-%th 
-	= @por_cerrar ? 'ND' : 'NP'
+%thead
+	%tr
+		%th #
+		%th Estudiante
+		- if @seccion.asignatura.numerica3?
+			%th 1era.
+			%th 2da.
+			%th 3era.
+			%th Definitiva
+		- elsif @seccion.asignatura.numerica?
+			%th Definitiva
+		- else
+			%th Aprobado
+			%th Aplazado
+		%th PI
+		%th= @por_cerrar ? 'ND' : 'NP'
+		- if @por_cerrar
+			%th NR
+			- if @seccion.asignatura.absoluta?
+				%th Aprobado
+				%th Aplazado
+			- else
+				%th
+		%th

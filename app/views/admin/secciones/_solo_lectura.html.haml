@@ -7,6 +7,8 @@
 			%th Definitiva
 			%th Estado
 			%th Valor
+			- if current_admin
+				%th
 
 	%tbody
 		- inscripciones.each_with_index do |es,i|
@@ -20,9 +22,16 @@
 				%td
 					= "(#{es.estudiante_id})"
 					= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
-					%span.badge= 'Retirada' if retirado
+					.badge-info= 'Retirada' if retirado
 
 				%td= es.valor_calificacion true
 				%td= es.estado.upcase
 
 				%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
+				- if current_admin 
+					%th
+						- if !es.retirado?
+							= link_to 'javascript:void(0)', onclick: "$('#inscripcionseccion_id').val('#{es.id}');$('#nueva_seccion_titulo').html('Modificar Calificacion a #{es.estudiante.usuario.descripcion_apellido}');$('#cambio_calificacion').modal();", class: 'tooltip-btn btn-sm btn-outline-success', 'data_toggle': :tooltip, title: 'Cambiar Calificación' do
+								= glyph :pencil
+ 
+= render 'admin/secciones/modal_cambio_calificacion' if current_admin

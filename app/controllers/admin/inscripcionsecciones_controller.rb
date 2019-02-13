@@ -4,6 +4,41 @@ module Admin
 		before_action :filtro_administrador#, only: [:destroy]
 		# before_action :filtro_admin_mas_altos!, except: [:destroy]
 		# before_action :filtro_ninja!, only: [:destroy]
+
+		def cambiar_calificacion
+			inscripcion = Inscripcionseccion.find params[:inscripcionseccion_id]
+
+			if (params[:tipo_calificacion_id].eql? TipoCalificacion::DIFERIDO) or (params[:tipo_calificacion_id].eql? TipoCalificacion::REPARACION)
+				calificacion_anterior = inscripcion.calificacion_posterior
+				inscripcion.calificacion_posterior = params[:calificacion]
+
+			elsif params[:tipo_calificacion_id].eql? TipoCalificacion::PI
+				calificacion_anterior = inscripcion.calificacion_final
+				inscripcion.calificacion_final = 0 
+			else
+				calificacion_anterior = inscripcion.calificacion_final
+				inscripcion.calificacion_final = Inscripcionseccion::FINAL
+			end
+
+			inscripcion.tipo_calificacion_id = params[:tipo_calificacion_id]
+			if inscripcion.seccion.asignatura.absoluta?
+				inscripcion.estado = nscripcioseccion.estados.key params[:calificacion]
+			elsif params[:calificacion].to_i >= 10
+				inscripcion.estado = :aprobado
+			else
+				inscripcion.estado = :aplazado
+			end
+
+			if inscripcion.save			
+
+				info_bitacora "Se cambió la calificación del estudiante #{inscripcion.estudiante.usuario.descripcion} de la sección #{inscripcion.seccion.descripcion}. Calificacion anterior: #{calificacion_anterior}" , Bitacora::ESPECIAL, inscripcion, params[:comentario]
+				flash[:success] = 'Calificación modificada con éxito'
+			else
+				flash[:danger] = 'Error al intentar modificar la calificación. Por favor verifica e inténtalo nuevamente.'
+			end
+			redirect_to inscripcion.seccion
+
+		end
 		
 		def buscar_estudiante
 			# if params[:id]

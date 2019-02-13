@@ -190,7 +190,7 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def colocar_nota
-		if self.reparacion? || self.diferido?
+		if (self.reparacion? || self.diferido?) and self.calificacion_posterior
 			return sprintf("%02i", self.calificacion_posterior)
 		elsif self.calificacion_final.nil?
 			return 'SN'
@@ -295,10 +295,7 @@ class Inscripcionseccion < ApplicationRecord
 	protected
 
 	def set_default
-		p 'Se disparó el trigger'
-		p "Valor de 'tipo_calificacion_id' antes del set_default#{self.tipo_calificacion_id}"
 		self.tipo_calificacion_id ||= FINAL
-		p "Valor de 'tipo_calificacion_id' después del set_default#{self.tipo_calificacion_id}"
 	end
 
 end

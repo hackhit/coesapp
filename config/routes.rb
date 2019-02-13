@@ -66,11 +66,12 @@ Rails.application.routes.draw do
     end
 
     resources :inscripcionsecciones do
-      collection do 
+      collection do
         get 'buscar_estudiante'
         get :seleccionar
         post :inscribir
         post :crear
+        post 'cambiar_calificacion' 
       end
       member do 
         get :seleccionar
