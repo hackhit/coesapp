@@ -68,6 +68,7 @@ class VisitorsController < ApplicationController
   def olvido_clave_guardar
     usuario = Usuario.where(ci: params[:id]).limit(1).first
     if usuario
+      session[:usuario_ci] = usuario.ci
       ApplicationMailer.olvido_clave(usuario).deliver  
       info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
       m = usuario.email
