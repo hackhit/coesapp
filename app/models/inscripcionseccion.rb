@@ -217,7 +217,7 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def tiene_calificacion_posterior?
-		(self.reparacion? || self.diferido?) #and self.calificacion_posterior
+		(self.reparacion? || self.diferido?) and self.calificacion_posterior
 	end
 
 	def colocar_nota

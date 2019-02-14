@@ -16,9 +16,6 @@
 		%th= @por_cerrar ? 'ND' : 'NP'
 		- if @por_cerrar
 			%th NR
-			- if @seccion.asignatura.absoluta?
-				%th Aprobado
-				%th Aplazado
-			- else
+			- unless @seccion.asignatura.absoluta?
 				%th
 		%th

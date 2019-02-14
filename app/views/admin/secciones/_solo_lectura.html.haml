@@ -4,6 +4,10 @@
 		%tr
 			%th #
 			%th Estudiante
+			- if @seccion.asignatura.numerica3?
+				%th 1er. Calf
+				%th 2da. Calf
+				%th 3era. Calf
 			%th Definitiva
 			%th Estado
 			%th Valor
@@ -23,6 +27,10 @@
 					= "(#{es.estudiante_id})"
 					= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
 					.badge.badge-info= 'Retirada' if es.retirado?
+				- if @seccion.asignatura.numerica3?
+					%td= es.primera_calificacion
+					%td= es.segunda_calificacion
+					%td= es.tercera_calificacion
 
 				%td= es.valor_calificacion true
 				%td= es.estado.upcase

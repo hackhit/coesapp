@@ -6,6 +6,7 @@ module Admin
 		# before_action :filtro_ninja!, only: [:destroy]
 
 		def cambiar_calificacion
+
 			inscripcion = Inscripcionseccion.find params[:inscripcionseccion_id]
 
 			if (params[:tipo_calificacion_id].eql? TipoCalificacion::DIFERIDO) or (params[:tipo_calificacion_id].eql? TipoCalificacion::REPARACION)
@@ -15,14 +16,18 @@ module Admin
 			elsif params[:tipo_calificacion_id].eql? TipoCalificacion::PI
 				calificacion_anterior = inscripcion.calificacion_final
 				inscripcion.calificacion_final = 0 
+				inscripcion.calificacion_posterior = nil 
 			else
 				calificacion_anterior = inscripcion.calificacion_final
-				inscripcion.calificacion_final = Inscripcionseccion::FINAL
+				inscripcion.calificacion_final = params[:calificacion].to_i
+				inscripcion.calificacion_posterior = nil
 			end
 
 			inscripcion.tipo_calificacion_id = params[:tipo_calificacion_id]
 			if inscripcion.seccion.asignatura.absoluta?
-				inscripcion.estado = nscripcioseccion.estados.key params[:calificacion]
+				inscripcion.estado = Inscripcionseccion.estados.key params[:calificacion].to_i
+				inscripcion.calificacion_posterior = nil
+				inscripcion.calificacion_final = nil
 			elsif params[:calificacion].to_i >= 10
 				inscripcion.estado = :aprobado
 			else

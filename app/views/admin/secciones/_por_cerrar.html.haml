@@ -18,15 +18,13 @@
 
 						= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
 						
-						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 0);"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id}, 0);"}
 						
-						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_otras_opciones(this, #{es.estudiante_id});"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});"}
 
-						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_otros_inputs(this, #{es.estudiante_id}, 1);"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});"}
 						
 						- if @seccion.asignatura.absoluta?
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 1, (es.aprobado?), disabled: disable_porterior, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
-							%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_posterior", 2, (es.aplazado?), disabled: disable_porterior, onchange: "absoluto_letras(#{es.estudiante_id}, this);"
 
 						- else
 							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: es.calificacion_posterior, class: 'form-control form-control-sm', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
@@ -35,18 +33,84 @@
 	%hr
 		= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere..."
 :javascript
+	
+	function resetear_numericos(valor, ci){
+
+		if (valor === true) {
+			numero_a_letras('-1', ci);
+		}else{
+			numero_a_letras('0', ci);
+		}
+		$('#reg_' + ci + ' input[type="number"]').val('');
+	}
+
+
+	function desactivar_por_pi(obj, ci, nr){
+		var numeros, radios, inputs, valor, post;
+
+		inputs = $('#reg_' + ci + ' input');
+		numeros = $('#reg_' + ci + ' input[type="number"]');
+		radios = $('#reg_' + ci + ' input[type="radio"]');
+
+		valor = $(obj).prop('checked');
+		post = $('#_est_' + ci + 'calificacion_posterior');
+
+		inputs.prop('disabled', valor);
+		numeros.prop('required', !valor);
+
+		$(obj).prop('disabled', false);
+		$(obj).prop('required', false);
+		post.prop('disabled', true);
+		post.prop('required', false);
+
+		if (valor === true) {
+			numero_a_letras('-1', ci);
+		}else{
+			numero_a_letras('0', ci);
+		}
+		numeros.val('');
+
+		radios.prop('checked', false);
+		
+		$("#_"+ci+"calificacion_en_letras").prop('disabled', true);
+		$("#_"+ci+"calificacion_en_letras").prop('readonly', true);		
+	}
+
+
+	function desactivar_por_nd(obj, ci){
+		var checks, post, valor, numeros, radios;
+
+		numeros = $('#reg_' + ci + ' input[type="number"]');
+		radios = $('#reg_' + ci + ' input[type="radio"]');
+		checks = $('#reg_'+ci+' input:checkbox');
+		
+		post = $('#_est_' + ci + 'calificacion_posterior');
+
+		valor = $(obj).prop('checked')
+
+		checks.prop('disabled', valor);
+
+		$(obj).prop('disabled', false);
+
+		post.prop('disabled', !valor);
+		post.prop('required', valor);
+			
+		if (valor === false){
+			numero_a_letras('0', ci);
+			numeros.val('');
+			radios.prop('checked', false);
+		} 
+	
+	}
 
 	function desactivar_otros_inputs(obj, ci, nr){
-		var checks, numeros, post, post1, post2, valor;
-		numeros = $('#reg_' + ci + ' input');
+		var checks, numeros, post, valor, radios;
+
+		numeros = $('#reg_' + ci + ' input[type="number"]');
+		radios = $('#reg_' + ci + ' input[type="radio"]');
 		checks = $('#reg_' + ci + ' input:checkbox');
 
 		post = $('#_est_' + ci + 'calificacion_posterior');
-		post1 = $('#_est_' + ci + 'calificacion_posterior_1');
-		post2 = $('#_est_' + ci + 'calificacion_posterior_2');
-		
-		numeros.val('');
-		checks.val('');
 
 		valor = $(obj).prop('checked');
 
@@ -55,16 +119,9 @@
 		numeros.prop('required', !valor);
 		$(obj).prop('disabled', false);
 
-
-		if(nr === 1){
+		if(nr == 1){
 			post.prop('disabled', !valor);
 			post.prop('required', valor);
-
-			post1.prop('disabled', !valor);
-			post1.prop('required', valor);
-
-			post2.prop('disabled', !valor);
-			post2.prop('required', valor);
 
 			numero_a_letras('0', ci);
 
@@ -75,26 +132,6 @@
 		$("#_"+ci+"calificacion_en_letras").prop('readonly', true);		
 	}
 
-	function desactivar_otras_opciones(obj, ci){
-		var checks, cal_post, post1, post2, valor;
-		checks = $('#reg_'+ci+' input:checkbox');
-		
-		cal_post = $('#_est_'+ci+'calificacion_posterior');
-		post1 = $('#_est_'+ci+'calificacion_posterior_1');
-		post2 = $('#_est_'+ci+'calificacion_posterior_2');
-
-		valor = $(obj).prop('checked')
-		checks.prop('disabled', valor);
-		$(obj).prop('disabled', false);
-		cal_post.prop('disabled', !valor);
-		cal_post.prop('required', valor);
-		post1.prop('disabled', !valor);
-		post2.prop('disabled', !valor);
-		$('#reg_'+ci+' input').prop('required', !valor);
-			
-		if (valor === true) numero_a_letras('0', ci);
-	
-	}
 
 	function numero_a_letras(valor, ci){
 	var final;
@@ -193,15 +230,4 @@
 		
 		$("#_est_"+ci+"calificacion_final").val(final);
 		numero_a_letras(final, ci);
-	}
-
-
-	function absoluto_letras(ci, obj){
-		if ($(obj).val() === 1){
-			$("#_"+ci+"calificacion_en_letras").val("APROBADO");
-		}else if ($(obj).val() === 2){
-			$("#_"+ci+"calificacion_en_letras").val("APLAZADO");
-		}else{
-			$("#_"+ci+"calificacion_en_letras").val("");
-		}
 	}

@@ -4,7 +4,7 @@
 	= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
 
 - if seccion.asignatura.numerica3?
-	%td= number_field_tag "[est][#{es.estudiante_id}]primera_calificacion", {}, {value: es.primera_calificacion, placeholder: es.primera_calificacion, class: 'form-control form-control-sm', required: (!disable), :step => 1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});", disabled: disable}
+	%td= number_field_tag "[est][#{es.estudiante_id}]primera_calificacion", {}, {value: es.primera_calificacion, placeholder: es.primera_calificacion, class: 'form-control form-control-sm', required: !disable, :step => 1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});", disabled: disable}
 
 	%td= number_field_tag "[est][#{es.estudiante_id}]segunda_calificacion", {}, {value: es.segunda_calificacion, placeholder: es.segunda_calificacion, class: 'form-control form-control-sm', required: !disable, disabled: disable, step: 1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
 
@@ -17,8 +17,8 @@
 	%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {value: es.calificacion_final, placeholder: es.calificacion_final, class: 'form-control form-control-sm', required: !disable, disabled: disable, step: 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
 - else
 
-	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 2, (es.aplazado?), disabled: disable, onchange: "numero_a_letras('AP', ci);"
-	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 1, (es.aprobado?), disabled: disable, onchange: "numero_a_letras('A', ci);"
+	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 1, (es.aprobado?), disabled: disable, onchange: "numero_a_letras('A', #{es.estudiante_id});", required: !disable
+	%td= radio_button_tag "[est][#{es.estudiante_id}]calificacion_final", 2, (es.aplazado?), disabled: disable, onchange: "numero_a_letras('AP', #{es.estudiante_id});", required: !disable
 
 
 
