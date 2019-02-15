@@ -10,13 +10,13 @@
               = link_to "#{delete_rol_usuario_path(@usuario)}?#{r.downcase}=true", class: 'btn btn-sm', data: { confirm: 'Esta acción eliminará irreversiblemente todas las asociaciones del rol de usuario como asignaturas y calificaciones. ¿Está Seguro?'} do
                 .text-danger= glyph 'trash'
 
-- if current_admin.maestros?
+- if current_admin.altos?
   %h6
     Agregar Roles:
     - unless @estudiante
       = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'set_estudiante'
       = render '/admin/usuarios/set_estudiante'
-    - unless @administrador
+    - if !@administrador and current_admin.maestros?
       = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'
       = render '/admin/usuarios/set_administrador'
     - unless @profesor

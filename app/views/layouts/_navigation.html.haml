@@ -27,7 +27,7 @@
                 = link_to 'Cátedras', catedras_path, class: 'dropdown-item'
               = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item'
               = link_to 'Secciones', secciones_path, class: 'dropdown-item'
-          - if current_admin.maestros?
+          - if current_admin.altos?
             %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
               %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
                 Usuarios
@@ -36,7 +36,8 @@
               .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
                 = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
                 = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
-                = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
+                - if current_admin.maestros?
+                  = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
         - if current_admin
           = form_tag(usuarios_path,{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
             = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
