@@ -23,5 +23,30 @@ task :generar_programaciones => :environment do
 	end
 end
 
+desc "Genera las programaciones del periodo 2019-01S de las asignaturas activas"
+task :generar_programaciones_201901S => :environment do
+	puts 'Iniciando generación de programaciones...'
+	begin
+		creadas = 0
+		existentes = 0
+		pe = Periodo.last
+
+		pe.asignaturas.where("activa IS TRUE").each do |a| 
+			if a.programaciones.find_by(periodo_id: pe.id)
+				existentes += 1
+				p 'x'
+			elsif a.programaciones.create(periodo_id: pe.id)
+				creadas = 0
+				p '.' 
+			end
+
+		end
+
+
+		puts "Total de programaciones creadas: #{creadas}. Existente: #{existentes}"
+	rescue Exception => e
+		puts = "Error: #{e.message}"
+	end
+end
 
 

@@ -13,6 +13,8 @@ class Periodo < ApplicationRecord
 	has_many :escuelaperiodos
 	accepts_nested_attributes_for :escuelaperiodos
 	has_many :escuelas, through: :escuelaperiodos
+
+	has_many :asignaturas, through: :escuelas#, source: :estudiantes
 	
 
 	# VALIDACIONES:
