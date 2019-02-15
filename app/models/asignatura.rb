@@ -4,6 +4,10 @@ class Asignatura < ApplicationRecord
 	belongs_to :catedra
 	belongs_to :departamento
 	belongs_to :tipoasignatura
+
+	has_many :programaciones, dependent: :destroy
+	has_many :periodos, through: :programaciones
+
 	# belongs_to :catedra_departamento, class_name: 'CatedraDepartamento', foreign_key: [:catedra_id, :departamento_id], primary_key: [:catedra_id, :departamento_id]
 
 	# ENUMERADAS CONSTANTES
@@ -27,7 +31,7 @@ class Asignatura < ApplicationRecord
 
 	# SCOPE
 
-	scope :activas, -> {where "activa IS TRUE"}
+	scope :activas, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ?', periodo_id) }
 
 	# TRIGGGERS:
 	before_save :set_uxxi_how_id
@@ -35,8 +39,9 @@ class Asignatura < ApplicationRecord
 
 	# FUNCIONES:
 
-	def activa?
-		return self.activa #self.activa.eql? true ? true : false
+	def activa? periodo_id
+		# return self.activa #self.activa.eql? true ? true : false
+		self.programaciones.where(periodo_id: periodo_id).count > 0
 	end
 	def descripcion_completa
 		"#{descripcion.titleize} - #{catedra.descripcion_completa} - #{departamento.descripcion_completa}"
@@ -53,7 +58,7 @@ class Asignatura < ApplicationRecord
 	
 	def set_uxxi_how_id
 		self.id_uxxi.strip!
-		self.id = self.id_uxxi
+		self.id = self.id_uxxi if self.id != self.id_uxxi
 	end
 
 	def set_to_upcase

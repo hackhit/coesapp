@@ -1,6 +1,6 @@
 = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Activar/Descativar Asignatura' do
   .onoffswitch
-    = check_box nil, :activa, checked: @asignatura.activa?, class: 'onoffswitch-checkbox', id: "switch_#{@asignatura.id}", onChange: "switches('#{set_activa_asignatura_path(@asignatura.id)}','#{@asignatura.id}');"
+    = check_box nil, :activa, checked: (@asignatura.activa? current_periodo.id), class: 'onoffswitch-checkbox', id: "switch_#{@asignatura.id}", onChange: "switches('#{set_activa_asignatura_path(@asignatura.id)}','#{@asignatura.id}');"
     %label.onoffswitch-label{for: "switch_#{@asignatura.id}"}
       %span.onoffswitch-inner
       %span.onoffswitch-switch

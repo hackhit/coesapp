@@ -3,6 +3,9 @@ class Periodo < ApplicationRecord
 	enum tipo: [:semestral, :anual, :unico]
 
 	# ASOCIACIONES:
+	has_many :programaciones, dependent: :destroy
+	has_many :asignaturas, through: :programaciones
+	
 	has_many :secciones
 	accepts_nested_attributes_for :secciones
 	has_many :inscripcionsecciones, through: :secciones, source: :estudiantes

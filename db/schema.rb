@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_11_152111) do
+ActiveRecord::Schema.define(version: 2019_02_15_145953) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -243,6 +243,17 @@ ActiveRecord::Schema.define(version: 2019_02_11_152111) do
     t.index ["usuario_id"], name: "index_profesores_on_usuario_id"
   end
 
+  create_table "programaciones", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "asignatura_id"
+    t.string "periodo_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asignatura_id", "periodo_id"], name: "index_programaciones_on_asignatura_id_and_periodo_id", unique: true
+    t.index ["asignatura_id"], name: "index_programaciones_on_asignatura_id"
+    t.index ["periodo_id", "asignatura_id"], name: "index_programaciones_on_periodo_id_and_asignatura_id", unique: true
+    t.index ["periodo_id"], name: "index_programaciones_on_periodo_id"
+  end
+
   create_table "seccion_profesores_secundarios", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "profesor_id"
     t.bigint "seccion_id"
@@ -344,12 +355,12 @@ ActiveRecord::Schema.define(version: 2019_02_11_152111) do
   add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", name: "inscripcionperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "periodos", name: "inscripcionperiodos_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", name: "inscripcionperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_4", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "tipo_calificaciones", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipo_estado_calificaciones", name: "inscripcionsecciones_ibfk_3", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipo_estado_inscripciones", name: "inscripcionsecciones_ibfk_5", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipoasignaturas", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_5", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "tipo_calificaciones", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipo_estado_calificaciones", name: "inscripcionsecciones_ibfk_4", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipo_estado_inscripciones", name: "inscripcionsecciones_ibfk_6", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipoasignaturas", name: "inscripcionsecciones_ibfk_2", on_update: :cascade, on_delete: :nullify
   add_foreign_key "inscripcionsecciones_copy", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_copy_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones_copy", "secciones", name: "inscripcionsecciones_copy_ibfk_4", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones_copy", "tipo_estado_calificaciones", name: "inscripcionsecciones_copy_ibfk_3", on_update: :cascade, on_delete: :nullify
@@ -358,6 +369,8 @@ ActiveRecord::Schema.define(version: 2019_02_11_152111) do
   add_foreign_key "planes", "escuelas", name: "planes_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "profesores", "departamentos", name: "profesores_ibfk_1", on_update: :cascade, on_delete: :nullify
   add_foreign_key "profesores", "usuarios", primary_key: "ci", name: "profesores_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "programaciones", "asignaturas"
+  add_foreign_key "programaciones", "periodos"
   add_foreign_key "seccion_profesores_secundarios", "profesores", primary_key: "usuario_id", name: "seccion_profesores_secundarios_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "seccion_profesores_secundarios", "secciones", name: "seccion_profesores_secundarios_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "secciones", "asignaturas", name: "secciones_ibfk_2", on_update: :cascade, on_delete: :cascade

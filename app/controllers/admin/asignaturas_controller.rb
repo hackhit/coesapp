@@ -8,8 +8,13 @@ module Admin
     before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa]
 
     def set_activa
-      @asignatura.activa = !@asignatura.activa
-      @asignatura.save
+        progs = @asignatura.programaciones.where(periodo_id: current_periodo.id)
+        if progs.count > 0
+          progs.delete_all
+        else
+          @asignatura.programaciones.create(periodo_id: current_periodo.id)
+        end
+
       head :no_content
     end
     # GET /asignaturas
