@@ -30,8 +30,9 @@ class Asignatura < ApplicationRecord
 	validates :tipoasignatura_id, presence: true
 
 	# SCOPE
-
 	scope :activas, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ?', periodo_id) }
+	scope :pcis, -> {where('pci IS TRUE')}
+	scope :no_pcis, -> {where('pci IS FALSE')}
 
 	# TRIGGGERS:
 	before_save :set_uxxi_how_id
@@ -39,6 +40,17 @@ class Asignatura < ApplicationRecord
 
 	# FUNCIONES:
 
+	def pci?
+		pci
+	end
+
+	def descripcion_pci
+		if self.pci
+			return "#{self.descripcion} (PCI)"
+		else
+			self.descripcion
+		end
+	end
 	def activa? periodo_id
 		# return self.activa #self.activa.eql? true ? true : false
 		self.programaciones.where(periodo_id: periodo_id).count > 0

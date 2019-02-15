@@ -1,0 +1,9 @@
+.modal.fade{'aria-hidden': true, role: :dialog, id: id_modal}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×      
+        %h4.text-center{id: "#{id_modal}_#{titulo}"}
+      .modal-body.border.p-2
+        = render content

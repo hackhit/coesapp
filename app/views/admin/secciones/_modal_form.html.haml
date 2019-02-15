@@ -13,26 +13,26 @@
           = hidden_field_tag "back", asignaturas_path if controller_name.eql? 'asignaturas'
 
           .form-group
-            = f.label :id, class: 'control-label col-md-3', value: 'Identificador'
+            = f.label :id, class: 'control-label col-md-12', value: 'Identificador'
             .col-md-12
               = f.text_field :numero, placeholder: 'Id. Sección...', class: 'form-control upcase', maxlength: 3, required: true
               %small.text-muted.font-italic Máximo 3 catacteres alfanuméricos (Caracteres Especiales No permitidos)
 
           .form-group
-            = f.label :id, class: 'control-label col-md-3', value: 'Tipo de Sección'
+            = f.label :id, class: 'control-label col-md-12', value: 'Tipo de Sección'
             .col-md-12
-              - TipoSeccion.order("created_at DESC").all.each do |ts| 
+              - TipoSeccion.order("created_at DESC").all.reject{|t| t.id.eql? 'ND' or t.id.eql? 'NR'}.each do |ts| 
                 
                 %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: ts.descripcion.titleize}
                   = radio_button_tag '[seccion]tipo_seccion_id', ts.id, false, required: true
                   = ts.id
           .form-group
-            = f.label :id, class: 'control-label col-md-3', value: 'Capacidad'
+            = f.label :id, class: 'control-label col-md-12', value: 'Capacidad'
             .col-md-12
               = f.number_field :capacidad, placeholder: 'Capacidad', class: 'form-control', maxlength: 3, required: true, value: 30, step: 1
           
           .form-group
-            = f.label :id, class: 'control-label col-md-3', value: 'Profesor Principal'
+            = f.label :id, class: 'control-label col-md-12', value: 'Profesor Principal'
             .col-md-12
               = grouped_collection_select :seccion, :profesor_id, @departamentos, :profesores, :descripcion, :id, :descripcion, {include_blank: 'Selecciona Departamento...', required: true}, { class: 'selects2 form-control text_field form-control-sm'}
           .modal-footer 

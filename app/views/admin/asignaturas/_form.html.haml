@@ -45,10 +45,18 @@
     = f.label :creditos, class: 'control-label col-md-2', value: 'Créditos'
     .col-md-10
       = f.number_field :creditos, class: 'text_field form-control', in: 0...21, step: 1
+
+  .form-group
+    .col-md-2
+      %label.btn.btn-info.btn-sm
+        = f.check_box :pci
+        PCI
+
+
   .form-group
     .col-md-offset-2.col-md-10
-      = f.submit nil, class: 'btn btn-primary'
-      = link_to t('.cancel', default: t("helpers.links.cancel")), :back, class: 'btn btn-default'
+      = f.submit nil, class: 'btn btn-outline-primary'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), :back, class: 'btn btn-outline-secondary'
 
 
 :javascript

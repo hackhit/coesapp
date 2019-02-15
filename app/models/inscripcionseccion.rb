@@ -159,7 +159,7 @@ class Inscripcionseccion < ApplicationRecord
 	# end
 
 	def descripcion
-		aux = seccion.asignatura.descripcion
+		aux = seccion.asignatura.descripcion_pci
 		aux += " <b>(Retirada)</b>" if retirado?
 		return aux
 	end

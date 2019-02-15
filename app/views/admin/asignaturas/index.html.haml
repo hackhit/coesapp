@@ -42,10 +42,5 @@
       dataType: 'json', 
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
     });
-    var ele = $("#switch_"+id).parents('tr');
-    if ($("#switch_"+id).is(':checked')){
-      ele.addClass("table-success");      
-    }else{
-      ele.removeClass("table-success");
-    }      
+    var ele = $("#switch_"+id).parents('tr');     
   }

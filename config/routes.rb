@@ -100,6 +100,7 @@ Rails.application.routes.draw do
     resources :asignaturas do
       member do
         get 'set_activa'
+        get 'set_pci'
       end
     end
 

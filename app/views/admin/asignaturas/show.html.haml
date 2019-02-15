@@ -3,7 +3,10 @@
   %dl
     %dt.label.label-default= model_class.human_attribute_name(:id_uxxi)
     %dd
-      %pre.prettyprint= @asignatura.id_uxxi
+      %pre.prettyprint
+        = @asignatura.id_uxxi
+        - if @asignatura.pci?
+          .ml-md-3.p-md-2.badge.badge-success PCI 
     %dt.label.label-default= model_class.human_attribute_name(:descripcion)
     %dd
       %pre.prettyprint= @asignatura.descripcion

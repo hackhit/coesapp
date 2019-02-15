@@ -1,0 +1,7 @@
+= content_tag :b, class: 'tooltip-btn', 'data_toggle': :tooltip, title: titulo do
+  .onoffswitch
+    = check_box nil, :activa, checked: chequeada, class: 'onoffswitch-checkbox', id: "switch_#{id}", onChange: "switches('#{url}','#{id}');"
+    %label.onoffswitch-label{for: "switch_#{id}"}
+      %span.onoffswitch-inner
+      %span.onoffswitch-switch
+

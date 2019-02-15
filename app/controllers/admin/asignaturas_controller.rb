@@ -5,7 +5,7 @@ module Admin
     #before_action :filtro_admin_mas_altos!, except: [:destroy]
     #before_action :filtro_ninja!, only: [:destroy]
 
-    before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa]
+    before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa, :set_pci]
 
     def set_activa
         progs = @asignatura.programaciones.where(periodo_id: current_periodo.id)
@@ -17,6 +17,15 @@ module Admin
 
       head :no_content
     end
+
+    def set_pci
+      @asignatura.pci = !@asignatura.pci
+      @asignatura.save
+
+      head :no_content
+    end
+
+
     # GET /asignaturas
     # GET /asignaturas.json
     def index
@@ -127,7 +136,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def asignatura_params
-        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos, :tipoasignatura_id, :calificacion)
+        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos, :tipoasignatura_id, :calificacion, :pci)
       end
   end
 end

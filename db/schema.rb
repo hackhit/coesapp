@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_15_145953) do
+ActiveRecord::Schema.define(version: 2019_02_15_203240) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2019_02_15_145953) do
     t.integer "creditos"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "pci", default: false, null: false
     t.index ["catedra_id"], name: "index_asignaturas_on_catedra_id"
     t.index ["departamento_id"], name: "index_asignaturas_on_departamento_id"
     t.index ["id"], name: "index_asignaturas_on_id"
@@ -369,8 +370,8 @@ ActiveRecord::Schema.define(version: 2019_02_15_145953) do
   add_foreign_key "planes", "escuelas", name: "planes_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "profesores", "departamentos", name: "profesores_ibfk_1", on_update: :cascade, on_delete: :nullify
   add_foreign_key "profesores", "usuarios", primary_key: "ci", name: "profesores_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "programaciones", "asignaturas"
-  add_foreign_key "programaciones", "periodos"
+  add_foreign_key "programaciones", "asignaturas", name: "programaciones_ibfk_1"
+  add_foreign_key "programaciones", "periodos", name: "programaciones_ibfk_2"
   add_foreign_key "seccion_profesores_secundarios", "profesores", primary_key: "usuario_id", name: "seccion_profesores_secundarios_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "seccion_profesores_secundarios", "secciones", name: "seccion_profesores_secundarios_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "secciones", "asignaturas", name: "secciones_ibfk_2", on_update: :cascade, on_delete: :cascade

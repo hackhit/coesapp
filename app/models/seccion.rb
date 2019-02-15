@@ -75,17 +75,17 @@ class Seccion < ApplicationRecord
 	end
 
 	def descripcion
-		descripcion = ""
-		descripcion += asignatura.descripcion if asignatura
+		descrip = ""
+		descrip += self.asignatura.descripcion_pci if self.asignatura
 		
 		if numero
 			if self.suficiencia?
-				descripcion += " (Suficiencia)"
+				descrip += " (Suficiencia)"
 			else
-				descripcion += " - #{numero}"
+				descrip += " - #{numero}"
 			end
 		end 
-		return descripcion
+		return descrip
 	end
 
 	def descripcion_profesor_asignado
