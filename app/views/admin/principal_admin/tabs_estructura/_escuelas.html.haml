@@ -17,7 +17,7 @@
 				- if @asignaturas.count > 0
 					= render '/admin/principal_admin/tabs_estructura/asignaturas'
 				- else
-					%h4.text-muted Sin Asignaturas Pci En Este Período
+					%b.text-muted Sin Asignaturas Pci En Este Período
 
 			- @escuelas.each do |esc|
 				- esc_activo = (session[:esc_id].eql? esc.id) ? 'active show' : ''
