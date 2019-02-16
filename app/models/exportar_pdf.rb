@@ -210,7 +210,7 @@ class ExportarPdf
 			pdf.move_down 5	
 
 			# inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).order("secciones.asignatura_id")
-			inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.descripcion <=> b.descripcion}
+			inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
 			# inscripcionsecciones_periodos = inscripcionsecciones.del_periodo periodo.id
 
 			if inscripcionsecciones_periodos.count > 0
