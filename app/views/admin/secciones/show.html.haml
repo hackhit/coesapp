@@ -15,7 +15,7 @@
 				%th U. Créditos
 		%tbody
 			%tr
-				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.asignatura.descripcion}", @seccion.asignatura
+				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.asignatura.descripcion_pci @seccion.periodo_id}", @seccion.asignatura
 				%td
 					- if @seccion.profesor
 						= link_to_if (current_admin and current_admin.altos?), "#{@seccion.descripcion_profesor_asignado}", @seccion.profesor.usuario
