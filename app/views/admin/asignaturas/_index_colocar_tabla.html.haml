@@ -10,8 +10,8 @@
         %th Calif.
         %th U. Créditos
         %th Secciones
-        %th PCI
         %th Activa
+        %th PCI
         %th Opciones
     - @asignaturas.each do |asignatura| 
       %tbody
@@ -32,12 +32,12 @@
                 %td.tooltip-btn{'data_toggle': :tooltip, title: 'Agregar Sección'}
                   = link_to 'javascript:void(0)', onclick: "$('#_seccionasignatura_id').val('#{asignatura.id}');$('#nueva_seccion_titulo').html('Nueva Sección para #{asignatura.descripcion}');$('#nueva_seccion').modal();" do
                     .text-success= glyph :plus
+          %td
+            = render partial: '/layouts/onoffswitch', locals: {titulo: '¿Activar Asignatura?', url: set_activa_asignatura_path(asignatura.id), id: asignatura.id, chequeada: (asignatura.activa? current_periodo.id), id_html: "activas_#{asignatura.id}"}
           %td 
             - hidden = (asignatura.tiene_programaciones? current_periodo.id) ? '' : 'hideble'
             .div{id: "pci_#{asignatura.id}", class: hidden} 
               = render partial: '/layouts/onoffswitch', locals: {titulo: '¿PCI?', url: set_pci_asignatura_path(asignatura.id), id: asignatura.id, chequeada: asignatura.pci?(current_periodo.id), id_html: "pci_switch_#{asignatura.id}"}
-          %td
-            = render partial: '/layouts/onoffswitch', locals: {titulo: '¿Activar Asignatura?', url: set_activa_asignatura_path(asignatura.id), id: asignatura.id, chequeada: (asignatura.activa? current_periodo.id), id_html: "activas_#{asignatura.id}"}
           %td
             .tooltip-btn{'data_toggle': :tooltip, title: 'Editar Asignatura'}
               = link_to edit_asignatura_path(asignatura), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
