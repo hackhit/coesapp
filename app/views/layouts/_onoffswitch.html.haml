@@ -1,7 +1,9 @@
 = content_tag :b, class: 'tooltip-btn', 'data_toggle': :tooltip, title: titulo do
   .onoffswitch
-    = check_box nil, :activa, checked: chequeada, class: 'onoffswitch-checkbox', id: "switch_#{id}", onChange: "switches('#{url}','#{id}');"
-    %label.onoffswitch-label{for: "switch_#{id}"}
+    - onChange = "switches('#{url}','#{id}');"
+    - onChange += "$('#pci_#{id}').toggle('slow');" if (id_html.include? 'activa')
+    = check_box nil, :activa, checked: chequeada, class: 'onoffswitch-checkbox', id: id_html, onChange: onChange
+    %label.onoffswitch-label{for: id_html}
       %span.onoffswitch-inner
       %span.onoffswitch-switch
 

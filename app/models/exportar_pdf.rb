@@ -93,7 +93,7 @@ class ExportarPdf
 			asignatura = seccion.asignatura
 			total_creditos += asignatura.creditos
 			data << [asignatura.id_uxxi,
-				asignatura.descripcion_pci.upcase,
+				asignatura.descripcion_pci(seccion.periodo_id).upcase,
 				seccion.numero,
 				asignatura.creditos,
 				inscripcion.estado_inscripcion]
@@ -155,7 +155,7 @@ class ExportarPdf
 			asignatura = seccion.asignatura
 			total_creditos += asignatura.creditos
 			data << [asignatura.id_uxxi,
-				asignatura.descripcion_pci.upcase,
+				asignatura.descripcion_pci(seccion.periodo_id).upcase,
 				seccion.numero,
 				asignatura.creditos,
 				inscripcion.estado_inscripcion]
@@ -221,7 +221,7 @@ class ExportarPdf
 					sec = h.seccion
 					asig = sec.asignatura
 					nota = h.valor_calificacion(false, 'F')
-					data << [asig.id_uxxi, h.descripcion, asig.creditos, h.seccion.numero, h.tipo_convocatoria('F'), nota, h.tipo_calificacion_to_cod]
+					data << [asig.id_uxxi, h.descripcion(sec.periodo_id), asig.creditos, h.seccion.numero, h.tipo_convocatoria('F'), nota, h.tipo_calificacion_to_cod]
 
 					if h.tiene_calificacion_posterior?
 						nota = h.valor_calificacion(false, 'P')

@@ -13,8 +13,11 @@
 	%div{class: @col10}
 		#pills-escuelas-tabContent.tab-content
 			.tab-pane.fade{"aria-labelledby": "pills-escuelas-tab", role: :tabpanel, id: "pci", class: 'show' }
-				- @asignaturas = current_periodo.asignaturas.pcis
-				= render '/admin/principal_admin/tabs_estructura/asignaturas'
+				- @asignaturas = current_periodo.asignaturas.pcis current_periodo.id
+				- if @asignaturas.count > 0
+					= render '/admin/principal_admin/tabs_estructura/asignaturas'
+				- else
+					%h4.text-muted Sin Asignaturas Pci En Este Período
 
 			- @escuelas.each do |esc|
 				- esc_activo = (session[:esc_id].eql? esc.id) ? 'active show' : ''

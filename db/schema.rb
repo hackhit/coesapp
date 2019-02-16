@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_15_203240) do
+ActiveRecord::Schema.define(version: 2019_02_16_004846) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -34,7 +34,6 @@ ActiveRecord::Schema.define(version: 2019_02_15_203240) do
     t.integer "creditos"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "pci", default: false, null: false
     t.index ["catedra_id"], name: "index_asignaturas_on_catedra_id"
     t.index ["departamento_id"], name: "index_asignaturas_on_departamento_id"
     t.index ["id"], name: "index_asignaturas_on_id"
@@ -249,6 +248,7 @@ ActiveRecord::Schema.define(version: 2019_02_15_203240) do
     t.string "periodo_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "pci", default: false, null: false
     t.index ["asignatura_id", "periodo_id"], name: "index_programaciones_on_asignatura_id_and_periodo_id", unique: true
     t.index ["asignatura_id"], name: "index_programaciones_on_asignatura_id"
     t.index ["periodo_id", "asignatura_id"], name: "index_programaciones_on_periodo_id_and_asignatura_id", unique: true

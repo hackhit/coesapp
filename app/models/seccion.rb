@@ -74,9 +74,13 @@ class Seccion < ApplicationRecord
 		inscripcionsecciones.sin_calificar.count
 	end
 
-	def descripcion
+	def descripcion periodo_id=nil
 		descrip = ""
-		descrip += self.asignatura.descripcion_pci if self.asignatura
+		if periodo_id
+			descrip += self.asignatura.descripcion_pci(periodo_id) if self.asignatura
+		else
+			descrip += self.asignatura.descripcion if self.asignatura
+		end
 		
 		if numero
 			if self.suficiencia?

@@ -31,8 +31,15 @@ class Asignatura < ApplicationRecord
 
 	# SCOPE
 	scope :activas, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ?', periodo_id) }
-	scope :pcis, -> {where('pci IS TRUE')}
-	scope :no_pcis, -> {where('pci IS FALSE')}
+
+	scope :pcis, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ? and programaciones.pci IS TRUE', periodo_id) }
+
+	scope :no_pcis, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ? and programaciones.pci IS FALSE', periodo_id) }
+
+
+	# scope :pcis, -> {where('pci IS TRUE')}
+	# scope :no_pcis, -> {where('pci IS FALSE')}
+
 
 	# TRIGGGERS:
 	before_save :set_uxxi_how_id
@@ -40,12 +47,18 @@ class Asignatura < ApplicationRecord
 
 	# FUNCIONES:
 
-	def pci?
-		pci
+	def pci? periodo_id
+		pr = programaciones.where(periodo_id: periodo_id)
+		(pr.count > 0) and pr.first.pci
 	end
 
-	def descripcion_pci
-		if self.pci
+	def tiene_programaciones? periodo_id
+		programaciones.where(periodo_id: periodo_id).count > 0
+	end
+
+	def descripcion_pci periodo_id
+
+		if self.pci? periodo_id
 			return "#{self.descripcion} (PCI)"
 		else
 			self.descripcion

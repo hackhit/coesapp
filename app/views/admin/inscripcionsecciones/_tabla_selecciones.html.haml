@@ -18,7 +18,7 @@
 				%td= sec.asignatura.anno
 				%td= sec.asignatura.departamento.descripcion
 				%td= sec.asignatura.catedra.descripcion
-				%td= sec.descripcion
+				%td= sec.descripcion sec.periodo_id
 				%td= sec.periodo_id
 				- if borrar_seleccion
 					%td.text-center= borrar_seleccion_link sec.asignatura_id

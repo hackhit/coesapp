@@ -19,8 +19,14 @@ module Admin
     end
 
     def set_pci
-      @asignatura.pci = !@asignatura.pci
-      @asignatura.save
+      progrs = @asignatura.programaciones.where(periodo_id: current_periodo.id)
+      if progrs.count > 0
+        aux = progrs.first.pci
+        progrs.delete_all
+        @asignatura.programaciones.create(periodo_id: current_periodo.id, pci: !aux)
+      else
+        @asignatura.programaciones.create(periodo_id: current_periodo.id, pci: true)
+      end        
 
       head :no_content
     end
@@ -136,7 +142,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def asignatura_params
-        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos, :tipoasignatura_id, :calificacion, :pci)
+        params.require(:asignatura).permit(:id, :descripcion, :catedra_id, :departamento_id, :anno, :orden, :id_uxxi, :creditos, :tipoasignatura_id, :calificacion)
       end
   end
 end

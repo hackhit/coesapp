@@ -1,3 +1,4 @@
+#alert.alert
 .nav.bg-secondary.p-md-1
   .col-md-1
     - if current_admin.mas_altos?
@@ -42,5 +43,4 @@
       dataType: 'json', 
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
     });
-    var ele = $("#switch_"+id).parents('tr');     
   }

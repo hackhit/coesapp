@@ -26,7 +26,7 @@
 					= link_to_if current_admin, est_sec_per.seccion.asignatura.descripcion, est_sec_per.seccion
 					.badge.badge-dark= est_sec_per.seccion.asignatura.id_uxxi
 					.badge.badge-info= 'Retirada' if est_sec_per.retirado?
-					.badge.badge-info= 'PCI' if est_sec_per.seccion.asignatura.pci?
+					.badge.badge-info= 'PCI' if est_sec_per.seccion.asignatura.pci? est_sec_per.seccion.periodo_id
 					
 				%td= est_sec_per.seccion.numero
 				%td= est_sec_per.seccion.asignatura.creditos
