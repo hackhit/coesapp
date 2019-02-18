@@ -1,7 +1,7 @@
-.modal.fade#estudiante_seccion{ role: "dialog"}
+.modal.fade#estudiante_seccion{ role: "dialog", style: 'width: 1250px;'}
 	.modal-dialog
 		.modal-content
-			%h5.alert.alert-info
+			%h5.alert.alert-info.text-center
 				= "Inscribir a #{@estudiante.descripcion} en sección del periodo #{current_periodo.id}"
 			.modal-body
 				.border.p-3
@@ -9,7 +9,8 @@
 						= hidden_field_tag :estudiante_id, @estudiante.usuario_id
 						=#grouped_collection_select(:cal_seccion, :id, CalMateria.all.sort_by{|m| m.cal_categoria.orden and m.cal_categoria.id} , :cal_secciones, :descripcion_reversa, :id, :descripcion, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2'}) 
 
-						-secciones = Seccion.del_periodo current_periodo.id 
+						-#secciones = Seccion.del_periodo(current_periodo.id).joins(:asignatura).order("asignaturas.descripcion")
+						- secciones = current_periodo.secciones.joins(:asignatura).order("asignaturas.descripcion")
 						.form-group
 							.col-md-2
 								%b Estudiante:
@@ -20,19 +21,22 @@
 							.col-md-2
 								%b Sección:
 							.col-md-12
-								=collection_select(:seccion, :id, secciones, :id, :descripcion, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2 text-field form-control', style: 'width:100%'})
+
+								=# grouped_collection_select :seccion, :id, secciones, :secciones, :descripcion, :id, :numero, {prompt: true}, { class: 'selects2 form-control'}
+
+								= collection_select(:seccion, :id, secciones, :id, :descripcion_con_uxxi, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2 form-control'})
 
 						=hidden_field_tag 'controlador', @controlador
 						=hidden_field_tag 'accion', @accion
 						%br
-						%a.btn{data: {dismiss: 'modal'}} Cancelar
+						%a.btn.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
 
 						= submit_tag "Guardar", :disable_with => 'Enviando...', class: 'btn btn-primary'
 
 :javascript
 
 	$(document).ready(function() {
-		$(".selects2").select2();		
+		$(".selects2").select2({width: '100%'});		
 	});
 
 

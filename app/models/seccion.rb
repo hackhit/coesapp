@@ -74,6 +74,13 @@ class Seccion < ApplicationRecord
 		inscripcionsecciones.sin_calificar.count
 	end
 
+
+	def descripcion_con_uxxi periodo_id=nil
+		descrip = descripcion(periodo_id)
+		"(#{asignatura.id_uxxi}) - #{descrip}"
+	end
+
+
 	def descripcion periodo_id=nil
 		descrip = ""
 		if periodo_id
