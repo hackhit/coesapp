@@ -161,13 +161,13 @@ module Admin
       @profesor = @usuario.profesor
       @administrador = @usuario.administrador
 
-      @periodos = @estudiante.escuela.periodos.order("inicia DESC") if @estudiante
+      #@periodos = @estudiante.escuela.periodos.order("inicia DESC") if @estudiante
 
       @inscripciones = @estudiante.inscripcionsecciones if @estudiante
 
       # @secciones = CalSeccion.where(:cal_periodo_id => cal_semestre_actual_id)
 
-      if est
+      if false#est
         @idiomas2 = @idiomas1 = est.escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
         @planes = est.escuela.planes
         @periodos = est.escuela.periodos.order('inicia DESC')

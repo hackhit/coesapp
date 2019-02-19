@@ -20,7 +20,21 @@
               %tr
                 %td
                   = rol
-                  = "(#{u.estudiante.escuela.descripcion.titleize})" if u.estudiante
+                  - if u.estudiante
+                    - u.estudiante.escuelas.each do |es| 
+                      %tr
+                        %td
+                          = "(Estudiante #{es.descripcion.titleize})"
+                          - if u.estudiante.inscrito? current_periodo.id, es.id
+
+                            = simple_toggle "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{es.id}", 'I', 'Descargar Constancia de Inscripción' , 'success', 'download'
+                            =# btn_toggle 'btn-outline-success', 'download', "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{es.id}", "Descargar Constancia de Inscripción", ''
+                            = simple_toggle "#{kardex_descargar_path(u)}?escuela_id=#{es.id}", 'K', 'Descargar Kardex' , 'success', 'download'
+                            = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'
+
+                            =# btn_success 'download', "#{kardex_descargar_path(u)}?escuela_id=#{es.id}", "Descargar Kardex", 'Kardex'
+
+
         %td
           - if u.estudiante and u.estudiante.ultimo_plan
             = u.estudiante.ultimo_plan  
@@ -34,14 +48,8 @@
         %td= u.email
         %td= u.telefono_movil
         %td
-          - if current_admin
-            - if u.estudiante
-              - if u.estudiante.inscrito? current_periodo.id
-                = btn_toggle 'btn-outline-success', 'download', constancia_inscripcion_descargar_path(u), "Descargar Constancia de Inscripción", ''
-              = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'
-              = btn_success 'download', kardex_descargar_path(u), "Descargar Kardex", 'Kardex'
-              
-              %b.tooltip-btn{'data_toggle'=>'tooltip', title: "Resetear Contraseña"}
-                = link_to(resetear_contrasena_usuario_path(u), {data: {confirm: 'Esta acción asignará la cédula de identidad como contraseña, ¿está de acuerdo?'}, class: 'btn btn-sm btn-outline-primary'}) do
-                  = glyph 'lock'
-                  = glyph 'repeat'
+          - if current_admin.maestros?            
+            %b.tooltip-btn{'data_toggle'=>'tooltip', title: "Resetear Contraseña"}
+              = link_to(resetear_contrasena_usuario_path(u), {data: {confirm: 'Esta acción asignará la cédula de identidad como contraseña, ¿está de acuerdo?'}, class: 'btn btn-sm btn-outline-primary'}) do
+                = glyph 'lock'
+                = glyph 'repeat'

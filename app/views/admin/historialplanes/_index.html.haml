@@ -7,6 +7,7 @@
     - @hp = Historialplan.new
     - @hp.estudiante_id = @estudiante.id
     - @planes = Plan.where(escuela_id: @escuela.id)
+    - @periodos = @escuela.periodos.order('inicia DESC')
     = render '/admin/historialplanes/form'
 %b Planes:
 
