@@ -66,7 +66,7 @@ class Estudiante < ApplicationRecord
 
 	def ultimo_plan
 		hp = historialplanes.order("periodo_id DESC").first
-		hp ? hp.plan_id : ""
+		hp ? hp.plan_id : "--"
 	end
 
 	def annos

@@ -84,7 +84,7 @@ module ApplicationHelper
 	end	
 
 	def btn_inscribir href, title_tooltip, value
-		btn_toggle 'btn-success', 'edit', href, title_tooltip, value
+		btn_toggle 'btn-success', 'education', href, title_tooltip, value
 	end
 
 	def btn_add_success href, title_tooltip, value
@@ -120,8 +120,17 @@ module ApplicationHelper
 		simple_toggle 'javascript:void(0)', '', title_tooltip, color_type, icon, "$('##{id_modal}').modal();"
 	end
 
+	def simple_toggle_rounded href, value, title_tooltip, color_type, icon, onclick_action=nil
+		content_tag :b, class: "tooltip-btn border p-1 border-#{color_type} rounded", 'data_toggle'=> :tooltip, title: title_tooltip do
+			link_to href, class: "text-#{color_type}", onclick: onclick_action do
+				capture_haml{"#{glyph icon} #{value}"}
+			end
+		end
+
+	end
+
 	def simple_toggle href, value, title_tooltip, color_type, icon, onclick_action=nil
-		content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: title_tooltip do
+		content_tag :b, class: "tooltip-btn", 'data_toggle'=> :tooltip, title: title_tooltip do
 			link_to href, class: "text-#{color_type}", onclick: onclick_action do
 				capture_haml{"#{glyph icon} #{value}"}
 			end

@@ -15,5 +15,5 @@
 		
 				- cat_activa = (session[:cat_id].eql? cat.id) ? "active show" : ""
 				.tab-pane.fade{"aria-labelledby" => "pills-home-tab", role: :tabpanel, class: cat_activa, id: "cat_#{@dep.id}_#{cat.id}"}
-					- @asignaturas = cat.asignaturas.no_pcis(current_periodo.id).where(departamento_id: @dep.id)#.sort_by{|a| a.orden}
+					- @asignaturas = cat.asignaturas.where(departamento_id: @dep.id)#.sort_by{|a| a.orden}
 					= render '/admin/principal_admin/tabs_estructura/asignaturas'

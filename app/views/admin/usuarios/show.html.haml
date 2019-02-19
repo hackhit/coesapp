@@ -57,8 +57,7 @@
                   = glyph 'minus'
 
               = render '/admin/historialplanes/index'
-              - if @escuela.id.eql? 'IDIO'
-                = render '/admin/combinaciones/index'
+              = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
         
               = render partial: '/admin/estudiantes/historial_academico'
 

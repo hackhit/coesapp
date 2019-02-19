@@ -30,6 +30,11 @@ class Usuario < ApplicationRecord
 	}
 	# FUNCIONES:
 
+	def ultimo_plan
+		estudiante ? estudiante.ultimo_plan : '--'
+		
+	end
+
 	def admin?
 		not self.administrador.nil?
 	end
@@ -98,9 +103,9 @@ class Usuario < ApplicationRecord
 
 	def roles
 		aux = []
-		aux << " #{administrador.desc_rol}" if administrador
-		aux << " Estudiante" if estudiante
-		aux << " Profesor (#{profesor.departamento.descripcion})" if profesor
+		aux << "#{administrador.desc_rol}" if administrador
+		aux << "Estudiante" if estudiante
+		aux << "Profesor (#{profesor.departamento.descripcion})" if profesor
 
 		return aux
 	end

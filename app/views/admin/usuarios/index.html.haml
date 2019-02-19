@@ -17,30 +17,24 @@
         %td
           %table.table        
             - u.roles.each do |rol| 
-              %tr
-                %td
-                  = rol
-                  - if u.estudiante
-                    - u.estudiante.escuelas.each do |es| 
-                      %tr
-                        %td
-                          = "(Estudiante #{es.descripcion.titleize})"
-                          - if u.estudiante.inscrito? current_periodo.id, es.id
+              - if rol.eql? 'Estudiante'
+                - u.estudiante.escuelas.each do |es| 
+                  %tr
+                    %td
+                      = "Estudiante (#{es.descripcion.titleize})"
+                      - if u.estudiante.inscrito? current_periodo.id, es.id
 
-                            = simple_toggle "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{es.id}", 'I', 'Descargar Constancia de Inscripción' , 'success', 'download'
-                            =# btn_toggle 'btn-outline-success', 'download', "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{es.id}", "Descargar Constancia de Inscripción", ''
-                            = simple_toggle "#{kardex_descargar_path(u)}?escuela_id=#{es.id}", 'K', 'Descargar Kardex' , 'success', 'download'
-                            = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'
+                        = simple_toggle_rounded "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{es.id}", 'I', 'Descargar Constancia de Inscripción' , 'success', 'download'
 
-                            =# btn_success 'download', "#{kardex_descargar_path(u)}?escuela_id=#{es.id}", "Descargar Kardex", 'Kardex'
+                        = simple_toggle_rounded "#{kardex_descargar_path(u)}?escuela_id=#{es.id}", 'K', 'Descargar Kardex' , 'success', 'download'
 
+                        = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'
 
-        %td
-          - if u.estudiante and u.estudiante.ultimo_plan
-            = u.estudiante.ultimo_plan  
-          - else
-            = "--"
+              - else
+                %tr
+                  %td= rol
 
+        %td= u.ultimo_plan
         %td= link_to u.nombre_completo, u
         %td= u.ci
         - if current_admin.ninja?  
