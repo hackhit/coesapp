@@ -13,10 +13,6 @@ class Escuela < ApplicationRecord
 
 	has_many :secciones, through: :asignaturas
 
-
-	has_many :estudiantes
-	accepts_nested_attributes_for :estudiantes	
-
 	has_many :inscripcionsecciones, through: :secciones
 
 	has_many :escuelaperiodos

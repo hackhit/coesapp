@@ -58,7 +58,7 @@ module Admin
 		end
 
 		def seleccionar
-			unless estudiante = Estudiante.where(usuario_id: params[:id]).limit(1).first
+			unless @estudiante = Estudiante.where(usuario_id: params[:id]).limit(1).first
 				flash[:info] = "El estudiante no encontrado"
 				redirect_to action: 'buscar_estudiante'#, id: params[:id]
 			else 
@@ -74,11 +74,14 @@ module Admin
 
 				@titulo = "Inscripción para el período #{current_periodo} - Paso 2 - Seleccionar Secciones"
 
-				escuelas = Escuela.where(id: estudiante.escuela_id)# current_admin.escuelas	
-				@escuelas = escuelas
-				@estudiante = estudiante
-				secciones_disponibles = estudiante.escuela.secciones.del_periodo(current_periodo.id)
-				@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
+				@escuelas = current_admin.escuelas #Escuela.where(id: estudiante.escuela_id)
+				
+				#@escuelas = escuelas
+				#@estudiante = estudiante
+				@secciones_disponibles = current_periodo.secciones.includes(:escuela).where("escuelas.id = ?", @escuelas.ids).references(:escuelas)
+
+				#@secciones_disponibles = @estudiante.escuela.secciones.del_periodo(current_periodo.id)
+				#@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
 			end
 		end
 

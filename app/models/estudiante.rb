@@ -2,7 +2,7 @@ class Estudiante < ApplicationRecord
 	# ASOCIACIONES:
 	belongs_to :usuario, foreign_key: :usuario_id 
 	belongs_to :tipo_estado_inscripcion
-	belongs_to :escuela
+
 	belongs_to :citahoraria, optional: true
 
 	has_many :escuelaestudiantes, dependent: :destroy	
