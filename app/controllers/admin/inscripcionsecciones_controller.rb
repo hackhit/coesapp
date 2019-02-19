@@ -101,14 +101,14 @@ module Admin
 				flash[:error] = "Error Excepcional: #{e}"
 			end
 			flash[:success] = "Estudiante inscrito en #{guardadas} seccion(es)"
-			redirect_to action: :resumen, id: id#, flash: flash
+			redirect_to action: :resumen, id: id #, flash: flash
 		end
 
 		def resumen
 			id = params[:id]
 			@estudiante = Estudiante.find id
 			@secciones = @estudiante.secciones.del_periodo current_periodo.id
-			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 3 - Resultados y Resumen: #{@estudiante.usuario.descripcion}"
+			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 3 - Resumen:"
 
 		end
 

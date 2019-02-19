@@ -1,14 +1,10 @@
 %br
+.titulo= "Estudiante: #{@estudiante.usuario.descripcion}"
 %table
 	%tr
 		%td= link_to 'Inscribir otro Estudiante', buscar_estudiante_inscripcionsecciones_path, class: 'btn btn-success'
 
 		%td= link_to 'Detalle del Estudiante', usuario_path(@estudiante), class: 'btn btn-outline-primary'
-		- if @secciones.to_a.count > 0
-			%td
-				= link_to({controller: '/admin/descargar', action: 'constancia_inscripcion', :id => @estudiante.id}, class: 'btn btn-outline-info') do
-					%i.icon-download.icon-white
-					Constancia de Inscripcion
 
 %br
 = render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones, borrar_seleccion: false}

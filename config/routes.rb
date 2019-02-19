@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       member do 
         get 'ver_seccion_admin'
         post 'cambiar_estudiante_escuela'
+        post 'agregar_estudiante_escuela'
       end
     end
 

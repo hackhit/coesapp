@@ -1,76 +1,40 @@
 = render partial: '/admin/usuarios/datos_modal'
-.border
-	- if @estudiante.combinaciones.count > 0
-		.border.p-md-3.m-md-3
-			%h5 Combinación de Idiomas:
-			- @estudiante.combinaciones.each do |c| 
-				%p= c.descripcion
-
-	- if @estudiante.planes.count > 0
-		.border.p-md-3.m-md-3
-			%h5 Planes:
-			- @estudiante.planes.each do |pl| 
-				%p= pl.descripcion_completa
-			
-
-	- if @estudiante.combinaciones.count < 1 and not @estudiante.tipo_estado_inscripcion_id.eql? 'NUEVO' 
-		= render '/admin/estudiantes/actualizar_idiomas'
-
-	-if @estudiante.citahoraria
-		.border.m-md-3.p-md-3
-			%h5 Cita Horaria:
-			%p
-				%b Fecha:
-				=#(I18n.localize(Time.now, :format => "%A, %d de %B de %Y - Hora: %I:%M "))#.capitalize()
-				=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%A, %d de %B de %Y")).capitalize()
-				= "-"
-				%b Hora:
-				=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%I:%M %p")).capitalize()
-				=# @estudiante.cita_horaria.hora
-
-	- if false#@archivos
-		%p
-			%h3= "Horario #{@periodo_actual.id}:"
-			.well.well-small
-				- @archivos.each do |archivo|
-					%p= link_to archivo, controller: 'descargar', action: 'horario', id: archivo
-
-	- if false
-		%h3 Exámenes de Reparación y Suficiencia Enero 2019
-		%ul
-			%li
-				= link_to "Martes 08 Enero 2019", controller: 'descargar', action: 'archivo', id: "2019/01_RepSuf_Mar_08Ene2019"
-			%li
-				= link_to "Miércoles 09 Enero 2019", controller: 'descargar', action: 'archivo', id: "2019/01_RepSuf_Mie_09Ene2019"
-			%li
-				= link_to "Formato de Solicitud", controller: 'descargar', action: 'archivo', id: "2019/formato_solicitud_rep_sufic_201902A"
-			%li
-				= link_to "Sobre las Inscripciones", controller: 'descargar', action: 'archivo', id: "2019/SOBRE_INSCRIPCION_201902A"
 
 
-	- if false #ParametroGeneral.programaciones_encendidas
-		%h3 Programaciones (Pdf):
-		%ul
-			- if @programaciones and @programaciones.count > 0
-				- @programaciones.each do |programacion|
-					%li
-						=link_to "Programación #{programacion.descripcion} - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: programacion.id, :semestre_id => @periodo_actual.id} 
-			%li=link_to "Programación Estudios Generales - Lingǘística - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_LI", :semestre_id => @periodo_actual.id} 
+%nav
+	.nav.nav-tabs
+		= link_to "General", "#general", "data-toggle": :tab, class: 'nav-item nav-link'
+		- @estudiante.escuelas.each do |escuela|
+			= link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
+.tab-content
+	- @estudiante.escuelas.each do |escuela|
+		- @escuela = escuela
+		.tab-pane{id: "pane_#{escuela.id}"}
+			.border.mt-3.p-3
+				- if @estudiante.planes.count > 0
+					.border.p-md-3
+						%h5 Planes:
+						- @estudiante.planes.each do |pl| 
+							%p= pl.descripcion_completa
+				- if @escuela.id.eql? 'IDIO'
+					- if @estudiante.combinaciones.count < 1
+						= render '/admin/estudiantes/actualizar_idiomas'
+					- else
+						.border.p-md-3
+							%h5 Combinación de Idiomas:
+							- @estudiante.combinaciones.each do |c| 
+								%p= c.descripcion
+				= render partial: '/admin/estudiantes/historial_academico'
+	.tab-pane#general
 
-			%li=link_to "Programación Estudios Generales - Lengua Española - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_LE", :semestre_id => @periodo_actual.id} 
-
-			%li=link_to "Programación Estudios Generales - Instrumental Obligatoria - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_IO", :semestre_id => @periodo_actual.id} 
-
-			%li=link_to "Programación Estudios Generales - Optativas - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "EG_OPT", :semestre_id => @periodo_actual.id} 
-
-			%li=link_to "Programación Tradución e Interpretación - Interpretación - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "T&I_INT", :semestre_id => @periodo_actual.id} 
-
-			%li=link_to "Programación Tradución e Interpretación - Tradución - #{@periodo_actual.id}", {controller: 'descargar',action: 'programaciones', id: "T&I_TRAD", :semestre_id => @periodo_actual.id} 
-
-	- if false
-		%h3 Otros Archivos:
-		%ul
-			%li=link_to "Comunicado Sobre Inscripciones 2017-2018", {controller: 'descargar', action: 'archivo', id: "SOBRE_INSCRIP_2017-02A"}
-			%li=link_to "Horario Tentativo 2017-2018", {controller: 'descargar', action: 'archivo', id: "HORARIO_TENTATIVO_2017-02A"} 
-
-	= render partial: '/admin/estudiantes/historial_academico'
+		-if @estudiante.citahoraria
+			.border.m-md-3.p-md-3
+				%h5 Cita Horaria:
+				%p
+					%b Fecha:
+					=#(I18n.localize(Time.now, :format => "%A, %d de %B de %Y - Hora: %I:%M "))#.capitalize()
+					=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%A, %d de %B de %Y")).capitalize()
+					= "-"
+					%b Hora:
+					=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%I:%M %p")).capitalize()
+					=# @estudiante.cita_horaria.hora

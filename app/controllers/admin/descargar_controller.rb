@@ -4,7 +4,7 @@ module Admin
 		before_action :filtro_logueado
 		before_action :filtro_admin_profe, only: [:listado_seccion, :notas_seccion]
 		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria]
-		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :listado_seccion, :notas_seccion]
+		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :constancia_estudio, :listado_seccion, :notas_seccion]
 
 		def notas_seccion
 			seccion = Seccion.find(params[:id])
@@ -22,7 +22,7 @@ module Admin
 
 		def kardex
 			info_bitacora 'Descarga de kardex', Bitacora::DESCARGA
-			pdf = ExportarPdf.hacer_kardex params[:id]
+			pdf = ExportarPdf.hacer_kardex params[:id], params[:escuela_id]
 			unless send_data pdf.render, filename: "kardex_#{params[:id]}.pdf", type: "application/pdf", disposition: "attachment"
 				flash[:error] = "En estos momentos no se pueden descargar el kardex, intentelo luego."
 			end
@@ -30,7 +30,7 @@ module Admin
 		end
 
 		def constancia_inscripcion
-			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], current_periodo.id
+			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], current_periodo.id, params[:escuela_id]
 			unless send_data pdf.render,:filename => "constancia_inscripcion_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
 				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
@@ -39,7 +39,7 @@ module Admin
 		end
 
 		def constancia_estudio
-			pdf = ExportarPdf.hacer_constancia_estudio params[:id], current_periodo.id
+			pdf = ExportarPdf.hacer_constancia_estudio params[:id], current_periodo.id, params[:escuela_id]
 			unless send_data pdf.render,:filename => "constancia_estudio_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
 				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end

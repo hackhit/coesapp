@@ -1,23 +1,23 @@
 .border.mt-3.p-3
 	%table.mt-3.mb-3.flex-column
 		%tr
-			%td= btn_success 'download', kardex_descargar_path(@estudiante.id), "Descargar Kardex de #{@nickname}", 'Kardex'
-			- if @estudiante.inscrito? current_periodo.id
-				%td= btn_success 'download', constancia_inscripcion_descargar_path(@estudiante.id), "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción'
+			%td= btn_success 'download', "#{kardex_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Descargar Kardex de #{@nickname}", 'Kardex'
+			- if @estudiante.inscrito? current_periodo.id, @escuela.id
+				%td= btn_success 'download', "#{constancia_inscripcion_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción'
+				%td= btn_success 'download', "#{constancia_estudio_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
 
 			- if current_admin
 
-				- if @estudiante.inscrito? current_periodo.id
-					%td= btn_success 'download', constancia_estudio_descargar_path(@estudiante.id), "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
-
-				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección del periodo actual: #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", 'estudiante_seccion'
+				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección del periodo actual: #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", "estudiante_seccion_#{@escuela.id}"
 				= render partial: '/admin/inscripcionsecciones/form'
 	%b Registro de Historial Académico:
 
 	#accordion
 		- @periodos.each do |periodo|
-			- @secciones_periodo = @inscripciones.del_periodo periodo.id
-			- @secciones_periodo = @inscripciones.del_periodo(periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			-# @secciones_periodo = @inscripciones.del_periodo periodo.id
+
+			-# @secciones_periodo = @inscripciones.del_periodo(periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			- @secciones_periodo = @inscripciones.del_periodo(periodo.id).reject{|ins| !ins.escuela.id.eql? @escuela.id}#.sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
 			-# @secciones_periodo = @inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
 			- if @secciones_periodo.count > 0
 				.card

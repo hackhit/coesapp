@@ -20,6 +20,11 @@ class Plan < ApplicationRecord
 		"#{id} - #{descripcion.titleize}"
 	end
 
+	def descripcion_completa_con_escuela
+		"#{id} - #{descripcion.titleize} (#{escuela.descripcion})"
+	end
+
+
 	# FUNCIONES PROTEGIDAS
 	protected
 

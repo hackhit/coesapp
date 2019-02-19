@@ -7,8 +7,8 @@
     - @combinacion = Combinacion.new
     - @combinacion.estudiante_id = @estudiante.id
     = render '/admin/combinaciones/form'
-%b Combinaciones de Idiomas:
 
+%b Combinaciones de Idiomas:
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   - @estudiante.combinaciones.order("periodo_id DESC").each do |combinacion|
     %tr

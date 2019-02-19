@@ -64,23 +64,28 @@ class ExportarPdf
 
 
 
-	def self.hacer_constancia_estudio estudiante_ci, periodo_id
+	def self.hacer_constancia_estudio estudiante_ci, periodo_id, escuela_id
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 
-		inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
+		escuela = Escuela.find escuela_id
+
+		# inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
+
+		inscripciones = estudiante.inscripcionsecciones.del_periodo(periodo_id).includes(:escuela).where("escuelas.id = ?", escuela_id).references(:escuelas)
+		
 		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
 
 		pdf = Prawn::Document.new(top_margin: 20)
 
 		#titulo
-		encabezado_central_con_logo pdf, "CONSTANCIA DE ESTUDIO"
+		encabezado_central_con_logo pdf, "CONSTANCIA DE ESTUDIO", escuela
 
 		pdf.move_down 5
 
 		# pdf.start_page_numbering(50, 800, 500, nil, "<b><PAGENUM>/<TOTALPAGENUM></b>", 1)
 
-		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de #{estudiante.escuela.descripcion.upcase} de la Universidad Central de Venezuela, por medio de la presente hace constar que el BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> es estudiante regular de esta escuela y esta cursando en el periodo <b>#{periodo_id}</b>; las siguientes asignatura:", size: 10, inline_format: true, align: :justify
+		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de #{estudiante.escuela.descripcion.upcase} de la Universidad Central de Venezuela, por medio de la presente hace constar que el BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> es estudiante regular de esta escuela (#{escuela.descripcion.titleize}) y esta cursando en el periodo <b>#{periodo_id}</b>; las siguientes asignatura:", size: 10, inline_format: true, align: :justify
 
 		pdf.move_down 20
 
@@ -124,25 +129,27 @@ class ExportarPdf
 		return pdf
 	end
 
-
-
-	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id
+	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id, escuela_id
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 
-		inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
+		escuela = Escuela.find escuela_id
+
+		# inscripciones = estudiante.inscripcionsecciones.del_periodo periodo_id
+
+		inscripciones = estudiante.inscripcionsecciones.del_periodo(periodo_id).includes(:escuela).where("escuelas.id = ?", escuela_id).references(:escuelas)
 		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
 
 		pdf = Prawn::Document.new(top_margin: 20)
 
 		#titulo
-		encabezado_central_con_logo pdf, "CONSTANCIA DE INSCRIPCIÓN"
+		encabezado_central_con_logo pdf, "CONSTANCIA DE INSCRIPCIÓN", escuela
 
 		pdf.move_down 5
 
 		# pdf.start_page_numbering(50, 800, 500, nil, "<b><PAGENUM>/<TOTALPAGENUM></b>", 1)
 
-		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de <b>#{estudiante.escuela.descripcion.upcase}</b> de la Universidad Central de Venezuela, por medio de la presente hace constar que el BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> esta inscrito en esta Escuela para el período <b>#{periodo_id}</b>; con las siguientes asignatura:", size: 10, inline_format: true, align: :justify
+		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de <b>#{estudiante.escuela.descripcion.upcase}</b> de la Universidad Central de Venezuela, por medio de la presente hace constar que el BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> esta inscrito en esta Escuela (#{escuela.descripcion.titleize}) para el período <b>#{periodo_id}</b>; con las siguientes asignatura:", size: 10, inline_format: true, align: :justify
 
 		pdf.move_down 20
 
@@ -186,17 +193,20 @@ class ExportarPdf
 		return pdf
 	end
 
-	def self.hacer_kardex id
+	def self.hacer_kardex id, escuela_id
 
 		pdf = Prawn::Document.new(top_margin: 20)
 
 		estudiante = Estudiante.find id
 		# periodos = estudiante.escuela.periodos.order("inicia DESC")
-		inscripcionsecciones = estudiante.inscripcionsecciones.joins(:seccion).order("asignatura_id ASC, numero DESC")
-		periodo_ids = estudiante.inscripcionsecciones.joins(:seccion).group(:periodo_id).count.keys
+		escuela = Escuela.find escuela_id
+		inscripcionsecciones = estudiante.inscripcionsecciones.includes(:escuela).where("escuelas.id = ?", escuela_id).references(:escuelas)
+
+		periodo_ids = inscripcionsecciones.joins(:seccion).group("secciones.periodo_id").count.keys
 		periodos = Periodo.where(id: periodo_ids)
 
-		encabezado_central_con_logo pdf, "Historia Académica"
+		encabezado_central_con_logo pdf, "Historia Académica", escuela
+
 
 	# 	#titulo
 		pdf.text "<b>Cédula:</b> #{estudiante.usuario_id}", size: 9, inline_format: true
@@ -255,7 +265,7 @@ class ExportarPdf
 
 	private
 
-	def self.encabezado_central_con_logo pdf, titulo
+	def self.encabezado_central_con_logo pdf, titulo, escuela = nil
 
 		pdf.image "app/assets/images/logo_ucv.png", position: :center, height: 50, valign: :top
 		pdf.move_down 5
@@ -264,6 +274,11 @@ class ExportarPdf
 		pdf.text "FACULTAD DE HUMANIDADES Y EDUCACIÓN", align: :center, size: 12
 		pdf.move_down 5
 		pdf.text "CONTROL DE ESTUDIOS DE PREGRADO", align: :center, size: 12
+		if escuela
+			pdf.move_down 5
+			pdf.text escuela.descripcion.upcase, align: :center, size: 12
+		end
+
 		pdf.move_down 5
 		pdf.text titulo, align: :center, size: 12, style: :bold
 

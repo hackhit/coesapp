@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TipoEstadoCalificacionesControllerTest < ActionDispatch::IntegrationTest
+class TipoCalificacionesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @tipo_estado_calificacion = tipo_estado_calificaciones(:one)
   end
@@ -16,11 +16,11 @@ class TipoEstadoCalificacionesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create tipo_estado_calificacion" do
-    assert_difference('TipoEstadoCalificacion.count') do
+    assert_difference('TipoCalificacion.count') do
       post tipo_estado_calificaciones_url, params: { tipo_estado_calificacion: { descripcion: @tipo_estado_calificacion.descripcion, id: @tipo_estado_calificacion.id } }
     end
 
-    assert_redirected_to tipo_estado_calificacion_url(TipoEstadoCalificacion.last)
+    assert_redirected_to tipo_estado_calificacion_url(TipoCalificacion.last)
   end
 
   test "should show tipo_estado_calificacion" do
@@ -39,7 +39,7 @@ class TipoEstadoCalificacionesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should destroy tipo_estado_calificacion" do
-    assert_difference('TipoEstadoCalificacion.count', -1) do
+    assert_difference('TipoCalificacion.count', -1) do
       delete tipo_estado_calificacion_url(@tipo_estado_calificacion)
     end
 

@@ -49,4 +49,17 @@ task :generar_programaciones_201901S => :environment do
 	end
 end
 
+desc 'Migrar Estudiantes a EscuelaEstudiante'
+task estudiantes_a_escuela_estudiantes: :environment do
+	p 'Iniciando migracion de Estudiante a EscuelaEstudiante'
+
+	Estudiante.all.each do |es|
+		if es.escuela_id
+			print '.' if es.escuelaestudiantes.create!(escuela_id: es.escuela_id)
+		end
+	end
+
+	p "Total de nuevos EscuelaEstudiantes Creados: #{Escuelaestudiante.count}"
+
+end
 

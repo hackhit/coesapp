@@ -1,13 +1,18 @@
 class Escuela < ApplicationRecord
 
 	# ASOCIACIONES
+	has_many :escuelaestudiantes
+	has_many :estudiantes, through: :escuelaestudiantes
+
 	has_many :departamentos
 	accepts_nested_attributes_for :departamentos
+	
 	has_many :asignaturas, through: :departamentos
 	
 	has_many :profesores, through: :departamentos
 
 	has_many :secciones, through: :asignaturas
+
 
 	has_many :estudiantes
 	accepts_nested_attributes_for :estudiantes	

@@ -11,7 +11,7 @@
           .form-group
             %label.control-label.col-md-3 Escuela 
             .col-md-12
-              = collection_select nil, :escuela_id, Escuela.all.reject{|e| e.id.eql? @estudiante.escuela_id}, :id, :descripcion, {prompt: 'Selecciona Departamento...'}, { class: ' form-control form-control-sm', required: true}
+              = collection_select nil, :escuela_id, Escuela.all.reject{|e| e.id.eql? @estudiante.escuela_id}, :id, :descripcion, {prompt: 'Selecciona Escuela...'}, { class: ' form-control form-control-sm', required: true}
           .modal-footer 
             %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
             = submit_tag 'Registrar', class: 'btn btn-outline-success btn-sm', data: {confirm: 'Está seguro de esta acción. Afectará los registros siguientes del estudiante'}

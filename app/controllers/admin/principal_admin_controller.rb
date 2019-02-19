@@ -13,7 +13,21 @@ module Admin
 				info_bitacora "Cambio de Escuela de #{anterior_escuela} a #{@estudiante.escuela.descripcion}", Bitacora::ACTUALIZACION, @estudiante
 				flash[:success] = '¡Cambio de Escuela exitoso!'
 			else
-				flash[:danger] = 'Error al intentar cambiar el Idioma. Por favor verifique e inténtelo de nuevo.'
+				flash[:danger] = 'Error al intentar cambiar la Escuela. Por favor verifique e inténtelo de nuevo.'
+			end
+			redirect_to usuario_path(@estudiante.id)
+		end
+
+
+		def agregar_estudiante_escuela
+			@estudiante = Estudiante.find params[:id]
+			@escuela = Escuela.find params[:escuela_id]
+
+			if @estudiante.escuelaestudiantes.create(escuela_id: params[:escuela_id])
+				info_bitacora "Registrado en Escuela #{@escuela.descripcion}", Bitacora::CREACION, @estudiante
+				flash[:success] = '¡Registro exitoso en escuela!'
+			else
+				flash[:danger] = 'Error al intentar registrar en Escuela. Por favor verifique e inténtelo de nuevo.'
 			end
 			redirect_to usuario_path(@estudiante.id)
 		end

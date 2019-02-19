@@ -5,6 +5,9 @@ class Estudiante < ApplicationRecord
 	belongs_to :escuela
 	belongs_to :citahoraria, optional: true
 
+	has_many :escuelaestudiantes, dependent: :destroy	
+	has_many :escuelas, through: :escuelaestudiantes
+
 	has_many :historialplanes	
 	accepts_nested_attributes_for :historialplanes
 	has_many :planes, through: :historialplanes, source: :plan
@@ -29,6 +32,15 @@ class Estudiante < ApplicationRecord
 	scope :con_cita_horaria, -> {where "citahoraria_id IS NOT NULL"}
 
 	# FUNCIONES:
+
+	# def self.estudiantes_a_escuela_estudiantes
+	# 	self.all.each do |es|
+	# 		if es.escuela_id
+	# 			print '.' if es.escuelas_estudiantes.create!(escuela_id: es.escuela_id)
+	# 		end
+	# 	end
+	# end
+
 	def inactivo? periodo_id
 	# OJO: ESTA FUNCION DEBE CAMBIAR AL AGREGAR LA TABLA INSCRIPCION PERIDO!!!
 		total_asignaturas = (self.inscripcionsecciones.del_periodo periodo_id).count
@@ -36,8 +48,16 @@ class Estudiante < ApplicationRecord
 		(total_asignaturas > 0 and total_asignaturas == total_retiradas)
 	end
 
-	def inscrito? periodo_id
-		(inscripcionsecciones.del_periodo(periodo_id)).count > 0
+	def inscrito? periodo_id, escuela_id = nil
+		if escuela_id
+			(inscripcionsecciones.del_periodo(periodo_id)).reject{|is| !is.escuela.id.eql? escuela_id}.count > 0
+		else
+			(inscripcionsecciones.del_periodo(periodo_id)).count > 0
+		end
+	end
+
+	def con_registro_en_escuela escuela_id
+		inscripcionsecciones.reject{|is| !is.escuela.id.eql? escuela_id}.count > 0
 	end
 
 	def valido_para_inscribir? periodo_id

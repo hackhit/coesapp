@@ -23,7 +23,7 @@
       = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'set_profesor'
       = render '/admin/usuarios/set_profesor'
 
-    - if @estudiante and @estudiante.valido_para_inscribir? current_periodo.id
+    - if @estudiante #and @estudiante.valido_para_inscribir? current_periodo.id
       = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
 %nav
   .nav.nav-tabs
@@ -37,16 +37,30 @@
     .border.mt-3.p-3
       = render partial: '/admin/usuarios/personales_contacto'
   - if @estudiante
-    .tab-pane#historial
-      .border.mt-3.p-3
-        %h6.alert.alert-info.pb-ms-3
-          = "Escuela: #{@estudiante.escuela.descripcion.titleize}"
-          - if current_admin.maestros?
-            = simple_icon_toggle_modal_edit 'Cambiar de Escuela', 'actualizar_escuela'
-            = render '/admin/estudiantes/actualizar_escuela'
-        = render '/admin/historialplanes/index'            
-        = render '/admin/combinaciones/index'
-      = render partial: '/admin/estudiantes/historial_academico'
+    .tab-pane#historial.p-3
+      %nav
+        .nav.nav-tabs
+          - @estudiante.escuelas.each do |escuela|
+            = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
+          .nav-item.nav-link
+            = simple_icon_toggle_modal 'Registrar en Escuela', 'success', 'plus', 'agregar_escuela'
+            = render '/admin/estudiantes/agregar_escuela'
+      .tab-content
+        - @estudiante.escuelas.each do |escuela|
+          - @escuela = escuela
+          .tab-pane{id: "pane_#{escuela.id}"}
+            .border.mt-3.p-3
+              %h6.alert.alert-info.pb-ms-3
+                = "Escuela: #{@escuela.descripcion.titleize}"
+                - if current_admin.maestros? and !@estudiante.con_registro_en_escuela escuela.id
+                  =# AGREGAR ELIMINAR ESCUELAESTUDIANTES PARA MAESTROS
+                  = glyph 'minus'
+
+              = render '/admin/historialplanes/index'
+              - if @escuela.id.eql? 'IDIO'
+                = render '/admin/combinaciones/index'
+        
+              = render partial: '/admin/estudiantes/historial_academico'
 
   - if @profesor
     .tab-pane#profesor
@@ -61,9 +75,3 @@
           - if current_admin.maestros?
             = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'set_admin'
             = render '/admin/usuarios/set_administrador' 
-
-        
-
-
-
-
