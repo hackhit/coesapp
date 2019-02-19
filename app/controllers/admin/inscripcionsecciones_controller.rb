@@ -78,7 +78,7 @@ module Admin
 				
 				#@escuelas = escuelas
 				#@estudiante = estudiante
-				@secciones_disponibles = current_periodo.secciones.includes(:escuela).where("escuelas.id = ?", @escuelas.ids).references(:escuelas)
+				@secciones_disponibles = current_periodo.secciones.includes(:escuela).where("escuelas.id = ?", @escuelas.ids.to_s).references(:escuelas)
 
 				#@secciones_disponibles = @estudiante.escuela.secciones.del_periodo(current_periodo.id)
 				#@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
