@@ -7,16 +7,17 @@
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:inicia)
-      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de secciones'} Seccs
-      %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de inscripciones'} Inscs
+      - Escuela.all.each do |e| 
+        %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de inscripciones'}= e.id
+
       %th Opciones
   %tbody
     - @periodos.each do |periodo|
       %tr
         %td= periodo.id
         %td=l periodo.inicia
-        %td= periodo.inscripcionsecciones.secciones_creadas.count
-        %td= periodo.inscripcionsecciones.estudiantes_inscritos.count
+        - Escuela.all.each do |e| 
+          %td= e.inscripcionsecciones.del_periodo(periodo).estudiantes_inscritos.count
         %td
           = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
             = glyph 'pencil'
