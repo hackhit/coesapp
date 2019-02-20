@@ -1,4 +1,4 @@
-.tab-pane.fade{class: @mat_activa, id: "mat_#{@mat.id}", "aria-labelledby" => "mat_#{@mat.id}-tab", :role => "tabpanel"}
+.tab-pane.fade{class: @mat_activa, id: "mat_#{@mat.id}#{@pcis}", "aria-labelledby" => "mat_#{@mat.id}_tab#{@pcis}", :role => "tabpanel"}
 	%p Seleccione la Sección:
 	%h6= @mat.descripcion
 	%table.table.table-bordered.table-striped.table-sm.table-hover
