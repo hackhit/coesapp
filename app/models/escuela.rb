@@ -17,6 +17,7 @@ class Escuela < ApplicationRecord
 
 	has_many :escuelaperiodos
 	accepts_nested_attributes_for :escuelaperiodos
+	
 	has_many :periodos, through: :escuelaperiodos
 
 	has_many :planes

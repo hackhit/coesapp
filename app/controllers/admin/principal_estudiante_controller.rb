@@ -9,19 +9,12 @@ module Admin
 			estu = usuario.estudiante
 			@estudiante = @usuario.estudiante #Estudiante.where(usuario_ci: session[:usuario_id]).limit(1).first
 			
-			@titulo = "#{@usuario.nombre_completo} - Período: #{current_periodo.id} - #{@estudiante.escuela.descripcion.titleize}"
+			@titulo = "#{@usuario.nombre_completo} - Período: #{current_periodo.id} - #{@estudiante.escuelas.collect{|es| es.descripcion}.to_sentence.upcase}"
 
 			@periodos = Periodo.order("inicia DESC").all
 
 			@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: @estudiante.usuario_id).order("secciones.asignatura_id DESC")
 
-			if @estudiante.combinaciones.count < 1
-				@idiomas = estu.escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-				# @idiomas = CalDepartamento.all.delete_if{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-				@programaciones = Departamento.all
-			else
-				@programaciones = Departamento.where(:id => [ "#{@estudiante.idioma1.id}" ,"#{@estudiante.idioma2.id}"])
-			end
 			@total = @inscripciones.all.count
 
 		end

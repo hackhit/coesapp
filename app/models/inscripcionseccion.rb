@@ -29,12 +29,23 @@ class Inscripcionseccion < ApplicationRecord
 	# SCOPES:
 	# scope :confirmados, -> {where "confirmar_inscripcion = ?", 1}
 	# scope :del_periodo_actual, -> {joins(:seccion).where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
+	# SON EQUIVALENTES LAS 2 SIGUIENTES SCOPE PERO FUNCIONAN DIFERENTES EN CONDICIONES PARTICULARES: 
+	# scope :del_periodo, lambda { |periodo_id| includes(:seccion).where "secciones.periodo_id = ?", periodo_id}
 	scope :del_periodo, lambda { |periodo_id| joins(:seccion).where "secciones.periodo_id = ?", periodo_id}
 
 	# scope :en_reparacion, -> {joins(:seccion).where "secciones.tipo_seccion_id = ?", TipoSeccion::REPARACION}
 	scope :en_reparacion, -> {where tipo_calificacion_id.eql? REPARACION}
 	# scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
 	scope :no_retirados, -> {where "estado != 3"}
+
+	scope :estudiantes_inscritos_del_periodo, lambda { |periodo_id| joins(:seccion).where("secciones.periodo_id": periodo_id).group(:estudiante_id).count } 
+
+	scope :estudiantes_inscritos, -> { group(:estudiante_id).count } 
+
+	scope :secciones_creadas, -> { group(:seccion_id).count }
+
+# Inscripcionseccion.joins(:seccion).joins(:estudiante).where("estudiantes.escuela_id": 'IDIO', "secciones.periodo_id": '2018-02A').group(:estudiante_id).count.count
+
 
 	# Probar pero no hace falta ya que podemos hacer Inscripcionseccion.retirado / aprobado / aplazado / sin_calificacion
 	# scope :retirados, -> {where "estado = 3"}

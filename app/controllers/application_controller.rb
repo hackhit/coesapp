@@ -64,8 +64,8 @@ class ApplicationController < ActionController::Base
 		elsif current_usuario
 			if current_usuario.profesor and current_usuario.profesor.escuela
 				return current_usuario.profesor.escuela
-			elsif current_usuario.estudiante and current_usuario.estudiante.escuela 
-				return current_usuario.estudiante.escuela
+			elsif current_usuario.estudiante and current_usuario.estudiante.escuelas 
+				return current_usuario.estudiante.escuelas.first
 			end
 		else
 			return nil
