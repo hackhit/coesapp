@@ -8,7 +8,8 @@ class Periodo < ApplicationRecord
 	
 	has_many :secciones
 	accepts_nested_attributes_for :secciones
-	has_many :inscripcionsecciones, through: :secciones, source: :estudiantes
+
+	has_many :inscripcionsecciones, through: :secciones#, source: :estudiantes
 
 	has_many :escuelaperiodos
 	accepts_nested_attributes_for :escuelaperiodos
