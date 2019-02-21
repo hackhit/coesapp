@@ -1,6 +1,6 @@
 - model_class = Periodo
-
-= btn_add_success new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo'
+- if current_admin.maestros?
+  = btn_add_success new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo'
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead

@@ -152,28 +152,28 @@ class Archivo
 		@sheet.row(0).concat data
 		data = ['Escuela', @seccion.escuela.descripcion.upcase]
 		@sheet.row(1).concat data
-		data = ['Plan']
-		@sheet.row(2).concat data
+		# data = ['Plan']
+		# @sheet.row(2).concat data
 		data = ['Materia', @seccion.asignatura.descripcion]
-		@sheet.row(3).concat data
+		@sheet.row(2).concat data
 		data = ['Código', @seccion.asignatura.id_uxxi]
-		@sheet.row(4).concat data
+		@sheet.row(3).concat data
 		data = ['Créditos', @seccion.asignatura.creditos]
-		@sheet.row(5).concat data
+		@sheet.row(4).concat data
 		data = ['Sección', @seccion.numero]
-		@sheet.row(6).concat data
+		@sheet.row(5).concat data
 		data = ['Profesor', "#{@seccion.profesor.usuario.nombre_completo if @seccion.profesor}"]
-		@sheet.row(7).concat data
-		@sheet.row(8).concat ['CI. Profesor', @seccion.profesor_id]
-		@sheet.row(9).concat ['Semestre', '0']
-		@sheet.row(10).concat ['Año', @seccion.periodo.anno]
+		@sheet.row(6).concat data
+		@sheet.row(7).concat ['CI. Profesor', @seccion.profesor_id]
+		@sheet.row(8).concat ['Periodo', @seccion.periodo.periodo_del_anno]
+		@sheet.row(9).concat ['Año', @seccion.periodo.anno]
 
 		data = ['No.', 'Cédula I', 'Nombres y Apellidos', 'Nota_Final', 'Nota_Def', 'Tipo_Ex.']
-		@sheet.row(13).concat data
+		@sheet.row(12).concat data
 
 		@seccion.inscripcionsecciones.each_with_index do |es,i|
 			e = es.estudiante
-			@sheet.row(i+14).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, es.tipo_convocatoria]
+			@sheet.row(i+13).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, es.tipo_convocatoria]
 		end
 
 		file_name = "reporte_secciones.xls"
@@ -470,7 +470,7 @@ class Archivo
 		@sheet.column(2).width = 30 #estudiantes.collect{|e| e.cal_usuario.correo_electronico.length if e.cal_usuario.correo_electronico}.max+2;
 		@sheet.column(3).width = 15
 
-		@sheet.row(0).concat ["Profesor: #{seccion.profesor.usuario.apellido_nombre}"]
+		@sheet.row(0).concat ["Profesor: #{seccion.descripcion_profesor_asignado}"]
 		@sheet.row(1).concat ["Sección: #{seccion.descripcion}"]
 		@sheet.row(2).concat %w{CI NOMBRES CORREO MOVIL}
 
