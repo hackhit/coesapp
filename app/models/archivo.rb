@@ -381,7 +381,7 @@ class Archivo
 
 		data = ['Facultad', 'HUMANIDADES Y EDUCACIÓN']
 		@sheet.row(0).concat data
-		data = ['Escuela', 'IDIOMAS MODERNOS']
+		data = ['Escuela', @seccion.escuela.descripcion.upcase]
 		@sheet.row(1).concat data
 		data = ['Plan']
 		@sheet.row(2).concat data
@@ -407,7 +407,7 @@ class Archivo
 			@sheet.row(i+14).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, es.tipo_convocatoria]
 		end
 
-		file_name = "reporte_#{@seccion.id}.xls"
+		file_name = "reporte_seccion.xls"
 		return file_name if @book.write file_name
 	end
 

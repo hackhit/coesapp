@@ -81,7 +81,19 @@ module Admin
 		def listado_seccion
 			seccion_id = params[:id]
 			file_name = Archivo.listado_seccion_excel(seccion_id)
-			send_file file_name, :type => "application/vnd.ms-excel", :x_sendfile => true, :stream => false, :filename => "reporte_seccion.xls",:disposition => "attachment"
+			send_file file_name, type: "application/vnd.ms-excel", x_sendfile: true, stream: false, filename: "reporte_seccion.xls", disposition: "attachment"
+
+			ruta = File.join(Rails.root,"reporte_seccion.xls")
+			
+			if File.exists? ruta
+				# file = File.open ruta
+				file = File.open ruta
+				file.close
+				File.delete ruta
+				# FileUtils.rm ruta
+			end
+
+
 		end
 
 		def listados
@@ -112,7 +124,7 @@ module Admin
 
 		def acta_examen_excel
 			excel = Archivo.hacer_acta_excel params[:id]
-			unless send_file excel, :type => "application/vnd.ms-excel", :x_sendfile => true, :stream => false, :filename => "acta_excel_seccion_#{params[:id].to_s}.xls",:disposition => "attachment"
+			unless send_file excel, type: "application/vnd.ms-excel", x_sendfile: true, stream: false, filename: "acta_excel_seccion_#{params[:id].to_s}.xls", disposition: "attachment"
 				flash[:mensaje] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
 			
