@@ -17,8 +17,9 @@
               Config. General
             .dropdown-menu{"aria-labelledby" => "ConfigGeneral"}
               .dropdown-item.text-info= current_periodo.id
-              - if current_admin.maestros?
+              - if current_admin
                 = link_to 'Periodos', periodos_path, class: 'dropdown-item'
+              - if current_admin.maestros?
                 = link_to 'Escuelas', escuelas_path, class: 'dropdown-item'
               = link_to 'Cartelera', carteleras_path, class: 'dropdown-item'
               - if current_admin.mas_altos?

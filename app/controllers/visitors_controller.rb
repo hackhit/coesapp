@@ -91,11 +91,13 @@ class VisitorsController < ApplicationController
       session[:rol] = tipo
       session[:administrador_id] = usuario.administrador.id
       session['periodo_actual_id'] = inicial_current_periodo.id 
-      if current_admin.maestros?
-        redirect_to periodos_path  
-      else
-        redirect_to principal_admin_index_path
-      end
+      
+      redirect_to periodos_path  
+      # if current_admin.maestros?
+      #   redirect_to periodos_path  
+      # else
+      #   redirect_to principal_admin_index_path
+      # end
     elsif tipo == "Profesor" && usuario.profesor
       session[:rol] = tipo
       session[:profesor_id] = usuario.profesor.id

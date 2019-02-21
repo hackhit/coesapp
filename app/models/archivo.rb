@@ -22,263 +22,6 @@ class Archivo
 
 	end
 
-	def self.hacer_constancia_estudio estudiante_ci
-		# Variable Locales
-		estudiante = Estudiante.find estudiante_ci
-		periodo_id = ParametroGeneral.periodo_actual_id
- 		inscripciones = estudiante.inscripcionsecciones.del_periodo_actual
-		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
-
-		pdf = PDF::Writer.new
-
-		# Parametros
-		pdf.margins_cm(1.8)
-
-		# Logos
-		pdf.add_image_from_file 'app/assets/images/logo_ucv.jpg', 275, 720, 50,nil
-
-		#texto del encabezado
-		pdf.add_text_wrap 50,705,510,to_utf16("UNIVERSIDAD CENTRAL DE VENEZUELA").to_s, 10,:center
-		pdf.add_text_wrap 50,690,510,to_utf16("FACULTAD DE HUMANIDADES Y EDUCACIÓN"), 10,:center
-		pdf.add_text_wrap 50,675,510,to_utf16("ESCUELA DE IDIOMAS MODERNOS"), 10,:center
-		pdf.add_text_wrap 50,660,510,to_utf16("CONTROL DE ESTUDIOS"), 10,:center
-
-		pdf.start_page_numbering(50, 800, 500, nil, "<b><PAGENUM>/<TOTALPAGENUM></b>", 1)
-		#titulo
-		pdf.add_text_wrap 50,620,510,to_utf16("CONSTANCIA DE ESTUDIO"), 14,:center
-
-		pdf.text "\n"*12
-
-		pdf.text to_utf16 "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de IDIOMAS MODERNOS de la Universidad Central de Venezuela, por medio de la presente hace constar que el BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> es estudiante regular de esta escuela y esta cursando en el periodo <b>#{periodo_id}</b>; las siguientes asignatura:"
-
-		tabla = PDF::SimpleTable.new
-		tabla.heading_font_size = 9
-		tabla.font_size = 9
-		tabla.show_lines    = :all
-		tabla.line_color = Color::RGB::Gray
-		tabla.show_headings = true
-		tabla.shade_headings = true
-		tabla.shade_heading_color = Color::RGB.new(238,238,238)
-		tabla.shade_color = Color::RGB.new(230,238,238)
-		tabla.shade_color2 = Color::RGB::White
-		tabla.shade_rows = :striped
-		tabla.orientation   = :center
-		tabla.position      = :center
-
-		tabla.columns["codigo"] = PDF::SimpleTable::Column.new("codigo") { |col|
-			col.width = 70
-			col.heading = to_utf16("<b>Código</b>")
-			col.heading.justification = :center
-			col.justification = :center
-		}
-		tabla.columns["asignatura"] = PDF::SimpleTable::Column.new("asignatura") { |col|
-			col.width = 250
-			col.heading = "<b>Nombre Asignatura</b>"
-			col.heading.justification = :left
-			col.justification = :left
-		}
-		tabla.columns["seccion"] = PDF::SimpleTable::Column.new("seccion") { |col|
-			col.width = 70
-			col.heading = to_utf16("<b>Sección</b>")
-			col.heading.justification = :center
-			col.justification = :center
-		}
-		tabla.columns["creditos"] = PDF::SimpleTable::Column.new("creditos") { |col|
-			col.width = 25
-			col.heading = "<b>UC</b>"
-			col.heading.justification = :center
-			col.justification = :right
-		}
-		tabla.columns["estado"] = PDF::SimpleTable::Column.new("estado") { |col|
-			col.width = 50
-			col.heading = "<b> </b>"
-			col.heading.justification = :center
-			col.justification = :center
-		}		
-		data = []
-		total_creditos = 0
-		tabla.column_order = ["codigo", "asignatura", "seccion", "creditos", "estado"]
-
-		inscripciones.each do |inscripcion|
-			seccion = inscripcion.seccion
-			asignatura = seccion.asignatura
-			total_creditos += asignatura.creditos
-			data << {"codigo" => "#{asignatura.id_uxxi}",
-				"asignatura" => to_utf16("#{asignatura.descripcion}"),
-				"seccion" => "#{seccion.numero}",
-				"creditos" => "#{asignatura.creditos}",
-				"estado" => "#{inscripcion.tipo_estado_inscripcion.descripcion}"}
-		end
-
-		pdf.text "\n"*2
-
-		tabla.data.replace data
-		tabla.render_on(pdf)
-
-		tabla = PDF::SimpleTable.new
-		tabla.heading_font_size = 9
-		tabla.show_lines    = :none
-		tabla.show_headings = false
-		tabla.orientation   = :center
-		tabla.position      = :center
-		tabla.shade_color = Color::RGB.new(256,256,256)
-
-		tabla.columns["clave"] = PDF::SimpleTable::Column.new("clave") { |col|
-			col.width = 390
-			col.justification = :right
-		}
-		tabla.columns["creditos"] = PDF::SimpleTable::Column.new("creditos") { |col|
-			col.width = 25
-			col.justification = :right
-		}
-		tabla.columns["estado"] = PDF::SimpleTable::Column.new("estado") { |col|
-			col.width = 50
-		}		
-
-		tabla.column_order = ["clave", "creditos", "estado"]
-		tabla.data.replace [{"clave" => to_utf16("<i>Número total de créditos matriculados:</i>"), "creditos" =>total_creditos, "estado" => ""} ]
-		tabla.render_on(pdf)
-
-		pdf.text "\n"*2
-      	pdf.text to_utf16("Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}."), font_size: 10
-      	pdf.text "\n"
-		pdf.text to_utf16("<b> --Válida para el período actual--</b>"), font_size: 11, justification: :center
-		pdf.text "\n"*5
-		pdf.text to_utf16("Prof. Pedro Coronado"), font_size: 11, justification: :center
-		pdf.text to_utf16("Jef(a) de Control de Estudio"), font_size: 11, justification: :center
-
-		return pdf
-	end
-
-	def self.hacer_constancia_inscripcion estudiante_ci
-		# Variable Locales
-		estudiante = Estudiante.find estudiante_ci
-		periodo_id = ParametroGeneral.periodo_actual_id
- 		inscripciones = estudiante.inscripcionsecciones.del_periodo_actual
-		# total_creditos = secciones.joins(:cal_materia).sum("cal_materia.creditos")
-
-		pdf = PDF::Writer.new
-
-		# Parametros
-		pdf.margins_cm(1.8)
-
-		# Logos
-		pdf.add_image_from_file 'app/assets/images/logo_ucv.jpg', 275, 720, 50,nil
-
-		#texto del encabezado
-		pdf.add_text_wrap 50,705,510,to_utf16("UNIVERSIDAD CENTRAL DE VENEZUELA"), 10,:center
-		pdf.add_text_wrap 50,690,510,to_utf16("FACULTAD DE HUMANIDADES Y EDUCACIÓN"), 10,:center
-		pdf.add_text_wrap 50,675,510,to_utf16("ESCUELA DE IDIOMAS MODERNOS"), 10,:center
-		pdf.add_text_wrap 50,660,510,to_utf16("CONTROL DE ESTUDIOS"), 10,:center
-
-		pdf.start_page_numbering(50, 800, 500, nil, "<b><PAGENUM>/<TOTALPAGENUM></b>", 1)
-		#titulo
-		pdf.add_text_wrap 50,620,510,to_utf16("CONSTANCIA DE INSCRIPCIÓN"), 14,:center
-
-		pdf.text "\n"*12
-
-		pdf.text to_utf16 "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de IDIOMAS MODERNOS de la Universidad Central de Venezuela, por medio de la presente hace constar que el BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> esta inscrito en esta Escuela para el período <b>#{periodo_id}</b>; con las siguientes asignatura:"
-
-		tabla = PDF::SimpleTable.new
-		tabla.heading_font_size = 9
-		tabla.font_size = 9
-		tabla.show_lines    = :all
-		tabla.line_color = Color::RGB::Gray
-		tabla.show_headings = true
-		tabla.shade_headings = true
-		tabla.shade_heading_color = Color::RGB.new(238,238,238)
-		tabla.shade_color = Color::RGB.new(230,238,238)
-		tabla.shade_color2 = Color::RGB::White
-		tabla.shade_rows = :striped
-		tabla.orientation   = :center
-		tabla.position      = :center
-
-		tabla.columns["codigo"] = PDF::SimpleTable::Column.new("codigo") { |col|
-			col.width = 70
-			col.heading = to_utf16("<b>Código</b>")
-			col.heading.justification = :center
-			col.justification = :center
-		}
-		tabla.columns["asignatura"] = PDF::SimpleTable::Column.new("asignatura") { |col|
-			col.width = 250
-			col.heading = "<b>Nombre Asignatura</b>"
-			col.heading.justification = :left
-			col.justification = :left
-		}
-		tabla.columns["seccion"] = PDF::SimpleTable::Column.new("seccion") { |col|
-			col.width = 70
-			col.heading = to_utf16("<b>Sección</b>")
-			col.heading.justification = :center
-			col.justification = :center
-		}
-		tabla.columns["creditos"] = PDF::SimpleTable::Column.new("creditos") { |col|
-			col.width = 25
-			col.heading = "<b>UC</b>"
-			col.heading.justification = :center
-			col.justification = :right
-		}
-		tabla.columns["estado"] = PDF::SimpleTable::Column.new("estado") { |col|
-			col.width = 50
-			col.heading = "<b> </b>"
-			col.heading.justification = :center
-			col.justification = :center
-		}		
-		data = []
-		total_creditos = 0
-		tabla.column_order = ["codigo", "asignatura", "seccion", "creditos", "estado"]
-
-		inscripciones.each do |inscripcion|
-			seccion = inscripcion.seccion
-			asignatura = seccion.asignatura
-			total_creditos += asignatura.creditos
-			data << {"codigo" => "#{asignatura.id_uxxi}",
-				"asignatura" => to_utf16("#{asignatura.descripcion}"),
-				"seccion" => "#{seccion.numero}",
-				"creditos" => "#{asignatura.creditos}",
-				"estado" => "#{inscripcion.tipo_estado_inscripcion.descripcion}"}
-		end
-
-		pdf.text "\n"*2
-
-		tabla.data.replace data
-		tabla.render_on(pdf)
-
-		tabla = PDF::SimpleTable.new
-		tabla.heading_font_size = 9
-		tabla.show_lines    = :none
-		tabla.show_headings = false
-		tabla.orientation   = :center
-		tabla.position      = :center
-		tabla.shade_color = Color::RGB.new(256,256,256)
-
-		tabla.columns["clave"] = PDF::SimpleTable::Column.new("clave") { |col|
-			col.width = 390
-			col.justification = :right
-		}
-		tabla.columns["creditos"] = PDF::SimpleTable::Column.new("creditos") { |col|
-			col.width = 25
-			col.justification = :right
-		}
-		tabla.columns["estado"] = PDF::SimpleTable::Column.new("estado") { |col|
-			col.width = 50
-		}		
-
-		tabla.column_order = ["clave", "creditos", "estado"]
-		tabla.data.replace [{"clave" => to_utf16("<i>Número total de créditos matriculados:</i>"), "creditos" =>total_creditos, "estado" => ""} ]
-		tabla.render_on(pdf)
-
-		pdf.text "\n"*2
-      	pdf.text to_utf16("Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}."), font_size: 10
-      	pdf.text "\n"
-		pdf.text to_utf16("<b> --Válida para el período actual--</b>"), font_size: 11, justification: :center
-		pdf.text "\n"*5
-		pdf.text to_utf16("Prof. Pedro Coronado"), font_size: 11, justification: :center
-		pdf.text to_utf16("Jef(a) de Control de Estudio"), font_size: 11, justification: :center
-
-		return pdf
-	end
-
-
 	def self.cita_horaria periodo_id
 
 		require 'spreadsheet'
@@ -332,6 +75,32 @@ class Archivo
 
 		end
 		return csv_data
+	end
+
+
+	def self.inscritos_escuela_periodo periodo_id, escuela_id
+
+		require 'spreadsheet'
+
+		@book = Spreadsheet::Workbook.new
+		@sheet = @book.create_worksheet :name => "inscritos_#{periodo_id}_#{escuela_id}"
+
+		@sheet.row(0).concat ['	CEDULA', 'NOMBRES', 'APELLIDOS', 'CORREO', 'MOVIL', 'LOCAL']
+
+		escuela = Escuela.find escuela_id
+
+		estudiantes = escuela.inscripcionsecciones.del_periodo(periodo_id).estudiantes_inscritos
+
+		estudiantes.each_with_index do |es,i|
+			u = Usuario.find es.first
+
+			@sheet.row(i+1).concat [u.ci, u.nombres, u.apellidos, u.email, u.telefono_movil, u.telefono_habitacion]
+		end
+
+
+		file_name = "reporte_escuela_periodo.xls"
+		return file_name if @book.write file_name
+		
 	end
 
 
@@ -410,6 +179,9 @@ class Archivo
 		file_name = "reporte_secciones.xls"
 		return file_name if @book.write file_name
 	end
+
+
+
 
 	def self.hacer_kardex id
 

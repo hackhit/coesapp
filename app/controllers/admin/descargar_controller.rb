@@ -20,6 +20,12 @@ module Admin
 			@cal_usuario = session[:cal_usuario]
 		end
 
+		def inscritos_escuela_periodo
+
+			file_name = Archivo.inscritos_escuela_periodo params[:id], params[:escuela_id]
+			send_file file_name, type: "application/vnd.ms-excel", x_sendfile: true, stream: false, filename: "reporte_#{params[:id]}_#{params[:escuela_id]}.xls", disposition: "attachment"
+		end
+
 		def kardex
 			info_bitacora 'Descarga de kardex', Bitacora::DESCARGA
 			pdf = ExportarPdf.hacer_kardex params[:id], params[:escuela_id]

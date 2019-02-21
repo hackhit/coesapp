@@ -2,7 +2,8 @@ module Admin
   class PeriodosController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_super_admin!
+    before_action :filtro_administrador, only: [:index]
+    before_action :filtro_super_admin!, except: [:index]
     before_action :filtro_ninja!, only: [:destroy]    
 
     before_action :set_periodo, only: [:show, :edit, :update, :destroy]
