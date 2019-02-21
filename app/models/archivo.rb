@@ -85,16 +85,17 @@ class Archivo
 		@book = Spreadsheet::Workbook.new
 		@sheet = @book.create_worksheet :name => "inscritos_#{periodo_id}_#{escuela_id}"
 
-		@sheet.row(0).concat ['	CEDULA', 'NOMBRES', 'APELLIDOS', 'CORREO', 'MOVIL', 'LOCAL']
+		@sheet.row(0).concat ['	CEDULA', 'NOMBRES', 'APELLIDOS', 'T. CREDITOS', 'CORREO', 'MOVIL', 'LOCAL']
 
 		escuela = Escuela.find escuela_id
 
-		estudiantes = escuela.inscripcionsecciones.del_periodo(periodo_id).estudiantes_inscritos
+		estudiantes = escuela.inscripcionsecciones.del_periodo(periodo_id).estudiantes_inscritos_con_creditos
 
 		estudiantes.each_with_index do |es,i|
 			u = Usuario.find es.first
+			creditos =  es.last
 
-			@sheet.row(i+1).concat [u.ci, u.nombres, u.apellidos, u.email, u.telefono_movil, u.telefono_habitacion]
+			@sheet.row(i+1).concat [u.ci, u.nombres, u.apellidos, creditos, u.email, u.telefono_movil, u.telefono_habitacion]
 		end
 
 

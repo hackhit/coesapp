@@ -42,6 +42,11 @@ class Inscripcionseccion < ApplicationRecord
 
 	scope :estudiantes_inscritos, -> { group(:estudiante_id).count } 
 
+	scope :estudiantes_inscritos_con_creditos, -> { joins(:asignatura).group(:estudiante_id).sum('asignaturas.creditos')} 
+
+	# Esta función retorna la misma cuenta agrupadas por creditos de asignaturas
+	scope :estudiantes_inscritos_con_creditos2, -> { joins(:asignatura).group('inscripcionsecciones.estudiante_id', 'asignaturas.creditos').count} 
+
 	scope :secciones_creadas, -> { group(:seccion_id).count }
 
 # Inscripcionseccion.joins(:seccion).joins(:estudiante).where("estudiantes.escuela_id": 'IDIO', "secciones.periodo_id": '2018-02A').group(:estudiante_id).count.count
