@@ -407,7 +407,7 @@ class Archivo
 			@sheet.row(i+14).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, es.tipo_convocatoria]
 		end
 
-		file_name = "reporte_seccion.xls"
+		file_name = "reporte_secciones.xls"
 		return file_name if @book.write file_name
 	end
 
