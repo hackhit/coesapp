@@ -49,17 +49,17 @@ module ApplicationHelper
 	def colocar_numeros_seccion seccion
 		capture_haml do
 			haml_tag :span, class: 'badge badge-secondary' do haml_concat 'Calificada' end
-			haml_tag :span, class: 'badge badge-info tooltip-btn', 'data_toggle': :tooltip, title: 'Total Inscritos' do
+			haml_tag :span, class: 'badge badge-info tooltip-btn', 'data_toggle': :tooltip, title: 'Inscritos' do
 				haml_concat "#{seccion.total_estudiantes}"
 			end
-			haml_tag :span, class: 'badge badge-success tooltip-btn', 'data_toggle': :tooltip, title: 'Total Aprobados' do
+			haml_tag :span, class: 'badge badge-success tooltip-btn', 'data_toggle': :tooltip, title: 'Aprobados' do
 				haml_concat "#{seccion.total_aprobados}"
 			end
-			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Total Aplazados' do
-				haml_concat "#{seccion.total_reprobados}"
+			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Aplazados' do
+				haml_concat "#{seccion.total_reprobados} (#{seccion.total_perdidos} PI)"
 			end
-			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Total Pérdidas por Inasistencia' do
-				haml_concat "#{seccion.total_perdidos}"
+			haml_tag :span, class: 'badge badge-secondary tooltip-btn', 'data_toggle': :tooltip, title: 'Retirados' do
+				haml_concat "#{seccion.total_retirados}"
 			end
 		end
 

@@ -66,6 +66,10 @@ class Seccion < ApplicationRecord
 		inscripcionsecciones.aplazado.count
 	end
 
+	def total_retirados
+		inscripcionsecciones.retirado.count
+	end
+
 	def total_perdidos
 		inscripcionsecciones.perdidos.count
 	end
