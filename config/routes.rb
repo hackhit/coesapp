@@ -62,6 +62,7 @@ Rails.application.routes.draw do
         get 'constancia_inscripcion'
         get 'constancia_estudio'
         get 'listado_seccion'
+        get 'listado_seccion_excel'
         get 'notas_seccion'
         get 'inscritos_escuela_periodo'
       end

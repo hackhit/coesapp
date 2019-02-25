@@ -2,7 +2,51 @@
 class ExportarPdf
 	include Prawn::View
 
-  def self.notas(seccion)
+
+  def self.listado_seccion seccion_id
+  		seccion = Seccion.find seccion_id
+  		asig = seccion.asignatura
+		# Variable Locales
+		pdf = Prawn::Document.new(top_margin: 20)
+
+		#titulo
+		encabezado_central_con_logo pdf, "Coordinación Académica"
+		pdf.move_down 10
+
+		pdf.move_down 20
+
+		data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Sección</b>", "<b>Período</b>", "<b>Créditos</b>"]]
+
+		data << [ "#{asig.id}", "#{asig.descripcion}", "#{seccion.numero}", "#{seccion.periodo_id}", "#{asig.creditos}"]
+
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 10, align: :center, padding: 3, border_color: '818284'})
+		t.draw
+
+		pdf.move_down 10
+
+		#instructor
+		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
+	 
+		pdf.move_down 10
+
+		inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
+
+		data = [["<b>#</b>", "<b>Cédula</b>", "<b>Nombre</b>"]]
+
+		inscripciones.each_with_index do |h,i|
+			data << [i+1, 
+			h.estudiante_id,
+			h.estudiante.usuario.apellido_nombre]
+		end
+		
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :justify, padding: 3, border_color: '818284'}, :column_widths => {1 => 250})
+		t.draw
+
+		return pdf
+	end
+
+  def self.notas_seccion seccion_id
+  		seccion = Seccion.find seccion_id
 
 		# Variable Locales
 		pdf = Prawn::Document.new(top_margin: 20)
@@ -59,9 +103,6 @@ class ExportarPdf
 		# pdf.text "#{Time.now.strftime('%d/%m/%Y %I:%M%p')} - Página: 1 de 1"
 		return pdf
 	end
-
-
-
 
 
 	def self.hacer_constancia_estudio estudiante_ci, periodo_id, escuela_id

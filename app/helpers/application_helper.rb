@@ -55,7 +55,7 @@ module ApplicationHelper
 			haml_tag :span, class: 'badge badge-success tooltip-btn', 'data_toggle': :tooltip, title: 'Aprobados' do
 				haml_concat "#{seccion.total_aprobados}"
 			end
-			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Aplazados' do
+			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Aplazados (Pérdidas por Inasistencia)' do
 				haml_concat "#{seccion.total_reprobados} (#{seccion.total_perdidos} PI)"
 			end
 			haml_tag :span, class: 'badge badge-secondary tooltip-btn', 'data_toggle': :tooltip, title: 'Retirados' do

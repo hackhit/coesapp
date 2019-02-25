@@ -10,28 +10,27 @@
 			%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 				%thead
 					%tr
-						%th T
-						%th Sec.
+						%th.text-center T
+						%th.text-center Sec.
 						%th Profesor Tutor (Calificador)
 						%th{style: 'width: 25%'} Profesores Secundarios
-						%th Capacidad
+						%th.text-center Capacidad
 						%th Estado
 						- if current_admin and current_admin.altos?
 							%th Opciones
 				%tbody
 					- @secciones.each do |seccion|
 						%tr
-							%td.tooltip-btn{'data_toggle': :tooltip, title: seccion.tipo_seccion.descripcion.titleize}= seccion.tipo_seccion_id.upcase
-							%td= seccion.numero
-							%td
+							%td.align-middle.text-center.tooltip-btn{'data_toggle': :tooltip, title: seccion.tipo_seccion.descripcion.titleize}= seccion.tipo_seccion_id.upcase
+							%td.align-middle.text-center= seccion.numero
+							%td.align-middle
 								= "#{seccion.descripcion_profesor_asignado}"
 								- if @editar_asignaturas
-									.tooltip-btn{'data_toggle': :tooltip, title: 'Actualizar Tutor-Calificador'}
-										= link_to seleccionar_profesor_seccion_path(seccion.id), {role: 'button'} do
-											= glyph 'pencil'
+									= link_to seleccionar_profesor_seccion_path(seccion.id), {role: 'button', class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'Actualizar Tutor-Calificador'} do
+										= glyph 'pencil'
 
-							%td
-								%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md
+							%td.align-middle
+								%table.table.mb-0
 									-seccion.profesores.each do |p|
 										%tr
 											%td
@@ -47,10 +46,10 @@
 												%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Agregar Profesor Secundario'}
 													= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true",{role: 'button'} do
 														%i.glyphicon.glyphicon-plus.text-success
-							%td
+							%td.align-middle.text-center
 								= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: seccion}
 
-							%td
+							%td.align-middle
 								-if seccion.calificada
 									= colocar_numeros_seccion seccion
 
@@ -59,5 +58,5 @@
 									%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
 										%span.badge.badge-dark= seccion.total_sin_calificar
 							- if current_admin #and current_admin.altos? 
-								%td
+								%td.align-middle
 									= render partial: 'admin/asignaturas/panel_detalle_opciones', locals: {seccion: seccion}

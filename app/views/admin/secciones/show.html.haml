@@ -28,19 +28,20 @@
 
 	-if @seccion.calificada
 
-		=# link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-sm btn-outline-info float-right mr-md-2 mb-md-2" do
-		=# glyph 'download'
 
 		= link_to acta_examen_excel_descargar_path(@seccion.id), class: 'btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2', role: :button do
 			= glyph 'download-alt'
 			= glyph 'list'
 			Descargar Acta de Notas (Excel)
 
+	= link_to listado_seccion_descargar_path(@seccion.id), class: "btn btn-sm btn-outline-info float-right mr-md-2 mb-md-2" do
+		= glyph 'download'
+		Descargar Listado
 
-	= link_to listado_seccion_descargar_path(@seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
+	= link_to listado_seccion_excel_descargar_path(@seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
 		= glyph 'download'
 		X
-		Descargar listado (Excel)
+		Descargar Listado (Excel)
 
 	= render '/admin/secciones/detalle_seccion'
 	=link_to @back, class: 'btn btn-sm btn-outline-secondary mt-1' do
