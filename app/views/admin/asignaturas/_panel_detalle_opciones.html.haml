@@ -1,21 +1,15 @@
 
-- if current_admin and current_admin.altos? 
+- if current_admin
 	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Listado en Excel'}
 		= link_to listado_seccion_descargar_path(seccion.id), class: "badge badge-success btn-success btn-sm p-md-1" do
 			= glyph 'download'
 			X
-
-	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen en Excel'}
-		= link_to acta_examen_excel_descargar_path(seccion.id), class: 'badge badge-info btn-success btn-sm p-md-1', role: :button do
-			= glyph 'download-alt'
-			= glyph 'list'
-			X
-
-	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta de Examen'}
-		= link_to acta_examen_descargar_path(seccion.id), class: 'badge badge-info btn-sm ml-md-1 p-md-1', role: :button do
-			= glyph 'download-alt'
-			= glyph 'list'
-
+	-if seccion.calificada
+		%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Acta en Excel'}
+			= link_to acta_examen_excel_descargar_path(seccion.id), class: 'badge badge-info btn-success btn-sm p-md-1', role: :button do
+				= glyph 'download-alt'
+				= glyph 'list'
+				X
 
 %b.tooltip-btn{'data_toggle': :tooltip, title: 'Ver Detalle / Calificar'}
 	= link_to seccion_path(seccion), class: 'badge badge-info btn-sm ml-md-1 p-md-1', role: :button do

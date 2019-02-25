@@ -28,9 +28,8 @@
 
 	-if @seccion.calificada
 
-		= link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-sm btn-outline-info float-right mr-md-2 mb-md-2" do
-			= glyph 'download'
-			Descargar Acta de Notas
+		=# link_to notas_seccion_descargar_path(@seccion.id), class: "btn btn-sm btn-outline-info float-right mr-md-2 mb-md-2" do
+		=# glyph 'download'
 
 		= link_to acta_examen_excel_descargar_path(@seccion.id), class: 'btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2', role: :button do
 			= glyph 'download-alt'

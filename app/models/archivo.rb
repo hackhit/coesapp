@@ -169,12 +169,12 @@ class Archivo
 		@sheet.row(8).concat ['Periodo', @seccion.periodo.periodo_del_anno]
 		@sheet.row(9).concat ['Año', @seccion.periodo.anno]
 
-		data = ['No.', 'Cédula I', 'Nombres y Apellidos', 'Nota_Final', 'Nota_Def', 'Tipo_Ex.']
+		data = ['No.', 'Cédula I', 'Nombres y Apellidos', 'Nota_Def', 'Tipo_Ex.']
 		@sheet.row(12).concat data
 
-		@seccion.inscripcionsecciones.each_with_index do |es,i|
+		@seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}.each_with_index do |es,i|
 			e = es.estudiante
-			@sheet.row(i+13).concat [i+1, e.usuario_id, e.usuario.apellido_nombre, es.tipo_calificacion, es.colocar_nota, es.tipo_convocatoria]
+			@sheet.row(i+13).concat [i+1, e.usuario_id, es.nombre_estudiante_con_retiro, es.colocar_nota, es.tipo_convocatoria]
 		end
 
 		file_name = "reporte_secciones.xls"
