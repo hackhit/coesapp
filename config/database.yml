@@ -35,8 +35,8 @@ production:
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: coesapp_development
+  database: coesapp_production
   pool: 5
   username: root
-  password: d15573230
+  password: 123123
   host: localhost
