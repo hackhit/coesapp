@@ -2,9 +2,9 @@ module Admin
 
 	class DescargarController < ApplicationController
 		before_action :filtro_logueado
-		before_action :filtro_admin_profe, only: [:listado_seccion, :notas_seccion]
+		before_action :filtro_admin_profe, only: [:listado_seccion, :notas_seccion, :listado_seccion_excel]
 		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria]
-		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :constancia_estudio, :listado_seccion, :notas_seccion]
+		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :constancia_estudio, :listado_seccion, :notas_seccion, :listado_seccion_excel]
 
 		# PDFs
 		def listado_seccion
