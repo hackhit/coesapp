@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
     resources :principal_admin, only: :index do
       collection do
+        get 'index2'
         get 'set_tab'
         post 'cambiar_sesion_periodo'
       end

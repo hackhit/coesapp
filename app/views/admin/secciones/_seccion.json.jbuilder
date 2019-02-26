@@ -1,2 +1,7 @@
-json.extract! seccion, :id, :numero, :asignatura_id, :periodo_id, :profesor_id, :calificada, :created_at, :updated_at
-json.url seccion_url(seccion, format: :json)
+json.extract! seccion, :numero, :tipo_seccion_id
+json.profesor (json.partial! '/admin/secciones/descripcion_profesor_asignado_edit.html.haml', locals: {seccion: seccion})
+json.profesores (json.partial! '/admin/secciones/tabla_profesores_secundarios.html.haml', locals: {seccion: seccion})
+json.capacidad (json.partial! '/admin/secciones/cambiar_capacidad.html.haml', locals: {seccion: seccion})
+json.estado (json.partial! '/admin/secciones/estado.html.haml', locals: {seccion: seccion})
+json.opciones (json.partial! '/admin/secciones/panel_detalle_opciones.html.haml', locals: {seccion: seccion})
+

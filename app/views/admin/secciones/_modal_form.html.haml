@@ -46,16 +46,6 @@
   $(document).ready(function() {
 
     $( ".selects2" ).select2({
-      ajax: {
-      url: "#{busquedas_usuarios_path}.json?profesores=true",
-      dataType: 'json',
-      delay: 250,
-      processResults: function (data) {
-        return {
-          results: data
-        };
-      }     
-      },
       placeholder: "--Escriba datos del profesor para buscarlo--",
       theme: "bootstrap",
       cache: true,

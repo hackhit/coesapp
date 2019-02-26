@@ -2,9 +2,11 @@
 	%h3.text-muted
 		Período Académico: 
 		= "#{current_periodo.id}"
-- if current_admin.altos?
+- if current_admin.maestros?
+	.border.p-3= render '/admin/principal_admin/index_maestros'
+- else
 	.border.p-3= render '/admin/principal_admin/tabs_estructura/escuelas'
 
 = render partial: '/admin/usuarios/datos_modal'
-
 = render 'admin/secciones/modal_form'
+= render 'admin/secciones/modal_seleccionar_profesor'

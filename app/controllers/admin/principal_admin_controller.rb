@@ -93,6 +93,14 @@ module Admin
 			@escuelas = current_admin.escuelas
 			@editar_asignaturas = true if current_admin.altos?
 			@seccion = Seccion.new
+			@departamentos = current_admin.departamentos #Departamento.all
+	      if escuela = current_admin.pertenece_a_escuela
+	        @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
+	      else
+	        @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos')
+	      end
+
+
 		end
 		
 		def seleccionar_profesor

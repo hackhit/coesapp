@@ -1,0 +1,19 @@
+- @secciones.each do |seccion|
+	%tr
+		%td.align-middle.text-center.tooltip-btn{'data_toggle': :tooltip, title: seccion.tipo_seccion.descripcion.titleize}= seccion.tipo_seccion_id.upcase
+		%td.align-middle.text-center= seccion.numero
+		%td.align-middle= render partial: '/admin/secciones/descripcion_profesor_asignado_edit', locals: {seccion: seccion}
+		%td.align-middle= render partial: '/admin/secciones/tabla_profesores_secundarios', locals: {seccion: seccion}
+		%td.align-middle.text-center= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: seccion}
+
+		%td.align-middle
+			-if seccion.calificada
+				= colocar_numeros_seccion seccion
+
+			- else
+				%span.badge.badge-info Por calificar
+				%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
+					%span.badge.badge-dark= seccion.total_sin_calificar
+		- if current_admin #and current_admin.altos? 
+			%td.align-middle
+				= render partial: 'admin/secciones/panel_detalle_opciones', locals: {seccion: seccion}

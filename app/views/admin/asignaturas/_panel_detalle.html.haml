@@ -23,29 +23,11 @@
 						%tr
 							%td.align-middle.text-center.tooltip-btn{'data_toggle': :tooltip, title: seccion.tipo_seccion.descripcion.titleize}= seccion.tipo_seccion_id.upcase
 							%td.align-middle.text-center= seccion.numero
-							%td.align-middle
-								= "#{seccion.descripcion_profesor_asignado}"
-								- if @editar_asignaturas
-									= link_to seleccionar_profesor_seccion_path(seccion.id), {role: 'button', class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'Actualizar Tutor-Calificador'} do
-										= glyph 'pencil'
+							%td.align-middle= render partial: '/admin/secciones/descripcion_profesor_asignado_edit', locals: {seccion: seccion}
 
 							%td.align-middle
-								%table.table.mb-0
-									-seccion.profesores.each do |p|
-										%tr
-											%td
-												= p.descripcion
-												- if @editar_asignaturas
-													%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Desasignar Este Profesor'}
-														= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
-															%i.glyphicon.glyphicon-minus.text-danger
+								= render partial: '/admin/secciones/tabla_profesores_secundarios', locals: {seccion: seccion}
 
-									- if @editar_asignaturas
-										%tr
-											%td
-												%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Agregar Profesor Secundario'}
-													= link_to "#{seleccionar_profesor_seccion_path(seccion.id)}?sec=true",{role: 'button'} do
-														%i.glyphicon.glyphicon-plus.text-success
 							%td.align-middle.text-center
 								= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: seccion}
 
@@ -59,4 +41,4 @@
 										%span.badge.badge-dark= seccion.total_sin_calificar
 							- if current_admin #and current_admin.altos? 
 								%td.align-middle
-									= render partial: 'admin/asignaturas/panel_detalle_opciones', locals: {seccion: seccion}
+									= render partial: 'admin/secciones/panel_detalle_opciones', locals: {seccion: seccion}

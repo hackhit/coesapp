@@ -103,6 +103,33 @@ class Seccion < ApplicationRecord
 		return descrip
 	end
 
+	def tabla_profesores_secundarios
+		aux = "<table class='table mb-0'><tbody>"
+
+		profesores.each do |profe|
+			aux += "<tr><td>#{profe.descripcion}"
+			aux += "<a data_confirm='¿Está seguro de esta acción?' href='/coesapp/secciones/#{id}/desasignar_profesor_secundario?profesor_id=13587081' class='tooltip-btn' data_toggle='tooltip' title='Desasignar este profesor'><i class='glyphicon glyphicon-minus text-danger'></i></a>"
+			aux += "</td></tr>"
+		end
+
+		aux += "<tr><td><a href='/coesapp/secciones/#{id}/seleccionar_profesor?sec=true' class='tooltip-btn' data_toggle='tooltip' title='Agregar profesor secundario'><i class='glyphicon glyphicon-plus text-success'></i></a></td></tr>"
+
+		aux += '</tbody></table>'
+
+	end
+
+	def descripcion_profesor_asignado_edit
+		
+		if profesor
+			aux = profesor.descripcion_usuario
+		else
+			aux = "No asignado"
+		end
+
+		aux += " <a role='button' class='tooltip-btn' data_toggle='tooltip' title='Actualizar Tutor-Calificador' href=#{seleccionar_profesor_seccion_path(self.id)}><span class='glyphicon glyphicon-pencil'></span></a> "
+	end
+
+	
 	def descripcion_profesor_asignado
 		if profesor
 			profesor.descripcion_usuario

@@ -143,7 +143,7 @@ module Admin
     def cambiar_profe_seccion
       @seccion.profesor_id = params[:profesor_id]
 
-      if params[:secundario]
+      if params[:secundario].eql? 'true'
         if @seccion.secciones_profesores_secundarios.create(profesor_id: params[:profesor_id])
           sp = @seccion.secciones_profesores_secundarios.where(profesor_id: params[:profesor_id]).first
           flash[:success] = "Profesor Secundario agregado a la Asignatura: #{@seccion.descripcion}"
@@ -161,7 +161,7 @@ module Admin
           flash[:error] = "no se pudo guardar los cambios"
         end
       end
-      redirect_to secciones_path
+      redirect_back fallback_location: principal_admin_index_path
     end
 
     def desasignar_profesor_secundario

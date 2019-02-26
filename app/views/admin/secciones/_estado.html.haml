@@ -1,0 +1,6 @@
+-if seccion.calificada
+	= colocar_numeros_seccion seccion
+- else
+	%span.badge.badge-info Por calificar
+	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Total Sin Calificar'}
+		%span.badge.badge-dark= seccion.total_sin_calificar

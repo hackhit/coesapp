@@ -1,0 +1,130 @@
+
+%p
+	%h3.text-muted
+		Período Académico: 
+		= "#{current_periodo.id}"
+- if current_admin.altos?
+	.row
+		.col-md-2
+			= collection_select nil, :escuela_id, current_admin.escuelas, :id, :descripcion, {prompt: 'Selecciona Escuela...', selected: session[:esc_id]}, { class: 'form-control form-control-sm'}
+		.col-md-2
+			= grouped_collection_select nil, :departamento_id, current_admin.escuelas, :departamentos, :descripcion, :id, :descripcion, { prompt: "Selecciona Departamento...", selected: session[:dpto_id] }, { class: 'form-control form-control-sm' }
+		.col-md-4
+			= grouped_collection_select nil, :catedra_id, Departamento.all, :catedras, :descripcion, :id, :descripcion, { prompt: "Selecciona Cátedra...", selected: session[:cat_id] }, { class: 'form-control form-control-sm' }
+
+		.col-md-4
+			= grouped_collection_select nil, :asignatura_id, Catedra.all, :asignaturas, :descripcion, :id, :descripcion, { prompt: "Selecciona Asignatura...", selected: session[:mat_id] }, { class: 'form-control form-control-sm' }
+
+.border.p-md-2.mt-md-3
+	%b
+		Total Secciones:5
+		%a.tooltip-btn.float-left.mr-md-3.btn.btn-sm.btn-outline-success{"data-original-title" => "Agregar Sección", :data_toggle => "tooltip", :href => "javascript:void(0)", :onclick => "$('#nueva_seccion').modal();", :title => ""}
+			.text-success
+				%span.glyphicon.glyphicon-plus
+	%table#resultado.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+		%thead
+			%tr
+				%th.text-center T
+				%th.text-center Sec.
+				%th Profesor Tutor (Calificador)
+				%th{:style => "width: 25%"} Profesores Secundarios
+				%th.text-center Capacidad
+				%th Estado
+				%th Opciones
+		%tbody
+			- if session[:mat_id]
+				- @mat = Asignatura.find session[:mat_id]
+				- @secciones = @mat.secciones.del_periodo (current_periodo.id)
+				= render '/admin/asignaturas/tabla_secciones' 
+
+	#cargando.pagination-centered.text-center.hideble
+		= image_tag 'loading.gif'
+		Cargando...
+	#no_encontrado.pagination-centered.text-center.hideble.p-0
+		.alert-danger No se encontrado secciones
+
+= render partial: '/admin/usuarios/datos_modal'
+- @departamentos = Departamento.all
+- @seccion = Seccion.new
+= render 'admin/secciones/modal_form'
+
+:javascript
+	$( "#escuela_id" ).change(function() {
+		var id = $("#escuela_id option:selected").val();
+		var escuela = $("#escuela_id option:selected").text();
+		$("#departamento_id optgroup").hide();
+		$("#departamento_id optgroup[label='" + escuela + "']").show();
+		set_tab('esc_id', id);
+	});
+	
+	$( "#departamento_id" ).change(function() {
+		var id = $("#departamento_id option:selected").val();
+		var departamento = $("#departamento_id option:selected").text();
+		$("#catedra_id optgroup").hide();
+		$("#catedra_id optgroup[label='" + departamento + "']").show();
+		set_tab('dpto_id', id);
+	});
+
+	$( "#catedra_id" ).change(function() {
+		var id = $("#catedra_id option:selected").val();
+		var catedra = $("#catedra_id option:selected").text();
+		$("#asignatura_id optgroup").hide();
+		$("#asignatura_id optgroup[label='" + catedra + "']").show();
+		set_tab('cat_id', id);
+	});
+
+	$( "#asignatura_id" ).change(function() {
+		limpiar_resultados();
+		var id = $("#asignatura_id option:selected").val();
+		var valor = $("#asignatura_id option:selected").text();
+
+		$('#_seccionasignatura_id').val(id);$('#nueva_seccion_titulo').html('Nueva Sección para ' + valor);
+
+		get_secciones(id);
+
+	});
+
+	function limpiar_resultados(){
+		$('#no_encontrado').hide();
+		$("#resultado tbody").html(""); 
+	}
+
+	function get_secciones(id){
+		$.ajax({
+			url: '/asignaturas/' + id,
+			type: 'GET',
+			dataType: 'json', 
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')), $('#cargando').show();},
+			success: function(data){
+				if(data.secciones.length === 0){
+					$('#no_encontrado').show();
+
+				}else{
+					$.map(data.secciones, function(seccion, k){ 
+						$('#resultado').append('<tr><td class= "align-middle text-center">' +
+							seccion.tipo_seccion_id + '</td><td class= "align-middle text-center">' +
+							seccion.numero + '</td><td class= "align-middle">' + 
+							seccion.profesor + '</td><td class= "align-middle">' +
+							seccion.profesores + '</td><td class= "align-middle text-center">' +
+							seccion.capacidad + '</td><td class= "align-middle">' +
+							seccion.estado + '</td><td class= "align-middle">' + 
+							seccion.opciones + '</td></tr>');
+					})
+				}
+			},
+			complete: function(){
+				$('#cargando').hide();
+				set_tab('mat_id', id);
+			}
+		});
+
+	}
+
+	function set_tab(tipo, id){
+		$.ajax({
+			url: "#{set_tab_principal_admin_index_path}", 
+			data: {tipo: tipo, valor: id}, 
+			dataType: 'json', 
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
+			});
+	}

@@ -2,7 +2,6 @@
 // Do not use *= require in Sass or your other stylesheets will not be able to access the Bootstrap mixins and variables.
 @import "bootstrap";
 
-
 .table-area {
   height: 500px;overflow-y: scroll;
   position: relative;

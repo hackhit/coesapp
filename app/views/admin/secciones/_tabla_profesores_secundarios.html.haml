@@ -1,0 +1,15 @@
+%table.table.mb-0
+	- seccion.profesores.each do |p|
+		%tr
+			%td
+				= p.descripcion
+				- if @editar_asignaturas
+					%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Desasignar Este Profesor'}
+						= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data_confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
+							%i.glyphicon.glyphicon-minus.text-danger
+
+	- if current_admin.maestros?
+		%tr
+			%td
+				= link_to 'javascript:void(0)', {role: 'button', class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'Agregar Profesor Secundario', onclick: "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Agregar Profesor secunadrio a #{seccion.descripcion}');$('#profesor > #secundario').val(true);$('#editar_profesor').modal();"} do
+					%i.glyphicon.glyphicon-plus.text-success

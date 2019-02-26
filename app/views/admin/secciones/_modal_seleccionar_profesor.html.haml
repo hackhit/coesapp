@@ -8,7 +8,8 @@
       .modal-body.border.p-2
         = form_tag({action: 'cambiar_profe_seccion', controller: '/admin/secciones'}, class: "form-horizontal", id: 'profesor') do
           =hidden_field_tag :id
-          =hidden_field_tag :principal, true
+          =#hidden_field_tag :principal, true
+          =hidden_field_tag :secundario, false
           .form-group
             %h5.control-label.col-md-2 Profesor:
             .col-md-10
