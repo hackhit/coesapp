@@ -117,7 +117,7 @@
 
 	function get_secciones(id){
 		$.ajax({
-			url: '/asignaturas/' + id,
+			url: '#{asignaturas_path(id)}',
 			type: 'GET',
 			dataType: 'json', 
 			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')), $('#cargando').show();},
