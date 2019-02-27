@@ -21,6 +21,9 @@
     %dt.label.label-default= model_class.human_attribute_name(:catedra_id)
     %dd
       %pre.prettyprint= @asignatura.catedra.descripcion.titleize
+    %dt.label.label-default Bloque
+    %dd
+      %pre.prettyprint= @asignatura.anno
     %dt.label.label-default= model_class.human_attribute_name(:creditos)
     %dd
       %pre.prettyprint= @asignatura.creditos

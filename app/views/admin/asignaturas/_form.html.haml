@@ -42,6 +42,11 @@
           = k.upcase
 
   .form-group
+    = f.label :anno, class: 'control-label col-md-2', value: 'Bloque'
+    .col-md-10
+      = f.number_field :anno, class: 'text_field form-control', in: 0...11, step: 1
+
+  .form-group
     = f.label :creditos, class: 'control-label col-md-2', value: 'Créditos'
     .col-md-10
       = f.number_field :creditos, class: 'text_field form-control', in: 0...21, step: 1
