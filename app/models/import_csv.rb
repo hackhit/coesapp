@@ -143,10 +143,10 @@ class ImportCsv
 			</br><i>Detalle:</i></br> #{estudiantes_inexistentes.uniq.to_sentence}"
 	end
 
-	def self.importar_secciones url, objecto, periodo_id='2018-02S'
+	def self.importar_secciones file, periodo_id
 		require 'csv'
 
-		csv_text = File.read(url)
+		csv_text = File.read(file)
 		total_inscritos = 0
 		total_existentes = 0
 		estudiantes_no_inscritos = []

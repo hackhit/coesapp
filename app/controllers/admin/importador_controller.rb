@@ -28,7 +28,7 @@ module Admin
 		end
 
 		def importar_seccion
-			flash[:info] = ImportCsv.importar_secciones params[:datafile].tempfile, params[:objeto]
+			flash[:info] = ImportCsv.importar_secciones params[:datafile].tempfile, params[:periodo_id]
 
 			redirect_to action: 'seleccionar_archivo_secciones'
 		end
