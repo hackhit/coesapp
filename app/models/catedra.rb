@@ -4,6 +4,7 @@ class Catedra < ApplicationRecord
 	has_many :asignaturas
 
 	has_many :secciones, through: :asignaturas
+	# has_many :programaciones, through: :asignaturas
 
 	has_many :inscripcionsecciones, through: :secciones
 
