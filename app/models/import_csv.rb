@@ -143,6 +143,72 @@ class ImportCsv
 			</br><i>Detalle:</i></br> #{estudiantes_inexistentes.uniq.to_sentence}"
 	end
 
+
+	def self.importar_profesores file
+		require 'csv'
+
+		csv_text = File.read(file)
+
+		total_agregados = 0
+		usuarios_existentes = []
+		profesores_existentes = []
+		usuarios_no_agregados = []
+		profes_no_agregados = []
+
+		csv = CSV.parse(csv_text, headers: true)
+		csv.each do |row|
+			begin
+				# if profe = Profesor.where(usuario_id: row.field(0))
+				if profe = Profesor.where(usuario_id: row['ci']).first
+					profesores_existentes << profe.usuario_id
+				elsif usuario = Usuario.where(ci: row['ci']).first
+					usuarios_existentes << usuario.ci
+					profe = Profesor.new
+					profe.departamento_id = row['departamento_id']
+					profe.usuario_id = usuario.ci
+					total_agregados += 1 if profe.save
+				else
+					usuario = Usuario.new
+					usuario.ci = row['ci']
+					usuario.password = usuario.ci
+					usuario.nombres = row['nombres']
+					usuario.apellidos = row['apellidos']
+					usuario.email = row['email']
+					usuario.telefono_movil = row['telefono']
+					if usuario.save
+						profe = Profesor.new
+						profe.departamento_id = row['departamento_id']
+						profe.usuario_id = usuario.ci
+						if profe.save
+							total_agregados += 1
+						else
+							profes_no_agregados << profe.usuario_id
+						end
+					else
+						usuarios_no_agregados << row['ci']
+						p row['ci'].to_s.center(200, ' # ')
+					end
+				end
+			end
+		end
+
+		resumen = "</br><b>Resumen:</b> 
+			</br></br>Total Profesores Agregados: <b>#{total_agregados}</b><hr></hr>
+			Total Profesores Existentes: <b>#{profesores_existentes.size}</b>
+			</br><i>Detalle:</i></br>#{profesores_existentes.to_sentence}<hr></hr>
+			Total Usuarios Existentes (Se les creó el rol de profesor): <b>#{usuarios_existentes.size}</b>
+			</br><i>Detalle:</i></br>#{usuarios_existentes.to_sentence}<hr></hr>
+			Total Profesores No Agregados (Se creó el usuario pero no el profesor): <b>#{profes_no_agregados.count}</b>
+			</br><i>Detalle:</i></br> #{profes_no_agregados.to_sentence}<hr></hr>
+			Total Usuarios No Agregados: <b>#{usuarios_no_agregados.count}</b>
+			</br><i>Detalle:</i></br> #{usuarios_no_agregados.to_sentence}"
+
+		return "Proceso de importación completado. #{resumen}"
+
+	end
+
+
+
 	def self.importar_secciones file, periodo_id
 		require 'csv'
 

@@ -20,9 +20,11 @@ Rails.application.routes.draw do
 
     get '/importador/seleccionar_archivo'
     get '/importador/seleccionar_archivo_secciones'
+    get '/importador/seleccionar_archivo_profesores'
     post '/importador/vista_previa'
     post '/importador/importar'
     post '/importador/importar_seccion'
+    post '/importador/importar_profesores'
 
     resources :principal_admin, only: :index do
       collection do
