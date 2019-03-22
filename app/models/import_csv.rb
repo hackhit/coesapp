@@ -151,6 +151,7 @@ class ImportCsv
 		total_agregados = 0
 		usuarios_existentes = []
 		estudiantes_existentes = []
+		estudiantescuelas_existentes = []
 		usuarios_no_agregados = []
 		estudiantes_no_agregados = []
 		total_planes_agregados = 0
@@ -181,6 +182,7 @@ class ImportCsv
 				end
 
 				if hay_usuario
+					p "HAY USUARIO"
 					hay_estudiante = false
 					if estudiante = Estudiante.where(usuario_id: usuario.ci ).first
 						estudiantes_existentes << estudiante.usuario_id
@@ -188,16 +190,22 @@ class ImportCsv
 					else
 						estudiante = Estudiante.new
 						estudiante.usuario_id = usuario.ci
-						estudiante.escuela_id = escuela_id
 						if estudiante.save
 							hay_estudiante = true
-							total_agregados += 1
 						else
 							estudiantes_no_agregados << usuario.ci
 						end
 					end
 
 					if hay_estudiante
+						p "HAY ESTUDIANTE"
+						if estudiante.escuelaestudiantes.where(escuela_id: escuela_id).first
+							estudiantescuelas_existentes << estudiante.id
+						else
+							p "ESCUALA ESTUDIANTE AGREGADO"
+							total_agregados += 1 if estudiante.escuelaestudiantes.create(escuela_id: escuela_id)
+						end
+						
 						hp = Historialplan.new
 						hp.estudiante_id = estudiante.id
 						hp.plan_id = plan_id
@@ -217,12 +225,16 @@ class ImportCsv
 			</br></br>Total Estudiantes Agregados: <b>#{total_agregados}</b><hr></hr>
 			Total Usuarios Existentes: <b>#{usuarios_existentes.size}</b><hr></hr>
 			Total Estudiantes Existentes: <b>#{estudiantes_existentes.size}</b><hr></hr>
+
 			Total Estudiantes No Agregados: <b>#{estudiantes_no_agregados.size}</b>
 			</br><i>Detalle:</i></br> #{estudiantes_no_agregados.to_sentence}<hr></hr>
+
+			Total EscuelaEstudiantes Existentes: <b>#{estudiantescuelas_existentes.size}</b><hr></hr>
+
 			Total Usuarios No Agregados: <b>#{usuarios_no_agregados.size}</b>
 			</br><i>Detalle:</i></br> #{usuarios_no_agregados.to_sentence}
 			</br>Total Planes Agregados: <b>#{total_planes_agregados}</b>
-			</br>Total Planes No Agregados: <b>#{total_planes_no_agregados}</b>"
+			</br>Total Planes No Agregados o Existentes: <b>#{total_planes_no_agregados}</b>"
 
 		return "Proceso de importación completado. #{resumen}"
 
