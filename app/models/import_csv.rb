@@ -143,6 +143,95 @@ class ImportCsv
 			</br><i>Detalle:</i></br> #{estudiantes_inexistentes.uniq.to_sentence}"
 	end
 
+	def self.importar_estudiantes file, escuela_id, plan_id, periodo_id
+		require 'csv'
+
+		csv_text = File.read(file)
+
+		total_agregados = 0
+		usuarios_existentes = []
+		estudiantes_existentes = []
+		usuarios_no_agregados = []
+		estudiantes_no_agregados = []
+		total_planes_agregados = 0
+		total_planes_no_agregados = 0
+
+		csv = CSV.parse(csv_text, headers: true)
+		csv.each do |row|
+			begin
+				# if profe = Profesor.where(usuario_id: row.field(0))
+				hay_usuario = false
+				if usuario = Usuario.where(ci: row['ci']).first
+					usuarios_existentes << usuario.ci
+					hay_usuario = true
+				else
+					usuario = Usuario.new
+					usuario.ci = row['ci']
+					usuario.password = usuario.ci
+					usuario.nombres = row['nombres']
+					usuario.apellidos = row['apellidos']
+					usuario.email = row['email']
+					usuario.telefono_movil = row['telefono']
+					usuario.telefono_habitacion = row['telefono_habitacion']
+					if usuario.save
+						hay_usuario = true
+					else
+						usuarios_no_agregados << row['ci']
+					end
+				end
+
+				if hay_usuario
+					hay_estudiante = false
+					if estudiante = Estudiante.where(usuario_id: usuario.ci ).first
+						estudiantes_existentes << estudiante.usuario_id
+						hay_estudiante = true
+					else
+						estudiante = Estudiante.new
+						estudiante.usuario_id = usuario.ci
+						estudiante.escuela_id = escuela_id
+						if estudiante.save
+							hay_estudiante = true
+							total_agregados += 1
+						else
+							estudiantes_no_agregados << usuario.ci
+						end
+					end
+
+					if hay_estudiante
+						hp = Historialplan.new
+						hp.estudiante_id = estudiante.id
+						hp.plan_id = plan_id
+						hp.periodo_id = periodo_id
+
+						if hp.save
+							total_planes_agregados += 1
+						else
+							total_planes_no_agregados += 1
+						end
+					end
+				end
+
+			end
+		end
+		resumen = "</br><b>Resumen:</b> 
+			</br></br>Total Estudiantes Agregados: <b>#{total_agregados}</b><hr></hr>
+			Total Usuarios Existentes: <b>#{usuarios_existentes.size}</b><hr></hr>
+			Total Estudiantes Existentes: <b>#{estudiantes_existentes.size}</b><hr></hr>
+			Total Estudiantes No Agregados: <b>#{estudiantes_no_agregados.size}</b>
+			</br><i>Detalle:</i></br> #{estudiantes_no_agregados.to_sentence}<hr></hr>
+			Total Usuarios No Agregados: <b>#{usuarios_no_agregados.size}</b>
+			</br><i>Detalle:</i></br> #{usuarios_no_agregados.to_sentence}
+			</br>Total Planes Agregados: <b>#{total_planes_agregados}</b>
+			</br>Total Planes No Agregados: <b>#{total_planes_no_agregados}</b>"
+
+		return "Proceso de importación completado. #{resumen}"
+
+
+	end
+
+
+
+
 
 	def self.importar_profesores file
 		require 'csv'
@@ -186,7 +275,6 @@ class ImportCsv
 						end
 					else
 						usuarios_no_agregados << row['ci']
-						p row['ci'].to_s.center(200, ' # ')
 					end
 				end
 			end

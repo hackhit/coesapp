@@ -26,6 +26,8 @@
                 = link_to 'Planes', planes_path, class: 'dropdown-item'
                 = link_to 'Departamentos', departamentos_path, class: 'dropdown-item'
                 = link_to 'Cátedras', catedras_path, class: 'dropdown-item'
+                = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item'
+
               = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item'
               = link_to 'Secciones', secciones_path, class: 'dropdown-item'
           - if current_admin.altos?

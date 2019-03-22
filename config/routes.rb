@@ -16,15 +16,19 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
-    resources :administradores, only: :index
 
     get '/importador/seleccionar_archivo'
+    get '/importador/index'
     get '/importador/seleccionar_archivo_secciones'
     get '/importador/seleccionar_archivo_profesores'
+    get '/importador/seleccionar_archivo_estudiantes'
     post '/importador/vista_previa'
     post '/importador/importar'
     post '/importador/importar_seccion'
     post '/importador/importar_profesores'
+    post '/importador/importar_estudiantes'
+
+    resources :administradores, only: :index
 
     resources :principal_admin, only: :index do
       collection do
