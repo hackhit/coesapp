@@ -190,6 +190,7 @@ class ImportCsv
 					else
 						estudiante = Estudiante.new
 						estudiante.usuario_id = usuario.ci
+						estudiante.escuela_id = escuela_id
 						if estudiante.save
 							hay_estudiante = true
 						else
