@@ -1,15 +1,26 @@
-
 .border.p-md-3
-  %b
-    = btn_atras principal_admin_index_path
-    Selección de Archivo de Secciones formato: ci, id_uxxi, número sección (12345678, 0703100310, A1):
-    .text-muted Recuerde que debe existir la estructura
-.border.p-md-3.m-md-3
+  .alert.alert-info
+    %b Formato de las cabeceras: ci, id_uxxi, numero_seccion (en minúscula, sin espacios ni acentos):
+
+  .text-center
+    %p Ejemplo:
+    = image_tag 'ejem_csv_importar_estudiantes_secciones'
+    %p 
+      .float-right.text-success #CAMPOS OPCIONALES
+      .float-right.text-danger #CAMPOS OBLIGATORIOS
+      .float-right.text-info #NOMBRES DE LAS CABECERAS
+
+.border.p-md-3.mt-md-3
+
   = form_tag({controller: :importador, action: :importar_seccion}, multipart: true, class: 'form-horizontal') do
     .form-group
-      .col-md-12
-        %label Seleccione el archivo a Importar (recuerde el formato es CSV):
       .col-md-12.mb-3
+
+        .alert.alert-info
+          %b Seleccione Archivo CSV 
+          .text-muted
+            Para obtener información de cómo exportar archivos .csv en Excel haga click
+            %a{href: 'https://support.office.com/es-es/article/importar-o-exportar-archivos-de-texto-txt-o-csv-5250ac4c-663c-47ce-937b-339e391393ba', target: '_blank'} aquí
         = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
       .col-md-12 
         = select(nil, :periodo_id, Periodo.all.collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Periodo...'}, {class: "form-control text_field", required: true})

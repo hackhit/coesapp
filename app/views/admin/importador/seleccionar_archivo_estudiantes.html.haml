@@ -5,7 +5,7 @@
 
   .text-center
     %p Ejemplo:
-    =# image_tag 'ejem_csv_importar_estudiantes'
+    = image_tag 'ejem_csv_importar_estudiantes'
     %p 
       .float-right.text-success #CAMPOS OPCIONALES
       .float-right.text-danger #CAMPOS OBLIGATORIOS
@@ -17,9 +17,9 @@
 
       .col-md-12.mb-3
         .alert.alert-info
-          %b Secleccione Archivo CSV 
+          %b Seleccione Archivo CSV 
           .text-muted
-            Para obtener información de cómo exportar archivos .csv en excel haga click
+            Para obtener información de cómo exportar archivos .csv en Excel haga click
             %a{href: 'https://support.office.com/es-es/article/importar-o-exportar-archivos-de-texto-txt-o-csv-5250ac4c-663c-47ce-937b-339e391393ba', target: '_blank'} aquí
         = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
       .col-md-12
