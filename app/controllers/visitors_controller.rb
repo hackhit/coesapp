@@ -69,10 +69,15 @@ class VisitorsController < ApplicationController
     usuario = Usuario.where(ci: params[:id]).limit(1).first
     if usuario
       session[:usuario_ci] = usuario.ci
-      ApplicationMailer.olvido_clave(usuario).deliver  
-      info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
-      m = usuario.email
-      flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
+      begin
+        ApplicationMailer.olvido_clave(usuario).deliver!
+        info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
+        m = usuario.email
+        flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
+      rescue Exception => e
+
+        flash[:error] = "Error: #{e}"
+      end
     else
       flash[:error] = "Usuario no registrado"
     end
