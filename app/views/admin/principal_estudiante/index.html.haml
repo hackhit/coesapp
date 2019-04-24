@@ -18,7 +18,7 @@
 							%p= pl.descripcion_completa
 				- if @escuela.id.eql? 'IDIO'
 					- if @estudiante.combinaciones.count < 1
-						- @idiomas = estu.escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
+						- @idiomas = escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
 						= render '/admin/estudiantes/actualizar_idiomas'
 					- else
 						.border.p-md-3
