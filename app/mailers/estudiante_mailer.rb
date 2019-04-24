@@ -1,8 +1,9 @@
 # encoding: utf-8
 
 class EstudianteMailer < ActionMailer::Base
+
   # default :from => "fundeim@ucv.ve"      
-  default :from => "COES-FHE <soporte.coes.fhe@gmail.com>"
+  default from: "COES-FHE <soporte.coes.fhe@gmail.com>", authentication: 'plain'
   def bienvenida(usuario)
     @nombre = usuario.nombre_completo     
     @clave = usuario.contrasena
