@@ -49,15 +49,19 @@ Rails.application.configure do
   # number of complex assets.
   config.assets.debug = true
 
-  config.action_mailer.smtp_settings = {
-    address: Rails.application.secrets.address,
-    port: 587,
-    domain: Rails.application.secrets.domain_name,
-    authentication: "plain",
-    enable_starttls_auto: true,
-    user_name: Rails.application.secrets.email_provider_username,
-    password: Rails.application.secrets.email_provider_password
-  }
+  # config.action_mailer.smtp_settings = {
+  #   address: Rails.application.secrets.address,
+  #   port: 25,
+  #   domain: Rails.application.secrets.domain_name,
+  #   user_name: Rails.application.secrets.email_provider_username,
+  #   password: Rails.application.secrets.email_provider_password,
+  #   openssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
+  # }
+
+  # ActionMailer Config
+  config.action_mailer.default_url_options = { :host => 'local_host' }
+    # config.action_mailer.delivery_method = :smtp
+  config.action_mailer.raise_delivery_errors = true
 
 
   # config.action_mailer.smtp_settings = {
@@ -69,11 +73,6 @@ Rails.application.configure do
   #   user_name: Rails.application.secrets.email_provider_username,
   #   password: Rails.application.secrets.email_provider_password
   # }
-
-  # ActionMailer Config
-  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.raise_delivery_errors = true
   # Send email in development mode?
   config.action_mailer.perform_deliveries = true
 
