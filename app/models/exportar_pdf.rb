@@ -276,7 +276,7 @@ class ExportarPdf
 
 					if h.tiene_calificacion_posterior?
 						nota = h.valor_calificacion(false, 'P')
-						data << [asig.id_uxxi, h.descripcion, asig.creditos, h.seccion.numero, h.tipo_convocatoria('R'), nota, h.tipo_calificacion_to_cod]
+						data << [asig.id_uxxi, h.descripcion(sec.periodo_id), asig.creditos, h.seccion.numero, h.tipo_convocatoria('R'), nota, h.tipo_calificacion_to_cod]
 					end
 				end
 
