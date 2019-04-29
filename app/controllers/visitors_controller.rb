@@ -65,23 +65,58 @@ class VisitorsController < ApplicationController
     redirect_to root_path
   end 
 
-  def olvido_clave_guardar
-    usuario = Usuario.where(ci: params[:id]).limit(1).first
-    if usuario
-      session[:usuario_ci] = usuario.ci
-      begin
-        ApplicationMailer.olvido_clave(usuario).deliver! #deliver_now # deliver_later
-        info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
-        m = usuario.email
-        flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
-      rescue Exception => e
+  # def usuario
 
+  #     respond_to do |format|
+  #         @usuario = Usuario.where(ci: params[:id]).limit(1).first
+  #         if @usuario
+  #         format.json { render :show, status: :ok, location: @usuario }
+  #       else
+  #         flash[:danger] = "Error al intentar actualizar el plan: #{@plan.errors.full_messages.to_sentence}"
+  #         format.html { render :edit }
+  #         format.json { render json: @usuario.errors, status: :unprocessable_entity }
+  #       end
+  #     end
+    
+  # end
+
+  def olvido_clave_guardar
+
+    usuario = Usuario.where(ci: params[:ci]).limit(1).first
+    if usuario
+
+      begin
+        session[:usuario_ci] = usuario.ci
+        m = usuario.email
+        # ApplicationMailer.olvido_clave(usuario).deliver_later#! #deliver_now # deliver_later
+
+        texto = "<p> Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.</p> <p>Su clave es:#{usuario.password}</p><p>Gracias por su colaboración.</p><p>UCV La casa que vence las sombras.</p><p>Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com</p>"
+        unless m.blank?
+
+          system("./sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'correo exitoso' -m '#{texto}' -v") 
+          info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
+          flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
+        else
+          flash[:error] = "El usuario no posee un correo registrado. Por favor contacte a las autoridades competentes para solvertar esta situación."
+        end
+      rescue Exception => e
         flash[:error] = "Error: #{e}"
       end
+
+      # session[:usuario_ci] = usuario.ci
+      # begin
+      #   ApplicationMailer.olvido_clave(usuario).deliver! #deliver_now # deliver_later
+      #   info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
+      #   m = usuario.email
+      #   flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
+      # rescue Exception => e
+
+      #   flash[:error] = "Error: #{e}"
+      # end
     else
       flash[:error] = "Usuario no registrado"
     end
-      redirect_to root_path
+    redirect_to root_path
   end
 
   def un_rol 
