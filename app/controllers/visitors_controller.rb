@@ -93,7 +93,9 @@ class VisitorsController < ApplicationController
         texto = "<p> Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.</p> <p>Su clave es:#{usuario.password}</p><p>Gracias por su colaboración.</p><p>UCV La casa que vence las sombras.</p><p>Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com</p>"
         unless m.blank?
 
-          flash[:info] = system("./sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACIÓN DE CONTRASEÑA' -m '#{texto}' -v") 
+          system("./sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACIÓN DE CONTRASEÑA' -m '#{texto}' -v")
+
+          system("echo 'Correo enviado! ----------------------------------'") 
           info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
           flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
         else
