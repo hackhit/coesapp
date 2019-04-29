@@ -11,8 +11,10 @@ class ImportCsv
 	# end
 
 
-	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes
-		"</br><b>Resumen:</b> 
+	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados
+		
+		aux = "</br>
+			<b>Resumen:</b> 
 			</br></br>Total Nuevos Inscritos: <b>#{inscritos}</b>
 			</br>Total Existentes: <b>#{existentes}</b>
 			</br>Total Nuevas Secciones: <b>#{nuevas_secciones}</b>
@@ -22,6 +24,16 @@ class ImportCsv
 			</br><i>Detalle:</i></br> #{asignaturas_inexistentes.uniq.to_sentence}
 			<hr></hr>Total Estudiantes Inexistentes: <b>#{estudiantes_inexistentes.uniq.count}</b>
 			</br><i>Detalle:</i></br> #{estudiantes_inexistentes.uniq.to_sentence}"
+
+		if total_calificados and total_calificados.to_i > 0
+			aux += "<hr></hr>Calificaciones:"
+			aux += "</br>Total Estudiantes Calificados: <b>#{total_calificados}</b>"
+			aux += "</br>Total Estudiantes Aprobados: <b>#{total_aprobados}</b>"
+			aux += "</br>Total Estudiantes Aplazados: <b>#{total_aplazados}</b>"
+			aux += "</br>Total Estudiantes No Calificados: <b>#{total_no_calificados}</b>"
+
+		end
+		return aux
 	end
 
 	def self.importar_estudiantes file, escuela_id, plan_id, periodo_id
@@ -202,14 +214,15 @@ class ImportCsv
 		secciones_no_creadas = []
 		estudiantes_inexistentes = []
 		asignaturas_inexistentes = []
-
-		self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes
+		total_calificados = 0
+		total_aprobados = 0
+		total_aplazados = 0
+		total_no_calificados = 0
 
 		csv = CSV.parse(csv_text, headers: true)
 			csv.each do |row|
 				begin
-					if a = Asignatura.where(id_uxxi: row.field(1)).limit(1).first
-						
+					if a = Asignatura.where(id_uxxi: row.field(1)).first
 						unless s = Seccion.where(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id).limit(1).first
 						
 							total_nuevas_secciones += 1 if s = Seccion.create!(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id, tipo_seccion_id: 'NF')
@@ -220,14 +233,49 @@ class ImportCsv
 
 								estudiantes_inexistentes << row.field(0)
 
-							elsif s.inscripcionsecciones.where(estudiante_id: row.field(0)).count <= 0
-								if s.inscripcionsecciones.create!(estudiante_id: row.field(0))
-									total_inscritos += 1
-								else
-									estudiantes_no_inscritos << row.field(0)
-								end
 							else
-								total_existentes += 1
+								inscrip = s.inscripcionsecciones.where(estudiante_id: row.field(0)).first
+								
+								unless inscrip
+										inscrip = Inscripcionseccion.new
+										inscrip.seccion_id = s.id
+										inscrip.estudiante_id = row.field(0)
+										
+									if inscrip.save
+										total_inscritos += 1
+									else
+										estudiantes_no_inscritos << row.field(0)
+									end
+								else
+									total_existentes += 1
+								end
+
+								# CALIFICAR:
+								if row.field(3) and ! row.field(3).blank?
+									inscrip.calificacion_final = row.field(3)
+									
+									if inscrip.calificacion_final >= 10
+										inscrip.estado = :aprobado
+									else
+										if inscrip.calificacion_final == 0
+											inscrip.tipo_calificacion_id = TipoCalificacion::PI 
+										else
+											inscrip.tipo_calificacion_id = TipoCalificacion::FINAL 
+										end
+										inscrip.estado = :aplazado
+									end
+
+									if inscrip.save
+										total_calificados += 1
+										if inscrip.aprobado?
+											total_aprobados += 1
+										else
+											total_aplazados += 1
+										end
+									else
+										total_no_calificados += 1
+									end
+								end
 							end
 
 						else
@@ -237,10 +285,10 @@ class ImportCsv
 						asignaturas_inexistentes << row.field(1)
 					end
 				rescue Exception => e
-					return "Error excepcional: #{e.to_sentence}. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes}"
+					return "Error excepcional: #{e.to_sentence}. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados}"
 				end
 			end
-		return "Proceso de importación completado con éxito. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes}"
+		return "Proceso de importación completado con éxito. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados}"
 
 	end
 
