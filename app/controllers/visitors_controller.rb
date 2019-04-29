@@ -90,7 +90,13 @@ class VisitorsController < ApplicationController
         m = usuario.email
         # ApplicationMailer.olvido_clave(usuario).deliver_later#! #deliver_now # deliver_later
 
-        texto = "<p> Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.</p> <p>Su clave es:#{usuario.password}</p><p>Gracias por su colaboración.</p><p>UCV La casa que vence las sombras.</p><p>Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com</p>"
+        texto = "<p> Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.
+
+        Su clave es:#{usuario.password}
+
+        Gracias por su colaboración. 
+        UCV La casa que vence las sombras.
+        Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com"
         unless m.blank?
 
           p '*'.center(200, '*')
