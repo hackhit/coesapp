@@ -90,7 +90,7 @@ class VisitorsController < ApplicationController
         m = usuario.email
         # ApplicationMailer.olvido_clave(usuario).deliver_later#! #deliver_now # deliver_later
 
-        texto = "<p> Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.
+        texto = "Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.
 
         Su clave es:#{usuario.password}
 
@@ -100,7 +100,7 @@ class VisitorsController < ApplicationController
         unless m.blank?
 
           p '*'.center(200, '*')
-          system(".././sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACIÓN DE CONTRASEÑA' -m '#{texto}' -v")
+          system(".././sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACIÓN DE CONTRASEÑA COES-FHE' -m '#{texto}' -v")
 
           system("echo 'Correo enviado! ----------------------------------'") 
           system("ls -al") 
