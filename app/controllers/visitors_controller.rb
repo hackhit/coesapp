@@ -99,12 +99,10 @@ class VisitorsController < ApplicationController
         Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com"
         unless m.blank?
 
-          p '*'.center(200, '*')
           system(".././sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACIÓN DE CONTRASEÑA COES-FHE' -m '#{texto}' -v")
 
           system("echo 'Correo enviado! ----------------------------------'") 
-          system("ls -al") 
-          p '*'.center(200, '*')
+
           # info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
           flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
         else
