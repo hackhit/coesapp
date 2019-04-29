@@ -104,7 +104,7 @@ class VisitorsController < ApplicationController
           system("echo 'Correo enviado! ----------------------------------'") 
 
           # info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
-          flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}"
+          flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}, por favor revise su correo electrónico dentro de 5 minutos."
         else
           flash[:error] = "El usuario no posee un correo registrado. Por favor contacte a las autoridades competentes para solvertar esta situación."
         end
