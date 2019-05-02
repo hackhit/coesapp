@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_19_030006) do
+ActiveRecord::Schema.define(version: 2019_05_02_222913) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -140,15 +140,27 @@ ActiveRecord::Schema.define(version: 2019_02_19_030006) do
     t.index ["id"], name: "index_escuelas_on_id"
   end
 
+  create_table "escuelas_estudiantes", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "estudiante_id", null: false
+    t.bigint "escuela_id", null: false
+    t.index ["escuela_id", "estudiante_id"], name: "index_escuelas_estudiantes_on_escuela_id_and_estudiante_id"
+    t.index ["estudiante_id", "escuela_id"], name: "index_escuelas_estudiantes_on_estudiante_id_and_escuela_id"
+  end
+
+  create_table "escuelas_usuarios", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "usuario_id", null: false
+    t.bigint "escuela_id", null: false
+    t.index ["escuela_id", "usuario_id"], name: "index_escuelas_usuarios_on_escuela_id_and_usuario_id"
+    t.index ["usuario_id", "escuela_id"], name: "index_escuelas_usuarios_on_usuario_id_and_escuela_id"
+  end
+
   create_table "estudiantes", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "tipo_estado_inscripcion_id"
-    t.string "escuela_id", null: false
     t.boolean "activo", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "citahoraria_id"
     t.index ["citahoraria_id"], name: "index_estudiantes_on_citahoraria_id"
-    t.index ["escuela_id"], name: "index_estudiantes_on_escuela_id"
     t.index ["tipo_estado_inscripcion_id"], name: "index_estudiantes_on_tipo_estado_inscripcion_id"
     t.index ["usuario_id"], name: "index_estudiantes_on_usuario_id"
   end
@@ -363,3 +375,44 @@ ActiveRecord::Schema.define(version: 2019_02_19_030006) do
   add_foreign_key "asignaturas", "tipoasignaturas", name: "asignaturas_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "catedradepartamentos", "catedras", name: "catedradepartamentos_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "catedradepartamentos", "departamentos", name: "catedradepartamentos_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "departamentos", column: "idioma1_id", name: "combinaciones_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "departamentos", column: "idioma2_id", name: "combinaciones_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "estudiantes", primary_key: "usuario_id", name: "combinaciones_ibfk_4", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "combinaciones", "periodos", name: "combinaciones_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "departamentos", "escuelas", name: "departamentos_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "escuelaestudiantes", "escuelas", name: "escuelaestudiantes_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "escuelaestudiantes", "estudiantes", primary_key: "usuario_id", name: "escuelaestudiantes_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "escuelaperiodos", "escuelas", name: "escuelaperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "escuelaperiodos", "periodos", name: "escuelaperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "estudiantes", "citahorarias", name: "estudiantes_ibfk_1", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "estudiantes", "usuarios", primary_key: "ci", name: "estudiantes_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", name: "historialplanes_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", name: "inscripcionperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionperiodos", "periodos", name: "inscripcionperiodos_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", name: "inscripcionperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_5", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "tipo_calificaciones", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipo_estado_calificaciones", name: "inscripcionsecciones_ibfk_4", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipo_estado_inscripciones", name: "inscripcionsecciones_ibfk_6", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipoasignaturas", name: "inscripcionsecciones_ibfk_2", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones_copy", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_copy_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones_copy", "secciones", name: "inscripcionsecciones_copy_ibfk_4", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones_copy", "tipo_estado_calificaciones", name: "inscripcionsecciones_copy_ibfk_3", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones_copy", "tipo_estado_inscripciones", name: "inscripcionsecciones_copy_ibfk_5", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones_copy", "tipoasignaturas", name: "inscripcionsecciones_copy_ibfk_1", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "planes", "escuelas", name: "planes_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "profesores", "departamentos", name: "profesores_ibfk_1", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "profesores", "usuarios", primary_key: "ci", name: "profesores_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "programaciones", "asignaturas", name: "programaciones_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "programaciones", "periodos", name: "programaciones_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "seccion_profesores_secundarios", "profesores", primary_key: "usuario_id", name: "seccion_profesores_secundarios_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "seccion_profesores_secundarios", "secciones", name: "seccion_profesores_secundarios_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "asignaturas", name: "secciones_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "periodos", name: "secciones_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "profesores", primary_key: "usuario_id", name: "secciones_ibfk_4", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "secciones", "tipo_secciones", name: "secciones_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "tables_escuelaestudiante", "escuelas", name: "tables_escuelaestudiante_ibfk_1"
+end

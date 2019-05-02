@@ -58,7 +58,7 @@
 
               = render '/admin/historialplanes/index'
               = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
-        
+              - @periodos = @escuela.periodos.order('inicia DESC')
               = render partial: '/admin/estudiantes/historial_academico'
 
   - if @profesor

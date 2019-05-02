@@ -4,7 +4,7 @@
     .form-group
       %label.control-label.col-md-2 Escuela
       .col-md-10
-        = collection_select(:estudiante, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
+        = collection_select(nil, :escuela_id , Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
 
   - elsif params[:profesor]
     .form-group
@@ -72,7 +72,7 @@
   .form-group
     = f.label :email, class: 'control-label col-md-2'
     .col-md-10
-      = f.email_field :email, required: true, class: 'text_field form-control'
+      = f.email_field :email, class: 'text_field form-control'
   .form-group
     = f.label :telefono_habitacion, class: 'control-label col-md-2'
     .col-md-10

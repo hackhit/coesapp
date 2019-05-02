@@ -24,7 +24,7 @@
             %a{href: 'https://support.office.com/es-es/article/importar-o-exportar-archivos-de-texto-txt-o-csv-5250ac4c-663c-47ce-937b-339e391393ba', target: '_blank'} aquí
         = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
       .col-md-12 
-        = select(nil, :periodo_id, Periodo.all.collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Periodo...'}, {class: "form-control text_field", required: true})
+        = select(nil, :periodo_id, Periodo.all.order("created_at DESC").collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Periodo...'}, {class: "form-control text_field", required: true})
 
     .form-group
       .col-md-offset-2.col-md-10

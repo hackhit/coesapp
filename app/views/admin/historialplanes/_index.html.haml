@@ -1,4 +1,6 @@
-- if current_admin.altos? and @estudiante.planes.count < 3
+- @planes = Plan.where(escuela_id: @escuela.id)
+- @periodos = @escuela.periodos.order('inicia DESC')
+- if current_admin.altos? #and @estudiante.planes.count < 3
   %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nuevo Plan de Estudio'}
     = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nuevo_plan_periodo_#{@escuela.id}').modal();", 'data_toggle' => 'modal' }) do
       = glyph "plus"
@@ -6,8 +8,6 @@
   .modal.hideble.fade{'aria-hidden': false, id: "nuevo_plan_periodo_#{@escuela.id}"}
     - @hp = Historialplan.new
     - @hp.estudiante_id = @estudiante.id
-    - @planes = Plan.where(escuela_id: @escuela.id)
-    - @periodos = @escuela.periodos.order('inicia DESC')
     = render '/admin/historialplanes/form'
 %b Planes:
 

@@ -21,7 +21,8 @@
                 - u.estudiante.escuelas.each do |es| 
                   %tr
                     %td
-                      = "Estudiante (#{es.descripcion.titleize})"
+                      -# planes = u.estudiante.planes.where(escuela_id: es.id).collect{|pa| pa.id}.to_sentence
+                      = "Estudiante (#{es.descripcion})"
                       - if u.estudiante.inscrito? current_periodo.id, es.id
 
                         = simple_toggle_rounded "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{es.id}", 'I', 'Descargar Constancia de Inscripción' , 'success', 'download'

@@ -212,7 +212,8 @@ module Admin
         if @usuario.save
           flash[:success] = 'Usuario creado con éxito.'
           if params[:estudiante_set]
-            if e = Estudiante.create(usuario_id: @usuario.id, escuela_id: params[:estudiante][:escuela_id])
+            if e = Estudiante.create(usuario_id: @usuario.id) #, escuela_id: params[:estudiante][:escuela_id])
+              e.escuelaestudiantes.create(escuela_id: params[:escuela_id])
               info_bitacora_crud Bitacora::CREACION, e
               flash[:success] = 'Estudiante creado con éxito.' 
             else
