@@ -20,7 +20,7 @@
         - current_admin.escuelas.all.each do |e| 
           %td
             - val = e.inscripcionsecciones.del_periodo(periodo).estudiantes_inscritos.count
-            = link_to_if val > 0, val, "#{inscritos_escuela_periodo_descargar_path(periodo.id)}?escuela_id=#{e.id}", class: 'link'
+            = link_to_if val > 0, val, "#{inscritos_escuela_periodo_descargar_path(periodo.id)}?escuela_id=#{e.id}", class: 'link', target: "_blank"
         - if current_admin.maestros?
           %td
             = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do

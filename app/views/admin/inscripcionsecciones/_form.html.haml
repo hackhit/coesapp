@@ -11,7 +11,6 @@
 
 						-#secciones = Seccion.del_periodo(current_periodo.id).joins(:asignatura).order("asignaturas.descripcion")
 						- secciones = current_periodo.secciones.includes(:escuela).where('escuelas.id = ?', @escuela.id).references(:escuelas).order("asignaturas.descripcion")
-						= secciones.count
 						.form-group
 							.col-md-2
 								%b Estudiante:
@@ -20,12 +19,12 @@
 
 						.form-group
 							.col-md-2
-								%b Sección:
+								%b= "Sección:"
 							.col-md-12
 
 								=# grouped_collection_select :seccion, :id, secciones, :secciones, :descripcion, :id, :numero, {prompt: true}, { class: 'selects2 form-control'}
 
-								= collection_select(:seccion, :id, secciones, :id, :descripcion_con_uxxi, {:prompt => "--Seleccione Sección--"}, {required: true, class: 'selects2 form-control'})
+								= collection_select(:seccion, :id, secciones, :id, :descripcion_con_uxxi, {:prompt => "-- Seleccione Sección (#{secciones.count} en total) --"}, {required: true, class: 'selects2 form-control'})
 
 						=hidden_field_tag 'controlador', @controlador
 						=hidden_field_tag 'accion', @accion

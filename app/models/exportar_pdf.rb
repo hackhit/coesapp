@@ -11,23 +11,8 @@ class ExportarPdf
 
 		#titulo
 		encabezado_central_con_logo pdf, "Coordinación Académica"
-		pdf.move_down 10
 
-		pdf.move_down 20
-
-		data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Sección</b>", "<b>Período</b>", "<b>Créditos</b>"]]
-
-		data << [ "#{asig.id}", "#{asig.descripcion}", "#{seccion.numero}", "#{seccion.periodo_id}", "#{asig.creditos}"]
-
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 10, align: :center, padding: 3, border_color: '818284'})
-		t.draw
-
-		pdf.move_down 10
-
-		#instructor
-		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
-	 
-		pdf.move_down 10
+		tabla_descripcion_seccion pdf, seccion
 
 		inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 
@@ -53,16 +38,8 @@ class ExportarPdf
 
 		#titulo
 		encabezado_central_con_logo pdf, "Coordinación Académica"
-		pdf.move_down 10
-
-		pdf.text "Sección: #{seccion.descripcion} / Periodo: #{seccion.periodo_id} / U. Créditos: #{seccion.asignatura.creditos}", align: :center, size: 12 
-
-		pdf.move_down 10
-
-		#instructor
-		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
-	 
-		pdf.move_down 10
+		
+		tabla_descripcion_seccion pdf, seccion
 
 		if seccion.periodo_id.eql? '2016-02A'
 		  inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
@@ -247,9 +224,7 @@ class ExportarPdf
 		periodos = Periodo.where(id: periodo_ids)
 
 		encabezado_central_con_logo pdf, "Historia Académica", escuela
-
-
-	# 	#titulo
+		#titulo
 		pdf.text "<b>Cédula:</b> #{estudiante.usuario_id}", size: 9, inline_format: true
 		pdf.text "<b>Plan:</b> #{estudiante.ultimo_plan}", size: 9, inline_format: true
 		pdf.text "<b>Alumno:</b> #{estudiante.usuario.apellido_nombre.upcase}", size: 9, inline_format: true
@@ -304,7 +279,48 @@ class ExportarPdf
 		return pdf
 	end
 
+
+	# def self.hacer_acta(seccion_id)
+	# 	por_pagina = 35
+
+	# 	pdf = Prawn::Document.new(top_margin: 15)
+
+	# 	seccion = Seccion.find seccion_id
+	# 	estudiantes_seccion = seccion.cal_estudiantes_secciones.sort_by{|h| h.cal_estudiante.cal_usuario.apellidos}
+	# 	pdf.start_page_numbering(400, 665, 9, nil, to_utf16("PÁGINA: <b><PAGENUM>/<TOTALPAGENUM></b>"), 1)
+	# 	(estudiantes_seccion.each_slice por_pagina).to_a.each_with_index do |ests_sec, j| 
+	# 		pdf.start_new_page true if j > 0
+	# 		pagina_acta_examen_pdf pdf, ests_sec, j*por_pagina
+	# 	end
+
+	# 	return pdf
+
+	# end
+
+
+
 	private
+
+	def self.tabla_descripcion_seccion pdf, seccion
+		pdf.move_down 10
+
+		asig = seccion.asignatura
+
+		data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Sección</b>", "<b>Período</b>", "<b>Créditos</b>"]]
+
+		data << [ "#{asig.id}", "#{asig.descripcion}", "#{seccion.numero}", "#{seccion.periodo_id}", "#{asig.creditos}"]
+
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 10, align: :center, padding: 3, border_color: '818284'})
+		t.draw
+
+		pdf.move_down 10
+
+		#instructor
+		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
+	 
+		pdf.move_down 10
+
+	end
 
 	def self.encabezado_central_con_logo pdf, titulo, escuela = nil
 

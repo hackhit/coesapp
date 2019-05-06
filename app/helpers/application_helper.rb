@@ -105,8 +105,10 @@ module ApplicationHelper
 	end
 
 	def btn_toggle type, icon, href, title_tooltip, value, onclick_action=nil
+
+		target = (href.include? 'descargar') ? '_blank' : ''
 		content_tag :b, class: 'tooltip-btn', 'data_toggle': :tooltip, title: title_tooltip, 'data-placement': :rigth do
-			link_to href, class: "btn btn-sm #{type}", onclick: onclick_action do
+			link_to href, class: "btn btn-sm #{type}", onclick: onclick_action, target: target do
 				capture_haml{"#{glyph icon} #{value}"}
 			end
 		end
@@ -121,8 +123,9 @@ module ApplicationHelper
 	end
 
 	def simple_toggle_rounded href, value, title_tooltip, color_type, icon, onclick_action=nil
+		target = (href.include? 'descargar') ? '_blank' : ''
 		content_tag :b, class: "tooltip-btn border p-1 border-#{color_type} rounded", 'data_toggle'=> :tooltip, title: title_tooltip do
-			link_to href, class: "text-#{color_type}", onclick: onclick_action do
+			link_to href, class: "text-#{color_type}", onclick: onclick_action, target: target do
 				capture_haml{"#{glyph icon} #{value}"}
 			end
 		end
@@ -130,8 +133,9 @@ module ApplicationHelper
 	end
 
 	def simple_toggle href, value, title_tooltip, color_type, icon, onclick_action=nil
+		target = (href.include? 'descargar') ? '_blank' : ''
 		content_tag :b, class: "tooltip-btn", 'data_toggle'=> :tooltip, title: title_tooltip do
-			link_to href, class: "text-#{color_type}", onclick: onclick_action do
+			link_to href, class: "text-#{color_type}", onclick: onclick_action, target: target do
 				capture_haml{"#{glyph icon} #{value}"}
 			end
 		end
