@@ -47,33 +47,36 @@ class ExportarPdf
 		  inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 		end
 
-		if seccion.asignatura.numerica3?
-			data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>1era. Calif</b>", "<b>2da. Calif</b>", "<b>3era. Calif</b>", "<b>Calif Final</b>", "<b>Estado</b>"]]
-		else
-			data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>Final</b>", "<b>Estado</b>"]]
-		end
+		# if seccion.asignatura.numerica3?
+		# 	data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>1era. Calif</b>", "<b>2da. Calif</b>", "<b>3era. Calif</b>", "<b>Calif Final</b>", "<b>Estado</b>"]]
+		# 	ancho = 200
+		# else
+		data = [["<b>#</b>", "<b>Cédula</b>", "<b>Nombre</b>", "<b>Calif. numer.</b>", "<b>Calif Desc.</b>", "<b>Estado</b>"]]
+		# end
 
 		inscripciones.each_with_index do |h,i|
-			if seccion.asignatura.numerica3?
-				data << [i+1, h.estudiante.usuario.apellido_nombre,
-				h.estudiante_id,
-				h.primera_calificacion.to_s,
-				h.segunda_calificacion.to_s,
-				h.tercera_calificacion.to_s,
-				h.valor_calificacion,
-				h.estado.titleize
-				]
-			else
-				data << [i+1, 
-				h.estudiante.usuario.apellido_nombre,
-				h.estudiante_id,
-				h.valor_calificacion,
-				h.estado.titleize
-				]			
-			end
+			# if seccion.asignatura.numerica3?
+			# 	data << [i+1, 
+			# 	h.estudiante.usuario.apellido_nombre,
+			# 	h.estudiante_id,
+			# 	h.primera_calificacion.to_s,
+			# 	h.segunda_calificacion.to_s,
+			# 	h.tercera_calificacion.to_s,
+			# 	h.valor_calificacion,
+			# 	h.estado.titleize
+			# 	]
+			# else
+			data << [i+1, 
+			h.estudiante.usuario.apellido_nombre,
+			h.estudiante_id,
+			h.valor_calificacion,
+			h.tipo_calificacion.descripcion,
+			h.estado.titleize
+			]
+			# end
 		end
 		
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :justify, padding: 3, border_color: '818284'}, :column_widths => {1 => 250})
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :justify, padding: 3, border_color: '818284'}, :column_widths => {1 => 200})
 		t.draw
 
 

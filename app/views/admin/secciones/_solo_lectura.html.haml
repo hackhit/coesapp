@@ -22,7 +22,7 @@
 			- muted = retirado ? "text-muted" : ""
 
 			%tr{class: "#{calificacion} #{muted}"}
-				%td= i+1
+				%td= "#{i+1} (#{es.id})"
 				%td
 					= "(#{es.estudiante_id})"
 					= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario

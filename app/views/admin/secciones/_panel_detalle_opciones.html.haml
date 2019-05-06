@@ -1,21 +1,23 @@
 
 - if current_admin
 	%b.tooltip-btn{'data_toggle': 'tooltip', title: 'Descargar Acta PDF'}
-		= link_to notas_seccion_descargar_path(seccion.id), class: 'badge badge-primary btn-sm p-md-1', role: :button, target: "_blank" do
-			= glyph 'download'
-			= glyph 'list'
+		= link_to notas_seccion_descargar_path(seccion.id), class: 'badge badge-info btn-sm p-md-1', role: :button, target: "_blank" do
+			= glyph 'download-alt'
+			= glyph 'file'
 	= link_to listado_seccion_descargar_path(seccion.id), class: "badge badge-info btn-sm p-md-1 tooltip-btn", 'data_toggle': 'tooltip', title: 'Descargar Listado', target: "_blank" do
-		= glyph 'download'
+		= glyph 'download-alt'
+		= glyph 'list'
 	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Listado en Excel'}
 		= link_to listado_seccion_excel_descargar_path(seccion.id), class: "badge badge-success btn-success btn-sm p-md-1", target: "_blank" do
-			= glyph 'download'
+			= glyph 'download-alt'
+			= glyph 'list'
 			X
 
 	-if seccion.calificada
 		%b.tooltip-btn{'data_toggle': 'tooltip', title: 'Descargar Acta en Excel'}
 			= link_to acta_examen_excel_descargar_path(seccion.id), class: 'badge badge-success btn-sm p-md-1', role: :button, target: "_blank" do
-				= glyph 'download'
-				= glyph 'list'
+				= glyph 'download-alt'
+				= glyph 'file'
 				X
 
 %b.tooltip-btn{'data_toggle': :tooltip, title: 'Ver Detalle / Calificar'}
