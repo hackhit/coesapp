@@ -67,7 +67,7 @@ module Admin
       @estudiantes = params[:est]
       error = false
       @estudiantes.each_pair do |ci,valores|
-        @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).limit(1).first
+        @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).first
 
         if @seccion.asignatura.absoluta?
           calificar_absoluta valores
