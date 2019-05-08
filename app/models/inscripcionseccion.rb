@@ -60,6 +60,19 @@ class Inscripcionseccion < ApplicationRecord
 
 	scope :perdidos, -> {where "tipo_calificacion_id = ?", PI}
 
+	def estado_a_letras
+		case estado
+		when 'retirado'
+			return 'RT'
+		when 'aprobado'
+			return 'A'
+		when 'aplazado'
+			return 'AP'
+		else
+			return 'SC'
+		end
+	end
+
 	def estado_inscripcion
 		if self.sin_calificar?
 			return 'Inscrito'

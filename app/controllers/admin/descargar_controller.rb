@@ -18,7 +18,7 @@ module Admin
 
 		def notas_seccion
 			seccion = Seccion.find params[:id]
-			pdf = ExportarPdf.notas_seccion params[:id]
+			pdf = ExportarPdf.acta_seccion params[:id]
 			info_bitacora "Descarga de acta pdf seccion##{seccion.id}", Bitacora::DESCARGA
 
 			unless send_data pdf.render,:filename => "notas_seccion_#{seccion.asignatura_id}_#{seccion.numero}.pdf",:type => "application/pdf", :disposition => "attachment"

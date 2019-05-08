@@ -14,6 +14,12 @@ class ExportarPdf
 
 		tabla_descripcion_seccion pdf, seccion
 
+		pdf.move_down 10
+
+		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
+	 
+		pdf.move_down 10
+
 		inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 
 		data = [["<b>#</b>", "<b>Cédula</b>", "<b>Nombre</b>"]]
@@ -30,16 +36,19 @@ class ExportarPdf
 		return pdf
 	end
 
-  def self.notas_seccion seccion_id
+  def self.acta_seccion seccion_id
   		seccion = Seccion.find seccion_id
 
 		# Variable Locales
 		pdf = Prawn::Document.new(top_margin: 20)
 
 		#titulo
-		encabezado_central_con_logo pdf, "Coordinación Académica"
+		self.encabezado_central_con_logo pdf, "PLANILLA DE EXÁMENES"
+
+		self.tabla_descripcion_convocatoria pdf, seccion
 		
-		tabla_descripcion_seccion pdf, seccion
+		self.tabla_descripcion_seccion pdf, seccion
+    pdf.move_down 10
 
 		if seccion.periodo_id.eql? '2016-02A'
 		  inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
@@ -51,35 +60,94 @@ class ExportarPdf
 		# 	data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>1era. Calif</b>", "<b>2da. Calif</b>", "<b>3era. Calif</b>", "<b>Calif Final</b>", "<b>Estado</b>"]]
 		# 	ancho = 200
 		# else
-		data = [["<b>#</b>", "<b>Cédula</b>", "<b>Nombre</b>", "<b>Calif. numer.</b>", "<b>Calif Desc.</b>", "<b>Estado</b>"]]
+
+		data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD PLAN</b>", "<b>EST.</b>", "<b>CALIF. DESCRIP</b>","<b>CALIF. NUMER.</b>", "<b>CALIF. EN LETRAS</b>"]]
 		# end
 
 		inscripciones.each_with_index do |h,i|
-			# if seccion.asignatura.numerica3?
+
+      estado_a_letras = h.tiene_calificacion_posterior? ? 'NF' : h.estado_a_letras
+
+      data << [i+1, 
+      h.estudiante_id,
+      h.estudiante.usuario.apellido_nombre,
+      h.estudiante.ultimo_plan,
+      estado_a_letras,
+      h.tipo_calificacion_id,
+      h.colocar_nota_final,
+      h.calificacion_en_letras
+      ]
+
+      if h.tiene_calificacion_posterior?
+        estado_a_letras = 'NF'
+        i += 1
+        data << [i+1, 
+        h.estudiante_id,
+        h.estudiante.usuario.apellido_nombre,
+        h.estudiante.ultimo_plan,
+        h.estado_a_letras,
+        h.tipo_calificacion_id,
+        h.colocar_nota_posterior,
+        h.calificacion_en_letras
+        ]
+      end
+
+
+			# if h.tiene_calificacion_posterior?
 			# 	data << [i+1, 
-			# 	h.estudiante.usuario.apellido_nombre,
 			# 	h.estudiante_id,
-			# 	h.primera_calificacion.to_s,
-			# 	h.segunda_calificacion.to_s,
-			# 	h.tercera_calificacion.to_s,
-			# 	h.valor_calificacion,
-			# 	h.estado.titleize
+			# 	h.estudiante.usuario.apellido_nombre,
+			# 	h.estudiante.ultimo_plan,
+			# 	h.estado_a_letras,
+			# 	'NF',
+			# 	h.colocar_nota_final,
+			# 	h.calificacion_en_letras
+			# 	]
+
+			# 	i += 1
+			# 	data << [i+1, 
+			# 	h.estudiante_id,
+			# 	h.estudiante.usuario.apellido_nombre,
+			# 	h.estudiante.ultimo_plan,
+			# 	h.estado_a_letras,
+			# 	h.tipo_calificacion_id,
+			# 	h.colocar_nota_posterior,
+			# 	h.calificacion_en_letras
 			# 	]
 			# else
-			data << [i+1, 
-			h.estudiante.usuario.apellido_nombre,
-			h.estudiante_id,
-			h.valor_calificacion,
-			h.tipo_calificacion.descripcion,
-			h.estado.titleize
-			]
-			# end
+			# 	data << [i+1, 
+			# 	h.estudiante_id,
+			# 	h.estudiante.usuario.apellido_nombre,
+			# 	h.estudiante.ultimo_plan,
+			# 	h.estado_a_letras,
+
+			# 	h.tipo_calificacion_id,
+			# 	h.colocar_nota_final,
+			# 	h.calificacion_en_letras
+			# 	]
+
+			# end 
 		end
 		
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :justify, padding: 3, border_color: '818284'}, :column_widths => {1 => 200})
-		t.draw
+		# t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :justify, padding: 3, border_color: '818284'}, :column_widths => {1 => 70, 2 => 200})
+		# t.draw
 
+    pdf.table data do |t|
+      t.width = 540
+      t.position = :center
+      t.header = true
+      t.row_colors = ["F0F0F0", "FFFFFF"]
+      t.column_widths = {1 => 60, 2 => 220}
+      t.cell_style = {:inline_format => true, :size => 9, :padding => 2, align: :center, padding: 3, border_color: '818284' }
+      t.column(2).style(:align => :justify)
+      t.row(0).style(:align => :center)
+      # t.column(1).style(:font_style => :bold)
+    end
 
+    pdf.move_down 20
+
+    self.acta_firmas pdf, seccion
+    pdf.number_pages "PÁGINA: <b><page>/<total>", {at: [298, 602], size: 9, inline_format: true}
 		# pdf.text "#{Time.now.strftime('%d/%m/%Y %I:%M%p')} - Página: 1 de 1"
 		return pdf
 	end
@@ -304,6 +372,38 @@ class ExportarPdf
 
 	private
 
+	def self.tabla_descripcion_convocatoria pdf, seccion
+		# pdf.number_pages "<page> in a total of <total>", [bounds.right - 50, 0]
+    # pdf.start_page_numbering(, 9, nil, , 1)
+
+		data = [["FECHA DE LA EMISIÓN: <b>#{Time.now.strftime('%d/%m/%Y %I:%M %p')}</b>", ""]]
+		data << ["EJERCICIO: <b>#{seccion.ejercicio}</b>", "ACTA No.: <b>#{seccion.acta_no.upcase}</b>" ]
+		data << ["ESCUELA: <b>#{seccion.escuela.descripcion.upcase}</b>", "PERÍODO ACADÉMICO: <b>#{seccion.periodo.anno}</b>" ]
+
+		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :left, padding: 1, border_color: 'FFFFFF'})
+		t.draw
+	end
+
+
+  def self.acta_firmas pdf, seccion
+
+    data = [["<b>JURADO EXAMINADOR</b>", "<b>SECRETARÍA</b>"]]
+    t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'}, :column_widths => {0 => 360})
+    t.draw
+
+    pdf.move_down 5
+
+    data = [["APELLIDOS Y NOMBRES", "FIRMAS", ""]]
+    data << ["#{seccion.profesor.usuario.apellido_nombre.upcase if seccion.profesor }", "___________________________", "NOMBRE: _______________________"]
+    data << ["___________________________", "___________________________", "FIRMA:     _______________________"]
+    data << ["___________________________", "___________________________", "FECHA:    _______________________"]
+
+    t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
+    t.draw
+
+  end
+
+
 	def self.tabla_descripcion_seccion pdf, seccion
 		pdf.move_down 10
 
@@ -315,14 +415,7 @@ class ExportarPdf
 
 		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 10, align: :center, padding: 3, border_color: '818284'})
 		t.draw
-
-		pdf.move_down 10
-
-		#instructor
-		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
-	 
-		pdf.move_down 10
-
+		pdf.move_down 10		
 	end
 
 	def self.encabezado_central_con_logo pdf, titulo, escuela = nil

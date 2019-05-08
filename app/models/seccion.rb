@@ -158,6 +158,10 @@ class Seccion < ApplicationRecord
 		self.tipo_seccion_id.eql? TipoSeccion::SUFICIENCIA
 	end
 
+	def tipo_convocatoria
+		"F#{self.periodo.valor_para_tipo_convocatoria}"
+	end
+
 	# def tipo_convocatoria
 	# 	aux = numero[0..1]
 	# 	if reparacion?
@@ -169,7 +173,7 @@ class Seccion < ApplicationRecord
 	# end
 
 	def acta_no
-		"#{self.seccion.asignatura.id_uxxi}#{self.seccion.numero}#{self.periodo_id}"
+		"#{self.asignatura.id_uxxi}#{self.numero}#{self.periodo_id}"
 	end
 
 	# FUNCIONES PROTEGIDAS
