@@ -56,13 +56,7 @@ class ExportarPdf
 		  inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 		end
 
-		# if seccion.asignatura.numerica3?
-		# 	data = [["<b>#</b>", "<b>Nombre</b>", "<b>Cédula</b>", "<b>1era. Calif</b>", "<b>2da. Calif</b>", "<b>3era. Calif</b>", "<b>Calif Final</b>", "<b>Estado</b>"]]
-		# 	ancho = 200
-		# else
-
-		data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD PLAN</b>", "<b>EST.</b>", "<b>CALIF. DESCRIP</b>","<b>CALIF. NUMER.</b>", "<b>CALIF. EN LETRAS</b>"]]
-		# end
+		data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD. PLAN</b>", "<b>CALIF. DESCRIP.</b>", "<b>TIPO</b>","<b>CALIF. NUMER.</b>", "<b>CALIF. EN LETRAS</b>"]]
 
 		inscripciones.each_with_index do |h,i|
 
@@ -92,45 +86,7 @@ class ExportarPdf
         ]
       end
 
-
-			# if h.tiene_calificacion_posterior?
-			# 	data << [i+1, 
-			# 	h.estudiante_id,
-			# 	h.estudiante.usuario.apellido_nombre,
-			# 	h.estudiante.ultimo_plan,
-			# 	h.estado_a_letras,
-			# 	'NF',
-			# 	h.colocar_nota_final,
-			# 	h.calificacion_en_letras
-			# 	]
-
-			# 	i += 1
-			# 	data << [i+1, 
-			# 	h.estudiante_id,
-			# 	h.estudiante.usuario.apellido_nombre,
-			# 	h.estudiante.ultimo_plan,
-			# 	h.estado_a_letras,
-			# 	h.tipo_calificacion_id,
-			# 	h.colocar_nota_posterior,
-			# 	h.calificacion_en_letras
-			# 	]
-			# else
-			# 	data << [i+1, 
-			# 	h.estudiante_id,
-			# 	h.estudiante.usuario.apellido_nombre,
-			# 	h.estudiante.ultimo_plan,
-			# 	h.estado_a_letras,
-
-			# 	h.tipo_calificacion_id,
-			# 	h.colocar_nota_final,
-			# 	h.calificacion_en_letras
-			# 	]
-
-			# end 
 		end
-		
-		# t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :justify, padding: 3, border_color: '818284'}, :column_widths => {1 => 70, 2 => 200})
-		# t.draw
 
     pdf.table data do |t|
       t.width = 540
