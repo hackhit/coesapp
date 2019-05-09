@@ -3,7 +3,7 @@ class ExportarPdf
 	include Prawn::View
 
 
-  def self.listado_seccion seccion_id
+	def self.listado_seccion seccion_id
   		seccion = Seccion.find seccion_id
   		asig = seccion.asignatura
 		# Variable Locales
@@ -36,75 +36,34 @@ class ExportarPdf
 		return pdf
 	end
 
-  def self.acta_seccion seccion_id
-  		seccion = Seccion.find seccion_id
+
+	def self.acta_seccion seccion_id
+		seccion = Seccion.find seccion_id
 
 		# Variable Locales
-		pdf = Prawn::Document.new(top_margin: 20)
-
-		#titulo
-		self.encabezado_central_con_logo pdf, "PLANILLA DE EXÁMENES"
-
-		self.tabla_descripcion_convocatoria pdf, seccion
-		
-		self.tabla_descripcion_seccion pdf, seccion
-    pdf.move_down 10
+		pdf = Prawn::Document.new(top_margin: 265, bottom_margin: 100)
+		por_pagina = 20
 
 		if seccion.periodo_id.eql? '2016-02A'
-		  inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
+			inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
 		else
-		  inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
+			inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 		end
-
-		data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD. PLAN</b>", "<b>CALIF. DESCRIP.</b>", "<b>TIPO</b>","<b>CALIF. NUMER.</b>", "<b>CALIF. EN LETRAS</b>"]]
-
-		inscripciones.each_with_index do |h,i|
-
-      estado_a_letras = h.tiene_calificacion_posterior? ? 'NF' : h.estado_a_letras
-
-      data << [i+1, 
-      h.estudiante_id,
-      h.estudiante.usuario.apellido_nombre,
-      h.estudiante.ultimo_plan,
-      estado_a_letras,
-      h.tipo_calificacion_id,
-      h.colocar_nota_final,
-      h.calificacion_en_letras
-      ]
-
-      if h.tiene_calificacion_posterior?
-        estado_a_letras = 'NF'
-        i += 1
-        data << [i+1, 
-        h.estudiante_id,
-        h.estudiante.usuario.apellido_nombre,
-        h.estudiante.ultimo_plan,
-        h.estado_a_letras,
-        h.tipo_calificacion_id,
-        h.colocar_nota_posterior,
-        h.calificacion_en_letras
-        ]
-      end
-
+		
+		pdf.repeat(:all, dynamic: true) do
+			pdf.bounding_box([0, 660], :width => 540, :height => 220) do
+				self.encabezado_central_con_logo pdf, "PLANILLA DE EXÁMENES"
+				self.tabla_descripcion_convocatoria pdf, seccion
+				self.tabla_descripcion_seccion pdf, seccion
+ 				pdf.transparent(0) { pdf.stroke_bounds }
+			end
+			pdf.bounding_box([0, 0], :width => 540, :height => 90) do
+				self.acta_firmas pdf, seccion
+ 				pdf.transparent(0) { pdf.stroke_bounds }
+			end
 		end
-
-    pdf.table data do |t|
-      t.width = 540
-      t.position = :center
-      t.header = true
-      t.row_colors = ["F0F0F0", "FFFFFF"]
-      t.column_widths = {1 => 60, 2 => 220}
-      t.cell_style = {:inline_format => true, :size => 9, :padding => 2, align: :center, padding: 3, border_color: '818284' }
-      t.column(2).style(:align => :justify)
-      t.row(0).style(:align => :center)
-      # t.column(1).style(:font_style => :bold)
-    end
-
-    pdf.move_down 20
-
-    self.acta_firmas pdf, seccion
-    pdf.number_pages "PÁGINA: <b><page>/<total>", {at: [298, 602], size: 9, inline_format: true}
-		# pdf.text "#{Time.now.strftime('%d/%m/%Y %I:%M%p')} - Página: 1 de 1"
+		self.insertar_tabla_convocados pdf, inscripciones
+		pdf.number_pages "PÁGINA: <b><page>/<total>", {at: [297, 523], size: 9, inline_format: true}
 		return pdf
 	end
 
@@ -328,6 +287,54 @@ class ExportarPdf
 
 	private
 
+	def self.insertar_tabla_convocados pdf, inscripciones#, k
+
+		data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD. PLAN</b>", "<b>CALIF. DESCR.</b>", "<b>TIPO</b>","<b>CALIF. NUM.</b>", "<b>CALIF. EN LETRAS</b>"]]
+
+		inscripciones.each_with_index do |h,i|
+			estado_a_letras = h.tiene_calificacion_posterior? ? 'NF' : h.estado_a_letras
+
+			data << [i+1, 
+			h.estudiante_id,
+			h.estudiante.usuario.apellido_nombre,
+			h.estudiante.ultimo_plan,
+			estado_a_letras,
+			h.tipo_calificacion_id,
+			h.colocar_nota_final,
+			h.calificacion_en_letras
+			]
+
+			if h.tiene_calificacion_posterior?
+				estado_a_letras = 'NF'
+				i += 1
+				data << [i+1, 
+				h.estudiante_id,
+				h.estudiante.usuario.apellido_nombre,
+				h.estudiante.ultimo_plan,
+				h.estado_a_letras,
+				h.tipo_calificacion_id,
+				h.colocar_nota_posterior,
+				h.calificacion_en_letras
+				]
+			end
+
+		end
+
+		pdf.table data do |t|
+			t.width = 540
+			t.position = :center
+			t.header = true
+			t.row_colors = ["F0F0F0", "FFFFFF"]
+			t.column_widths = {1 => 60, 2 => 220, 5 => 30, 7 => 70}
+			t.cell_style = {:inline_format => true, :size => 9, :padding => 2, align: :center, padding: 3, border_color: '818284' }
+			t.column(2).style(:align => :justify)
+			t.row(0).style(:align => :center)
+			# t.column(1).style(:font_style => :bold)
+		end
+
+	end
+
+
 	def self.tabla_descripcion_convocatoria pdf, seccion
 		# pdf.number_pages "<page> in a total of <total>", [bounds.right - 50, 0]
     # pdf.start_page_numbering(, 9, nil, , 1)
@@ -349,8 +356,9 @@ class ExportarPdf
 
     pdf.move_down 5
 
+    prof_aux = seccion.profesor ? seccion.profesor.usuario.apellido_nombre.upcase : "___________________________" 
     data = [["APELLIDOS Y NOMBRES", "FIRMAS", ""]]
-    data << ["#{seccion.profesor.usuario.apellido_nombre.upcase if seccion.profesor }", "___________________________", "NOMBRE: _______________________"]
+    data << ["#{prof_aux}", "___________________________", "NOMBRE: _______________________"]
     data << ["___________________________", "___________________________", "FIRMA:     _______________________"]
     data << ["___________________________", "___________________________", "FECHA:    _______________________"]
 
