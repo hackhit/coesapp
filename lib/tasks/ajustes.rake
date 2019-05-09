@@ -4,7 +4,7 @@ task :ajuste_inscripcionsecciones => :environment do
 	begin
 		puts 'Iniciando...'
 
-		inscrip = Inscripcionseccion.where("tipo_estado_calificacion_id IS NOT NULL")
+		inscrip = Inscripcionseccion.joins(:escuela).where("tipo_estado_calificacion_id IS NOT NULL and escuela_id = 'IDIO'")
 		total_ins = inscrip.count
 
 		total_pi = 0
