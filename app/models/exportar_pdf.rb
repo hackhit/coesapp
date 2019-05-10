@@ -266,48 +266,36 @@ class ExportarPdf
 	end
 
 
-	# def self.hacer_acta(seccion_id)
-	# 	por_pagina = 35
-
-	# 	pdf = Prawn::Document.new(top_margin: 15)
-
-	# 	seccion = Seccion.find seccion_id
-	# 	estudiantes_seccion = seccion.cal_estudiantes_secciones.sort_by{|h| h.cal_estudiante.cal_usuario.apellidos}
-	# 	pdf.start_page_numbering(400, 665, 9, nil, to_utf16("PÁGINA: <b><PAGENUM>/<TOTALPAGENUM></b>"), 1)
-	# 	(estudiantes_seccion.each_slice por_pagina).to_a.each_with_index do |ests_sec, j| 
-	# 		pdf.start_new_page true if j > 0
-	# 		pagina_acta_examen_pdf pdf, ests_sec, j*por_pagina
-	# 	end
-
-	# 	return pdf
-
-	# end
-
-
-
 	private
 
 	def self.insertar_tabla_convocados pdf, inscripciones#, k
 
 		data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD. PLAN</b>", "<b>CALIF. DESCR.</b>", "<b>TIPO</b>","<b>CALIF. NUM.</b>", "<b>CALIF. EN LETRAS</b>"]]
+		i = 1
+		inscripciones.each do |h|
+			if h.tiene_calificacion_posterior?
+				estado_a_letras = 'AP'
+				tipo_calificacion_id = 'NF'
+				cali_a_letras = (h.calificacion_en_letras 'final')
+			else
+				tipo_calificacion_id = h.tipo_calificacion_id
+				estado_a_letras = h.estado_a_letras
+				cali_a_letras = h.calificacion_en_letras
+			end
 
-		inscripciones.each_with_index do |h,i|
-			estado_a_letras = h.tiene_calificacion_posterior? ? 'NF' : h.estado_a_letras
-
-			data << [i+1, 
+			data << [i, 
 			h.estudiante_id,
 			h.estudiante.usuario.apellido_nombre,
 			h.estudiante.ultimo_plan,
 			estado_a_letras,
-			h.tipo_calificacion_id,
+			tipo_calificacion_id,
 			h.colocar_nota_final,
-			h.calificacion_en_letras
+			cali_a_letras
 			]
 
 			if h.tiene_calificacion_posterior?
-				estado_a_letras = 'NF'
 				i += 1
-				data << [i+1, 
+				data << [i, 
 				h.estudiante_id,
 				h.estudiante.usuario.apellido_nombre,
 				h.estudiante.ultimo_plan,
@@ -317,7 +305,7 @@ class ExportarPdf
 				h.calificacion_en_letras
 				]
 			end
-
+			i += 1
 		end
 
 		pdf.table data do |t|
