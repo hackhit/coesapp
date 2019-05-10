@@ -41,7 +41,7 @@ class ExportarPdf
 		seccion = Seccion.find seccion_id
 
 		# Variable Locales
-		pdf = Prawn::Document.new(top_margin: 265, bottom_margin: 100)
+		pdf = Prawn::Document.new(top_margin: 265, bottom_margin: 110)
 		por_pagina = 20
 
 		if seccion.periodo_id.eql? '2016-02A'
@@ -57,13 +57,13 @@ class ExportarPdf
 				self.tabla_descripcion_seccion pdf, seccion
  				pdf.transparent(0) { pdf.stroke_bounds }
 			end
-			pdf.bounding_box([0, 0], :width => 540, :height => 90) do
+			pdf.bounding_box([0, -10], :width => 540, :height => 90) do
 				self.acta_firmas pdf, seccion
  				pdf.transparent(0) { pdf.stroke_bounds }
 			end
 		end
 		self.insertar_tabla_convocados pdf, inscripciones
-		pdf.number_pages "PÁGINA: <b><page>/<total>", {at: [297, 523], size: 9, inline_format: true}
+		pdf.number_pages "PÁGINA: <b><page>/<total>", {at: [297.2, 523.4], size: 9, inline_format: true}
 		return pdf
 	end
 
