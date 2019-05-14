@@ -42,8 +42,8 @@ module Admin
     def set_estudiante
       est = Estudiante.new
       est.usuario_id = @usuario.id
-      est.escuela_id = params[:estudiante][:escuela_id]
       if est.save
+        est.escuelaestudiantes.create(escuela_id: params[:estudiante][:escuela_id])
         flash[:success] = 'Estudiante registrado con éxito'
         info_bitacora_crud Bitacora::CREACION, est
       else
