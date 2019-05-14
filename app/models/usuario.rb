@@ -26,8 +26,13 @@ class Usuario < ApplicationRecord
 
 	# SCOPES:
 	scope :search, lambda { |clave| 
-	  where("ci LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR ci LIKE ? OR email LIKE ?","%#{clave}%","%#{clave}%","%#{clave}%", "%#{clave}%", "%#{clave}%")
+		where("ci LIKE ? OR nombres LIKE ? OR apellidos LIKE ? OR ci LIKE ? OR email LIKE ?","%#{clave}%","%#{clave}%","%#{clave}%", "%#{clave}%", "%#{clave}%")
 	}
+
+	# scope :search, lambda { |clave| 
+	# 	where("MATCH(ci, nombres, apellidos, email, telefono_habitacion, telefono_movil) AGAINST('#{clave}')")
+	# }
+
 	# FUNCIONES:
 
 	def ultimo_plan
