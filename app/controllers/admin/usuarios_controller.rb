@@ -40,14 +40,20 @@ module Admin
     end
 
     def set_estudiante
-      est = Estudiante.new
-      est.usuario_id = @usuario.id
-      if est.save
-        est.escuelaestudiantes.create(escuela_id: params[:estudiante][:escuela_id])
+      e = Estudiante.new
+      e.usuario_id = @usuario.id
+      if e.save
+        e.escuelaestudiantes.create(escuela_id: params[:estudiante][:escuela_id])
         flash[:success] = 'Estudiante registrado con éxito'
-        info_bitacora_crud Bitacora::CREACION, est
+        # OJO: No se puede implementar esto ya que no se tiene información sobre a partir de cuando (PERIODO_ID) es el plan
+        # Debería incorporarse al form de set estudiante y al form de create usuario el plan y apartir de cuando
+
+        # escuela = Escuela.find params[:estudiante][:escuela_id]
+        # planes = escuela.planes
+        # e.historialplanes.create(plan_id: planes.first.id) if planes.count.eql? 1
+        info_bitacora_crud Bitacora::CREACION, e
       else
-        flash[:danger] = "Error: #{est.errors.full_messages.to_sentence}."
+        flash[:danger] = "Error: #{e.errors.full_messages.to_sentence}."
       end
       redirect_to @usuario
 
