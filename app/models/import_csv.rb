@@ -154,6 +154,7 @@ class ImportCsv
 		csv = CSV.parse(csv_text, headers: true)
 		csv.each do |row|
 			begin
+				row['ci'].strip!
 				# if profe = Profesor.where(usuario_id: row.field(0))
 				if profe = Profesor.where(usuario_id: row['ci']).first
 					profesores_existentes << profe.usuario_id
@@ -221,6 +222,9 @@ class ImportCsv
 		csv = CSV.parse(csv_text, headers: true)
 			csv.each do |row|
 				begin
+					row.field(0).strip!
+					row.field(1).strip!
+					row.field(2).strip!
 					if a = Asignatura.where(id_uxxi: row.field(1)).first
 						unless s = Seccion.where(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id).limit(1).first
 						
