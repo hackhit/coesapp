@@ -56,7 +56,8 @@ class ImportCsv
 			begin
 				# if profe = Profesor.where(usuario_id: row.field(0))
 				hay_usuario = false
-				if usuario = Usuario.where(ci: row['ci']).first
+				row['ci'].strip!
+				if usuario = Usuario.where(ci: row['ci']).limit(1).first
 					usuarios_existentes << usuario.ci
 					hay_usuario = true
 				else
