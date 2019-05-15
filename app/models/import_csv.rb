@@ -10,34 +10,6 @@ class ImportCsv
 	# 	return CSV.parse(csv_text, headers: true)
 	# end
 
-
-	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id
-		
-		aux = "</br>
-			<b>Resumen:</b>
-			</br></br>Período: <b>#{periodo_id}</b>
-			</br></br>Total Nuevos Inscritos: <b>#{inscritos}</b>
-			</br>Total Existentes: <b>#{existentes}</b>
-			</br>Total Nuevas Secciones: <b>#{nuevas_secciones}</b>
-			<hr></hr>Total Secciones No Creadas: <b>#{secciones_no_creadas.count}</b>
-			</br><i>Detalle:</i></br>#{secciones_no_creadas.to_sentence} 
-			<hr></hr>Total Asignaturas Inexistentes: <b>#{asignaturas_inexistentes.uniq.count}</b>
-			</br><i>Detalle:</i></br> #{asignaturas_inexistentes.uniq.to_sentence}
-			<hr></hr>Total Estudiantes Inexistentes: <b>#{estudiantes_inexistentes.uniq.count}</b>
-			</br><i>Detalle:</i></br> #{estudiantes_inexistentes.uniq.to_sentence}"
-
-		if total_calificados and total_calificados.to_i > 0
-			aux += "<hr></hr>Calificaciones:"
-			aux += "</br>Total Estudiantes Calificados: <b>#{total_calificados}</b>"
-			aux += "</br>Total Estudiantes Aprobados: <b>#{total_aprobados}</b>"
-			aux += "</br>Total Estudiantes Aplazados: <b>#{total_aplazados}</b>"
-			aux += "</br>Total Estudiantes Retirados: <b>#{total_retirados}</b>"
-			aux += "</br>Total Estudiantes No Calificados: <b>#{total_no_calificados}</b>"
-
-		end
-		return aux
-	end
-
 	def self.importar_estudiantes file, escuela_id, plan_id, periodo_id
 		require 'csv'
 
@@ -53,12 +25,15 @@ class ImportCsv
 		total_planes_no_agregados = 0
 
 		csv = CSV.parse(csv_text, headers: true)
-		csv.each do |row|
+		# csv.each do |row|
+		csv.group_by{|ci| ci[0]}.values.each do |row|
 			begin
 				# if profe = Profesor.where(usuario_id: row.field(0))
 				hay_usuario = false
+				row = row[0]
 				row['ci'].strip!
 				row['ci'].delete! '^0-9'
+
 				if usuario = Usuario.where(ci: row['ci']).limit(1).first
 					usuarios_existentes << usuario.ci
 					hay_usuario = true
@@ -66,13 +41,21 @@ class ImportCsv
 					usuario = Usuario.new
 					usuario.ci = row['ci']
 					usuario.password = usuario.ci
-					usuario.nombres = row['nombres']
-					usuario.apellidos = row['apellidos']
-					usuario.email = row['email']
+
+					if row['nombres_apellidos'] 
+						nombres_apellidos = separar_cadena row['nombres y apellidos']
+						usuario.apellidos = nombres_apellidos[0]
+						usuario.email = nombres_apellidos[1]
+					else
+						usuario.apellidos = limpiar_cadena row['apellidos']
+						usuario.nombres = limpiar_cadena row['nombres']
+					end
 					usuario.telefono_movil = row['telefono']
+					usuario.email = limpiar_cadena row['email']
 					usuario.telefono_habitacion = row['telefono_habitacion']
 					if usuario.save
 						hay_usuario = true
+					p usuario.to_json
 					else
 						usuarios_no_agregados << row['ci']
 					end
@@ -229,7 +212,7 @@ class ImportCsv
 					row.field(0).delete! '^0-9'
 					row.field(0).strip!
 					row.field(1).strip!
-					row.field(2).strip!
+					row.field(2).strip! if row.field(2)
 					if a = Asignatura.where(id_uxxi: row.field(1)).first
 						unless s = Seccion.where(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id).limit(1).first
 						
@@ -315,575 +298,218 @@ class ImportCsv
 
 	end
 
-	def self.importar_de_archivo url, objecto
-		
+
+	def self.importar_estudiantes_e_inscripciones file, periodo_id
 		require 'csv'
 
-		csv_text = File.read(url)
-		total = 0
-		# csv_data =CSV.generate(headers: true, col_sep: ";") do |csv|
-		csv = CSV.parse(csv_text, headers: true)
-			csv.each do |row|
-				if objecto.camelize.constantize.create!(row.to_hash)
-				 	total += 1
-				end
+		csv_text = File.read(file)
+		total_inscritos = 0
+		total_existentes = 0
+		estudiantes_no_inscritos = []
+		total_nuevas_secciones = 0
+		secciones_no_creadas = []
+		estudiantes_inexistentes = []
+		asignaturas_inexistentes = []
+		total_calificados = 0
+		total_aprobados = 0
+		total_aplazados = 0
+		total_retirados = 0
+		total_no_calificados = 0		
+		p "RESULTADO".center(200, "=")
+		rows = CSV.parse(csv_text, headers: true)
+
+		rows.group_by{|row| row[2]}.values.each do |asig|
+			id_uxxi = limpiar_cadena asig[0][1]
+			if a = Asignatura.where(id_uxxi: id_uxxi).first
+				asig.group_by{|sec| sec[2]}.each do |seccion|
+					seccion_id = seccion[0]
+
+					unless s = Seccion.where(numero: seccion_id, periodo_id: periodo_id, asignatura_id: id_uxxi).limit(1).first
+					
+						total_nuevas_secciones += 1 if s = Seccion.create!(numero: seccion_id, periodo_id: periodo_id, asignatura_id: id_uxxi, tipo_seccion_id: 'NF')
+					end
+
+					if s
+						seccion[1].each do |reg|
+
+							if Estudiante.where(usuario_id: reg.field(0)).count <= 0
+
+								estudiantes_inexistentes << reg.field(0)
+
+							else
+								inscrip = s.inscripcionsecciones.where(estudiante_id: reg.field(0)).first
+								
+								unless inscrip
+										inscrip = Inscripcionseccion.new
+										inscrip.seccion_id = s.id
+										inscrip.estudiante_id = reg.field(0)
+										
+									if inscrip.save
+										total_inscritos += 1
+									else
+										estudiantes_no_inscritos << reg.field(0)
+									end
+								else
+									total_existentes += 1
+								end
+
+								# CALIFICAR:
+								if reg.field(3) and ! reg.field(3).blank?
+									reg.field(3).strip!
+									if reg.field(3).eql? 'RT'
+										inscrip.estado = :retirado
+										inscrip.tipo_calificacion_id = TipoCalificacion::FINAL 
+									elsif inscrip.asignatura and inscrip.asignatura.absoluta?
+										if reg.field(3).eql? 'A'
+											inscrip.estado = :aprobado
+										else
+											inscrip.estado = :aplazado
+										end
+										inscrip.tipo_calificacion_id = TipoCalificacion::FINAL
+									else
+										inscrip.calificacion_final = reg.field(3)
+										
+										if inscrip.calificacion_final >= 10
+											inscrip.estado = :aprobado
+										else
+											if inscrip.calificacion_final == 0
+												inscrip.tipo_calificacion_id = TipoCalificacion::PI 
+											else
+												inscrip.tipo_calificacion_id = TipoCalificacion::FINAL 
+											end
+											inscrip.estado = :aplazado
+										end
+									end
+
+									if inscrip.save
+										total_calificados += 1
+										if inscrip.retirado?
+											total_retirados += 1
+										elsif inscrip.aprobado?
+											total_aprobados += 1
+										else
+											total_aplazados += 1
+										end
+									else
+										total_no_calificados += 1
+									end
+								end
+							end
+
+
+
+
+
+
+
+						end
+
+					else
+						secciones_no_creadas << row.to_hash
+					end						
+
+
+
+				end 
+			else
+				asignaturas_inexistentes << id_uxxi
 			end
-		return total
-
-	end
-
-
-	def self.importar_de_archivo_secciones url, objecto
+		end
+  		# puts [group.first['ID'], group.map{|r| r['COMMENT']} * ' '] * ' | '
 		
-		require 'csv'
-
-		a = { "ALEMI" => "709109110", 
-"ALEMII" => "709109111", 
-"ALEMIII" => "709109112", 
-"ALEMIV" => "709109118", 
-"ALEMV" => "709109119", 
-"AVAING" => "700110001", 
-"CIVFRACA" => "700110002", 
-"CONALE" => "709309313", 
-"CONFRA" => "709309323", 
-"CONING" => "709309333", 
-"CONITA" => "709309343", 
-"CONPOR" => "709309353", 
-"CONTUSLI" => "709119052", 
-"CTTIALEM" => "709109115", 
-"CTTIFRAN" => "709109125", 
-"CTTIIALEM" => "709209116", 
-"CTTIIFRAN" => "709209126", 
-"CTTIIIALEM" => "709209117", 
-"CTTIIIFRAN" => "709209127", 
-"CTTIIIING" => "709209137", 
-"CTTIIIITA" => "709209147", 
-"CTTIIING" => "709209136", 
-"CTTIIIPOR" => "709109157", 
-"CTTIIITA" => "709209146", 
-"CTTIING" => "709109135", 
-"CTTIIPOR" => "709209156", 
-"CTTIITA" => "709109145", 
-"CTTIPOR" => "709109155", 
-"DIDACEXT" => "709119956", 
-"ECO" => "709109274", 
-"ESTALE" => "709409012", 
-"ESTDISC" => "709119208", 
-"ESTFRA" => "709409022", 
-"ESTING" => "709409032", 
-"ESTITA" => "709409042", 
-"ESTPOR" => "709409052", 
-"FFALEM" => "709209011", 
-"FFFRAN" => "709209021", 
-"FFING" => "709209031", 
-"FFITA" => "709209041", 
-"FFPOR" => "709209051", 
-"FRANI" => "709109120", 
-"FRANII" => "709109121", 
-"FRANIII" => "709109122", 
-"FRANIV" => "709209128", 
-"FRANV" => "709209129", 
-"GRIEGO" => "709119967", 
-"HERME" => "709119207", 
-"INGI" => "709109130", 
-"INGII" => "709109131", 
-"INGIII" => "709109132", 
-"INGIV" => "709209138", 
-"INGV" => "709209139", 
-"INIARA" => "709119476", 
-"ININTER" => "709109272", 
-"INITRA" => "709109271", 
-"INTESPE" => "709119088", 
-"INTROLITE" => "709119108", 
-"ITAI" => "709109140", 
-"ITAII" => "709109141", 
-"ITAIII" => "709109142", 
-"ITAIV" => "709209148", 
-"ITAV" => "709209149", 
-"JAP" => "709119003", 
-"LEI" => "709109072", 
-"LEII" => "709109073", 
-"LINGUI" => "709109070", 
-"LINGUII" => "709109071", 
-"METO" => "709109270", 
-"MORALEM" => "709209010", 
-"MORFOESPEL" => "709119007", 
-"MORFRAN" => "709209020", 
-"MORING" => "709209030", 
-"MORITA" => "709209040", 
-"MORPOR" => "709209050", 
-"POLI" => "709109273", 
-"PORI" => "709109150", 
-"PORII" => "709109151", 
-"PORIII" => "709109152", 
-"PORIV" => "709209158", 
-"PORV" => "709209159", 
-"SEMI" => "709109279", 
-"SERCOM" => "709109966", 
-"SIMALEI" => "709309314", 
-"SIMALEII" => "709309315", 
-"SIMFRAI" => "709309324", 
-"SIMFRAII" => "709309325", 
-"SIMINGI" => "709309334", 
-"SIMINGII" => "709309335", 
-"SIMITAI" => "709309344", 
-"SIMITAII" => "709309345", 
-"SIMPORI" => "709309354", 
-"SIMPORII" => "709309355", 
-"TERMIN" => "709409074", 
-"TRAALEI" => "709309310", 
-"TRAALEII" => "709309311", 
-"TRADAUD" => "709119953", 
-"TRADFRAN" => "700110000", 
-"TRADING" => "709119102", 
-"TRAESPALE" => "709409312", 
-"TRAESPFRA" => "709409322", 
-"TRAESPING" => "709409332", 
-"TRAESPITA" => "709409342", 
-"TRAESPPOR" => "709409352", 
-"TRAFRAI" => "709309320", 
-"TRAFRAII" => "709309321", 
-"TRAINGI" => "709309330", 
-"TRAINGII" => "709309331", 
-"TRAITAI" => "709309340", 
-"TRAITAII" => "709309341", 
-"TRAPORI" => "709309350", 
-"TRAPORII" => "709309351", 
-"WEB2" => "700110003"}
-
-
-
-		csv_text = File.read(url)
-		total = 0
-		# csv_data =CSV.generate(headers: true, col_sep: ";") do |csv|
-		csv = CSV.parse(csv_text, headers: true)
-			csv.each do |row|
-
-				nuevo_id_asignatura = a[row.field(2)]
-				row["asignatura_id"] = nuevo_id_asignatura
-				if objecto.camelize.constantize.create!(row.to_hash)
-				 	total += 1
-				end
-			end
-		return total
-
+		# rows.each do |row|
+		# 	begin
+		# 		row = limpiar_fila row
+		# 		#p self.separar_cadena(row.field(1))
+		# 	rescue Exception => e
+		# 		return "Error excepcional: #{e.to_sentence}"
+		# 	end
+		# end
+		p "=".center(200, "=")
 	end
 
+	private
 
 
-
-
-	def self.importar_de_archivo_inscripcionsecciones url, objecto
+	def self.resumen inscritos, existentes, no_inscritos, nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados, periodo_id
 		
-		require 'csv'
+		aux = "</br>
+			<b>Resumen:</b>
+			</br></br>Período: <b>#{periodo_id}</b>
+			</br></br>Total Nuevos Inscritos: <b>#{inscritos}</b>
+			</br>Total Existentes: <b>#{existentes}</b>
+			</br>Total Nuevas Secciones: <b>#{nuevas_secciones}</b>
+			<hr></hr>Total Secciones No Creadas: <b>#{secciones_no_creadas.count}</b>
+			</br><i>Detalle:</i></br>#{secciones_no_creadas.to_sentence} 
+			<hr></hr>Total Asignaturas Inexistentes: <b>#{asignaturas_inexistentes.uniq.count}</b>
+			</br><i>Detalle:</i></br> #{asignaturas_inexistentes.uniq.to_sentence}
+			<hr></hr>Total Estudiantes Inexistentes: <b>#{estudiantes_inexistentes.uniq.count}</b>
+			</br><i>Detalle:</i></br> #{estudiantes_inexistentes.uniq.to_sentence}"
 
+		if total_calificados and total_calificados.to_i > 0
+			aux += "<hr></hr>Calificaciones:"
+			aux += "</br>Total Estudiantes Calificados: <b>#{total_calificados}</b>"
+			aux += "</br>Total Estudiantes Aprobados: <b>#{total_aprobados}</b>"
+			aux += "</br>Total Estudiantes Aplazados: <b>#{total_aplazados}</b>"
+			aux += "</br>Total Estudiantes Retirados: <b>#{total_retirados}</b>"
+			aux += "</br>Total Estudiantes No Calificados: <b>#{total_no_calificados}</b>"
 
-		a = { "ALEMI" => "709109110", 
-"ALEMII" => "709109111", 
-"ALEMIII" => "709109112", 
-"ALEMIV" => "709109118", 
-"ALEMV" => "709109119", 
-"AVAING" => "700110001", 
-"CIVFRACA" => "700110002", 
-"CONALE" => "709309313", 
-"CONFRA" => "709309323", 
-"CONING" => "709309333", 
-"CONITA" => "709309343", 
-"CONPOR" => "709309353", 
-"CONTUSLI" => "709119052", 
-"CTTIALEM" => "709109115", 
-"CTTIFRAN" => "709109125", 
-"CTTIIALEM" => "709209116", 
-"CTTIIFRAN" => "709209126", 
-"CTTIIIALEM" => "709209117", 
-"CTTIIIFRAN" => "709209127", 
-"CTTIIIING" => "709209137", 
-"CTTIIIITA" => "709209147", 
-"CTTIIING" => "709209136", 
-"CTTIIIPOR" => "709109157", 
-"CTTIIITA" => "709209146", 
-"CTTIING" => "709109135", 
-"CTTIIPOR" => "709209156", 
-"CTTIITA" => "709109145", 
-"CTTIPOR" => "709109155", 
-"DIDACEXT" => "709119956", 
-"ECO" => "709109274", 
-"ESTALE" => "709409012", 
-"ESTDISC" => "709119208", 
-"ESTFRA" => "709409022", 
-"ESTING" => "709409032", 
-"ESTITA" => "709409042", 
-"ESTPOR" => "709409052", 
-"FFALEM" => "709209011", 
-"FFFRAN" => "709209021", 
-"FFING" => "709209031", 
-"FFITA" => "709209041", 
-"FFPOR" => "709209051", 
-"FRANI" => "709109120", 
-"FRANII" => "709109121", 
-"FRANIII" => "709109122", 
-"FRANIV" => "709209128", 
-"FRANV" => "709209129", 
-"GRIEGO" => "709119967", 
-"HERME" => "709119207", 
-"INGI" => "709109130", 
-"INGII" => "709109131", 
-"INGIII" => "709109132", 
-"INGIV" => "709209138", 
-"INGV" => "709209139", 
-"INIARA" => "709119476", 
-"ININTER" => "709109272", 
-"INITRA" => "709109271", 
-"INTESPE" => "709119088", 
-"INTROLITE" => "709119108", 
-"ITAI" => "709109140", 
-"ITAII" => "709109141", 
-"ITAIII" => "709109142", 
-"ITAIV" => "709209148", 
-"ITAV" => "709209149", 
-"JAP" => "709119003", 
-"LEI" => "709109072", 
-"LEII" => "709109073", 
-"LINGUI" => "709109070", 
-"LINGUII" => "709109071", 
-"METO" => "709109270", 
-"MORALEM" => "709209010", 
-"MORFOESPEL" => "709119007", 
-"MORFRAN" => "709209020", 
-"MORING" => "709209030", 
-"MORITA" => "709209040", 
-"MORPOR" => "709209050", 
-"POLI" => "709109273", 
-"PORI" => "709109150", 
-"PORII" => "709109151", 
-"PORIII" => "709109152", 
-"PORIV" => "709209158", 
-"PORV" => "709209159", 
-"SEMI" => "709109279", 
-"SERCOM" => "709109966", 
-"SIMALEI" => "709309314", 
-"SIMALEII" => "709309315", 
-"SIMFRAI" => "709309324", 
-"SIMFRAII" => "709309325", 
-"SIMINGI" => "709309334", 
-"SIMINGII" => "709309335", 
-"SIMITAI" => "709309344", 
-"SIMITAII" => "709309345", 
-"SIMPORI" => "709309354", 
-"SIMPORII" => "709309355", 
-"TERMIN" => "709409074", 
-"TRAALEI" => "709309310", 
-"TRAALEII" => "709309311", 
-"TRADAUD" => "709119953", 
-"TRADFRAN" => "700110000", 
-"TRADING" => "709119102", 
-"TRAESPALE" => "709409312", 
-"TRAESPFRA" => "709409322", 
-"TRAESPING" => "709409332", 
-"TRAESPITA" => "709409342", 
-"TRAESPPOR" => "709409352", 
-"TRAFRAI" => "709309320", 
-"TRAFRAII" => "709309321", 
-"TRAINGI" => "709309330", 
-"TRAINGII" => "709309331", 
-"TRAITAI" => "709309340", 
-"TRAITAII" => "709309341", 
-"TRAPORI" => "709309350", 
-"TRAPORII" => "709309351", 
-"WEB2" => "700110003"}
-
-
-
-		csv_text = File.read(url)
-		total = 0
-		# csv_data =CSV.generate(headers: true, col_sep: ";") do |csv|
-		csv = CSV.parse(csv_text, headers: true)
-			csv.each do |row|
-
-				case row["tipo_estado_calificacion_id"]
-				when 'RE'
-					row["tipo_estado_calificacion_id"] = 'AP'
-				when 'AP'
-					row["tipo_estado_calificacion_id"] = 'A'
-				end
-
-				nuevo_id_asignatura = a[row.field(3)]
-				
-				s = Seccion.all.where(numero: row.field(1), periodo_id: row.field(2), asignatura_id: nuevo_id_asignatura).first 
-				row.delete(1)
-				row.delete(1)
-				row.delete(1)
-				row << {seccion_id: s.id}
-				p "Seccion ID: #{s.id} #{row.to_hash} #{row.field('')}"
-
-				if objecto.camelize.constantize.create!(row.to_hash)
-				 	total += 1
-				end
-			end
-		return total
-
+		end
+		return aux
 	end
 
-	def self.importar_de_archivo_profesor_secundario url, objecto
-		
-		require 'csv'
+	def crear_usuario usuario_params
+		hay_usuario = false
+		if usuario = Usuario.where(ci: usuario_params[:ci]).limit(1).first
+			hay_usuario = true
+		else
+			usuario = Usuario.new
+			usuario.ci = usuario_params[:ci]
+			usuario.password = usuario_params[:ci]
+			usuario.nombres = usuario_params[:nombres]
+			usuario.apellidos = usuario_params[:apellidos]
+			
+			hay_usuario = true if usuario.save
+		end
 
-		a = { "ALEMI" => "709109110", 
-			"ALEMII" => "709109111", 
-			"ALEMIII" => "709109112", 
-			"ALEMIV" => "709109118", 
-			"ALEMV" => "709109119", 
-			"AVAING" => "700110001", 
-			"CIVFRACA" => "700110002", 
-			"CONALE" => "709309313", 
-			"CONFRA" => "709309323", 
-			"CONING" => "709309333", 
-			"CONITA" => "709309343", 
-			"CONPOR" => "709309353", 
-			"CONTUSLI" => "709119052", 
-			"CTTIALEM" => "709109115", 
-			"CTTIFRAN" => "709109125", 
-			"CTTIIALEM" => "709209116", 
-			"CTTIIFRAN" => "709209126", 
-			"CTTIIIALEM" => "709209117", 
-			"CTTIIIFRAN" => "709209127", 
-			"CTTIIIING" => "709209137", 
-			"CTTIIIITA" => "709209147", 
-			"CTTIIING" => "709209136", 
-			"CTTIIIPOR" => "709109157", 
-			"CTTIIITA" => "709209146", 
-			"CTTIING" => "709109135", 
-			"CTTIIPOR" => "709209156", 
-			"CTTIITA" => "709109145", 
-			"CTTIPOR" => "709109155", 
-			"DIDACEXT" => "709119956", 
-			"ECO" => "709109274", 
-			"ESTALE" => "709409012", 
-			"ESTDISC" => "709119208", 
-			"ESTFRA" => "709409022", 
-			"ESTING" => "709409032", 
-			"ESTITA" => "709409042", 
-			"ESTPOR" => "709409052", 
-			"FFALEM" => "709209011", 
-			"FFFRAN" => "709209021", 
-			"FFING" => "709209031", 
-			"FFITA" => "709209041", 
-			"FFPOR" => "709209051", 
-			"FRANI" => "709109120", 
-			"FRANII" => "709109121", 
-			"FRANIII" => "709109122", 
-			"FRANIV" => "709209128", 
-			"FRANV" => "709209129", 
-			"GRIEGO" => "709119967", 
-			"HERME" => "709119207", 
-			"INGI" => "709109130", 
-			"INGII" => "709109131", 
-			"INGIII" => "709109132", 
-			"INGIV" => "709209138", 
-			"INGV" => "709209139", 
-			"INIARA" => "709119476", 
-			"ININTER" => "709109272", 
-			"INITRA" => "709109271", 
-			"INTESPE" => "709119088", 
-			"INTROLITE" => "709119108", 
-			"ITAI" => "709109140", 
-			"ITAII" => "709109141", 
-			"ITAIII" => "709109142", 
-			"ITAIV" => "709209148", 
-			"ITAV" => "709209149", 
-			"JAP" => "709119003", 
-			"LEI" => "709109072", 
-			"LEII" => "709109073", 
-			"LINGUI" => "709109070", 
-			"LINGUII" => "709109071", 
-			"METO" => "709109270", 
-			"MORALEM" => "709209010", 
-			"MORFOESPEL" => "709119007", 
-			"MORFRAN" => "709209020", 
-			"MORING" => "709209030", 
-			"MORITA" => "709209040", 
-			"MORPOR" => "709209050", 
-			"POLI" => "709109273", 
-			"PORI" => "709109150", 
-			"PORII" => "709109151", 
-			"PORIII" => "709109152", 
-			"PORIV" => "709209158", 
-			"PORV" => "709209159", 
-			"SEMI" => "709109279", 
-			"SERCOM" => "709109966", 
-			"SIMALEI" => "709309314", 
-			"SIMALEII" => "709309315", 
-			"SIMFRAI" => "709309324", 
-			"SIMFRAII" => "709309325", 
-			"SIMINGI" => "709309334", 
-			"SIMINGII" => "709309335", 
-			"SIMITAI" => "709309344", 
-			"SIMITAII" => "709309345", 
-			"SIMPORI" => "709309354", 
-			"SIMPORII" => "709309355", 
-			"TERMIN" => "709409074", 
-			"TRAALEI" => "709309310", 
-			"TRAALEII" => "709309311", 
-			"TRADAUD" => "709119953", 
-			"TRADFRAN" => "700110000", 
-			"TRADING" => "709119102", 
-			"TRAESPALE" => "709409312", 
-			"TRAESPFRA" => "709409322", 
-			"TRAESPING" => "709409332", 
-			"TRAESPITA" => "709409342", 
-			"TRAESPPOR" => "709409352", 
-			"TRAFRAI" => "709309320", 
-			"TRAFRAII" => "709309321", 
-			"TRAINGI" => "709309330", 
-			"TRAINGII" => "709309331", 
-			"TRAITAI" => "709309340", 
-			"TRAITAII" => "709309341", 
-			"TRAPORI" => "709309350", 
-			"TRAPORII" => "709309351", 
-			"WEB2" => "700110003"}
-
-
-		csv_text = File.read(url)
-		total = 0
-		# csv_data =CSV.generate(headers: true, col_sep: ";") do |csv|
-		csv = CSV.parse(csv_text, headers: true)
-			csv.each do |row|
-
-				nuevo_id_asignatura = a[row.field(1)]
-				
-				s = Seccion.all.where(numero: row.field(2), periodo_id: row.field(0), asignatura_id: nuevo_id_asignatura).first 
-				row.delete(0)
-				row.delete(0)
-				row.delete(0)
-				row << {seccion_id: s.id}
-
-				if objecto.camelize.constantize.create!(row.to_hash)
-				 	total += 1
-				end
-			end
-		return total
+		hay_usuario ? usuario : false
 
 	end
 
 
-	def self.get_section_id periodo_id, numero, asignatura_id
 
-		a = { "ALEMI" => "709109110", 
-			"ALEMII" => "709109111", 
-			"ALEMIII" => "709109112", 
-			"ALEMIV" => "709109118", 
-			"ALEMV" => "709109119", 
-			"AVAING" => "700110001", 
-			"CIVFRACA" => "700110002", 
-			"CONALE" => "709309313", 
-			"CONFRA" => "709309323", 
-			"CONING" => "709309333", 
-			"CONITA" => "709309343", 
-			"CONPOR" => "709309353", 
-			"CONTUSLI" => "709119052", 
-			"CTTIALEM" => "709109115", 
-			"CTTIFRAN" => "709109125", 
-			"CTTIIALEM" => "709209116", 
-			"CTTIIFRAN" => "709209126", 
-			"CTTIIIALEM" => "709209117", 
-			"CTTIIIFRAN" => "709209127", 
-			"CTTIIIING" => "709209137", 
-			"CTTIIIITA" => "709209147", 
-			"CTTIIING" => "709209136", 
-			"CTTIIIPOR" => "709109157", 
-			"CTTIIITA" => "709209146", 
-			"CTTIING" => "709109135", 
-			"CTTIIPOR" => "709209156", 
-			"CTTIITA" => "709109145", 
-			"CTTIPOR" => "709109155", 
-			"DIDACEXT" => "709119956", 
-			"ECO" => "709109274", 
-			"ESTALE" => "709409012", 
-			"ESTDISC" => "709119208", 
-			"ESTFRA" => "709409022", 
-			"ESTING" => "709409032", 
-			"ESTITA" => "709409042", 
-			"ESTPOR" => "709409052", 
-			"FFALEM" => "709209011", 
-			"FFFRAN" => "709209021", 
-			"FFING" => "709209031", 
-			"FFITA" => "709209041", 
-			"FFPOR" => "709209051", 
-			"FRANI" => "709109120", 
-			"FRANII" => "709109121", 
-			"FRANIII" => "709109122", 
-			"FRANIV" => "709209128", 
-			"FRANV" => "709209129", 
-			"GRIEGO" => "709119967", 
-			"HERME" => "709119207", 
-			"INGI" => "709109130", 
-			"INGII" => "709109131", 
-			"INGIII" => "709109132", 
-			"INGIV" => "709209138", 
-			"INGV" => "709209139", 
-			"INIARA" => "709119476", 
-			"ININTER" => "709109272", 
-			"INITRA" => "709109271", 
-			"INTESPE" => "709119088", 
-			"INTROLITE" => "709119108", 
-			"ITAI" => "709109140", 
-			"ITAII" => "709109141", 
-			"ITAIII" => "709109142", 
-			"ITAIV" => "709209148", 
-			"ITAV" => "709209149", 
-			"JAP" => "709119003", 
-			"LEI" => "709109072", 
-			"LEII" => "709109073", 
-			"LINGUI" => "709109070", 
-			"LINGUII" => "709109071", 
-			"METO" => "709109270", 
-			"MORALEM" => "709209010", 
-			"MORFOESPEL" => "709119007", 
-			"MORFRAN" => "709209020", 
-			"MORING" => "709209030", 
-			"MORITA" => "709209040", 
-			"MORPOR" => "709209050", 
-			"POLI" => "709109273", 
-			"PORI" => "709109150", 
-			"PORII" => "709109151", 
-			"PORIII" => "709109152", 
-			"PORIV" => "709209158", 
-			"PORV" => "709209159", 
-			"SEMI" => "709109279", 
-			"SERCOM" => "709109966", 
-			"SIMALEI" => "709309314", 
-			"SIMALEII" => "709309315", 
-			"SIMFRAI" => "709309324", 
-			"SIMFRAII" => "709309325", 
-			"SIMINGI" => "709309334", 
-			"SIMINGII" => "709309335", 
-			"SIMITAI" => "709309344", 
-			"SIMITAII" => "709309345", 
-			"SIMPORI" => "709309354", 
-			"SIMPORII" => "709309355", 
-			"TERMIN" => "709409074", 
-			"TRAALEI" => "709309310", 
-			"TRAALEII" => "709309311", 
-			"TRADAUD" => "709119953", 
-			"TRADFRAN" => "700110000", 
-			"TRADING" => "709119102", 
-			"TRAESPALE" => "709409312", 
-			"TRAESPFRA" => "709409322", 
-			"TRAESPING" => "709409332", 
-			"TRAESPITA" => "709409342", 
-			"TRAESPPOR" => "709409352", 
-			"TRAFRAI" => "709309320", 
-			"TRAFRAII" => "709309321", 
-			"TRAINGI" => "709309330", 
-			"TRAINGII" => "709309331", 
-			"TRAITAI" => "709309340", 
-			"TRAITAII" => "709309341", 
-			"TRAPORI" => "709309350", 
-			"TRAPORII" => "709309351", 
-			"WEB2" => "700110003"}
+	def self.separar_cadena cadena = nil
+		if cadena.blank?
+			return [nil,nil]
+		else
+			cadena = limpiar_cadena cadena
+			a = cadena.split(" ")
+			t = (a.count)-1
+			i = (a.count/2)-1
+			i = 0 if i < 0  
 
-
-		
+			return [a[0..i].join(" "),a[i+1..t].join(" ")]
+		end
 	end
+
+	def self.limpiar_fila row
+		row.field(0).delete! '^0-9'
+		row.fields.each{|r| r = limpiar_cadena(r) if r}
+		# row.field(1) = limpiar_cadena(row.field(1))
+		# row.field(2) = limpiar_cadena row.field(2) if row.field(2)
+		# row.field(3) = limpiar_cadena row.field(3) if row.field(3)
+		# row.field(4) = limpiar_cadena row.field(4) if row.field(4)
+
+		return row
+	end
+
+	def self.limpiar_cadena cadena
+		cadena.delete! '^0-9|^A-Za-z|áÁÄäËëÉéÍÏïíÓóÖöÚúÜüñÑ '
+		cadena.strip!
+		return cadena
+	end
+
+
+
 
 end
