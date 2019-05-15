@@ -6,8 +6,8 @@
     %meta{:name => "description", :content => "#{content_for?(:description) ? yield(:description) : 'Coesapp'}"}
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track' => 'reload'
-
     = csrf_meta_tags
+    = favicon_link_tag 'logo.ico'
   %body
     %header
       = render 'layouts/visitors_nav'
