@@ -7,6 +7,6 @@
   %b Estado:
   = @comentario.estado.capitalize
 
-= link_to 'Editar', edit_comentario_path(@comentario)
-\|
-= link_to 'Regresar', comentarios_path
+= link_to 'Editar', edit_comentario_path(@comentario), class: 'btn btn-sm btn-primary mr-3'
+
+= link_to 'Regresar', comentarios_path, class: 'btn btn-sm btn-outline-secondary'

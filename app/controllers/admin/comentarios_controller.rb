@@ -22,6 +22,7 @@ module Admin
 
     # GET /comentarios/1/edit
     def edit
+      @titulo = "Editando Nota"
     end
 
     # POST /comentarios

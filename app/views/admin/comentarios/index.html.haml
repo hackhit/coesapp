@@ -16,9 +16,16 @@
       %tr
         %td= raw comentario.contenido
         %td= comentario.estado.capitalize
-        %td= link_to 'Ver', comentario
-        %td= link_to 'Editar', edit_comentario_path(comentario)
-        %td= link_to 'Eliminar', comentario, method: :delete, data: { confirm: 'Are you sure?' }
+        %td
+          = link_to comentario do
+            = glyph 'search'
+        %td
+          = link_to edit_comentario_path(comentario) do
+            = glyph 'edit'
+
+        %td
+          = link_to comentario, method: :delete, data: { confirm: 'Are you sure?' } do
+            .text-danger= glyph 'trash'
 
 %br
 
