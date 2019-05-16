@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_02_222913) do
+ActiveRecord::Schema.define(version: 2019_05_16_183347) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -100,6 +100,13 @@ ActiveRecord::Schema.define(version: 2019_05_02_222913) do
     t.index ["idioma2_id"], name: "index_combinaciones_on_idioma2_id"
     t.index ["periodo_id", "estudiante_id"], name: "index_combinaciones_on_periodo_id_and_estudiante_id", unique: true
     t.index ["periodo_id"], name: "index_combinaciones_on_periodo_id"
+  end
+
+  create_table "comentarios", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "contenido"
+    t.boolean "publico", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "departamentos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -385,7 +392,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_222913) do
   add_foreign_key "escuelaperiodos", "escuelas", name: "escuelaperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "escuelaperiodos", "periodos", name: "escuelaperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "estudiantes", "citahorarias", name: "estudiantes_ibfk_1", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "estudiantes", "usuarios", primary_key: "ci", name: "estudiantes_ibfk_3", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "estudiantes", "usuarios", primary_key: "ci", name: "estudiantes_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", name: "historialplanes_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade

@@ -4,6 +4,10 @@ class VisitorsController < ApplicationController
   layout 'visitors'
 
   def index
+    # github = Github.new
+    # @commits = github.repos.commits.all 'aceimdevelopment', 'coesapp'
+    # @commentarios = Comentario
+
     aux = flash[:error]
     aux2 = flash[:danger]
     aux3 = flash[:success]

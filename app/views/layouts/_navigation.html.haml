@@ -4,50 +4,49 @@
 - main_path = principal_estudiante_index_path if session[:estudiante_id]
 - main_path = principal_profesor_index_path if session[:profesor_id]
 
-.container.fixed-top 
-  %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-    %a.navbar-brand{:href => main_path} COES-FHE
-    %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarSupportedContent", "data-toggle" => "collapse", :type => "button"}
-      %span.navbar-toggler-icon
-    #navbarSupportedContent.collapse.navbar-collapse
-      %ul.navbar-nav.mr-auto
-        - if current_admin
-          %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'periodos'}"}
-            %a.nav-link.dropdown-toggle#ConfigGeneral{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
-              Config. General
-            .dropdown-menu{"aria-labelledby" => "ConfigGeneral"}
-              .dropdown-item.text-info= current_periodo.id
-              - if current_admin
-                = link_to 'Periodos', periodos_path, class: 'dropdown-item'
-              - if current_admin.maestros?
-                = link_to 'Escuelas', escuelas_path, class: 'dropdown-item'
-              = link_to 'Cartelera', carteleras_path, class: 'dropdown-item'
-              - if current_admin.mas_altos?
-                = link_to 'Planes', planes_path, class: 'dropdown-item'
-                = link_to 'Departamentos', departamentos_path, class: 'dropdown-item'
-                = link_to 'Cátedras', catedras_path, class: 'dropdown-item'
-                = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item'
+%nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+  %a.navbar-brand{:href => main_path} COES-FHE
+  %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarSupportedContent", "data-toggle" => "collapse", :type => "button"}
+    %span.navbar-toggler-icon
+  #navbarSupportedContent.collapse.navbar-collapse
+    %ul.navbar-nav.mr-auto
+      - if current_admin
+        %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'periodos'}"}
+          %a.nav-link.dropdown-toggle#ConfigGeneral{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
+            Config. General
+          .dropdown-menu{"aria-labelledby" => "ConfigGeneral"}
+            .dropdown-item.text-info= current_periodo.id
+            - if current_admin
+              = link_to 'Periodos', periodos_path, class: 'dropdown-item'
+            - if current_admin.maestros?
+              = link_to 'Escuelas', escuelas_path, class: 'dropdown-item'
+            = link_to 'Cartelera', carteleras_path, class: 'dropdown-item'
+            - if current_admin.mas_altos?
+              = link_to 'Planes', planes_path, class: 'dropdown-item'
+              = link_to 'Departamentos', departamentos_path, class: 'dropdown-item'
+              = link_to 'Cátedras', catedras_path, class: 'dropdown-item'
+              = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item'
 
-              = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item'
-              = link_to 'Secciones', secciones_path, class: 'dropdown-item'
-          - if current_admin.altos?
-            %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
-              %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
-                Usuarios
-                - if controller_name.eql? 'usuarios'
-                  %span.sr-only (current)
-              .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
-                = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
-                = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
-                - if current_admin.maestros?
-                  = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
-        - if current_admin
-          = form_tag(usuarios_path,{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
-            = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
-            %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar
-      %ul.navbar-nav
-        %li.nav-item
-          %a.nav-link{:href => "mailto:soporte.coes.fhe@gmail.com"} 
-            Contáctanos
-        = render 'layouts/nav_session_options' 
+            = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item'
+            = link_to 'Secciones', secciones_path, class: 'dropdown-item'
+        - if current_admin.altos?
+          %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
+            %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
+              Usuarios
+              - if controller_name.eql? 'usuarios'
+                %span.sr-only (current)
+            .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
+              = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
+              = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
+              - if current_admin.maestros?
+                = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
+      - if current_admin
+        = form_tag(usuarios_path,{class: 'form-inline my-2 my-lg-0', role: :search, method: :get} ) do
+          = text_field_tag :search, params[:search],{class: 'form-control mr-sm-2 form-control-sm', required: true, "aria-label" => "Search", placeholder: "Buscar Usuario", type: "search"}
+          %button.btn.btn-outline-success.btn-sm.my-2.my-sm-0{:type => "submit"} Buscar
+    %ul.navbar-nav
+      %li.nav-item
+        %a.nav-link{:href => "mailto:soporte.coes.fhe@gmail.com"} 
+          Contáctanos
+      = render 'layouts/nav_session_options' 
 = render 'admin/principal_admin/cambiar_sesion_periodo'

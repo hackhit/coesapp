@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
+    resources :comentarios
 
     get '/importador/seleccionar_archivo'
     get '/importador/index'

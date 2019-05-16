@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Contenido:
+  = raw @comentario.contenido
+%p
+  %b Publico:
+  = @comentario.publico
+
+= link_to 'Editar', edit_comentario_path(@comentario)
+\|
+= link_to 'Regresar', comentarios_path

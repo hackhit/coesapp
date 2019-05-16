@@ -1,0 +1,16 @@
+= form_for @comentario do |f|
+  - if @comentario.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@comentario.errors.count, "error")} prohibited this comentario from being saved:"
+      %ul
+        - @comentario.errors.full_messages.each do |message|
+          %li= message
+  .form-group
+    = f.text_area :contenido, 'data-provider': :summernote
+  .form-group
+    = f.label :publico
+    = f.check_box :publico
+  .form-group
+    .col-md-offset-2.col-md-10
+      = link_to 'Regresar', comentarios_path, class: 'btn btn-default m-r-3'
+      = f.submit nil, class: 'btn btn-primary'

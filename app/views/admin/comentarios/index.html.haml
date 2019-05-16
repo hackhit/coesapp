@@ -1,0 +1,25 @@
+= link_to 'Nuevo Comentario', new_comentario_path, class: 'btn btn-sm btn-outline-primary'
+
+%table.table.table-striped.table-sm.table-hover.table-responsive-md.mt-3
+  %thead
+    %tr
+      %th Contenido
+      %th Publico
+      %th
+      %th
+      %th
+
+  %tbody
+    - @comentarios.each do |comentario|
+      %tr
+        %td= raw comentario.contenido
+        %td
+          - if comentario.publico
+            .text-success= glyph 'check'
+        %td= link_to 'Ver', comentario
+        %td= link_to 'Editar', edit_comentario_path(comentario)
+        %td= link_to 'Eliminar', comentario, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'Nuevo Comentario', new_comentario_path, class: 'btn btn-sm btn-outline-primary'

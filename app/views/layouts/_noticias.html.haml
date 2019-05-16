@@ -1,0 +1,26 @@
+
+- if @noticias.any?
+  #newsCoes.breaking-news-ticker
+    .bn-label Noticias
+    .bn-news
+      %ul
+
+        - @noticias.each do |c|
+          %li
+            %a= raw c.contenido # "#{c.to_a[2][1].message} | "
+    .bn-controls
+      %button
+        %span.bn-arrow.bn-prev
+      %button
+        %span.bn-action
+      %button
+        %span.bn-arrow.bn-next
+
+  :javascript
+    $('#newsCoes').breakingNews(
+    {
+    position: "fixed-bottom",
+    themeColor: "#17a2b8"
+
+    }
+    );
