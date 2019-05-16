@@ -7,7 +7,7 @@
 - elsif session[:profesor_id]
   - @noticias = @noticias.profesores
 - else
-  - @noticias = @noticias.publicos
+  - @noticias = Comentario.recientes.publicos
 - if @noticias.any?
   #newsCoes.breaking-news-ticker
     .bn-label Noticias

@@ -6,7 +6,7 @@ module Admin
     # GET /comentarios.json
     def index
       @comentarios = Comentario.all
-      @titulo = "Comentarios"
+      @titulo = "Noticias y Comentarios"
     end
 
     # GET /comentarios/1
@@ -43,6 +43,7 @@ module Admin
     # PATCH/PUT /comentarios/1
     # PATCH/PUT /comentarios/1.json
     def update
+
       respond_to do |format|
         if @comentario.update(comentario_params)
           format.html { redirect_to @comentario, notice: 'Comentario actualizado con éxito.' }
@@ -72,7 +73,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def comentario_params
-        params.require(:comentario).permit(:contenido, :publico)
+        params.require(:comentario).permit(:contenido, :estado)
       end
   end
 end

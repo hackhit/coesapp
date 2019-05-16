@@ -8,13 +8,11 @@
   .form-group
     = f.text_area :contenido, 'data-provider': :summernote
   .form-group
-    = f.label :publico
-
-      - Comentario.estados.map do |k,v| 
-        %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-          = radio_button_tag '[comentario]estado', k, (k.eql? @comentario.estado), required: true
-          = k.upcase
+    - Comentario.estados.map do |k,v| 
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+        = radio_button_tag '[comentario]estado', k, (k.eql? @comentario.estado), required: true
+        = k.upcase
   .form-group
     .col-md-offset-2.col-md-10
-      = link_to 'Regresar', comentarios_path, class: 'btn btn-default m-r-3'
+      = link_to 'Regresar', comentarios_path, class: 'btn btn-outline-secondary m-r-3'
       = f.submit nil, class: 'btn btn-primary'

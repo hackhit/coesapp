@@ -1,10 +1,12 @@
-= link_to 'Nuevo Comentario', new_comentario_path, class: 'btn btn-sm btn-outline-primary'
+= link_to new_comentario_path, class: 'btn btn-sm btn-outline-success' do
+  = glyph 'plus'
+  Nueva Nota
 
 %table.table.table-striped.table-sm.table-hover.table-responsive-md.mt-3
   %thead
     %tr
-      %th Contenido
-      %th Estado
+      %th{style: 'width: 70%'} Contenido
+      %th Para:
       %th
       %th
       %th
@@ -20,4 +22,6 @@
 
 %br
 
-= link_to 'Nuevo Comentario', new_comentario_path, class: 'btn btn-sm btn-outline-primary'
+= link_to new_comentario_path, class: 'btn btn-sm btn-outline-success' do
+  = glyph 'plus'
+  Nueva Nota
