@@ -181,7 +181,7 @@ module Admin
     def show
       @inscripciones_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 
-      @titulo = "Sección: #{@seccion.descripcion} - Período #{@seccion.periodo_id}"
+      @titulo = "Sección: #{@seccion.descripcion_escuela} - Período #{@seccion.periodo_id}"
 
       if @seccion.asignatura.catedra_id.eql? 'IB' or @seccion.asignatura.catedra_id.eql? 'LIN' or @seccion.asignatura.catedra_id.eql? 'LE'
         @p1 = 25 

@@ -118,6 +118,10 @@ class Seccion < ApplicationRecord
 
 	end
 
+	def descripcion_escuela
+		"#{descripcion} (#{escuela.descripcion})"
+	end
+
 	def descripcion_profesor_asignado_edit
 		
 		if profesor
