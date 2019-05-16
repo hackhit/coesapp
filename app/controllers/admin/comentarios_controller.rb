@@ -5,7 +5,7 @@ module Admin
     # GET /comentarios
     # GET /comentarios.json
     def index
-      @comentarios = Comentario.all
+      @comentarios = Comentario.order('updated_at DESC').limit(70)
       @titulo = "Noticias y Comentarios"
     end
 

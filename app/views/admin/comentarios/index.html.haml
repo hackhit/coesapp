@@ -7,6 +7,7 @@
     %tr
       %th{style: 'width: 70%'} Contenido
       %th Para:
+      %th Publicada:
       %th
       %th
       %th
@@ -16,6 +17,7 @@
       %tr
         %td= raw comentario.contenido
         %td= comentario.estado.capitalize
+        %td= "Hace #{distance_of_time_in_words(Time.now, comentario.updated_at)}"
         %td
           = link_to comentario do
             = glyph 'search'
