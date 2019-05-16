@@ -20,10 +20,9 @@
 
   %body
     %header
-      .container.fixed-top 
-        - @noticias = Comentario.recientes.privados
-        = render 'layouts/noticias'
-        = render 'layouts/navigation'
+      - @noticias = Comentario.recientes.privados
+      = render 'layouts/noticias' 
+      = render 'layouts/navigation'
     %main{:role => "main"}
       = render 'layouts/titulo'
       = render 'layouts/messages'
