@@ -242,7 +242,7 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def colocar_nota_posterior
-		if self.calificacion_final.nil?
+		if self.calificacion_posterior.nil?
 			return 'SN'
 		else
 			return sprintf("%02i", self.calificacion_posterior)
