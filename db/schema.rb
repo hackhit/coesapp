@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_16_183347) do
+ActiveRecord::Schema.define(version: 2019_05_16_203815) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -104,9 +104,9 @@ ActiveRecord::Schema.define(version: 2019_05_16_183347) do
 
   create_table "comentarios", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "contenido"
-    t.boolean "publico", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "estado", default: 0
   end
 
   create_table "departamentos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

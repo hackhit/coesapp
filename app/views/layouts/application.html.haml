@@ -20,8 +20,7 @@
 
   %body
     %header
-      .container.fixed-top 
-        - @noticias = Comentario.recientes.privados
+      .container.fixed-top
         = render 'layouts/noticias'
         = render 'layouts/navigation'
     %main{:role => "main"}

@@ -11,7 +11,7 @@
   %body
     %header
       .container.fixed-top 
-        - @noticias = Comentario.recientes.publicos
+        -# @noticias = Comentario.recientes.publicos
         = render 'layouts/noticias'
         = render 'layouts/visitors_nav'
     %main{:role => "main"}

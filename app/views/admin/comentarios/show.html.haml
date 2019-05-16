@@ -4,8 +4,8 @@
   %b Contenido:
   = raw @comentario.contenido
 %p
-  %b Publico:
-  = @comentario.publico
+  %b Estado:
+  = @comentario.estado.capitalize
 
 = link_to 'Editar', edit_comentario_path(@comentario)
 \|
