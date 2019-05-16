@@ -1,13 +1,12 @@
-- @noticias = Comentario.recientes
+- @noticias = Comentario.recientes.publicos
 
 - if current_admin
-  - @noticias = @noticias.admins
+  - @noticias += Comentario.recientes.admins
 - elsif session[:estudiante_id]
-  - @noticias = @noticias.estudiantes
+  - @noticias += Comentario.recientes.estudiantes
 - elsif session[:profesor_id]
-  - @noticias = @noticias.profesores
-- else
-  - @noticias = Comentario.recientes.publicos
+  - @noticias += Comentario.recientes.profesores
+
 - if @noticias.any?
   #newsCoes.breaking-news-ticker
     .bn-label Noticias
