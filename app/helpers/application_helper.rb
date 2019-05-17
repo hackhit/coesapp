@@ -17,6 +17,7 @@ module ApplicationHelper
 		end
 	end
 
+
 	def add_card_header tipo, titulo
 		capture_haml do
 			haml_tag :div, class: 'card' do
@@ -30,6 +31,27 @@ module ApplicationHelper
 	end
 
 	def colocar_nav_tab name, objetos, contenido = nil, vertical = false
+		# Este metodo no está completo
+		# La inclusión del 'yield' en estos metodos puede ayudar a completarlo luego se llama el bloque con el 'content'
+
+		# def content_box
+		#   haml_tag :div, :class => "holder" do
+		#     haml_tag :div, :class => "top"
+		#     haml_tag :div, :class => "content" do
+		#       yield
+		#     haml_tag :div, :class => "bottom"
+		#   end
+		# end
+		# and in haml
+
+		# %html
+		#   %head
+		#   %body
+		#     Maybee some content here.
+		#     = content_box do
+		#       Content that goes in the content_box like news or stuff
+
+
 		if vertical
 			verti = 'flex-column'
 			orientacion = 'vertical'
@@ -53,7 +75,8 @@ module ApplicationHelper
 							objetos.each do |obj|
 								haml_tag :li, class: 'nav-item' do
 									activo = (session["#{name}_id"].eql? obj.id) ? "active" : ""
-									link_to obj.descripcion, "##{name}_#{obj.id}", "data-toggle": :tab, onclick: "alert('#{name}_id', '#{obj.id}');", class: "nav-link #{activo}"
+									link_to obj.contenido, "##{name}_#{obj.id}", "data-toggle": :tab, onclick: "alert('#{name}_id', '#{obj.id}');", class: "nav-link #{activo}"
+									yield
 								end
 							end
 						end
