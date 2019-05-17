@@ -1,7 +1,7 @@
 module Admin
   class ComentariosController < ApplicationController
     before_action :set_comentario, only: [:show, :edit, :update, :destroy]
-    before_action :filtro_ninja!
+    before_action :filtro_super_admin!
     # GET /comentarios
     # GET /comentarios.json
     def index
