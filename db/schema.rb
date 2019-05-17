@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_16_203815) do
+ActiveRecord::Schema.define(version: 2019_05_17_134352) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(version: 2019_05_16_203815) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "estado", default: 0
+    t.boolean "habilitado", default: true
   end
 
   create_table "departamentos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

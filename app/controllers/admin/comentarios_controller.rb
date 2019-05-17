@@ -1,9 +1,19 @@
 module Admin
   class ComentariosController < ApplicationController
-    before_action :set_comentario, only: [:show, :edit, :update, :destroy]
+    before_action :set_comentario, only: [:show, :edit, :update, :destroy, :habilitar]
     before_action :filtro_super_admin!
     # GET /comentarios
     # GET /comentarios.json
+
+    def habilitar
+
+      @comentario.habilitado = !@comentario.habilitado
+      @comentario.save
+
+    end
+
+
+
     def index
       @comentarios = Comentario.order('updated_at DESC').limit(70)
       @titulo = "Noticias y Comentarios"
@@ -74,7 +84,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def comentario_params
-        params.require(:comentario).permit(:contenido, :estado)
+        params.require(:comentario).permit(:contenido, :estado, :habilitado)
       end
   end
 end

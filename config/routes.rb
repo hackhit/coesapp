@@ -18,7 +18,11 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
-    resources :comentarios
+    resources :comentarios do
+      member do
+        get 'habilitar'
+      end
+    end
 
     get '/importador/seleccionar_archivo'
     get '/importador/index'

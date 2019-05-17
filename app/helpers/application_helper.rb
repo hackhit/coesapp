@@ -1,5 +1,22 @@
 module ApplicationHelper
 
+	def agregar_onoffswitch titulo_tooltip, onChange, id, value = false
+		# No funciona, no agrega el check_box
+		content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: titulo_tooltip do
+			content_tag :div, class: 'onoffswitch' do
+				capture_haml do
+					check_box nil, :activa, checked: value, class: 'onoffswitch-checkbox', id: "switch_#{id}", onChange: onChange
+					content_tag :label, class: 'onoffswitch-label', for: "switch_#{id}" do
+
+						haml_tag :span, class: 'onoffswitch-inner'
+						haml_tag :span, class: 'onoffswitch-switch'
+
+					end
+				end
+			end
+		end
+	end
+
 	def add_card_header tipo, titulo
 		capture_haml do
 			haml_tag :div, class: 'card' do

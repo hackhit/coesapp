@@ -1,11 +1,11 @@
-- @noticias = Comentario.recientes.publicos
+- @noticias = Comentario.activos.publicos
 
 - if current_admin
-  - @noticias += Comentario.recientes.admins
+  - @noticias += Comentario.activos.admins
 - elsif session[:estudiante_id]
-  - @noticias += Comentario.recientes.estudiantes
+  - @noticias += Comentario.activos.estudiantes
 - elsif session[:profesor_id]
-  - @noticias += Comentario.recientes.profesores
+  - @noticias += Comentario.activos.profesores
 
 - if @noticias.any?
   #newsCoes.breaking-news-ticker
