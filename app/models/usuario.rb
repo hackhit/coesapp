@@ -67,6 +67,10 @@ class Usuario < ApplicationRecord
 		return self.sexo.eql? 'Masculino'
 	end
 
+	def la_el
+		mujer? ? 'la' : 'el'
+	end
+
 	def genero
 		gen = "@"
 		gen = "a" if self.mujer?

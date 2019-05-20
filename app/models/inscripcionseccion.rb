@@ -33,6 +33,8 @@ class Inscripcionseccion < ApplicationRecord
 	# scope :del_periodo, lambda { |periodo_id| includes(:seccion).where "secciones.periodo_id = ?", periodo_id}
 	scope :del_periodo, lambda { |periodo_id| joins(:seccion).where "secciones.periodo_id = ?", periodo_id}
 
+	scope :de_la_escuela, lambda {|escuela_id| includes(:escuela).where("escuelas.id = ?", escuela_id).references(:escuelas)}
+
 	# scope :en_reparacion, -> {joins(:seccion).where "secciones.tipo_seccion_id = ?", TipoSeccion::REPARACION}
 	scope :en_reparacion, -> {where tipo_calificacion_id.eql? REPARACION}
 	# scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}

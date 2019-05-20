@@ -36,7 +36,14 @@ module Admin
 		end
 
 		def constancia_inscripcion
-			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], current_periodo.id, params[:escuela_id]
+
+			if current_estudiante
+				periodo_id = current_estudiante.ultimo_periodo_inscrito_en params[:escuela_id]
+			else
+				periodo_id = current_periodo.id
+			end
+
+			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
 			unless send_data pdf.render,:filename => "constancia_inscripcion_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
 				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
@@ -45,7 +52,14 @@ module Admin
 		end
 
 		def constancia_estudio
-			pdf = ExportarPdf.hacer_constancia_estudio params[:id], current_periodo.id, params[:escuela_id]
+
+			if current_estudiante
+				periodo_id = current_estudiante.ultimo_periodo_inscrito_en params[:escuela_id]
+			else
+				periodo_id = current_periodo.id
+			end
+
+			pdf = ExportarPdf.hacer_constancia_estudio params[:id], periodo_id, params[:escuela_id]
 			unless send_data pdf.render,:filename => "constancia_estudio_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
 				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end

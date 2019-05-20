@@ -48,6 +48,15 @@ class Estudiante < ApplicationRecord
 		(total_asignaturas > 0 and total_asignaturas == total_retiradas)
 	end
 
+	def ultimo_periodo_inscrito_en escuela_id
+		de_la_escuela = inscripcionsecciones.de_la_escuela(escuela_id)
+		if de_la_escuela.count.eql? 0
+			nil
+		else
+			de_la_escuela.joins(:seccion).order("secciones.periodo_id").last.seccion.periodo_id
+		end
+	end
+
 	def inscrito? periodo_id, escuela_id = nil
 		if escuela_id
 			(inscripcionsecciones.del_periodo(periodo_id)).reject{|is| !is.escuela.id.eql? escuela_id}.count > 0
