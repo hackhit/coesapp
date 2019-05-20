@@ -9,7 +9,7 @@ class Historialplan < ApplicationRecord
 	validates_uniqueness_of :estudiante_id, scope: [:periodo_id], message: 'El estudiante ya tiene un plan para el periodo', field_name: false
 
 	def descripcion
-		"#{plan.descripcion_completa} - #{periodo_id}"
+		"#{plan.descripcion_completa} - Desde #{periodo_id}"
 	end
 
 	def self.carga_inicial

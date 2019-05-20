@@ -41,6 +41,10 @@ class Estudiante < ApplicationRecord
 	# 	end
 	# end
 
+	def tiene_alguna_inscripcion?
+		inscripcionsecciones.count > 0
+	end
+
 	def inactivo? periodo_id
 	# OJO: ESTA FUNCION DEBE CAMBIAR AL AGREGAR LA TABLA INSCRIPCION PERIDO!!!
 		total_asignaturas = (self.inscripcionsecciones.del_periodo periodo_id).count
