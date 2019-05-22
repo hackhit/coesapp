@@ -1,7 +1,8 @@
 
 - if current_admin
 	%b.tooltip-btn{'data_toggle': 'tooltip', title: 'Descargar Acta PDF'}
-		= link_to notas_seccion_descargar_path(seccion.id), class: 'badge badge-info btn-sm p-md-1', role: :button, target: "_blank" do
+		=# link_to notas_seccion_online_descargar_path(seccion.id, :pdf), class: 'badge badge-info btn-sm p-md-1', role: :button, target: "_blank" do
+		= link_to notas_seccion_descargar_path(seccion.id, :pdf), class: 'badge badge-info btn-sm p-md-1', role: :button, target: "_blank" do
 			= glyph 'download-alt'
 			= glyph 'file'
 	= link_to listado_seccion_descargar_path(seccion.id), class: "badge badge-info btn-sm p-md-1 tooltip-btn", 'data_toggle': 'tooltip', title: 'Descargar Listado', target: "_blank" do
