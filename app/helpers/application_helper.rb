@@ -1,5 +1,21 @@
 module ApplicationHelper
 
+	def filtros objetos
+		capture_haml do 
+			
+			haml_tag :h6, "#{objetos.name.titleize}:"
+
+			objetos.each do |e| 
+				colocar_etiqueta e
+			end
+			haml_tag :hr
+		end
+	end
+
+	def colocar_etiqueta objeto
+		haml_tag :label, objeto.id, class: 'btn btn-primary btn-sm filtrable m-sm-1', id: objeto.id, class_name: objeto.class.to_s
+	end
+
 	def agregar_onoffswitch titulo_tooltip, onChange, id, value = false
 		# No funciona, no agrega el check_box
 		content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: titulo_tooltip do

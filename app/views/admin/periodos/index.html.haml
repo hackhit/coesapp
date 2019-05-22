@@ -1,30 +1,8 @@
-- model_class = Periodo
 - if current_admin.maestros?
   = btn_add_success new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo'
 
-%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-  %thead
-    %tr
-      %th= model_class.human_attribute_name(:id)
-      %th= model_class.human_attribute_name(:inicia)
-      - current_admin.escuelas.each do |e| 
-        %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de inscripciones'}= e.id
-
-      - if current_admin.maestros?
-        %th Opciones
-  %tbody
-    - @periodos.each do |periodo|
-      %tr
-        %td= periodo.id
-        %td=l periodo.inicia
-        - current_admin.escuelas.all.each do |e| 
-          %td
-            - val = e.inscripcionsecciones.del_periodo(periodo).estudiantes_inscritos.count
-            = link_to_if val > 0, val, "#{inscritos_escuela_periodo_descargar_path(periodo.id)}?escuela_id=#{e.id}", class: 'link', target: "_blank"
-        - if current_admin.maestros?
-          %td
-            = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-              = glyph 'pencil'
-            - if current_admin.ninja?  
-              = link_to periodo_path(periodo), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-                .text-danger= glyph 'trash'
+.row
+  .col-9
+    = render '/admin/periodos/tabla_total_inscritos'
+  .col-3
+    = render partial: '/admin/periodos/filtros'#, locals:{objetos: Escuela.all}
