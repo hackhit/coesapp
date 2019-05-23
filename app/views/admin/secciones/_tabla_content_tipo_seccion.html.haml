@@ -7,9 +7,9 @@
 - if seccion.asignatura.numerica3?
 	%td= number_field_tag "[est][#{es.estudiante_id}]primera_calificacion", {}, {value: es.primera_calificacion, placeholder: es.primera_calificacion, class: 'form-control form-control-sm', required: !disable, :step => 0.1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});", disabled: disable}
 
-	%td= number_field_tag "[est][#{es.estudiante_id}]segunda_calificacion", {}, {value: es.segunda_calificacion, placeholder: es.segunda_calificacion, class: 'form-control form-control-sm', required: !disable, disabled: disable, step: 0.1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+	%td= number_field_tag "[est][#{es.estudiante_id}]segunda_calificacion", {}, {value: es.segunda_calificacion, placeholder: es.segunda_calificacion, class: 'form-control form-control-sm', disabled: disable, step: 0.1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
 
-	%td= number_field_tag "[est][#{es.estudiante_id}]tercera_calificacion", {}, {value: es.tercera_calificacion, placeholder: es.tercera_calificacion, class: 'form-control form-control-sm', required: !disable, disabled: disable, step: 0.1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
+	%td= number_field_tag "[est][#{es.estudiante_id}]tercera_calificacion", {}, {value: es.tercera_calificacion, placeholder: es.tercera_calificacion, class: 'form-control form-control-sm', disabled: disable, step: 0.1, :in => 0...21, onchange: "return calcular(#{@p1}, #{@p2}, #{@p3}, #{es.estudiante_id});"}
 	- calificacion_final = es.calificacion_final.nil? ? nil : sprintf("%02i", es.calificacion_final.to_i)
 
 	%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_final", {}, {value: calificacion_final, placeholder: calificacion_final, class: 'form-control form-control-sm calificable', required: !disable, disabled: disable, step: 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});", id_obj: es.id, tipo_calificacion_id: 'NF'}
