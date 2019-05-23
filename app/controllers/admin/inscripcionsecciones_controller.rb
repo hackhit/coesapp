@@ -63,6 +63,7 @@ module Admin
 
 				format.json {
 					inscripcion.save
+					render json: inscripcion.estudiante_id, status: :ok
 				}
 
 
