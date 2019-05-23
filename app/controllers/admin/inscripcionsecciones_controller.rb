@@ -9,13 +9,21 @@ module Admin
 
 			inscripcion = Inscripcionseccion.find params[:inscripcionseccion_id]
 
+			if inscripcion.asignatura.numerica3? and params[:parciales]
+				inscripcion.primera_calificacion = params[:parciales][0]
+				inscripcion.segunda_calificacion = params[:parciales][1]
+				inscripcion.tercera_calificacion = params[:parciales][2]
+			end
+
+			params[:tipo_calificacion_id] = 'NF' if params[:tipo_calificacion_id].nil?
 			if (params[:tipo_calificacion_id].eql? TipoCalificacion::DIFERIDO) or (params[:tipo_calificacion_id].eql? TipoCalificacion::REPARACION)
 				calificacion_anterior = inscripcion.calificacion_posterior
-				inscripcion.calificacion_posterior = params[:calificacion]
+				inscripcion.calificacion_posterior = params[:calificacion_posterior] ? params[:calificacion_posterior].to_i : params[:calificacion].to_i
 
 			elsif params[:tipo_calificacion_id].eql? TipoCalificacion::PI
 				calificacion_anterior = inscripcion.calificacion_final
 				inscripcion.calificacion_final = 0 
+				params[:calificacion] = 0
 				inscripcion.calificacion_posterior = nil 
 			else
 				calificacion_anterior = inscripcion.calificacion_final
@@ -23,25 +31,42 @@ module Admin
 				inscripcion.calificacion_posterior = nil
 			end
 
+			if inscripcion.calificacion_final.to_i.eql? 0 or inscripcion.calificacion_final.nil?
+
+				inscripcion.primera_calificacion = inscripcion.calificacion_final
+				inscripcion.segunda_calificacion = inscripcion.calificacion_final
+				inscripcion.tercera_calificacion = inscripcion.calificacion_final
+
+			end
+
 			inscripcion.tipo_calificacion_id = params[:tipo_calificacion_id]
+			inscripcion.estado = inscripcion.estado_segun_calificacion
 			if inscripcion.seccion.asignatura.absoluta?
 				inscripcion.estado = Inscripcionseccion.estados.key params[:calificacion].to_i
 				inscripcion.calificacion_posterior = nil
 				inscripcion.calificacion_final = nil
-			elsif params[:calificacion].to_i >= 10
-				inscripcion.estado = :aprobado
-			else
-				inscripcion.estado = :aplazado
 			end
 
-			if inscripcion.save			
+			respond_to do |format|
 
-				info_bitacora "Se cambió la calificación del estudiante #{inscripcion.estudiante.usuario.descripcion} de la sección #{inscripcion.seccion.descripcion}. Calificacion anterior: #{calificacion_anterior}" , Bitacora::ESPECIAL, inscripcion, params[:comentario]
-				flash[:success] = 'Calificación modificada con éxito'
-			else
-				flash[:danger] = 'Error al intentar modificar la calificación. Por favor verifica e inténtalo nuevamente.'
+				format.html {
+					if inscripcion.save
+
+						info_bitacora "Se cambió la calificación del estudiante #{inscripcion.estudiante.usuario.descripcion} de la sección #{inscripcion.seccion.descripcion}. Calificacion anterior: #{calificacion_anterior}" , Bitacora::ESPECIAL, inscripcion, params[:comentario]
+						flash[:success] = 'Calificación modificada con éxito'
+
+					else
+						flash[:danger] = 'Error al intentar modificar la calificación. Por favor verifica e inténtalo nuevamente.'
+					end
+					redirect_to inscripcion.seccion
+				}
+
+				format.json {
+					inscripcion.save
+				}
+
+
 			end
-			redirect_to inscripcion.seccion
 
 		end
 		

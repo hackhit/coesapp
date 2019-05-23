@@ -12,7 +12,11 @@
 		- else
 			%th Aprobado
 			%th Aplazado
-		%th PI
+		%th
+			PI
+			- if @por_cerrar
+				%b.tooltip-btn{'data_toggle': :tooltip, title: 'Marcar vacios como PI'}
+					= check_box_tag 'vacios_a_pi', nil, @seccion.inscripcionsecciones.perdidos.count > 0
 		%th= @por_cerrar ? 'ND' : 'NP'
 		- if @por_cerrar
 			%th NR
