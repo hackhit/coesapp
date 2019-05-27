@@ -31,6 +31,10 @@ class Escuela < ApplicationRecord
 	before_save :set_to_upcase
 
 	#SCOPES
+	def descripcion_filtro
+		self.descripcion.titleize
+	end
+
 	def inscripciones_en_periodo? periodo_id
 		self.inscripcionsecciones.where("secciones.periodo_id = ?", periodo_id).count > 0
 	end

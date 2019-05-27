@@ -16,6 +16,11 @@ class Plan < ApplicationRecord
     before_save :set_to_upcase
 
 	# FUNCIONES:
+	def descripcion_filtro
+		self.descripcion_completa_con_escuela		
+	end
+
+
 	def descripcion_completa
 		"#{id} - #{descripcion.titleize}"
 	end

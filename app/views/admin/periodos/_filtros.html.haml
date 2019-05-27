@@ -1,9 +1,43 @@
-%table.table
-  %thead
-    %th Filtros
-  %tbody
-    %td
+.border.mt-2.p-3
+  %h5.title Filtros:
+
+  .row
+    .col-2= row_filter Periodo.tipos.map{|k,v| [k.titleize,k[0].upcase]}, 'tipo'
+    .col-1= row_filter Periodo.all.map{|k| k.letra_final_de_id}.uniq, 'letra'
+    .col-3= row_filter Periodo.all.map{|k| k.id}, 'periodo_id'
+    .col-3= col_filter Escuela.all
+    / .col-4
+    =# filtros Plan.all
+
+
+:javascript
+
+  $('.filtrables').on('click',function(){ 
+
+    let values, tipo
+
+    values = $(this).val()
+    tipo = $(this).attr("id")
+
+    console.log($(this).attr("id"));
+    $(".trFiltrables").hide();
+    jQuery.each(values, function(index, item) {
+      //console.log(item);
+      $("."+tipo + item ).show();
+
+    });
+  });
+
+
+  $('.escuelaFiltrables').on('click',function(){ 
+
+    let values = $(this).val()
+
+    $(".thFiltrables").hide();
+    $(".tdFiltrables").hide();
+    jQuery.each(values, function(index, item) {
       
-      = filtros Escuela.all
-      = filtros Plan.all
-      = filtros Periodo.all
+      $(".fil" + item ).show();
+
+    });
+  });  

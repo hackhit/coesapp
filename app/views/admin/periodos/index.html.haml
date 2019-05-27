@@ -1,8 +1,7 @@
 - if current_admin.maestros?
-  = btn_add_success new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo'
+	= btn_add_success new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo'
 
-.row
-  .col-9
-    = render '/admin/periodos/tabla_total_inscritos'
-  .col-3
-    = render partial: '/admin/periodos/filtros'#, locals:{objetos: Escuela.all}
+	= render partial: '/admin/periodos/filtros'#, locals:{objetos: Escuela.all}
+
+	= render '/admin/periodos/tabla_total_inscritos'
+

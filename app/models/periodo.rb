@@ -23,6 +23,14 @@ class Periodo < ApplicationRecord
     validates :inicia, presence: true#, uniqueness: true
 
 	# FUNCIONES:
+	def letra_final_de_id
+		id.last.upcase
+	end
+
+	def descripcion_filtro
+		self.id
+	end
+
 	def tiene_secciones?
 		secciones.count > 0 		
 	end

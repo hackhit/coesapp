@@ -11,11 +11,12 @@
           .form-group
             = f.label :tipo, class: 'control-label col-md-6', value: 'Tipo de Periodo'
             .col-md-12
-              .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
-                - Periodo.tipos.map do |k,v| 
-                  %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-                    = radio_button_tag '[periodo]tipo', k, (@periodo.tipo.eql? k), required: true
-                    = k[0].upcase
+              - Periodo.tipos.map do |k,v| 
+                %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+                  = radio_button_tag '[periodo]tipo', k, (@periodo.tipo.eql? k), required: true
+                  = k[0].upcase
+
+                    
           .form-group
             = f.label :inicia, class: 'control-label col-md-6'
             .col-md-12
@@ -32,6 +33,8 @@
               = check_box_tag "escuelas[]", e.id, (@escuelas.include? e), {required: true}
               = e.descripcion
               %br
+
+
     .form-group.m-md-3
       .col-md-offset-2.col-md-10
         = link_to periodos_path, class: 'btn btn-outline-secondary' do

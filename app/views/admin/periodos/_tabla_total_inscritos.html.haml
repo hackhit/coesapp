@@ -5,17 +5,17 @@
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:inicia)
       - current_admin.escuelas.each do |e| 
-        %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total de inscripciones'}= e.id
+        %th.tooltip-btn.thFiltrables{'data_toggle': :tooltip, title: e.descripcion, class: "fil#{e.id}"}= e.id
 
       - if current_admin.maestros?
         %th Opciones
   %tbody
     - @periodos.each do |periodo|
-      %tr
+      %tr.trFiltrables{id: "tr#{periodo.id}", style: "display:none", class: "tipo#{periodo.tipo_a_letra} letra#{periodo.letra_final_de_id} periodo_id#{periodo.id}"}
         %td= periodo.id
         %td=l periodo.inicia
         - current_admin.escuelas.all.each do |e| 
-          %td
+          %td.tdFiltrables{class: "fil#{e.id}"}
             - val = e.inscripcionsecciones.del_periodo(periodo).estudiantes_inscritos.count
             = link_to_if val > 0, val, "#{inscritos_escuela_periodo_descargar_path(periodo.id)}?escuela_id=#{e.id}", class: 'link', target: "_blank"
         - if current_admin.maestros?

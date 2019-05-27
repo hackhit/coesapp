@@ -1,9 +1,25 @@
 module ApplicationHelper
 
-	def filtros objetos
+	def row_filter objetos, tipo
+		haml_tag :b, "#{tipo.titleize}:"
+		capture_haml do
+			select_tag tipo, options_for_select(objetos), {class: 'text-field form-control filtrables', multiple: true}
+		end
+
+	end
+
+
+	def col_filter objetos
+		haml_tag :b, "#{objetos.name.titleize}:"
+		capture_haml do 
+			collection_select(objetos.name.downcase, :id, objetos, :id, :descripcion_filtro, {}, {class: "text-field form-control #{objetos.name.downcase}Filtrables", multiple: true})
+		end
+	end
+
+	def filtros_etiquetas objetos
 		capture_haml do 
 			
-			haml_tag :h6, "#{objetos.name.titleize}:"
+			haml_tag :p, "#{objetos.name.titleize}:"
 
 			objetos.each do |e| 
 				colocar_etiqueta e
@@ -13,7 +29,9 @@ module ApplicationHelper
 	end
 
 	def colocar_etiqueta objeto
-		haml_tag :label, objeto.id, class: 'btn btn-primary btn-sm filtrable m-sm-1', id: objeto.id, class_name: objeto.class.to_s
+
+		haml_tag :label, objeto.id, class: 'tooltip-btn btn btn-primary btn-sm filtrable ml-sm-1', 'data_toggle': :tooltip, title: objeto.descripcion_filtro, id: objeto.id, class_name: objeto.class.to_s
+
 	end
 
 	def agregar_onoffswitch titulo_tooltip, onChange, id, value = false
