@@ -10,10 +10,24 @@ module Admin
 		def listado_seccion
 			pdf = ExportarPdf.listado_seccion params[:id]
 			seccion = Seccion.find params[:id]
-			unless send_data pdf.render,:filename => "listado_#{seccion.asignatura_id}_#{seccion.numero}.pdf",:type => "application/pdf", :disposition => "attachment"
+			unless send_data pdf.render, filename: "listado_#{seccion.asignatura_id}_#{seccion.numero}.pdf", type: "application/pdf", disposition: "attachment"
 			flash[:mensaje] = "en estos momentos no se pueden descargar las notas, intentelo luego."
 			end
 			
+		end
+
+		def notas_seccion_online
+			seccion = Seccion.find params[:id]
+			pdf = ExportarPdf.acta_seccion params[:id]
+
+			respond_to do |format|
+				format.pdf do
+					send_data pdf.render,
+					filename: "export.pdf",
+					type: 'application/pdf',
+					disposition: 'inline'
+				end
+			end
 		end
 
 		def notas_seccion
@@ -21,8 +35,8 @@ module Admin
 			pdf = ExportarPdf.acta_seccion params[:id]
 			info_bitacora "Descarga de acta pdf seccion##{seccion.id}", Bitacora::DESCARGA
 
-			unless send_data pdf.render,:filename => "notas_seccion_#{seccion.asignatura_id}_#{seccion.numero}.pdf",:type => "application/pdf", :disposition => "attachment"
-			flash[:mensaje] = "en estos momentos no se pueden descargar las notas, intentelo luego."
+			unless send_data pdf.render, filename: "ACTA_#{seccion.acta_no}.pdf", type: "application/pdf", disposition: :attachment # disposition: 'inline' # para renderizar en linea  
+				flash[:mensaje] = "en estos momentos no se pueden descargar las notas, intentelo luego."
 			end
 		end
 
@@ -44,7 +58,7 @@ module Admin
 			end
 
 			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
-			unless send_data pdf.render,:filename => "constancia_inscripcion_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
+			unless send_data pdf.render, filename: "constancia_inscripcion_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
 				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
 			return
@@ -60,7 +74,7 @@ module Admin
 			end
 
 			pdf = ExportarPdf.hacer_constancia_estudio params[:id], periodo_id, params[:escuela_id]
-			unless send_data pdf.render,:filename => "constancia_estudio_#{params[:id].to_s}.pdf",:type => "application/pdf", :disposition => "attachment"
+			unless send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
 				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 			end
 			return

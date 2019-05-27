@@ -9,6 +9,17 @@
   margin-top: 10px;
 }
 
+.submit {
+  @extend .btn;
+  @extend .btn-primary;
+  @extend .btn-lg;
+}
+
+.resalte:hover{
+  border: 2px solid rgba(40, 167, 69, 0.3) !important;
+
+}
+
 table.responsive-table {
   display: table;
   /* required for table-layout to be used (not normally necessary; included for completeness) */

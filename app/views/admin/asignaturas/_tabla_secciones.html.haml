@@ -1,5 +1,5 @@
 - @secciones.each do |seccion|
-	%tr
+	%tr.resalte
 		%td.align-middle.text-center.tooltip-btn{'data_toggle': :tooltip, title: seccion.tipo_seccion.descripcion.titleize}= seccion.tipo_seccion_id.upcase
 		%td.align-middle.text-center= seccion.numero
 		%td.align-middle= render partial: '/admin/secciones/descripcion_profesor_asignado_edit', locals: {seccion: seccion}

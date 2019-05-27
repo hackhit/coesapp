@@ -41,8 +41,8 @@ class ExportarPdf
 		seccion = Seccion.find seccion_id
 
 		# Variable Locales
-		pdf = Prawn::Document.new(top_margin: 265, bottom_margin: 110)
-		por_pagina = 20
+		pdf = Prawn::Document.new(top_margin: 275, bottom_margin: 100)
+
 
 		if seccion.periodo_id.eql? '2016-02A'
 			inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
@@ -51,7 +51,7 @@ class ExportarPdf
 		end
 		
 		pdf.repeat(:all, dynamic: true) do
-			pdf.bounding_box([0, 660], :width => 540, :height => 220) do
+			pdf.bounding_box([0, 660], :width => 540, :height => 265) do
 				self.encabezado_central_con_logo pdf, "PLANILLA DE EXÁMENES"
 				self.tabla_descripcion_convocatoria pdf, seccion
 				self.tabla_descripcion_seccion pdf, seccion
@@ -63,7 +63,7 @@ class ExportarPdf
 			end
 		end
 		self.insertar_tabla_convocados pdf, inscripciones
-		pdf.number_pages "PÁGINA: <b><page>/<total>", {at: [297.2, 523.4], size: 9, inline_format: true}
+		pdf.number_pages "PÁGINA: <b> <page> / <total> </b>", {at: [pdf.bounds.right - 230, 524], size: 9, inline_format: true}
 		return pdf
 	end
 
@@ -372,7 +372,7 @@ class ExportarPdf
 
 		data << [ "#{asig.id}", "#{asig.descripcion}", "#{seccion.numero}", "#{seccion.periodo_id}", "#{asig.creditos}"]
 
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 10, align: :center, padding: 3, border_color: '818284'})
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 10, align: :center, padding: 3, border_color: '818284'}, column_widths: {1 => 300})
 		t.draw
 		pdf.move_down 10		
 	end

@@ -85,15 +85,15 @@ class Inscripcionseccion < ApplicationRecord
 
 	def estado_segun_calificacion
 		
-		unless es.seccion.asignatura.absoluta?
-			nota = (es.reparacion? || es.diferido?) ? calificacion_posterior : calificacion_final
+		if seccion and seccion.asignatura and !seccion.asignatura.absoluta?
+			nota = (reparacion? || diferido?) ? calificacion_posterior : calificacion_final
 			if nota and nota >= 10 
 				return :aprobado
 			else
 				return :aplazado
 			end
 		else
-			return 'por_calificar'
+			return self.estado
 		end
 
 	end

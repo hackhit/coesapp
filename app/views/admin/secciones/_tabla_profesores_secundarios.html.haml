@@ -1,5 +1,5 @@
 %table.table.mb-0
-	- seccion.profesores.each do |p|
+	- seccion.profesores.joins(:usuario).order('usuarios.nombres ASC').each do |p|
 		%tr
 			%td
 				= p.descripcion

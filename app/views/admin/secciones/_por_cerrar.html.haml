@@ -3,9 +3,8 @@
 = form_tag(calificar_seccion_path) do
 	= hidden_field_tag "id", @seccion.id
 	= hidden_field_tag "cerrar", true
-
 	%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
-		= render 'admin/secciones/tabla_headers_tipo_seccion'
+		= render 'admin/secciones/tabla_headers_tipo_seccion'#, locals: {inscripciones: inscripciones}
 
 		%tbody
 			- inscripciones.each_with_index do |es,i|
@@ -18,21 +17,90 @@
 
 						= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
 						
-						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id}, 0);"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id}
 						
-						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "ND"}
 
-						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "NR"}
 						
-						- if @seccion.asignatura.absoluta?
-
-						- else
-							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: es.calificacion_posterior, class: 'form-control form-control-sm', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});"}
+						- unless @seccion.asignatura.absoluta?
+							- tipo = ""
+							- tipo = "ND" if es.diferido?
+							- tipo = "NR" if es.reparacion?
+							- valor_posterior = es.calificacion_posterior.to_i if es.calificacion_posterior
+							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: valor_posterior, class: 'form-control form-control-sm otra_calificacion', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});", tipo_calificacion_id: tipo, id_obj: es.id}
 
 						%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
 	%hr
 		= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere..."
 :javascript
+
+
+	window.onload = function() {
+		$('.calificable').change(function(){
+			let id = $(this).attr('id_obj'),
+			tipo = $(this).attr('tipo_calificacion_id'),
+			val = $(this).val(),
+			values = `{"inscripcionseccion_id": ${id}, "calificacion": ${val}, "tipo_calificacion_id": "${tipo}"}`
+
+			console.log(values)
+			send_data(values)
+
+		});
+
+		$('.otra_calificacion').change(function(){
+			let id = $(this).attr('id_obj'),
+			tipo = $(this).attr('tipo_calificacion_id'),
+			val = $(this).val(),
+			values = `{"inscripcionseccion_id": ${id}, "calificacion_posterior": ${val}, "tipo_calificacion_id": "${tipo}"}`
+			
+			console.log(values)
+			send_data(values)
+
+		});
+
+		$('#vacios_a_pi').click(function(){
+			let padre = $(this)
+			$('.pi').each(function(){
+				let ci, final, post;
+				ci = $(this).attr('ci')
+
+				final = $('#_est_' + ci + 'calificacion_final').val()
+				var val1 = padre.prop('checked')
+				var val2 = $(this).prop('checked')
+				if ((val1 != val2) & (final == 0 | final === undefined)){
+					$(this).click()
+					console.log(ci+ " : "+final)
+				}
+			});
+
+		});
+		
+	}
+
+	function send_data(values){
+		$.ajax({
+			url: `#{cambiar_calificacion_inscripcionsecciones_path}`,
+			type: 'POST',
+			data: JSON.parse(values),
+			dataType: 'json', 
+			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
+		})
+		.done(function( msg ) {
+			//$(`#reg_${msg}`).animate({backgroundColor: "#a7bf51"}, 800);
+
+
+			$(`#reg_${msg}`).addClass(`table-success`)
+			//$(`#reg_${msg}`).delay(1200).animate({"background-color": "#c3e6cb"})
+
+			
+			//$(`#reg_${msg}`).delay(2000).removeClass(`table-success`) 
+			//removeClass(`table-success`)
+			//$('#mensaje').html(`<div class="alert alert-success">${msg}</div>`);
+			//$('#mensaje').hide(3000);
+		});
+
+	}
 	
 	function resetear_numericos(valor, ci){
 
@@ -45,8 +113,12 @@
 	}
 
 
-	function desactivar_por_pi(obj, ci, nr){
-		var numeros, radios, inputs, valor, post;
+	function desactivar_por_pi(obj, ci){
+		let numeros, radios, inputs, valor, post, id, values;
+
+		id = $('#_est_' + ci + 'calificacion_final').attr('id_obj')
+
+		if(id === undefined){id = $('#_est_' + ci + 'calificacion_final_1').attr('id_obj')}
 
 		inputs = $('#reg_' + ci + ' input');
 		numeros = $('#reg_' + ci + ' input[type="number"]');
@@ -65,10 +137,14 @@
 
 		if (valor === true) {
 			numero_a_letras('-1', ci);
+			values = `{"inscripcionseccion_id": ${id}, "calificacion": 0, "tipo_calificacion_id": "PI"}`
 		}else{
 			numero_a_letras('0', ci);
+			values = `{"inscripcionseccion_id": ${id}, "calificacion": 0, "tipo_calificacion_id": "NF"}`
 		}
-		numeros.val('');
+		console.log(values)
+		send_data(values)
+		numeros.val('')
 
 		radios.prop('checked', false);
 		
@@ -78,7 +154,13 @@
 
 
 	function desactivar_por_nd(obj, ci){
-		var checks, post, valor, numeros, radios;
+		var checks, post, valor, numeros, radios, id, values, final, aux, tipo;
+
+		aux = $('#_est_' + ci + 'calificacion_final')
+
+		id = aux.attr('id_obj')
+		tipo = $(obj).attr('tipo')
+		final = aux.val()
 
 		numeros = $('#reg_' + ci + ' input[type="number"]');
 		radios = $('#reg_' + ci + ' input[type="radio"]');
@@ -94,12 +176,20 @@
 
 		post.prop('disabled', !valor);
 		post.prop('required', valor);
-			
+		
+
 		if (valor === false){
 			numero_a_letras('0', ci);
 			numeros.val('');
 			radios.prop('checked', false);
-		} 
+			values = `{"inscripcionseccion_id": ${id}, "calificacion": 0, "tipo_calificacion_id": "NF", "calificacion_posterior": 0}`
+			send_data(values)
+
+		}else{
+
+			post.attr('tipo_calificacion_id', tipo)
+		}
+		console.log("Valores: "+values)
 	
 	}
 
@@ -213,10 +303,12 @@
 	}
 
 	function calcular(p1,p2,p3,ci){
-		var nota1, nota2, nota3, porcen1, porcen2, porcen3, final;
-		nota1 = document.getElementById("_est_"+ci+"primera_calificacion").value;
-		nota2 = document.getElementById("_est_"+ci+"segunda_calificacion").value;
-		nota3 = document.getElementById("_est_"+ci+"tercera_calificacion").value;
+		let nota1, nota2, nota3, porcen1, porcen2, porcen3, final, cali_final, values;
+		
+		nota1 = $(`#_est_${ci}primera_calificacion`).val()
+		nota2 = $(`#_est_${ci}segunda_calificacion`).val()
+		nota3 = $(`#_est_${ci}tercera_calificacion`).val()
+
 		porcen1 = (p1*nota1)/100;
 		porcen1 =  Math.round(porcen1 * 10) / 10;
 		porcen2 = (p2*nota2)/100;
@@ -228,6 +320,20 @@
 		$("#"+ci+"_calificacion_tercera_text").text(porcen3);
 		final = (porcen1+porcen2+porcen3).toFixed(0);
 		
-		$("#_est_"+ci+"calificacion_final").val(final);
-		numero_a_letras(final, ci);
+		cali_final = $("#_est_"+ci+"calificacion_final")
+		cali_final.val(final)
+		id = cali_final.attr('id_obj')
+
+		if (nota1 == '') {nota1 = 0}
+		if (nota2 == '') {nota2 = 0}
+		if (nota3 == '') {nota3 = 0}
+
+		values = `{"inscripcionseccion_id": ${id}, "calificacion": ${final}, "parciales": [${nota1},${nota2},${nota3}]}`
+
+		console.log(values)
+
+		send_data(values)
+		numero_a_letras(final, ci)
 	}
+
+
