@@ -4,9 +4,9 @@
   .row
     .col-2= row_filter @periodos.map{|k,v| [k.tipo.titleize,k.tipo[0].upcase]}.uniq, 'regimen'
     .col-1= row_filter @periodos.map{|k| k.letra_final_de_id}.uniq, 'tipo'
-    .col-3= row_filter @periodos.map{|k| k.id}, 'periodo_id'
+    .col-4= row_filter @periodos.map{|k| k.id}, 'periodo_id'
     - if @escuelas.count > 1
-      .col-3= col_filter @escuelas
+      .col-5= col_filter @escuelas
     / .col-4
     =# filtros Plan.all
 
