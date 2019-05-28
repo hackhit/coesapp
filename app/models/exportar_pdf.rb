@@ -219,7 +219,9 @@ class ExportarPdf
 		encabezado_central_con_logo pdf, "Historia Académica", escuela
 		#titulo
 		pdf.text "<b>Cédula:</b> #{estudiante.usuario_id}", size: 9, inline_format: true
-		pdf.text "<b>Plan:</b> #{estudiante.ultimo_plan}", size: 9, inline_format: true
+		hplan = estudiante.ultimo_plan_de_escuela(escuela_id)
+		hplan = hplan ? hplan.plan.descripcion_completa : "--"
+		pdf.text "<b>Plan:</b> #{hplan}", size: 9, inline_format: true
 		pdf.text "<b>Alumno:</b> #{estudiante.usuario.apellido_nombre.upcase}", size: 9, inline_format: true
 		pdf.move_down 10
 

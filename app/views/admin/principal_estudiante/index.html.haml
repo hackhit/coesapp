@@ -14,7 +14,7 @@
 				- if @estudiante.planes.count > 0
 					.border.p-md-3
 						%h5 Planes:
-						- @estudiante.historialplanes.order('periodo_id DESC').each do |pl| 
+						- @estudiante.historialplanes.por_escuela(escuela.id).order('periodo_id DESC').each do |pl| 
 							%p= pl.descripcion
 				- if @escuela.id.eql? 'IDIO'
 					- if @estudiante.combinaciones.count < 1
