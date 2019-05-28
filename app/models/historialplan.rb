@@ -8,6 +8,8 @@ class Historialplan < ApplicationRecord
 	# OJO: Esta debe ser la validación: Que un estudiante no tenga más de un plan para un mismo periodo
 	validates_uniqueness_of :estudiante_id, scope: [:periodo_id], message: 'El estudiante ya tiene un plan para el periodo', field_name: false
 
+	scope :por_escuela, lambda { |escuela_id| joins(:plan).where("planes.escuela_id = '#{escuela_id}'")}
+
 	def descripcion
 		"#{plan.descripcion_completa} - Desde #{periodo_id}"
 	end

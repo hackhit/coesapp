@@ -10,8 +10,11 @@ class Inscripcionseccion < ApplicationRecord
 
 	has_one :asignatura, through: :seccion
 	has_one :escuela, through: :asignatura
+
+
 		
 	belongs_to :estudiante, primary_key: :usuario_id
+	has_one :usuario, through: :estudiante
 	belongs_to :tipo_calificacion
 	# belongs_to :tipo_estado_inscripcion
 	belongs_to :tipoasignatura, optional: true

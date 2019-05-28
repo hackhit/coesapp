@@ -6,14 +6,16 @@
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
+      %th Crétidos
       %th= model_class.human_attribute_name(:description)
-      %th= Escuela
+      %th Escuela
       %th Actividad
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @planes.each do |plan|
       %tr
         %td= plan.id
+        %td= plan.creditos
         %td= plan.descripcion
         %td= plan.escuela.descripcion.titleize
         %td=l plan.updated_at, format: :short

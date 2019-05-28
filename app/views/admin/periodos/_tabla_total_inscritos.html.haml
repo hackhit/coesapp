@@ -4,6 +4,7 @@
     %tr
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:inicia)
+      %th Tipo
       - current_admin.escuelas.each do |e| 
         %th.tooltip-btn.thFiltrables{'data_toggle': :tooltip, title: e.descripcion, class: "fil#{e.id}"}= e.id
 
@@ -11,13 +12,15 @@
         %th Opciones
   %tbody
     - @periodos.each do |periodo|
-      %tr.trFiltrables{id: "tr#{periodo.id}", style: "display:none", class: "tipo#{periodo.tipo_a_letra} letra#{periodo.letra_final_de_id} periodo_id#{periodo.id}"}
+      %tr.trFiltrables{id: "tr#{periodo.id}", style: "display:none", class: "regimen#{periodo.tipo_a_letra} tipo#{periodo.letra_final_de_id} periodo_id#{periodo.id}"}
         %td= periodo.id
         %td=l periodo.inicia
+        %td= periodo.tipo.titleize
         - current_admin.escuelas.all.each do |e| 
           %td.tdFiltrables{class: "fil#{e.id}"}
             - val = e.inscripcionsecciones.del_periodo(periodo).estudiantes_inscritos.count
-            = link_to_if val > 0, val, "#{inscritos_escuela_periodo_descargar_path(periodo.id)}?escuela_id=#{e.id}", class: 'link', target: "_blank"
+            =# link_to_if val > 0, val, "#{inscritos_escuela_periodo_descargar_path(periodo.id)}?escuela_id=#{e.id}", class: 'link', target: "_blank"
+            = link_to_if val > 0, val, "#{inscripcionsecciones_path}?periodo_id=#{periodo.id}&escuela_id=#{e.id}", class: 'link'
         - if current_admin.maestros?
           %td
             = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do

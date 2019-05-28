@@ -12,7 +12,9 @@
 %b Planes:
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-  - @estudiante.historialplanes.joins(:plan).where("planes.escuela_id = '#{@escuela.id}'").order("periodo_id DESC").each do |hp|
+  -# @estudiante.historialplanes.order("periodo_id DESC").each do |hp|
+  -# @estudiante.historialplanes.joins(:plan).where("planes.escuela_id = '#{@escuela.id}'").order("periodo_id DESC").each do |hp|
+  - @estudiante.historialplanes.por_escuela(@escuela.id).order("periodo_id DESC").each do |hp|
     %tr
       %th
         = hp.descripcion

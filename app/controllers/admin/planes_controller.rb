@@ -99,7 +99,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def plan_params
-        params.require(:plan).permit(:id, :descripcion, :escuela_id)
+        params.require(:plan).permit(:id, :descripcion, :escuela_id, :creditos)
       end
   end
 end

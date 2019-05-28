@@ -1,0 +1,41 @@
+
+= link_to "#{inscritos_escuela_periodo_descargar_path(params[:periodo_id])}?escuela_id=#{@escuela.id}", class: 'btn btn-sm btn-success float-right', target: "_blank" do
+	= glyph 'download-alt'
+	= glyph 'file'
+	X Descargar
+
+
+%table.table.table-sm
+	%thead
+		%tr
+			%th Cédula
+			%th Apellidos
+			%th Nombres
+			%th Escuelas
+			%th Plan
+			%th Asig. Inscritas
+			%th Créditos
+			%th C. Aprobados
+			%th Total Créditos Plan
+
+	%tbody
+
+		- @inscripciones.each do |ins|
+			- est = Estudiante.find ins.estudiante_id
+			%tr
+				%td= ins.estudiante_id
+				%td= ins.apellidos
+				%td= ins.nombres
+				%td= est.escuelas.ids.to_sentence
+				-#est.historialplanes.joins(:plan).where("planes.escuela_id = ?", @escuela.id).order('periodo_id DESC').first.plan_id
+				- hplan = est.ultimo_plan_de_escuela@escuela.id
+				%td= hplan ? hplan.plan_id : "--"
+				%td= ins.asignaturas
+				%td= ins.total_creditos
+				%td= ins.aprobados
+				%td= hplan.plan.creditos if hplan
+				%td=# u.apellidos
+				%td=# v
+				%td=# c_ins
+
+

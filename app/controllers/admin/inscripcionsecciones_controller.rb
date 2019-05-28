@@ -4,6 +4,13 @@ module Admin
 		before_action :filtro_administrador#, only: [:destroy]
 		# before_action :filtro_admin_mas_altos!, except: [:destroy]
 		# before_action :filtro_ninja!, only: [:destroy]
+		def index
+			@escuela = Escuela.find params[:escuela_id]
+			# @inscripciones = escuela.inscripcionsecciones.del_periodo(params[:id]).estudiantes_inscritos_con_creditos
+			# @inscripciones = @escuela.inscripcionsecciones.del_periodo(params[:periodo_id]).estudiantes_inscritos_con_creditos#.estudiantes_inscritos
+			@inscripciones = @escuela.inscripcionsecciones.del_periodo(params[:periodo_id]).joins(:usuario).order("usuarios.apellidos ASC").joins(:asignatura).group(:estudiante_id).select('estudiante_id, usuarios.apellidos apellidos, usuarios.nombres nombres, SUM(asignaturas.creditos) total_creditos, COUNT(*) asignaturas, SUM(IF (estado = 1, asignaturas.creditos, 0)) aprobados')
+			@titulo = "Inscripciones para el período #{params[:periodo_id]} en la escuela #{@escuela.descripcion} (#{@inscripciones.size.count})"
+		end
 
 		def cambiar_calificacion
 

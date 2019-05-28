@@ -2,17 +2,18 @@
   %h5.title Filtros:
 
   .row
-    .col-2= row_filter Periodo.tipos.map{|k,v| [k.titleize,k[0].upcase]}, 'tipo'
-    .col-1= row_filter Periodo.all.map{|k| k.letra_final_de_id}.uniq, 'letra'
-    .col-3= row_filter Periodo.all.map{|k| k.id}, 'periodo_id'
-    .col-3= col_filter Escuela.all
+    .col-2= row_filter @periodos.map{|k,v| [k.tipo.titleize,k.tipo[0].upcase]}.uniq, 'regimen'
+    .col-1= row_filter @periodos.map{|k| k.letra_final_de_id}.uniq, 'tipo'
+    .col-3= row_filter @periodos.map{|k| k.id}, 'periodo_id'
+    - if @escuelas.count > 1
+      .col-3= col_filter @escuelas
     / .col-4
     =# filtros Plan.all
 
 
 :javascript
 
-  $('.filtrables').on('click',function(){ 
+  $('.filtrables').on('change',function(){ 
 
     let values, tipo
 
@@ -29,7 +30,7 @@
   });
 
 
-  $('.escuelaFiltrables').on('click',function(){ 
+  $('.escuelaFiltrables').on('change',function(){ 
 
     let values = $(this).val()
 

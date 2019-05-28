@@ -77,6 +77,11 @@ class Estudiante < ApplicationRecord
 		!(inscrito? periodo_id)
 	end
 
+	def ultimo_plan_de_escuela escuela_id
+		historialplanes.joins(:plan).where("planes.escuela_id = ?", escuela_id).order('periodo_id DESC').first
+		
+	end
+
 	def ultimo_plan
 		hp = historialplanes.order("periodo_id DESC").first
 		hp ? hp.plan_id : "--"

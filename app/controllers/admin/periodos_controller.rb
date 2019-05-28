@@ -12,7 +12,10 @@ module Admin
     # GET /periodos.json
     def index
       @titulo = 'Resumen de los Periodos'
-      @periodos = Periodo.order('inicia DESC').all
+      @escuelas = current_admin.escuelas
+      # @periodos = @escuelas.collect{|es| es.periodo_ids}.uniq.flatten.uniq
+      @periodos = @escuelas.collect{|es| es.periodos}.uniq.flatten.uniq
+
     end
 
     # GET /periodos/1

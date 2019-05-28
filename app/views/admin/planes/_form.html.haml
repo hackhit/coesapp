@@ -9,6 +9,10 @@
     .col-md-10
       = f.text_field :descripcion, class: 'text_field form-control', placeholder: 'Lic. Traducción', required: true
   .form-group
+    = f.label :creditos, class: 'control-label col-md-2', value: 'Total de Créditos:'
+    .col-md-10
+      = f.number_field :creditos, class: 'text_field form-control', placeholder: 'Total Créditos', required: true, step: 1, min: 0
+  .form-group
     = f.label :escuela_id, class: 'control-label col-md-2'
     .col-md-10
       = f.select(:escuela_id, Escuela.all.collect{|o| [ o.descripcion.titleize, o.id ] }, { prompt: 'Selecciona Escuela...'}, {class: "form-control text_field", required: true})
