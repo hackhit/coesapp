@@ -1,6 +1,5 @@
 = render partial: '/admin/usuarios/datos_modal'
 
-
 %nav
 	.nav.nav-tabs
 		= link_to "General", "#general", "data-toggle": :tab, class: 'nav-item nav-link'
@@ -16,16 +15,18 @@
 						%h5 Planes:
 						- @estudiante.historialplanes.por_escuela(escuela.id).order('periodo_id DESC').each do |pl| 
 							%p= pl.descripcion
-				- if @escuela.id.eql? 'IDIO'
-					- if @estudiante.combinaciones.count < 1
-						- @idiomas = escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-						= render '/admin/estudiantes/actualizar_idiomas'
-					- else
-						.border.p-md-3
-							%h5 Combinación de Idiomas:
-							- @estudiante.combinaciones.each do |c| 
-								%p= c.descripcion
+				- if @escuela.id.eql? 'IDIO' and @estudiante.combinaciones.any?
+					.border.p-md-3
+						%h5 Combinación de Idiomas:
+						- @estudiante.combinaciones.each do |c| 
+							%p= c.descripcion
+
 				= render partial: '/admin/estudiantes/historial_academico'
+
+		- if @escuela.id.eql? 'IDIO' and !@estudiante.combinaciones.any?
+			- @idiomas = escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
+			= render '/admin/estudiantes/actualizar_idiomas'
+						
 	.tab-pane#general
 
 		-if @estudiante.citahoraria
@@ -39,3 +40,5 @@
 					%b Hora:
 					=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%I:%M %p")).capitalize()
 					=# @estudiante.cita_horaria.hora
+
+

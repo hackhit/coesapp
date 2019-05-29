@@ -1,4 +1,4 @@
-.modal.fade#actualizar_idiomas{'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false}
+.modal.fade#updateLanguage{'aria-labelledby': 'myLabel', 'aria-hidden': false}
 	.modal-dialog
 		.modal-content
 			- if session[:cal_administrador]
@@ -9,7 +9,7 @@
 				Por favor indique el par de idiomas correspondientes a su carrera. Esta Información será usada para brindarle una mejor experiencia con el sistema.
 			
 			.modal-header
-				#myModalLabel 
+				#myLabel 
 					%h3 Actualizar Idiomas
 			.modal-body
 
@@ -33,7 +33,7 @@
 	- if session[:estudiante_id]
 		:javascript
 			$(document).ready(function() {
-				$("#actualizar_idiomas").modal({keyboard: false});
+				$("#updateLanguage").modal({keyboard: false, backdrop: 'static'});
 			});
 
 
