@@ -218,6 +218,7 @@ class ExportarPdf
 
 		encabezado_central_con_logo pdf, "Historia Académica", escuela
 		#titulo
+		pdf.text "<b>Fecha de Emisión:</b> #{I18n.l(Time.now, format: '%a, %d / %B / %Y (%I:%M%p)')}", size: 9, inline_format: true
 		pdf.text "<b>Cédula:</b> #{estudiante.usuario_id}", size: 9, inline_format: true
 		hplan = estudiante.ultimo_plan_de_escuela(escuela_id)
 		hplan = hplan ? hplan.plan.descripcion_completa : "--"
