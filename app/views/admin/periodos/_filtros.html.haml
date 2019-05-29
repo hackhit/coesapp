@@ -1,30 +1,64 @@
 .border.mt-2.p-3
   %h5.title Filtros:
 
-  .row
-    .col-2= row_filter @periodos.map{|k,v| [k.tipo.titleize,k.tipo[0].upcase]}.uniq, 'regimen'
-    .col-1= row_filter @periodos.map{|k| k.letra_final_de_id}.uniq, 'tipo'
-    .col-4= row_filter @periodos.map{|k| k.id}, 'periodo_id'
+  .row.m-1
+    .col-7.border
+      .row.pb-2
+        .col-4= row_filter @periodos.map{|k,v| [k.tipo.titleize,k.tipo[0].upcase]}.uniq, 'regimen'
+        .col-4= row_filter @periodos.map{|k| k.letra_final_de_id}.uniq, 'tipo'
+        .col-4= row_filter @periodos.map{|k| k.id}, 'periodo_id'
     - if @escuelas.count > 1
-      .col-5= col_filter @escuelas
+      .col-5.border
+        .row
+          .col-12= col_filter @escuelas
     / .col-4
     =# filtros Plan.all
 
 
 :javascript
 
+  $('document').ready(function(){
+    $("#tipo option").hide();
+    $("#periodo_id option").hide();
+  })
   $('.filtrables').on('change',function(){ 
 
     let values, tipo
 
     values = $(this).val()
     tipo = $(this).attr("id")
+    if (tipo === 'regimen'){
+      $("#tipo option").hide();
+      $("#periodo_id option").hide();
+    }
 
-    console.log($(this).attr("id"));
+    if (tipo === 'tipo'){
+      $("#periodo_id option").hide();
+    }
+
+    console.log(tipo);
     $(".trFiltrables").hide();
     jQuery.each(values, function(index, item) {
       //console.log(item);
-      $("."+tipo + item ).show();
+      if (tipo === 'regimen'){
+        if (item === 'S'){
+          $("#tipo option[value='S']").show()
+          $("#tipo option[value='E']").show()
+          $("#tipo option[value='C']").show()
+        }else{
+          $(`#tipo option[value='${item}']`).show()
+        }
+      }
+
+      if (tipo === 'tipo'){
+        
+        // $(`#periodo_id option[value='/*${item}/']`).show()
+        $(`#periodo_id option`).filter(`:contains('${item}')`).show()
+
+      }
+
+
+      $("."+ tipo + item ).show();
 
     });
   });
