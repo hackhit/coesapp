@@ -179,7 +179,7 @@ module Admin
     # GET /secciones/1
     # GET /secciones/1.json
     def show
-      @inscripciones_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
+      @inscripciones_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.usuario.apellidos}
 
       @titulo = "Sección: #{@seccion.descripcion_escuela} - Período #{@seccion.periodo_id}"
 

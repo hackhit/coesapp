@@ -34,6 +34,10 @@ class Seccion < ApplicationRecord
 
 	# FUNCIONES:
 
+	def pci?
+		self.asignatura.pci? self.periodo_id
+	end
+
 	def cerrada?
 		!self.abierta
 	end
@@ -79,19 +83,14 @@ class Seccion < ApplicationRecord
 	end
 
 
-	def descripcion_con_uxxi periodo_id=nil
-		descrip = descripcion(periodo_id)
-		"(#{asignatura.id_uxxi}) - #{descrip}"
+	def descripcion_con_uxxi
+		"(#{asignatura.id_uxxi}) - #{descripcion}"
 	end
 
 
-	def descripcion periodo_id=nil
-		descrip = ""
-		if periodo_id
-			descrip += self.asignatura.descripcion_pci(periodo_id) if self.asignatura
-		else
-			descrip += self.asignatura.descripcion if self.asignatura
-		end
+	def descripcion
+		descrip = "#{self.periodo_id} - "
+		descrip += self.asignatura.descripcion_pci self.periodo_id
 		
 		if numero
 			if self.suficiencia?

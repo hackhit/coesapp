@@ -48,8 +48,7 @@ class Asignatura < ApplicationRecord
 	# FUNCIONES:
 
 	def pci? periodo_id
-		pr = programaciones.where(periodo_id: periodo_id)
-		(pr.count > 0) and pr.first.pci
+		programaciones.pcis.del_periodo(periodo_id).any?
 	end
 
 	def tiene_programaciones? periodo_id
@@ -66,7 +65,13 @@ class Asignatura < ApplicationRecord
 	end
 	def activa? periodo_id
 		# return self.activa #self.activa.eql? true ? true : false
-		self.programaciones.where(periodo_id: periodo_id).count > 0
+		self.programaciones.del_periodo.any?
+	end
+	def descripcion_con_id_pci? periodo_id = nil
+
+		aux = "#{id}: #{descripcion_completa}"
+		aux += " (PCI) " if periodo_id and self.pci?(periodo_id)
+		return aux
 	end
 	def descripcion_completa
 		"#{descripcion.titleize} - #{catedra.descripcion_completa} - #{departamento.descripcion_completa}"

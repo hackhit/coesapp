@@ -7,13 +7,15 @@ class Inscripcionseccion < ApplicationRecord
 
 	# ASOCIACIONES: 
 	belongs_to :seccion
+	belongs_to :estudiante, primary_key: :usuario_id
+
 
 	has_one :asignatura, through: :seccion
+	has_one :periodo, through: :seccion
 	has_one :escuela, through: :asignatura
 
+	# has_many :programaciones, through: :asignatura, source: :periodo
 
-		
-	belongs_to :estudiante, primary_key: :usuario_id
 	has_one :usuario, through: :estudiante
 	belongs_to :tipo_calificacion
 	# belongs_to :tipo_estado_inscripcion
@@ -64,6 +66,14 @@ class Inscripcionseccion < ApplicationRecord
 	# scope :sin_calificar, -> {where "tipo_calificacion_id = ?", 'SC'}
 
 	scope :perdidos, -> {where "tipo_calificacion_id = ?", PI}
+
+	def como_pci?
+		# OJO: Esta función debe devolver si la asignatura que inscribi es pci y no pertenece a ninguna de mis escuelas
+		es_pci = self.seccion.pci?
+		estudiante_foraneo = !(estudiante.escuelas.include? asignatura.escuela)
+		es_pci and estudiante_foraneo
+	end
+
 
 	def estado_a_letras
 		case estado

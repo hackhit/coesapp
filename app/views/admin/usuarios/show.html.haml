@@ -40,12 +40,31 @@
     .tab-pane#historial.p-3
       %nav
         .nav.nav-tabs
+          = link_to 'PCI', "#pane_PCI", "data-toggle": :tab, class: 'nav-item nav-link'
           - @estudiante.escuelas.each do |escuela|
             = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
           .nav-item.nav-link
             = simple_icon_toggle_modal 'Registrar en Escuela', 'success', 'plus', 'agregar_escuela'
             = render '/admin/estudiantes/agregar_escuela'
       .tab-content
+        .tab-pane{id: "pane_PCI"}
+          .border.mt-3.p-3
+            %h6.alert.alert-info.pb-ms-3 PCI
+            %table.table-sm
+              %thead
+                %tr
+                  %th ID
+                  %th Estudiante
+                  %th Seccion
+              %tbody
+                -# @estudiante.inscripcionsecciones.collect{|ins| ins.como_pci? }.each do |ins| 
+                - @estudiante.inscripcionsecciones.select{|ins| ins.como_pci? }.each do |ins| 
+                  %tr
+                    %td= ins.id
+                    %td= ins.estudiante_id
+                    %td= ins.seccion.descripcion_con_uxxi
+
+
         - @estudiante.escuelas.each do |escuela|
           - @escuela = escuela
           .tab-pane{id: "pane_#{escuela.id}"}

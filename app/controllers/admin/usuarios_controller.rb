@@ -162,8 +162,7 @@ module Admin
     # GET /usuarios/1
     # GET /usuarios/1.json
     def show
-      est = @usuario.estudiante
-      @estudiante = est
+      @estudiante = @usuario.estudiante
       @profesor = @usuario.profesor
       @administrador = @usuario.administrador
 
@@ -172,12 +171,6 @@ module Admin
       @inscripciones = @estudiante.inscripcionsecciones if @estudiante
 
       # @secciones = CalSeccion.where(:cal_periodo_id => cal_semestre_actual_id)
-
-      if false#est
-        
-        @planes = est.escuela.planes
-        @periodos = est.escuela.periodos.order('inicia DESC')
-      end
 
       if @profesor
         @secciones_pendientes = @profesor.secciones.sin_calificar.order('periodo_id DESC, numero ASC')

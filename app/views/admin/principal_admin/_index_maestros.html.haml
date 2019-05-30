@@ -11,9 +11,11 @@
 
 .border.p-md-2.mt-md-3
 	- hidden = session[:mat_id] ? '' : 'hideble'
+	- @mat = Asignatura.find session[:mat_id] if session[:mat_id]
 	%b#btn_nueva_seccion{class: hidden}
 		%a.tooltip-btn.float-left.mr-md-3.btn.btn-sm.btn-outline-success{"data-original-title" => "Agregar Sección", :data_toggle => "tooltip", :href => "javascript:void(0)", :onclick => "$('#nueva_seccion').modal();", :title => ""}
 			%span.glyphicon.glyphicon-plus
+	%b= @mat.descripcion_con_id_pci? current_periodo.id
 
 	%table#resultado.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 		%thead
@@ -26,8 +28,7 @@
 				%th Estado
 				%th Opciones
 		%tbody
-			- if session[:mat_id]
-				- @mat = Asignatura.find session[:mat_id]
+			- if @mat
 				- @secciones = @mat.secciones.del_periodo (current_periodo.id)
 				= render '/admin/asignaturas/tabla_secciones' 
 
