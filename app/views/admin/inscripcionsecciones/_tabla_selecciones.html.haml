@@ -5,6 +5,8 @@
 			%th Cátedra
 			%th Sección
 			%th Período
+			- if escuelas
+				%th Para Escuela
 			- if borrar_seleccion
 				- hide = 'hideble'
 				%th
@@ -16,7 +18,16 @@
 
 				%td= sec.asignatura.departamento.descripcion
 				%td= sec.asignatura.catedra.descripcion
-				%td= sec.descripcion sec.periodo_id
+				%td
+					= sec.descripcion
+					- if @estudiante
+						- ins = sec.inscripcionsecciones.where(estudiante_id: @estudiante.id).first
+						= raw ins.label_pci if ins
+
 				%td= sec.periodo_id
+				- if escuelas
+					- value = (escuelas.count.eql? 1) ? escuelas.first.id : ""
+					%td= collection_select :secciones, sec.id, escuelas, :id, :descripcion, {selected: value, prompt: true}, { class: 'pci_seleccion form-control', required: true, disabled: true, id: "pci_sel_#{sec.asignatura_id}"}
 				- if borrar_seleccion
 					%td.text-center= borrar_seleccion_link sec.asignatura_id
+

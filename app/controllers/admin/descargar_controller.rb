@@ -56,12 +56,16 @@ module Admin
 			else
 				periodo_id = current_periodo.id
 			end
-
-			pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
-			unless send_data pdf.render, filename: "constancia_inscripcion_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
-				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+			if periodo_id.nil?
+				flash[:error] = "Usted no posse inscripciones en la escuela solicidata"
+				redirect_back fallback_location: root_path
+			else
+				pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
+				unless send_data pdf.render, filename: "constancia_inscripcion_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
+					flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+				end
+				return
 			end
-			return
 			
 		end
 
@@ -73,11 +77,16 @@ module Admin
 				periodo_id = current_periodo.id
 			end
 
-			pdf = ExportarPdf.hacer_constancia_estudio params[:id], periodo_id, params[:escuela_id]
-			unless send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
-				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+			if periodo_id.nil?
+				flash[:error] = "Usted no posse inscripciones en la escuela solicidata"
+				redirect_back fallback_location: root_path
+			else
+				pdf = ExportarPdf.hacer_constancia_estudio params[:id], periodo_id, params[:escuela_id]
+				unless send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
+					flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+				end
+				return
 			end
-			return
 			
 		end
 

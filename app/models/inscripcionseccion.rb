@@ -12,7 +12,9 @@ class Inscripcionseccion < ApplicationRecord
 
 	has_one :asignatura, through: :seccion
 	has_one :periodo, through: :seccion
+
 	has_one :escuela, through: :asignatura
+	belongs_to :pci_escuela, foreign_key: 'pci_escuela_id', class_name: 'Escuela', optional: true
 
 	# has_many :programaciones, through: :asignatura, source: :periodo
 
@@ -67,13 +69,50 @@ class Inscripcionseccion < ApplicationRecord
 
 	scope :perdidos, -> {where "tipo_calificacion_id = ?", PI}
 
-	def como_pci?
-		# OJO: Esta función debe devolver si la asignatura que inscribi es pci y no pertenece a ninguna de mis escuelas
-		es_pci = self.seccion.pci?
-		estudiante_foraneo = !(estudiante.escuelas.include? asignatura.escuela)
-		es_pci and estudiante_foraneo
+	scope :como_pcis, -> {where "pci_escuela_id IS NOT NULL"}
+
+	# scope :pcis_pendientes_por_asociar, -> {joins(:escuela).where("pci_escuela_id IS NULL and (escuela.id ON ( SELECT escuelas.id FROM escuelas INNER JOIN escuelaestudiantes ON escuelas.id = escuelaestudiantes.escuela_id WHERE escuelaestudiantes.estudiante_id = ? ) )", self.estudiante_id)}
+
+	# Funciones de Estilo
+	def tr_class_style_qualify
+		valor = ''
+		valor = 'table-success' if self.aprobado?
+		valor = 'table-danger' if (self.aplazado? || self.retirado?)
+		valor += ' text-muted' if self.retirado?
+		return valor
 	end
 
+	# Funciones Generales
+	def descripcion_asignatura_pdf
+		aux = seccion.asignatura.descripcion
+		aux += " <b> (PCI) </b>" if self.como_pci?
+		aux += " <b> (Retirada) </b>" if self.retirado?
+		return aux
+	end
+
+	def id_foranea
+		foranea? ? "foranea_#{id}" : id
+	end
+
+	def foranea?
+		!(estudiante.escuelas.include? asignatura.escuela)
+	end
+
+	def pci_pendiente_por_asociar? 
+		pci_escuela_id.nil? and foranea?
+	end
+
+	def como_pci?
+		!pci_escuela_id.nil?
+	end
+
+	def label_pci
+		if como_pci?
+			return "<span class='badge badge-success'>PCI para #{pci_escuela.descripcion}</span>" 
+		else
+			return ""
+		end
+	end
 
 	def estado_a_letras
 		case estado

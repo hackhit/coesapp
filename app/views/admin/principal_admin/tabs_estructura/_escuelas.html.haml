@@ -12,13 +12,6 @@
 
 	%div{class: @col10}
 		#pills-escuelas-tabContent.tab-content
-			.tab-pane.fade{"aria-labelledby": "pills-escuelas-tab", role: :tabpanel, id: "pci", class: 'show' }
-				- @asignaturas = current_periodo.asignaturas.pcis current_periodo.id
-				- if @asignaturas.count > 0
-					- @pcis = '_pci'
-					= render '/admin/principal_admin/tabs_estructura/asignaturas'
-				- else
-					%b.text-muted Sin Asignaturas Pci En Este Período
 
 			- @escuelas.each do |esc|
 				- @pcis = nil
@@ -34,6 +27,16 @@
 						= render '/admin/asignaturas/index_colocar_tabla'
 					- else
 						= render '/admin/principal_admin/tabs_estructura/departamentos'
+			- esc_activo = (session[:esc_id].eql? 'pci') ? 'active show' : ''
+			.tab-pane.fade{"aria-labelledby": "pills-escuelas-tab", role: :tabpanel, id: "pci", class: esc_activo, id: "pci" }
+
+				-# @asignaturas = current_periodo.asignaturas.pcis current_periodo.id
+				- @asignaturas = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}
+				- if @asignaturas.any?
+					- @pcis = '_pci'
+					= render '/admin/principal_admin/tabs_estructura/asignaturas'
+				- else
+					%b.text-muted Sin Asignaturas Pci En Este Período
 
 :javascript
 

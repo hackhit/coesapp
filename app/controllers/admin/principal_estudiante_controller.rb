@@ -11,11 +11,13 @@ module Admin
 			
 			@titulo = "#{@usuario.descripcion} - Período: #{current_periodo.id} - #{@estudiante.escuelas.collect{|es| es.descripcion}.to_sentence.upcase}"
 
-			@periodos = Periodo.order("inicia DESC").all
+			# @periodos = Periodo.order("inicia DESC").all
+			# @inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: @estudiante.usuario_id).order("secciones.asignatura_id DESC")
+			
+			# @inscripciones = @estudiante.inscripcionsecciones
+			@periodos = Periodo.joins(:inscripcionseccion).where("inscripcionsecciones.estudiante_id = #{@estudiante.id}")
 
-			@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: @estudiante.usuario_id).order("secciones.asignatura_id DESC")
-
-			@total = @inscripciones.all.count
+			@total = @estudiante.inscripcionsecciones.count
 
 		end
 

@@ -1,13 +1,15 @@
+- mat_descripcion = @pcis.blank? ? @mat.descripcion : "#{@mat.escuela.descripcion} - #{@mat.descripcion}"
+
 - if @ids_asignaturas and @ids_asignaturas.include? @mat.id
 	.text-muted.alert.alert-warning.p-1
-		= @mat.descripcion
+		= mat_descripcion
 		%span.badge.badge-secondary ya inscrita
 - elsif @sin_secciones
 
 	.text-muted.alert.alert-secondary.p-1
-		= @mat.descripcion
+		= mat_descripcion
 		%span.badge.badge-secondary Sin Secciones
 - else
 	= link_to "#mat_#{@mat.id}#{@pcis}", "data-toggle"=> "pill", class: "nav-link #{@mat_activa}", "aria-controls": "mat_#{@mat.id}#{@pcis}", role: :tab, id: "mat_#{@mat.id}_tab#{@pcis}", onclick: "set_tab('mat_id', '#{@mat.id}')"  do
-		= @mat.descripcion
+		= mat_descripcion
 		%span.badge.badge-info= @mat.id_uxxi

@@ -8,8 +8,10 @@
 		= render '/admin/principal_admin/tabs_estructura/escuelas'
 
 	.border.p-3.hideble#seleccion
-		%h6.titulo Selección:
-		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones_disponibles, borrar_seleccion: true}
+		%h6.titulo= "Selección:"
+		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones_disponibles, borrar_seleccion: true, escuelas: false}
+		%h6.titulo= " Selección de PCIs:"
+		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @pcis_disponibles, borrar_seleccion: true, escuelas: @estudiante.escuelas}
 
 		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-success', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
 
@@ -34,6 +36,7 @@
 								= link_to(ins, {:method => :delete, :data => {:confirm => "Se perderan los datos, ¿Está seguro de esta acción?" }}) do
 									.text-danger= glyph 'trash'
 :javascript
+
 	function chequear_total_seleccionados(){
 		var total = $('input:radio:checked').length
 		if(total > 0){
@@ -44,16 +47,18 @@
 			$('#btn-confirmacion').attr("disabled", "disabled");
 			$('#seleccion').hide();
 		}
-
 	};
 
 	function borrar_seleccion(materia_id) {
 		$('.'+materia_id).prop('checked', false);
 		$('.sel_'+materia_id).hide();
+		$('#pci_sel_'+materia_id).attr("disabled", "disabled");
 		chequear_total_seleccionados();
 	};
 	function agregar_a_seleccion(materia_id,seccion_numero) {
 		$('.sel_'+materia_id).hide();
 		$('#sel_'+materia_id+'_'+seccion_numero).show();
 		chequear_total_seleccionados();
+		$('#pci_sel_'+materia_id).removeAttr("disabled");
+
 	};

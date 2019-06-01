@@ -90,8 +90,9 @@ Rails.application.routes.draw do
         post :inscribir
         post :crear
         post 'cambiar_calificacion' 
+        post 'set_escuela_pci'
       end
-      member do 
+      member do
         get :seleccionar
         get :resumen
         get 'set_retirar'

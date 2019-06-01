@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_28_004258) do
+ActiveRecord::Schema.define(version: 2019_05_30_162905) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -213,8 +213,10 @@ ActiveRecord::Schema.define(version: 2019_05_28_004258) do
     t.float "calificacion_posterior"
     t.integer "estado", default: 0, null: false
     t.string "tipo_calificacion_id"
+    t.string "pci_escuela_id"
     t.index ["estudiante_id", "seccion_id"], name: "index_inscripcionsecciones_on_estudiante_id_and_seccion_id", unique: true
     t.index ["estudiante_id"], name: "index_inscripcionsecciones_on_estudiante_id"
+    t.index ["pci_escuela_id"], name: "fk_rails_24a264013f"
     t.index ["seccion_id", "estudiante_id"], name: "index_inscripcionsecciones_on_seccion_id_and_estudiante_id", unique: true
     t.index ["seccion_id"], name: "index_inscripcionsecciones_on_seccion_id"
     t.index ["tipo_calificacion_id"], name: "fk_rails_d92b783c84"
@@ -401,6 +403,7 @@ ActiveRecord::Schema.define(version: 2019_05_28_004258) do
   add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", name: "inscripcionperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "periodos", name: "inscripcionperiodos_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", name: "inscripcionperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "escuelas", column: "pci_escuela_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_5", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones", "tipo_calificaciones", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify

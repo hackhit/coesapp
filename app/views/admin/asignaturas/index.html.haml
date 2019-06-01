@@ -8,10 +8,13 @@
     = text_field_tag 'filtro', nil ,{onkeyup: "filtrar();", placeholder: "Filtrar Contenido...", class: 'form-control form-control-sm'}
   .col-md-3
     %span#text.text-light.align-middle
+
 - if @escuelas.count > 1
   = render '/admin/principal_admin/tabs_estructura/escuelas'
 - else
   - @asignaturas = @escuelas.first.asignaturas
+
+
   = render 'admin/asignaturas/index_colocar_tabla'
 
 = render 'admin/secciones/modal_form'

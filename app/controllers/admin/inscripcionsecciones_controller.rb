@@ -4,6 +4,28 @@ module Admin
 		before_action :filtro_administrador#, only: [:destroy]
 		# before_action :filtro_admin_mas_altos!, except: [:destroy]
 		# before_action :filtro_ninja!, only: [:destroy]
+
+		# def set_pci
+		# 	inscripcion = Inscripcionseccion.find params[:inscripcionseccion_id]
+		# 	inscripcion.pci_escuela_id = params[:escuela_pci_id]
+		# end
+
+		def set_escuela_pci
+			inscripcion = Inscripcionseccion.find params[:id]
+			inscripcion.pci_escuela_id = params[:pci_escuela_id]
+
+			# respond_to do |format|
+			# 	if inscripcion.save
+			# 		format.json {render json: {html: '¡Asociación exitosa!'}, status: :ok}
+			# 	end
+			# end
+
+			if inscripcion.save
+				flash[:success] = '¡Escuela asignada a Pci!'
+			end
+			redirect_back fallback_location: inscripcion.estudiante.usuario 
+		end
+
 		def index
 			@escuela = Escuela.find params[:escuela_id]
 			# @inscripciones = escuela.inscripcionsecciones.del_periodo(params[:id]).estudiantes_inscritos_con_creditos
@@ -101,33 +123,41 @@ module Admin
 				@row = 'row'
 				@col2 = 'col-2'
 				@col10 = 'col-10'
-				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
+				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id": current_periodo.id)
 
 				@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} if @inscripciones
 
 				@titulo = "Inscripción para el período #{current_periodo} - Paso 2 - Seleccionar Secciones"
 
-				@escuelas = current_admin.escuelas #Escuela.where(id: estudiante.escuela_id)
+				@escuelas = current_admin.escuelas.merge @estudiante.escuelas 
 				
-				#@escuelas = escuelas
-				#@estudiante = estudiante
-				# sel = @escuelas.count > 1 : @escuelas.ids.to_s : @escuelas.ids
-				@secciones_disponibles = current_periodo.secciones.joins(:escuela).where("escuelas.id = ?", @escuelas.ids).references(:escuelas)
+				@secciones_disponibles = current_periodo.secciones.joins(:escuela).where("escuelas.id": @escuelas.ids)#("escuelas.id = ?", @escuelas.ids)#.ids
+				
+				# pcis = current_periodo.secciones.select{|s|s.pci?}#.map(&:id)
 
-				#@secciones_disponibles = @estudiante.escuela.secciones.del_periodo(current_periodo.id)
+				# pcis << @secciones_disponibles
+
+				@pcis_disponibles = current_periodo.secciones.select{|s|s.pci?}.reject{|s| @secciones_disponibles.include? s}#Seccion.where(id: pcis.flatten.uniq)
+
 				#@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
 			end
 		end
 
 		def inscribir
-
 			secciones = params[:secciones]
 			guardadas = 0
 			id = params[:id]
 			begin
-				secciones.each_pair do |sec_id, sec_num|
+				secciones.each_pair do |sec_id, pci_escuela_id|
 					seccion = Seccion.find sec_id
-					if seccion.inscripcionsecciones.create!(estudiante_id: id)
+					ins = Inscripcionseccion.new
+					ins.seccion_id = seccion.id
+					ins.estudiante_id = id
+					if pci_escuela_id and !(pci_escuela_id.eql? 'on')
+						escuela = Escuela.find pci_escuela_id
+						ins.pci_escuela_id = escuela.id 
+					end
+					if ins.save
 						guardadas += 1
 					else
 						flash[:error] = "#{es_se.errors.full_messages.join' | '}"
@@ -144,7 +174,8 @@ module Admin
 		def resumen
 			id = params[:id]
 			@estudiante = Estudiante.find id
-			@secciones = @estudiante.secciones.del_periodo current_periodo.id
+			@inscripciones = @estudiante.inscripcionsecciones.del_periodo(current_periodo.id).sort {|a,b| a.descripcion(current_periodo.id) <=> b.descripcion(current_periodo.id)}
+			# @secciones = @estudiante.inscripcionsecciones.del_periodo current_periodo.id
 			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 3 - Resumen:"
 
 		end

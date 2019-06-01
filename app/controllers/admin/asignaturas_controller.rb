@@ -39,7 +39,7 @@ module Admin
       @departamentos = current_admin.departamentos
       @departamentos = Departamento.all unless @departamentos
       @seccion = Seccion.new
-      @escuelas = current_admin.escuelas
+      @escuelas = current_admin.escuelas.joins(:escuelaperiodos).where('escuelaperiodos.periodo_id = ?', current_periodo.id )
 
       @vertical = 'flex-column'
       @orientacion = "vertical"

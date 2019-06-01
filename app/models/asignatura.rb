@@ -36,6 +36,7 @@ class Asignatura < ApplicationRecord
 
 	scope :no_pcis, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ? and programaciones.pci IS FALSE', periodo_id) }
 
+	scope :de_escuela, lambda {|escuela_id| joins(:escuela).where('escuelas.id': escuela_id)}
 
 	# scope :pcis, -> {where('pci IS TRUE')}
 	# scope :no_pcis, -> {where('pci IS FALSE')}
@@ -65,7 +66,7 @@ class Asignatura < ApplicationRecord
 	end
 	def activa? periodo_id
 		# return self.activa #self.activa.eql? true ? true : false
-		self.programaciones.del_periodo.any?
+		self.programaciones.del_periodo(periodo_id).any?
 	end
 	def descripcion_con_id_pci? periodo_id = nil
 

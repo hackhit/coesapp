@@ -54,10 +54,10 @@ class Estudiante < ApplicationRecord
 
 	def ultimo_periodo_inscrito_en escuela_id
 		de_la_escuela = inscripcionsecciones.de_la_escuela(escuela_id)
-		if de_la_escuela.count.eql? 0
-			nil
-		else
+		if de_la_escuela.any? 
 			de_la_escuela.joins(:seccion).order("secciones.periodo_id").last.seccion.periodo_id
+		else
+			nil
 		end
 	end
 

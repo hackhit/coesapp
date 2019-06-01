@@ -25,4 +25,4 @@
 						= "/"
 						%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Inscritos'}		
 							%span.label= seccion.total_estudiantes
-					%td.text-center= radio_button_tag "[secciones][#{seccion.id}]", seccion.numero, false, class: seccion.asignatura_id, onclick: "agregar_a_seleccion('#{seccion.asignatura_id}','#{seccion.numero}')"
+					%td.text-center= radio_button_tag "[secciones][#{seccion.id}]", nil, false, class: seccion.asignatura_id, onclick: "agregar_a_seleccion('#{seccion.asignatura_id}','#{seccion.numero}')"

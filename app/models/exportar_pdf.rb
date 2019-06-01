@@ -211,7 +211,9 @@ class ExportarPdf
 		estudiante = Estudiante.find id
 		# periodos = estudiante.escuela.periodos.order("inicia DESC")
 		escuela = Escuela.find escuela_id
-		inscripcionsecciones = estudiante.inscripcionsecciones.includes(:escuela).where("escuelas.id = ?", escuela_id).references(:escuelas)
+
+
+		inscripcionsecciones = estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: escuela_id)
 
 		periodo_ids = inscripcionsecciones.joins(:seccion).group("secciones.periodo_id").count.keys
 		periodos = Periodo.where(id: periodo_ids)
@@ -243,7 +245,7 @@ class ExportarPdf
 					sec = h.seccion
 					asig = sec.asignatura
 					nota = h.valor_calificacion(false, 'F')
-					data << [asig.id_uxxi, h.descripcion(sec.periodo_id), asig.creditos, h.seccion.numero, h.tipo_convocatoria('F'), nota, h.tipo_calificacion_to_cod]
+					data << [asig.id_uxxi, h.descripcion_asignatura_pdf, asig.creditos, h.seccion.numero, h.tipo_convocatoria('F'), nota, h.tipo_calificacion_to_cod]
 
 					if h.tiene_calificacion_posterior?
 						nota = h.valor_calificacion(false, 'P')

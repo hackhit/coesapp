@@ -7,4 +7,5 @@
 		%td= link_to 'Detalle del Estudiante', usuario_path(@estudiante), class: 'btn btn-outline-primary'
 
 %br
-= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones, borrar_seleccion: false}
+= render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @inscripciones}
+=# render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones, borrar_seleccion: false, escuelas: false}

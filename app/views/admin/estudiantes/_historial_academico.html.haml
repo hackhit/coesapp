@@ -17,17 +17,27 @@
 			-# @secciones_periodo = @inscripciones.del_periodo periodo.id
 
 			-# @secciones_periodo = @inscripciones.del_periodo(periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
-			- @secciones_periodo = @inscripciones.del_periodo(periodo.id).reject{|ins| !ins.escuela.id.eql? @escuela.id}#.sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			- secciones_periodo = @inscripciones.del_periodo(periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
 			-# @secciones_periodo = @inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
-			- if @secciones_periodo.count > 0
+			- if secciones_periodo.count > 0
 				.card
 					.card-header{id: "heading#{periodo.id}"}
 						%h5.mb-0
 							= link_to "Período Académico #{periodo.id}", "#collapse#{periodo.id}", {"aria-controls" => "collapse#{periodo.id}", "aria-expanded" => :false, "data-target" => "#collapse#{periodo.id}", "data-toggle" => :collapse, class: "btn btn-link"}
 					.collapse{id: "collapse#{periodo.id}", "aria-labelledby" => "heading#{periodo.id}", "data-parent" => "#accordion"}
 						.card-body
-							- @periodo = periodo
-							= render '/admin/estudiantes/table_contenido_historial'
+							= render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: secciones_periodo}
+
+		- secciones_periodo = @inscripciones.como_pcis.reject{|ins| @periodos.include? ins.seccion.periodo}.sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+
+		- if secciones_periodo.count > 0
+			.card
+				.card-header{id: "headingpci"}
+					%h5.mb-0
+						= link_to "PCI Periodos Impropios", "#collapsepci", {"aria-controls" => "collapsepci", "aria-expanded" => :false, "data-target" => "#collapsepci", "data-toggle" => :collapse, class: "btn btn-link"}
+				.collapse{id: "collapsepci", "aria-labelledby" => "headingpci", "data-parent" => "#accordion"}
+					.card-body
+						= render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: secciones_periodo}
 
 
 :javascript

@@ -40,31 +40,21 @@
     .tab-pane#historial.p-3
       %nav
         .nav.nav-tabs
-          = link_to 'PCI', "#pane_PCI", "data-toggle": :tab, class: 'nav-item nav-link'
+          - if @secciones_pci_pendientes.any?
+            = link_to '¡Asignaturas sin Escuela asignadas!', "#pane_PCI", "data-toggle": :tab, class: 'nav-item nav-link alert alert-danger'
           - @estudiante.escuelas.each do |escuela|
             = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
           .nav-item.nav-link
             = simple_icon_toggle_modal 'Registrar en Escuela', 'success', 'plus', 'agregar_escuela'
             = render '/admin/estudiantes/agregar_escuela'
       .tab-content
-        .tab-pane{id: "pane_PCI"}
-          .border.mt-3.p-3
-            %h6.alert.alert-info.pb-ms-3 PCI
-            %table.table-sm
-              %thead
-                %tr
-                  %th ID
-                  %th Estudiante
-                  %th Seccion
-              %tbody
-                -# @estudiante.inscripcionsecciones.collect{|ins| ins.como_pci? }.each do |ins| 
-                - @estudiante.inscripcionsecciones.select{|ins| ins.como_pci? }.each do |ins| 
-                  %tr
-                    %td= ins.id
-                    %td= ins.estudiante_id
-                    %td= ins.seccion.descripcion_con_uxxi
-
-
+        - if @secciones_pci_pendientes.any?
+          .tab-pane{id: "pane_PCI"}
+            .border.mt-3.p-3
+              %h6.alert.alert-danger.pb-ms-3#alertPCI Asignaturas pendientes por asignar escuelas (PCI):
+              - @foraneas = true
+              = render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @secciones_pci_pendientes}
+        - @foraneas = false
         - @estudiante.escuelas.each do |escuela|
           - @escuela = escuela
           .tab-pane{id: "pane_#{escuela.id}"}
@@ -77,7 +67,11 @@
 
               = render '/admin/historialplanes/index'
               = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
-              - @periodos = @escuela.periodos.order('inicia DESC')
+
+              - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
+              - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
+              - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
+
               = render partial: '/admin/estudiantes/historial_academico'
 
   - if @profesor
@@ -92,4 +86,33 @@
           = @administrador.descripcion
           - if current_admin.maestros?
             = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'set_admin'
-            = render '/admin/usuarios/set_administrador' 
+            = render '/admin/usuarios/set_administrador'
+
+- if false #@secciones_pci_pendientes.any?
+  :javascript
+
+    function sendData(url,data){
+      $.ajax({
+        url: url,
+        type: 'GET',
+        data: data,
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        success: function (html) {
+          console.log(html)
+          //$('#alertPCI').html(html);
+        }        
+      });
+
+    }
+    $('.asignar_escuela').change(function(){
+      let pci_escuela_id, inscrip_id;
+      pci_escuela_id = $(this).val()
+      inscrip_id = $(this).attr('id')
+      console.log(pci_escuela_id);
+      console.log(inscrip_id);
+
+      sendData('#{set_escuela_pci_inscripcionsecciones_path}', {id: inscrip_id, pci_escuela_id: pci_escuela_id});
+
+    });
+
+
