@@ -49,6 +49,8 @@ class Inscripcionseccion < ApplicationRecord
 
 	scope :estudiantes_inscritos_del_periodo, lambda { |periodo_id| joins(:seccion).where("secciones.periodo_id": periodo_id).group(:estudiante_id).count } 
 
+	scope :por_total_calificaciones?, -> {joins(:asignatura).group("asignaturas.calificacion").count}
+
 	scope :estudiantes_inscritos, -> { group(:estudiante_id).count } 
 
 	scope :estudiantes_inscritos_con_creditos, -> { joins(:asignatura).group(:estudiante_id).sum('asignaturas.creditos')} 

@@ -1,3 +1,5 @@
+- tiene_numerica3 = inscripciones.por_total_calificaciones?
+- tiene_numerica3 = tiene_numerica3.include? 2
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md
 	%thead
 		%tr
@@ -9,7 +11,7 @@
 			%th UC
 			%th Profesor Princial
 			%th Profesor(es) Secundario(s)
-			- if false
+			- if tiene_numerica3
 				%th TRIM I
 				%th TRIM II
 				%th TRIM III
@@ -40,7 +42,7 @@
 					%td= inscripcion.seccion.profesor.usuario.apellido_nombre if inscripcion.seccion.profesor
 					%td=raw inscripcion.seccion.profesores.collect{|p| p.usuario.apellido_nombre}.join(" </br>") if inscripcion.seccion.profesores.count > 0
 
-				- if false #inscripcion.seccion.asignatura.numerica3?
+				- if inscripcion.seccion.asignatura.numerica3?
 					%td= inscripcion.primera_calificacion
 					%td= inscripcion.segunda_calificacion
 					%td= inscripcion.tercera_calificacion

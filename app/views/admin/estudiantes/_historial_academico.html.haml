@@ -14,12 +14,8 @@
 
 	#accordion
 		- @periodos.each do |periodo|
-			-# @secciones_periodo = @inscripciones.del_periodo periodo.id
-
-			-# @secciones_periodo = @inscripciones.del_periodo(periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
-			- secciones_periodo = @inscripciones.del_periodo(periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
-			-# @secciones_periodo = @inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id)
-			- if secciones_periodo.count > 0
+			- secciones_periodo = @inscripciones.del_periodo(periodo.id)#.sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			- if secciones_periodo.any?
 				.card
 					.card-header{id: "heading#{periodo.id}"}
 						%h5.mb-0
@@ -27,17 +23,6 @@
 					.collapse{id: "collapse#{periodo.id}", "aria-labelledby" => "heading#{periodo.id}", "data-parent" => "#accordion"}
 						.card-body
 							= render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: secciones_periodo}
-
-		- secciones_periodo = @inscripciones.como_pcis.reject{|ins| @periodos.include? ins.seccion.periodo}.sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
-
-		- if secciones_periodo.count > 0
-			.card
-				.card-header{id: "headingpci"}
-					%h5.mb-0
-						= link_to "PCI Periodos Impropios", "#collapsepci", {"aria-controls" => "collapsepci", "aria-expanded" => :false, "data-target" => "#collapsepci", "data-toggle" => :collapse, class: "btn btn-link"}
-				.collapse{id: "collapsepci", "aria-labelledby" => "headingpci", "data-parent" => "#accordion"}
-					.card-body
-						= render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: secciones_periodo}
 
 
 :javascript
