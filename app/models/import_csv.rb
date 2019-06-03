@@ -51,7 +51,7 @@ class ImportCsv
 						usuario.nombres = limpiar_cadena row['nombres']
 					end
 					usuario.telefono_movil = row['telefono']
-					usuario.email = limpiar_cadena row['email']
+					usuario.email = limpiar_cadena row['email'] unless row['email'].blank?
 					usuario.telefono_habitacion = row['telefono_habitacion']
 					if usuario.save
 						hay_usuario = true
