@@ -360,6 +360,8 @@ class Inscripcionseccion < ApplicationRecord
 	def num_a_letras num
 
 		case num
+		when 0
+			valor = "CERO CERO"
 		when 1
 			valor = "CERO UNO"
 		when 2
