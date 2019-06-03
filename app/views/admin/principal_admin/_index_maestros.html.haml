@@ -15,7 +15,7 @@
 	%b#btn_nueva_seccion{class: hidden}
 		%a.tooltip-btn.float-left.mr-md-3.btn.btn-sm.btn-outline-success{"data-original-title" => "Agregar Sección", :data_toggle => "tooltip", :href => "javascript:void(0)", :onclick => "$('#nueva_seccion').modal();", :title => ""}
 			%span.glyphicon.glyphicon-plus
-	%b= @mat.descripcion_con_id_pci? current_periodo.id
+	%b= @mat.descripcion_con_id_pci? current_periodo.id if @mat
 
 	%table#resultado.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 		%thead
