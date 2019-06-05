@@ -1,5 +1,4 @@
 .card
-	=# add_card tipo, titulo
 	.card-header{id: "heading_#{tipo}"}
 		%h5.mb-0
 			= link_to "#{titulo}", "#collapse_#{tipo}", {"aria-controls": "collapse_#{tipo}", "aria-expanded": :true, "data-target": "#collapse_#{tipo}", "data-toggle": :collapse, class: "btn btn-link"}

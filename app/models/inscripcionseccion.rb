@@ -1,6 +1,7 @@
 class Inscripcionseccion < ApplicationRecord
 	# SET GLOBALES:
 	FINAL = TipoCalificacion::FINAL
+	PARCIAL = TipoCalificacion::PARCIAL
 	DIFERIDO = TipoCalificacion::DIFERIDO
 	REPARACION = TipoCalificacion::REPARACION
 	PI = TipoCalificacion::PI
@@ -24,7 +25,7 @@ class Inscripcionseccion < ApplicationRecord
 	belongs_to :tipoasignatura, optional: true
 	
 	# VARIABLES:
-	enum estado: ['sin_calificar', :aprobado, :aplazado, :retirado]
+	enum estado: ['sin_calificar', :aprobado, :aplazado, :retirado, :trimestre1, :trimestre2]
 
 	# TRIGGERS:
 	after_initialize :set_default, :if => :new_record?
@@ -79,7 +80,7 @@ class Inscripcionseccion < ApplicationRecord
 	def tr_class_style_qualify
 		valor = ''
 		valor = 'table-success' if self.aprobado?
-		valor = 'table-danger' if (self.aplazado? || self.retirado?)
+		valor = 'table-danger' if (self.aplazado? || self.retirado? || self.pi?)
 		valor += ' text-muted' if self.retirado?
 		return valor
 	end
@@ -88,8 +89,17 @@ class Inscripcionseccion < ApplicationRecord
 	def descripcion_asignatura_pdf
 		aux = seccion.asignatura.descripcion
 		aux += " <b> (PCI) </b>" if self.como_pci?
-		aux += " <b> (Retirada) </b>" if self.retirado?
+		aux += " <b> (#{retirado_en_letras}) </b>" if self.retirado?
 		return aux
+	end
+
+	def retirado_en_letras
+		gen = estudiante.usuario.genero
+		if retirado?
+			return "Retirad#{gen}"
+		else
+			return ""
+		end
 	end
 
 	def id_foranea
@@ -358,54 +368,25 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def num_a_letras num
+		numeros = %W(CERO UNO DOS TRES CUATRO CINCO SEIS SIETE OCHO NUEVE DIEZ ONCE DOCE TRECE CATORCE QUINCE)
 
-		case num
-		when 0
-			valor = "CERO CERO"
-		when 1
-			valor = "CERO UNO"
-		when 2
-			valor = "CERO DOS"
-		when 3
-			valor = "CERO TRES"
-		when 4
-			valor = "CERO CUATRO"
-		when 5
-			valor = "CERO CINCO"
-		when 6
-			valor = "CERO SEIS"
-		when 7
-			valor = "CERO SIETE"
-		when 8
-			valor = "CERO OCHO"
-		when 9
-			valor = "CERO NUEVE"
-		when 10
-			valor = "DIEZ"
-		when 11
-			valor = "ONCE"
-		when 12
-			valor = "DOCE"
-		when 13
-			valor = "TRECE"
-		when 14
-			valor = "CATORCE"
-		when 15
-			valor = "QUINCE"
-		when 16
-			valor = "DIEZ Y SEIS"
-		when 17
-			valor = "DIEZ Y SIETE"
-		when 18
-			valor = "DIEZ Y OCHO"
-		when 19
-			valor = "DIEZ Y NUEVE"
-		when 20
-			valor = "VEINTE"
+		return 'SIN CALIFICACIÓN' if num.nil? or !(num.is_a? Integer or num.is_a? Float)
+		num = num.to_i
+			
+		if num < 10 
+			return "#{numeros[0]} #{numeros[num]}"
+		elsif num >= 10  and num < 16
+			return numeros[num]
+		elsif num >= 16 and num < 20
+			aux = num % 10
+			return "#{numeros[10]} Y #{numeros[aux]}"
+		elsif num == 20
+			return 'VEINTE'
 		else
-			valor = "SIN CALIFICACIÓN"
+			return 'CALIFICACIÓN PENDIENTE'
 		end
-		return valor
+		
+
 	end
 
 	def nombre_estudiante_con_retiro
@@ -421,8 +402,20 @@ class Inscripcionseccion < ApplicationRecord
 
 	protected
 
+	def set_estado
+		unless calificacion_final.nil?
+			if self.calificacion_final.to_i >= 10
+				self.estado = :aprobado
+			else
+				self.estado = :aplazado
+			end
+		end
+	end
+
+
 	def set_default
 		self.tipo_calificacion_id ||= FINAL
+		self.set_estado
 	end
 
 end

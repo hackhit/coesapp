@@ -8,18 +8,16 @@
 
 		%tbody
 			- inscripciones.each_with_index do |es,i|
-				- if es.retirado?
-					= render partial: 'admin/secciones/tabla_content_retirado',locals: {i: i, es: es}
-				- else
-					- disable = (es.diferido? || es.reparacion?)
-					%tr{id: "reg_#{es.estudiante_id}"}
+				- disable = (es.diferido? || es.reparacion? || es.retirado?)
+				%tr{id: "reg_#{es.estudiante_id}", class: es.tr_class_style_qualify}
 
-						= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
-						
+					= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
+					- if es.retirado?
+						%td{colspan:"100%"}
+					- elsif current_admin or !@seccion.asignatura.numerica3? or (@seccion.asignatura.numerica3? and @seccion.tiene_trimestres2?)
 						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id}, 0);", value: es.pi?}
-						
-						%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});"}
-
+						- if !@seccion.asignatura.numerica3?
+							%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});"}
 						%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
 	%hr
 	= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", disable_with: "Espere...", data: {confirm: 'Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?'}
@@ -60,7 +58,7 @@
 		}else{
 			numero_a_letras('0', ci);
 		}
-		numeros.val('');
+		//numeros.val('');
 
 		radios.prop('checked', false);
 		
@@ -74,7 +72,7 @@
 
 		numeros = $('#reg_' + ci + ' input[type="number"]');
 		radios = $('#reg_' + ci + ' input[type="radio"]');
-		checks = $('#reg_'+ci+' input:checkbox');
+		checks = $('#reg_' + ci + ' input:checkbox');
 
 		valor = $(obj).prop('checked')
 
@@ -86,7 +84,7 @@
 			
 		if (valor === false){
 			numero_a_letras('0', ci);
-			numeros.val('');
+			// numeros.val('');
 			radios.prop('checked', false);
 		} 
 	

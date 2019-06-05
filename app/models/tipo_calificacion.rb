@@ -1,6 +1,7 @@
 class TipoCalificacion < ApplicationRecord
 
 	REPARACION = 'NR'
+	PARCIAL = 'PR'
 	DIFERIDO = 'ND'
 	FINAL = 'NF'
 	PI = 'PI'

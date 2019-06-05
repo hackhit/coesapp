@@ -8,29 +8,30 @@
 
 		%tbody
 			- inscripciones.each_with_index do |es,i|
-				- if es.retirado?
-					= render partial: 'admin/secciones/tabla_content_retirado',locals: {i: i, es: es}
-				- else
-					- disable = es.pi?#(es.diferido? || es.reparacion?)
-					- disable_porterior = es.pi? || !(es.diferido? || es.reparacion?)
-					%tr{id: "reg_#{es.estudiante_id}"}
+				- disable = es.pi? || es.retirado?#(es.diferido? || es.reparacion?)
+				- disable_porterior = es.pi? || !(es.diferido? || es.reparacion?) || es.retirado?
+				%tr{id: "reg_#{es.estudiante_id}", class: es.tr_class_style_qualify}
 
-						= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
-						
+					= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
+					- if es.retirado?
+						%td
+						%td
+						%td
+					- else		
 						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id}
 						
 						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "ND"}
 
 						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "NR"}
-						
-						- unless @seccion.asignatura.absoluta?
-							- tipo = ""
-							- tipo = "ND" if es.diferido?
-							- tipo = "NR" if es.reparacion?
-							- valor_posterior = es.calificacion_posterior.to_i if es.calificacion_posterior
-							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: valor_posterior, class: 'form-control form-control-sm otra_calificacion', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});", tipo_calificacion_id: tipo, id_obj: es.id}
+					
+					- unless @seccion.asignatura.absoluta?
+						- tipo = ""
+						- tipo = "ND" if es.diferido?
+						- tipo = "NR" if es.reparacion?
+						- valor_posterior = es.calificacion_posterior.to_i if es.calificacion_posterior
+						%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: valor_posterior, class: 'form-control form-control-sm otra_calificacion', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});", tipo_calificacion_id: tipo, id_obj: es.id}
 
-						%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
+					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
 	%hr
 		= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere..."
 :javascript

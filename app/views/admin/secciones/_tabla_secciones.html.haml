@@ -3,20 +3,29 @@
 	%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 		%thead
 			%tr
-				%th Descripcion
+				%th Sección
 				%th Periodo
-				%th Asignatura
-				%th{style: 'width:13%'} Estado
+				%th{style: 'max-width:40%'} Asignatura
+				%th Departamento
+				%th Cátedra
+				%th Escuela
+				%th{style: 'width:20%'} Estado
 
 		%tbody
 			- @secciones.each do |seccion|
 				- @calificar = '?calificar=true' if (current_admin and current_admin.mas_altos?) or !seccion.calificada
+				-# Agregar variable de Solo lectura
 				%tr
-					%td= link_to seccion.descripcion, "#{seccion_path(seccion)}#{@calificar}", class: 'btn btn-sm btn-outline-info'
+					%td= link_to seccion.numero, "#{seccion_path(seccion)}#{@calificar}", class: 'btn btn-sm btn-outline-info'
 					%td= seccion.periodo_id
-					%td= seccion.asignatura.descripcion_completa.upcase
+					%td= seccion.asignatura.descripcion.upcase
+					%td= seccion.asignatura.departamento.descripcion.upcase
+					%td= seccion.asignatura.catedra.descripcion.upcase
+					%td= seccion.escuela.descripcion.upcase
 					%td
-						-if seccion.calificada
+						- if seccion.calificada
 							= colocar_numeros_seccion seccion
+						- elsif seccion.asignatura.numerica3?
+							= raw seccion.colocar_reciente_estado_calificacion
 						- else
-							%span.badge.badge-info Pendiente por calificar
+							%span.badge.badge-warning{style: "font-size: 12px;"} Pendiente por calificar

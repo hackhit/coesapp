@@ -31,8 +31,73 @@ class Seccion < ApplicationRecord
 	scope :del_periodo, lambda { |periodo_id| where "periodo_id = ?", periodo_id}
 	# scope :del_periodo_actual, -> { where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
 
-
 	# FUNCIONES:
+	def recientemente_calificada?
+		fecha_ultima_calificacion = Bitacora.where("tipo_objeto = 'Seccion' and id_objeto = #{self.id} and descripcion LIKE '%Seccion Calificada%'").last
+
+		if fecha_ultima_calificacion.nil?
+			return false
+		else
+			fecha_ultima_calificacion = fecha_ultima_calificacion.created_at
+			if (fecha_ultima_calificacion + 4.week) > Date.today
+				return true
+			else
+				return false
+			end
+		end
+	end
+
+
+	def colocar_reciente_estado_calificacion
+
+		calificada_reciente = self.recientemente_calificada?
+
+		tipo_adicional = 'info'
+		size = 11
+		mensaje = 'Pendiente por calificar'
+		if self.tiene? 0 # Sin Calificar
+			mensaje = 'Pendiente por calificar 1er. Trimestre'
+			tipo_adicional = 'warning'
+		elsif self.tiene_trimestres1?
+			if calificada_reciente
+				mensaje = '1er. Trimestre calificado'
+			else
+				size = 12
+				mensaje = 'Pendiente por calificar 2do. Trimestre'
+				tipo_adicional = 'warning'
+			end
+			
+		elsif self.tiene_trimestres2?
+			if calificada_reciente
+				mensaje = '2do. Trimestre calificado'
+			else
+				size = 12
+				mensaje = 'Pendiente por calificar 3er. Trimestre'
+				tipo_adicional = 'warning'
+
+			end
+		end
+		return "<div class='badge badge-#{tipo_adicional}' style='font-size: #{size}px;'>#{mensaje}</div>"
+	end
+
+
+	def tiene_trimestres1?
+		# self.tiene? 4
+		self.inscripcionsecciones.trimestre1.any?
+	end
+
+	def tiene_trimestres2?
+		# self.tiene? 5
+		self.inscripcionsecciones.trimestre2.any?
+	end
+
+	def tiene? del_estado
+		self.inscripcionsecciones.any? and (cuantos_tiene? del_estado).any?
+	end
+
+	def cuantos_tiene? del_estado
+		self.inscripcionsecciones.group("estado").having("estado = #{del_estado}").count
+	end
 
 	def pci?
 		self.asignatura.pci? self.periodo_id
@@ -52,6 +117,10 @@ class Seccion < ApplicationRecord
 
 	def calificada_valor
 		self.calificada ? 'Sí' : 'No'
+	end
+
+	def total_no_retirados
+		total_estudiantes - total_retirados		
 	end
 
 	def total_estudiantes

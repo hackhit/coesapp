@@ -6,22 +6,24 @@
 		.badge.badge-info= 'Retirada' if es.retirado?
 
 	- if @seccion.asignatura.numerica3?
-		%th 
-		%th 
-		%th 
-		%th 
+		%td 
+		%td 
+		%td 
+		%td 
+		%td 
+		%td 
 	- elsif @seccion.asignatura.numerica?
-		%th 
+		%td 
 	- else
-		%th 
-		%th 
-	%th
-	%th
+		%td 
+		%td 
+	%td
+	%td
 	- if @por_cerrar
-		%th
+		%td
 		- if @seccion.asignatura.absoluta?
-			%th 
-			%th
+			%td 
+			%td
 		- else
-			%th
-	%th= text_field_tag nil, {}, {readonly: true, disabled: true, value: 'RETIRADA', class: 'form-control form-control-sm'}
+			%td
+	%td= text_field_tag nil, {}, {readonly: true, disabled: true, value: 'RETIRADA', class: 'form-control form-control-sm'}

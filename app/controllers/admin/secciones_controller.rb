@@ -72,8 +72,8 @@ module Admin
         if @seccion.asignatura.absoluta?
           calificar_absoluta valores
         else
-          calificar_numerica valores
           agregar_notas_numerica3 valores if @seccion.asignatura.numerica3?
+          calificar_numerica valores
         end
 
 
@@ -88,23 +88,30 @@ module Admin
       end
 
       unless error
-        @seccion.calificada = true
-        @seccion.abierta = false if params[:cerrar]
 
-        if @seccion.save
+        if @seccion.tiene_trimestres1? or @seccion.tiene_trimestres2?
+          aux = @seccion.tiene_trimestres1? ? "Trimestre1" : "Trimestre2"
           flash[:success] = "Calificaciones guardada satisfactoriamente."
-          info_bitacora "Sección Calificada" , Bitacora::ACTUALIZACION, @seccion
-          if @seccion.cerrada?
-            flash[:success] += "Sección Cerrada."
-            info_bitacora "Sección Cerrada" , Bitacora::ACTUALIZACION, @seccion
+          info_bitacora "Sección Calificada (#{aux})" , Bitacora::ACTUALIZACION, @seccion
+        else
+          @seccion.calificada = true
+          @seccion.abierta = false if params[:cerrar]
+
+          if @seccion.save
+            flash[:success] = "Calificaciones guardada satisfactoriamente."
+            info_bitacora "Sección Calificada" , Bitacora::ACTUALIZACION, @seccion
+            if @seccion.cerrada?
+              flash[:success] += "Sección Cerrada."
+              info_bitacora "Sección Cerrada" , Bitacora::ACTUALIZACION, @seccion
+            end
           end
         end
       end
 
       if current_admin
         redirect_to principal_admin_index_path
-      else
-        redirect_to @seccion
+      elsif current_profesor
+        redirect_to principal_profesor_index_path
       end
     end
 
@@ -267,9 +274,9 @@ module Admin
     private
 
       def agregar_notas_numerica3 valores
-        @inscripcionseccion.primera_calificacion = valores[:primera_calificacion]
-        @inscripcionseccion.segunda_calificacion = valores[:segunda_calificacion]
-        @inscripcionseccion.tercera_calificacion = valores[:tercera_calificacion]
+        @inscripcionseccion.primera_calificacion = valores[:primera_calificacion] unless valores[:primera_calificacion].blank?
+        @inscripcionseccion.segunda_calificacion = valores[:segunda_calificacion] unless valores[:segunda_calificacion].blank?
+        @inscripcionseccion.tercera_calificacion = valores[:tercera_calificacion] unless valores[:tercera_calificacion].blank?
       end
 
       def calificar_numerica valores
@@ -294,9 +301,21 @@ module Admin
           estado = (valores[:calificacion_posterior] and valores[:calificacion_posterior].to_f >= 10) ? 1 : 2
           # valores[:calificacion_final] = nil
         else
-          tipo_calificacion_id = TipoCalificacion::FINAL
+
+          if @inscripcionseccion.segunda_calificacion.nil?
+            estado = 4
+            valores[:calificacion_final] = nil
+            tipo_calificacion_id = TipoCalificacion::PARCIAL
+          elsif @inscripcionseccion.tercera_calificacion.nil?
+            estado = 5
+            valores[:calificacion_final] = nil
+            tipo_calificacion_id = TipoCalificacion::PARCIAL
+          else
+            estado = (valores[:calificacion_final] and valores[:calificacion_final].to_f >= 10) ? 1 : 2
+            tipo_calificacion_id = TipoCalificacion::FINAL
+          end  
           valores[:calificacion_posterior] = nil
-          estado = (valores[:calificacion_final] and valores[:calificacion_final].to_f >= 10) ? 1 : 2
+          
         end
         @inscripcionseccion.tipo_calificacion_id = tipo_calificacion_id
         @inscripcionseccion.estado = Inscripcionseccion.estados.key estado

@@ -21,7 +21,7 @@
 			- calificacion = 'table-danger' if (es.aplazado? || es.pi? || retirado)
 			- muted = retirado ? "text-muted" : ""
 
-			%tr{class: "#{calificacion} #{muted}"}
+			%tr{class: es.tr_class_style_qualify}
 				%td= "#{i+1} (#{es.id})"
 				%td
 					= "(#{es.estudiante_id})"
