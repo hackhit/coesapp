@@ -51,6 +51,7 @@
         - if @secciones_pci_pendientes.any?
           .tab-pane{id: "pane_PCI"}
             .border.mt-3.p-3
+              %h6.alert.alert-danger.pb-ms-3#alertPCI Tome en cuenta que el estudiante puede no estar inscrito en todas sus escuelas. Por favor verifique que aparecen las pestañas correspondiantes.
               %h6.alert.alert-danger.pb-ms-3#alertPCI Asignaturas pendientes por asignar escuelas (PCI):
               - @foraneas = true
               = render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @secciones_pci_pendientes}

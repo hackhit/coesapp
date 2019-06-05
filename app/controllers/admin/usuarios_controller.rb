@@ -171,7 +171,9 @@ module Admin
       if @estudiante
         @periodos = Periodo.joins(:inscripcionseccion).where("inscripcionsecciones.estudiante_id = #{@estudiante.id}")
         @inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante.inactivo? current_periodo.id
-        @secciones_pci_pendientes = @estudiante.inscripcionsecciones.select{|ins| ins.pci_pendiente_por_asociar?}
+        ids = @estudiante.inscripcionsecciones.select{|ins| ins.pci_pendiente_por_asociar?}.collect{|i| i.id}
+        @secciones_pci_pendientes = Inscripcionseccion.where(id: ids)#select{|ins| ins.pci_pendiente_por_asociar?}.ids
+
       end  
 
       if @profesor
