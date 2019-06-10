@@ -3,7 +3,7 @@
 %h5= "Total de Estudiantes: #{@inscripciones_secciones.count}"
 
 - if current_profesor
-	- if @seccion.profesor_id.eql? current_profesor.id and !calificada and !@seccion.recientemente_calificada?
+	- if @seccion.profesor_id.eql? current_profesor.id and (!calificada or !@seccion.recientemente_calificada?)
 		= render partial: 'admin/secciones/por_calificar', locals: {inscripciones: @inscripciones_secciones}
 	- else
 		= render partial: 'admin/secciones/solo_lectura', locals: {inscripciones: @inscripciones_secciones}
@@ -12,7 +12,7 @@
 		= render partial: 'admin/secciones/solo_lectura', locals: {inscripciones: @inscripciones_secciones}
 		= # Ojo: Incluir opciones para cambiar estado pero con mensaje de bitacora
 	- else
-		- @por_cerrar = @seccion.abierta? || !(@seccion.calificada?)
+		- @por_cerrar = @seccion.abierta? || !calificada
 		= render partial: 'admin/secciones/por_cerrar', locals: {inscripciones: @inscripciones_secciones}
 
 

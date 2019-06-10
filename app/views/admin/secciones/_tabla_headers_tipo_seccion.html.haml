@@ -10,26 +10,25 @@
 			- if current_admin or @seccion.tiene_trimestres2?
 				%th TRIM III
 				%th Definitiva
+			%th
+				PI
+				- if current_admin
+					%b.tooltip-btn{'data_toggle': :tooltip, title: 'Marcar vacios como PI'}
+						= check_box_tag 'vacios_a_pi', nil, @seccion.inscripcionsecciones.perdidos.any?
+
 		- elsif @seccion.asignatura.numerica?
 			%th Definitiva
-		- else
+			%th
+				PI
+				- if current_admin
+					%b.tooltip-btn{'data_toggle': :tooltip, title: 'Marcar vacios como PI'}
+						= check_box_tag 'vacios_a_pi', nil, @seccion.inscripcionsecciones.perdidos.any?
+			%th= current_admin ? 'ND' : 'NP'
+			- if current_admin
+				%th NR
+				%th
+		- elsif @seccion.asignatura.absoluta?
 			%th Aprobado
 			%th Aplazado
 		- if current_admin or !@seccion.asignatura.numerica3? or (@seccion.asignatura.numerica3? and @seccion.tiene_trimestres2?)
-			%th
-				PI
-				- if @por_cerrar
-					%b.tooltip-btn{'data_toggle': :tooltip, title: 'Marcar vacios como PI'}
-						= check_box_tag 'vacios_a_pi', nil, @seccion.inscripcionsecciones.perdidos.any?
-		- if current_admin or !(@seccion.asignatura.numerica3?)
-			%th= @por_cerrar ? 'ND' : 'NP'
-		- if @por_cerrar
-			%th NR
-			%th
-			- unless @seccion.asignatura.absoluta?
-				%th
-		- if current_admin or @seccion.tiene_trimestres2?
-			%th
-
-
-
+			%th Descripción

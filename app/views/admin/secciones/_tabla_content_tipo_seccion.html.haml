@@ -6,15 +6,8 @@
 
 - if seccion.asignatura.numerica3?
 	= render partial: 'admin/secciones/calificaciones_numerica3', locals: { es: es, seccion: @seccion, disable: disable}
-
 - elsif seccion.asignatura.numerica?
 	%td= colocar_calificacion_final es, disable
 - else
 	%td= colocar_calificacion_absoluta es, 1, disable
 	%td= colocar_calificacion_absoluta es, 2, disable
-
-
-
-
-
-

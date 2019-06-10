@@ -17,14 +17,13 @@
 						%td
 						%td
 						%td
-					- else		
+					- unless @seccion.asignatura.absoluta?
 						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id}
 						
 						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "ND"}
 
 						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "NR"}
 					
-					- unless @seccion.asignatura.absoluta?
 						- tipo = ""
 						- tipo = "ND" if es.diferido?
 						- tipo = "NR" if es.reparacion?
@@ -35,6 +34,20 @@
 	%hr
 		= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere..."
 :javascript
+	if ("${if @seccion.asignatura.absoluta?}") {
+
+		$(document).ready(function() {
+			$('.absoluta').click(function(){
+				let clase = 'table-success'
+				let ci = $(this).attr('ci'),
+				valor_letras = $(this).attr('final')
+				if (valor_letras == 'APLAZADO') clase = 'table-danger'
+
+				$(`#_${ci}calificacion_en_letras`).val(valor_letras)
+				$(`#reg_${ci}`).removeClass().addClass(clase);
+			});
+		});
+	}else console.log('No Absoluta')
 
 
 	window.onload = function() {
@@ -91,7 +104,7 @@
 			//$(`#reg_${msg}`).animate({backgroundColor: "#a7bf51"}, 800);
 
 
-			$(`#reg_${msg}`).addClass(`table-success`)
+			//$(`#reg_${msg}`).addClass(`table-success`)
 			//$(`#reg_${msg}`).delay(1200).animate({"background-color": "#c3e6cb"})
 
 			
@@ -225,86 +238,40 @@
 
 
 	function numero_a_letras(valor, ci){
-	var final;
-	switch (valor) {
-		case 'A':
-			final = "APROBADO";
-			break;
-		case 'AP':
-			final = "APLAZADO";
-			break;
-		case '-1':
-			final = "PÉRDIDA POR INASISTENCIA";
-			break;
-		case '0':
-			final = "CERO CERO";
-			break;
-		case '1':
-			final = "CERO UNO";
-			break;
-		case '2':
-			final = "CERO DOS";
-			break;
-		case '3':
-			final = "CERO TRES";
-			break;
-		case '4':
-			final = "CERO CUATRO";
-			break;
-		case '5':
-			final = "CERO CINCO";
-			break;
-		case '6':
-			final = "CERO SEIS";
-			break;
-		case '7':
-			final = "CERO SIETE";
-			break;
-		case '8':
-			final = "CERO OCHO";
-			break;
-		case '9':
-			final = "CERO NUEVE";
-			break;
-		case '10':
-			final = "DIEZ";
-			break;
-		case '11':
-			final = "ONCE";
-			break;
-		case '12':
-			final = "DOCE";
-			break;
-		case '13':
-			final = "TRECE";
-			break;
-		case '14':
-			final = "CATORCE";
-			break;
-		case '15':
-			final = "QUINCE";
-			break;
-		case '16':
-			final = "DIEZ Y SEIS";
-			break;
-		case '17':
-			final = "DIEZ Y SIETE";
-			break;
-		case '18':
-			final = "DIEZ Y OCHO";
-			break;
-		case '19':
-			final = "DIEZ Y NUEVE";
-			break;
-		case '20':
-			final = "VEINTE";
-			break;
-		default:
-		final = "POR DEFINIR";
-	}
-		$("#_"+ci+"calificacion_en_letras").val(final);
+		let final, clase,
+		valores = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE', 'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE'] 
+
+		valor = parseInt(valor)
+		if (!valor){
+			final = 'POR DEFINIR'
+			clase = ''
+		}else if (valor == -1){
+			final = 'PÉRDIDA POR INASISTENCIA'
+			clase = 'table-danger'
+		}else if (valor > -1 & valor < 10){
+			console.log(valor)
+			final = `CERO ${valores[valor]}`
+			clase = 'table-danger'
+		}else if (valor > 9 & valor < 16) {
+			final = valores[valor]
+			clase = 'table-success'
+		}else if (valor > 15 & valor < 20){
+			valor = valor % 10
+			final = `DIEZ Y ${valores[valor]}`
+			clase = 'table-success'
+		}else if (valor == 20){
+			final = 'VEINTE'
+			clase = 'table-success'
+		}else{
+			final = 'POR DEFINIR'
+			clase = ''
+		}
+		$(`#reg_${ci}`).removeClass().addClass(clase);
+		$(`#_${ci}calificacion_en_letras`).val(final);
 
 	}
+
+
 
 	function calcular(p1,p2,p3,ci){
 		let nota1, nota2, nota3, porcen1, porcen2, porcen3, final, cali_final, values;

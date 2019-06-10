@@ -25,8 +25,17 @@ module SeccionesHelper
 	end
 
 	def colocar_calificacion_absoluta inscripcion, valor, disable = false
+		
+		if valor.eql? 1
+			letras = 'APROBADO'
+			check = inscripcion.aprobado? ? true : false
+		else
+			letras = 'APLAZADO'
+			check = inscripcion.aplazado? ? true : false
+		end
+		# letras = (valor.eql? 1) ? 'APROBADO' : 'APLAZADO'
 
-		radio_button_tag "[est][#{inscripcion.estudiante_id}]calificacion_final", valor, (inscripcion.aprobado?), disabled: disable, onchange: "numero_a_letras('A', #{inscripcion.estudiante_id});", required: !disable, class: 'calificable', id_obj: inscripcion.id, tipo_calificacion_id: 'NF'
+		radio_button_tag "[est][#{inscripcion.estudiante_id}]calificacion_final", valor, check, disabled: disable, required: !disable, class: 'absoluta calificable', id_obj: inscripcion.id, tipo_calificacion_id: 'NF', ci: inscripcion.estudiante_id, final: letras
 	end
 
 end

@@ -1,0 +1,4 @@
+- if @seccion.asignatura.numerica? or @seccion.asignatura.numerica3?
+	%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id}, 0);", value: es.pi?, disabled: disable}
+	- if @seccion.asignatura.numerica?
+		%td= check_box_tag "[est][#{es.estudiante_id}]np", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", disabled: disable}
