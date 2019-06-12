@@ -15,6 +15,9 @@
 				- if current_admin
 					%b.tooltip-btn{'data_toggle': :tooltip, title: 'Marcar vacios como PI'}
 						= check_box_tag 'vacios_a_pi', nil, @seccion.inscripcionsecciones.perdidos.any?
+			- if current_admin
+				%th NR
+				%th
 
 		- elsif @seccion.asignatura.numerica?
 			%th Definitiva

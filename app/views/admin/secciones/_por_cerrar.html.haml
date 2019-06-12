@@ -8,21 +8,16 @@
 
 		%tbody
 			- inscripciones.each_with_index do |es,i|
-				- disable = es.pi? || es.retirado?#(es.diferido? || es.reparacion?)
-				- disable_porterior = es.pi? || !(es.diferido? || es.reparacion?) || es.retirado?
+				- disable = (es.pi? || es.retirado?)#(es.diferido? || es.reparacion?)
+				- disable_porterior = es.pi? || es.retirado? || !(es.diferido? || es.reparacion?)
 				%tr{id: "reg_#{es.estudiante_id}", class: es.tr_class_style_qualify}
-
 					= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
-					- if es.retirado?
-						%td
-						%td
-						%td
 					- unless @seccion.asignatura.absoluta?
-						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id}
-						
-						%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "ND"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id, disabled: es.retirado?}
+						- if !@seccion.asignatura.numerica3?
+							%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "ND", disabled: es.retirado?}
 
-						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "NR"}
+						%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "NR", disabled: es.retirado?}
 					
 						- tipo = ""
 						- tipo = "ND" if es.diferido?
@@ -34,6 +29,20 @@
 	%hr
 		= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere..."
 :javascript
+	
+	$('#submit').click(function(e){
+
+		let form = $(this).parents('form')[0]
+		if (form.checkValidity() == true) {
+			let = confi = confirm('Una vez que guardes las calificaciones no podrás cambiar su valor, ¿Estás Seguro?')
+			if (confi === false) {
+				e.preventDefault()
+				e.stopPropagation()
+			}
+		}
+	})
+
+
 	if ("${if @seccion.asignatura.absoluta?}") {
 
 		$(document).ready(function() {
@@ -194,7 +203,7 @@
 
 		if (valor === false){
 			numero_a_letras('0', ci);
-			numeros.val('');
+			//numeros.val('');
 			radios.prop('checked', false);
 			values = `{"inscripcionseccion_id": ${id}, "calificacion": 0, "tipo_calificacion_id": "NF", "calificacion_posterior": 0}`
 			send_data(values)
@@ -242,7 +251,10 @@
 		valores = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE', 'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE'] 
 
 		valor = parseInt(valor)
-		if (!valor){
+		if (valor == 0){
+			final = 'CERO CERO'
+			clase = 'table-danger'
+		}else if (!valor){
 			final = 'POR DEFINIR'
 			clase = ''
 		}else if (valor == -1){

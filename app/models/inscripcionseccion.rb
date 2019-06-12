@@ -29,7 +29,7 @@ class Inscripcionseccion < ApplicationRecord
 
 	# TRIGGERS:
 	after_initialize :set_default, :if => :new_record?
-	before_validation :set_default
+	before_validation :set_estados
 
 	# VALIDACIONES:
 	validates_uniqueness_of :estudiante_id, scope: [:seccion_id], message: 'El estudiante ya está inscrito en la sección', field_name: false
@@ -357,11 +357,8 @@ class Inscripcionseccion < ApplicationRecord
 			valor = 'POR DEFINIR'
 		elsif seccion.asignatura.absoluta?
 			valor = self.estado.upcase
-		elsif particular			
-			calificacion = (particular.eql? 'posterior') ? calificacion_posterior : calificacion_final
-			valor = num_a_letras calificacion
 		else
-			calificacion = (diferido? || reparacion?) ? calificacion_posterior : calificacion_final
+			calificacion = (diferido? || reparacion? || particular.eql?('posterior')) ? calificacion_posterior : calificacion_final
 			valor = num_a_letras calificacion
 		end
 		return valor
@@ -370,7 +367,7 @@ class Inscripcionseccion < ApplicationRecord
 	def num_a_letras num
 		numeros = %W(CERO UNO DOS TRES CUATRO CINCO SEIS SIETE OCHO NUEVE DIEZ ONCE DOCE TRECE CATORCE QUINCE)
 
-		return 'SIN CALIFICACIÓN' if num.nil? or !(num.is_a? Integer or num.is_a? Float)
+		return 'CALIFICACIÓN PENDIENTE' if num.nil? or !(num.is_a? Integer or num.is_a? Float)
 		num = num.to_i
 			
 		if num < 10 
@@ -395,6 +392,13 @@ class Inscripcionseccion < ApplicationRecord
 		return aux
 	end
 
+	def nombre_estudiante_con_retiro_plus
+		aux = "#{estudiante.usuario.apellido_nombre}"
+		aux += " <div class='badge badge-info'>Retirada</div>" if retirado? 
+		return aux
+	end
+
+
 	# def retirada?
 	# 	# return (cal_tipo_estado_inscripcion_id.eql? RETIRADA) ? true : false
 	# 	tipo_estado_inscripcion_id.eql? RETIRADA
@@ -402,20 +406,51 @@ class Inscripcionseccion < ApplicationRecord
 
 	protected
 
-	def set_estado
-		unless calificacion_final.nil?
+	def set_estados
+		self.tipo_calificacion_id ||= FINAL
+		if self.retirado?
+			self.calificacion_final = TipoCalificacion::FINAL
+		elsif self.asignatura and self.asignatura.absoluta?
+			self.primera_calificacion = nil
+			self.segunda_calificacion = nil
+			self.tercera_calificacion = nil
+			self.calificacion_final = nil
+			self.calificacion_posterior = nil
+			self.tipo_calificacion_id = TipoCalificacion::FINAL
+		elsif self.tipo_calificacion_id.eql? TipoCalificacion::PI
+			self.estado = :aplazado
+			self.primera_calificacion = nil
+			self.segunda_calificacion = nil
+			self.tercera_calificacion = nil
+			self.calificacion_final = nil
+			self.calificacion_posterior = nil
+		elsif self.calificacion_posterior
+			self.tipo_calificacion_id = TipoCalificacion::REPARACION
+			if self.calificacion_posterior.to_i >= 10
+				self.estado = :aprobado
+			else
+				self.estado = :aplazado
+			end
+		elsif self.calificacion_final
 			if self.calificacion_final.to_i >= 10
 				self.estado = :aprobado
 			else
 				self.estado = :aplazado
 			end
+		else
+			self.tipo_calificacion_id = TipoCalificacion::PARCIAL
+			if self.segunda_calificacion
+				self.estado = :trimestre2
+			elsif self.primera_calificacion
+				self.estado = :trimestre1
+			end 
 		end
+
 	end
 
 
 	def set_default
 		self.tipo_calificacion_id ||= FINAL
-		self.set_estado
 	end
 
 end

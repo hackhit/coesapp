@@ -68,14 +68,16 @@ module Admin
       error = false
       @estudiantes.each_pair do |ci,valores|
         @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).first
-
+        @valores = valores
         if @seccion.asignatura.absoluta?
-          calificar_absoluta valores
-        else
-          agregar_notas_numerica3 valores if @seccion.asignatura.numerica3?
-          calificar_numerica valores
+          calificar_absoluta
+        elsif @valores['pi']
+          @inscripcionseccion.tipo_calificacion_id = TipoCalificacion::PI
+        elsif @seccion.asignatura.numerica3?
+          calificar_numerica3
+        elsif @seccion.asignatura.numerica?
+          calificar_numerica
         end
-
 
         if @inscripcionseccion.save
           info_bitacora "Calificado Estudiante: #{@inscripcionseccion.estudiante.descripcion}, Seccion id: (#{@inscripcionseccion.seccion_id})" , Bitacora::ACTUALIZACION, @inscripcionseccion
@@ -186,7 +188,7 @@ module Admin
     # GET /secciones/1
     # GET /secciones/1.json
     def show
-      @inscripciones_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.usuario.apellidos}
+      @inscripciones_secciones = @seccion.inscripcionsecciones#.sort_by{|h| h.usuario.apellidos}
 
       @titulo = "Sección: #{@seccion.descripcion_escuela} - Período #{@seccion.periodo_id}"
 
@@ -273,70 +275,39 @@ module Admin
 
     private
 
-      def agregar_notas_numerica3 valores
-        @inscripcionseccion.primera_calificacion = valores[:primera_calificacion] unless valores[:primera_calificacion].blank?
-        @inscripcionseccion.segunda_calificacion = valores[:segunda_calificacion] unless valores[:segunda_calificacion].blank?
-        @inscripcionseccion.tercera_calificacion = valores[:tercera_calificacion] unless valores[:tercera_calificacion].blank?
-      end
+      def calificar_numerica3
 
-      def calificar_numerica valores
-        if valores['pi']
-          tipo_calificacion_id = TipoCalificacion::PI
-          valores[:calificacion_final] = 0
-          valores[:calificacion_posterior] = nil
-          estado = 2
-        elsif valores['np']
-          estado = (valores[:calificacion_final] and valores[:calificacion_final].to_f >= 10) ? 1 : 2
-          tipo_calificacion_id = TipoCalificacion::DIFERIDO
-        elsif valores['nd']
-          if valores[:calificacion_posterior]
-            estado = valores[:calificacion_posterior].to_f >= 10 ? 1 : 2
-            tipo_calificacion_id = TipoCalificacion::DIFERIDO
-          else
-            estado = (valores[:calificacion_final] and valores[:calificacion_final].to_f >= 10) ? 1 : 2
-            tipo_calificacion_id = TipoCalificacion::FINAL
-          end
-        elsif valores['nr']
-          tipo_calificacion_id = TipoCalificacion::REPARACION
-          estado = (valores[:calificacion_posterior] and valores[:calificacion_posterior].to_f >= 10) ? 1 : 2
-          # valores[:calificacion_final] = nil
-        else
+        @inscripcionseccion.primera_calificacion = @valores[:primera_calificacion] unless @valores[:primera_calificacion].blank?
 
-          if @inscripcionseccion.segunda_calificacion.nil?
-            estado = 4
-            valores[:calificacion_final] = nil
-            tipo_calificacion_id = TipoCalificacion::PARCIAL
-          elsif @inscripcionseccion.tercera_calificacion.nil?
-            estado = 5
-            valores[:calificacion_final] = nil
-            tipo_calificacion_id = TipoCalificacion::PARCIAL
-          else
-            estado = (valores[:calificacion_final] and valores[:calificacion_final].to_f >= 10) ? 1 : 2
-            tipo_calificacion_id = TipoCalificacion::FINAL
-          end  
-          valores[:calificacion_posterior] = nil
-          
-        end
-        @inscripcionseccion.tipo_calificacion_id = tipo_calificacion_id
-        @inscripcionseccion.estado = Inscripcionseccion.estados.key estado
+        @inscripcionseccion.segunda_calificacion = @valores[:segunda_calificacion] unless @valores[:segunda_calificacion].blank?
 
-        @inscripcionseccion.calificacion_posterior = valores[:calificacion_posterior]
-        @inscripcionseccion.calificacion_final = valores[:calificacion_final]
+        @inscripcionseccion.tercera_calificacion = @valores[:tercera_calificacion] unless @valores[:tercera_calificacion].blank?
 
-      end
-
-      def calificar_absoluta valores
-
-        if valores['pi']
-          tipo_calificacion_id = TipoCalificacion::PI
-          estado = 2
-        elsif valores['np'] or valores['nd']
-          tipo_calificacion_id = TipoCalificacion::DIFERIDO
-          estado = valores[:calificacion_final].to_i
-        else
+        if @valores[:calificacion_final]
+          @inscripcionseccion.calificacion_final = @valores[:calificacion_final]
           tipo_calificacion_id = TipoCalificacion::FINAL
-          estado = valores[:calificacion_final].to_i
+        else
+          tipo_calificacion_id = TipoCalificacion::PARCIAL
         end
+
+        @inscripcionseccion.tipo_calificacion_id = tipo_calificacion_id
+
+        calificacion_posterior
+
+      end
+
+      def calificar_numerica
+
+        @inscripcionseccion.calificacion_final = @valores[:calificacion_final]
+        @inscripcionseccion.tipo_calificacion_id = TipoCalificacion::FINAL
+
+        calificacion_posterior
+
+      end
+
+      def calificar_absoluta 
+        tipo_calificacion_id = TipoCalificacion::FINAL
+        estado = @valores[:calificacion_final].to_i
 
         @inscripcionseccion.calificacion_posterior = nil 
         @inscripcionseccion.calificacion_final = nil
@@ -345,7 +316,15 @@ module Admin
         @inscripcionseccion.estado = Inscripcionseccion.estados.key estado
       end
 
+      def calificacion_posterior
 
+        @inscripcionseccion.tipo_calificacion_id = TipoCalificacion::DIFERIDO if (@valores[:np] or @valores[:nd])
+
+        if @valores[:calificacion_posterior]
+          @inscripcionseccion.tipo_calificacion_id = TipoCalificacion::REPARACION if @valores[:nr]
+          @inscripcionseccion.calificacion_posterior = @valores[:calificacion_posterior]
+        end
+      end
 
       # Use callbacks to share common setup or constraints between actions.
       def set_seccion

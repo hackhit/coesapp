@@ -13,10 +13,11 @@
 
 		%tbody
 			- @secciones.each do |seccion|
-				- @calificar = '?calificar=true' if (current_admin and current_admin.mas_altos?) or !seccion.calificada
+				-# @calificar = '?calificar=true' if (current_admin and current_admin.mas_altos?) or !seccion.calificada
 				-# Agregar variable de Solo lectura
+				- activar = current_admin or (seccion.asignatura.numerica3? and !seccion.recientemente_calificada?) or (!seccion.asignatura.numerica3? and seccion.abierta? and seccion.calificada)
 				%tr
-					%td= link_to seccion.numero, "#{seccion_path(seccion)}#{@calificar}", class: 'btn btn-sm btn-outline-info'
+					%td= link_to_if activar, class: 'btn btn-sm btn-outline-info'
 					%td= seccion.periodo_id
 					%td= seccion.asignatura.descripcion.upcase
 					%td= seccion.asignatura.departamento.descripcion.upcase

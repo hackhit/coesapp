@@ -8,20 +8,29 @@
 
 		%tbody
 			- inscripciones.each_with_index do |es,i|
+
 				- disable = (es.diferido? || es.reparacion? || es.retirado? || es.pi?)
 				%tr{id: "reg_#{es.estudiante_id}", class: es.tr_class_style_qualify}
 
-					= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
-					= render partial: 'admin/secciones/opciones_asignaturas_por_tipo', locals: {es: es, disable: disable}
-
+					= # RENDERIZAMOS EL ID Y LA DESCRIPCIÓN DEL ESTUDIANTE
+					= render partial: 'admin/inscripcionsecciones/id_and_estudiante', locals: {i: i, es: es}
+					= # COLOCAMOS LAS POSIBLES CALIFICACIONES SEGUN EL TIPO Y SI ESTÁ RETIRADA O NO
+					- if es.retirado?
+						= render partial: 'admin/inscripcionsecciones/retirado', locals: {es: es}
+					- else
+						- if es.asignatura.absoluta?
+							%td= colocar_calificacion_absoluta es, 1, disable
+							%td= colocar_calificacion_absoluta es, 2, disable
+						- elsif es.asignatura.numerica?
+							%td= colocar_calificacion_final es, disable
+						- elsif es.asignatura.numerica3?
+							= render partial: 'admin/inscripcionsecciones/numerica3', locals: { es: es, seccion: @seccion, disable: disable}
+						= render partial: 'admin/secciones/opciones_asignaturas_por_tipo', locals: {es: es, disable: disable}
 					- if (!@seccion.asignatura.numerica3? or (@seccion.asignatura.numerica3? and @seccion.tiene_trimestres2?))
 						%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
-	%hr
-	=# submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right", disable_with: "Espere..."
+
 
 	= button_tag 'Guardar', class: 'btn btn-sm mx-3 float-right btn-outline-success', id: 'submit'
-
-
 
 
 :javascript
@@ -56,20 +65,23 @@
 		valores = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE', 'DIEZ', 'ONCE', 'DOCE', 'TRECE', 'CATORCE', 'QUINCE'] 
 
 		valor = parseInt(valor)
-		if (!valor){
+		if (valor == 0){
+			final = 'CERO CERO'
+			clase = 'table-danger'
+		}else if (!valor){
 			final = 'POR DEFINIR'
 			clase = ''
 		}else if (valor == -1){
 			final = 'PÉRDIDA POR INASISTENCIA'
 			clase = 'table-danger'
-		}else if (valor > -1 & valor < 10){
+		}else if (valor >= 0 && valor < 10){
 			console.log(valor)
 			final = `CERO ${valores[valor]}`
 			clase = 'table-danger'
-		}else if (valor > 9 & valor < 16) {
+		}else if (valor > 9 && valor < 16) {
 			final = valores[valor]
 			clase = 'table-success'
-		}else if (valor > 15 & valor < 20){
+		}else if (valor > 15 && valor < 20){
 			valor = valor % 10
 			final = `DIEZ Y ${valores[valor]}`
 			clase = 'table-success'
