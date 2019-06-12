@@ -174,7 +174,7 @@ module Admin
 		def resumen
 			id = params[:id]
 			@estudiante = Estudiante.find id
-			@inscripciones = @estudiante.inscripcionsecciones.del_periodo(current_periodo.id).sort {|a,b| a.descripcion(current_periodo.id) <=> b.descripcion(current_periodo.id)}
+			@inscripciones = @estudiante.inscripcionsecciones.del_periodo(current_periodo.id)#.sort {|a,b| a.descripcion(current_periodo.id) <=> b.descripcion(current_periodo.id)}
 			# @secciones = @estudiante.inscripcionsecciones.del_periodo current_periodo.id
 			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 3 - Resumen:"
 
