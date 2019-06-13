@@ -11,6 +11,7 @@
 				- disable = (es.pi? || es.retirado?)#(es.diferido? || es.reparacion?)
 				- disable_porterior = es.pi? || es.retirado? || !(es.diferido? || es.reparacion?)
 				%tr{id: "reg_#{es.estudiante_id}", class: es.tr_class_style_qualify}
+					= render partial: 'admin/inscripcionsecciones/id_and_estudiante', locals: {i: i, es: es}
 					= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
 					- unless @seccion.asignatura.absoluta?
 						%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id, disabled: es.retirado?}

@@ -1,5 +1,8 @@
 %td= "#{i+1} (#{es.id})"
 %td
 	= "(#{es.estudiante_id})"
-	= link_to_if current_admin, es.estudiante.usuario do
+	- if current_admin
+		= link_to es.estudiante.usuario do
+			= raw es.nombre_estudiante_con_retiro_plus
+	- else
 		= raw es.nombre_estudiante_con_retiro_plus

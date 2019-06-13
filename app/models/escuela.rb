@@ -32,7 +32,26 @@ class Escuela < ApplicationRecord
 	# TRIGGERS
 	before_save :set_to_upcase
 
-	#SCOPES
+	#FUNCTIONS
+
+	def self.actualizar_parciales_201802A
+		e = Escuela.find 'IDIO'
+		ss = e.secciones.calificadas.del_periodo ('2018-02A')
+		p ss.count
+
+		ss.each do |s|
+			s.inscripcionsecciones.where('estado = 1 || estado = 2').each do |i|
+				i.calificacion_final = nil
+				i.estado = :trimestre1
+				i.tipo_calificacion_id = TipoCalificacion::PARCIAL
+				i.save
+			end
+			s.calificada = false
+			s.abierta = true
+			s.save
+		end
+	end
+
 	def descripcion_filtro
 		self.descripcion.titleize
 	end

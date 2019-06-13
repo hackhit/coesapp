@@ -32,6 +32,7 @@ class Seccion < ApplicationRecord
 	# scope :del_periodo_actual, -> { where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
 
 	# FUNCIONES:
+
 	def recientemente_calificada?
 		fecha_ultima_calificacion = Bitacora.where("tipo_objeto = 'Seccion' and id_objeto = #{self.id} and descripcion LIKE '%Seccion Calificada%'").last
 

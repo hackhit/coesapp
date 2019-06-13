@@ -1,9 +1,4 @@
 
-%td= "#{i+1} (#{es.id})"
-%td
-	= "(#{es.estudiante_id})"
-	= link_to_if current_admin, es.estudiante.usuario.apellido_nombre, es.estudiante.usuario
-
 - if seccion.asignatura.numerica3?
 	= render partial: 'admin/secciones/calificaciones_numerica3', locals: { es: es, seccion: @seccion, disable: disable}
 - elsif seccion.asignatura.numerica?

@@ -409,7 +409,7 @@ class Inscripcionseccion < ApplicationRecord
 	def set_estados
 		self.tipo_calificacion_id ||= FINAL
 		if self.retirado?
-			self.calificacion_final = TipoCalificacion::FINAL
+			self.calificacion_final = nil
 		elsif self.asignatura and self.asignatura.absoluta?
 			self.primera_calificacion = nil
 			self.segunda_calificacion = nil
@@ -425,7 +425,7 @@ class Inscripcionseccion < ApplicationRecord
 			self.calificacion_final = nil
 			self.calificacion_posterior = nil
 		elsif self.calificacion_posterior
-			self.tipo_calificacion_id = TipoCalificacion::REPARACION
+			
 			if self.calificacion_posterior.to_i >= 10
 				self.estado = :aprobado
 			else
