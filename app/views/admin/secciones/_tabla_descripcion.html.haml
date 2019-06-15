@@ -1,0 +1,30 @@
+
+%table.table.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+	%thead
+		%tr.text-center
+			%th Asignatura
+			%th Profesor
+			%th Tipo de Calificación
+			%th Tipo de Sección
+			%th Id
+			%th U. Créditos
+			%th ¿PCI?
+			%th Estado
+	%tbody
+		%tr.text-center
+			%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.asignatura.descripcion_pci @seccion.periodo_id}", @seccion.asignatura
+			%td
+				- if @seccion.profesor
+					= link_to_if (current_admin and current_admin.altos?), "#{@seccion.descripcion_profesor_asignado}", @seccion.profesor.usuario
+				- else
+					= @seccion.descripcion_profesor_asignado
+			%td= "#{@seccion.asignatura.calificacion.titleize}"
+			%td= "#{@seccion.tipo_seccion.descripcion.titleize}"
+			%td= "#{@seccion.numero}"
+			%td= "#{@seccion.asignatura.creditos}"
+			%td
+				- if @seccion.asignatura.pci? @seccion.periodo_id
+					.text-success= glyph 'ok'
+				- else
+					NO
+			%td= colocar_estado_seccion @seccion

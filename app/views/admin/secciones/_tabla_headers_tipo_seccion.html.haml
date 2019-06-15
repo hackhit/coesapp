@@ -5,11 +5,13 @@
 		- if @seccion.asignatura.numerica3?
 
 			%th TRIM I
-			- if current_admin or @seccion.tiene_trimestres1? or @seccion.tiene_trimestres2?
-				%th TRIM II
+
 			- if current_admin or @seccion.tiene_trimestres2?
+				%th TRIM II
 				%th TRIM III
 				%th Definitiva
+			- elsif @seccion.tiene_trimestres1?
+				%th TRIM II
 			%th
 				PI
 				- if current_admin

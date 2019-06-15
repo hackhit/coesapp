@@ -40,7 +40,9 @@ class Escuela < ApplicationRecord
 		p ss.count
 
 		ss.each do |s|
-			s.inscripcionsecciones.where('estado = 1 || estado = 2').each do |i|
+			s.inscripcionsecciones.where("(estado = 1 || estado = 2) && tipo_calificacion_id != 'PI'").each do |i|
+				i.segunda_calificacion = nil
+				i.tercera_calificacion = nil
 				i.calificacion_final = nil
 				i.estado = :trimestre1
 				i.tipo_calificacion_id = TipoCalificacion::PARCIAL

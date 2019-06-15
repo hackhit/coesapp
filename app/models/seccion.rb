@@ -26,12 +26,31 @@ class Seccion < ApplicationRecord
 	before_create :default_values
 
     # SCOPES:
+    scope :trimestrales, -> {joins(:inscripcionsecciones).where("inscripcionsecciones.estado = 4 or inscripcionsecciones.estado = 5")}
+    scope :trimestrales1, -> {joins(:inscripcionsecciones).where("inscripcionsecciones.estado = 4")}
+    scope :trimestrales2, -> {joins(:inscripcionsecciones).where("inscripcionsecciones.estado = 5")}
 	scope :calificadas, -> {where "calificada IS TRUE"}
 	scope :sin_calificar, -> {where "calificada IS NOT TRUE"}
 	scope :del_periodo, lambda { |periodo_id| where "periodo_id = ?", periodo_id}
 	# scope :del_periodo_actual, -> { where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
 
 	# FUNCIONES:
+
+	def habilitada_para_calificadar_recientemente?
+		fecha_ultima_calificacion = Bitacora.where("tipo_objeto = 'Seccion' and id_objeto = #{self.id} and descripcion LIKE '%para calificar trimestral%'").last
+
+		if fecha_ultima_calificacion.nil?
+			return false
+		else
+			fecha_ultima_calificacion = fecha_ultima_calificacion.created_at
+			if (fecha_ultima_calificacion + 2.week) > Date.today
+				return true
+			else
+				return false
+			end
+		end
+	end
+
 
 	def recientemente_calificada?
 		fecha_ultima_calificacion = Bitacora.where("tipo_objeto = 'Seccion' and id_objeto = #{self.id} and descripcion LIKE '%Seccion Calificada%'").last
@@ -40,7 +59,7 @@ class Seccion < ApplicationRecord
 			return false
 		else
 			fecha_ultima_calificacion = fecha_ultima_calificacion.created_at
-			if (fecha_ultima_calificacion + 4.week) > Date.today
+			if (fecha_ultima_calificacion + 6.week) > Date.today
 				return true
 			else
 				return false

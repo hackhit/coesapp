@@ -4,35 +4,8 @@
 		= glyph 'chevron-left'
 		Regresar
 
-	%table.table.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-		%thead
-			%tr
-				%th Asignatura
-				%th Profesor
-				%th Tipo de Calificación
-				%th Tipo de Sección
-				%th Id
-				%th U. Créditos
-				%th ¿PCI?
-		%tbody
-			%tr
-				%td= link_to_if (current_admin and current_admin.altos?), "#{@seccion.asignatura.descripcion_pci @seccion.periodo_id}", @seccion.asignatura
-				%td
-					- if @seccion.profesor
-						= link_to_if (current_admin and current_admin.altos?), "#{@seccion.descripcion_profesor_asignado}", @seccion.profesor.usuario
-					- else
-						= @seccion.descripcion_profesor_asignado
-				%td= "#{@seccion.asignatura.calificacion.titleize}"
-				%td= "#{@seccion.tipo_seccion.descripcion.titleize}"
-				%td= "#{@seccion.numero}"
-				%td= "#{@seccion.asignatura.creditos}"
-				%td
-					- if @seccion.asignatura.pci? @seccion.periodo_id
-						.text-success= glyph 'ok'
-					- else
-						NO
+	= render '/admin/secciones/tabla_descripcion'
 
-	=# colocar_numeros_seccion @seccion						
 	-if @seccion.calificada
 		= link_to acta_examen_excel_descargar_path(@seccion.id), class: 'btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2', role: :button do
 			= glyph 'download-alt'

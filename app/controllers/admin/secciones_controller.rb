@@ -22,6 +22,46 @@ module Admin
       end
     end
 
+    def habilitar_calificar_trim
+      if params[:id]
+        @secciones = Seccion.where(id: params[:id])
+        info_bitacora "Seccion: #{params[:id]} habilitada para calificar trimestral" , Bitacora::ACTUALIZACION, @secciones.first
+      else
+        @secciones = current_periodo.secciones.trimestrales
+        info_bitacora "Secciones del periodo: #{current_periodo.id} habilitadas para calificar trimestral" , Bitacora::ACTUALIZACION
+      end
+      total = 0
+      error = 0
+      @secciones.each do |seccion|
+        seccion.calificada = false
+        seccion.abierta = true
+
+        seccion.inscripcionsecciones.each do |es|
+
+          es.tipo_calificacion_id = TipoCalificacion::PARCIAL
+          es.calificacion_posterior = nil
+          if es.trimestre2?
+            es.estado = :trimestre1
+          elsif es.trimestre1?
+            es.estado = 'sin_calificar'
+          end
+          es.save
+
+        end
+        if seccion.save
+          total += 1
+        else
+          error += 1
+        end
+      end
+      flash[:info] = "Sin asignaturas por habilitar" if (total == 0)
+      flash[:success] = "#{total} asignatura(s) habilitada(s) para calificar" if total > 0  
+      flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
+
+      redirect_to principal_admin_index_path
+
+    end
+
     def habilitar_calificar
       if params[:id]
         @secciones = Seccion.where(id: params[:id])
@@ -49,10 +89,10 @@ module Admin
         else
           error += 1
         end
-        flash[:info] = "Sin asignaturas por habilitar" if (total == 0)
-        flash[:success] = "#{total} asignatura(s) habilitada(s) para calificar" if total > 0  
-        flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
       end
+      flash[:info] = "Sin asignaturas por habilitar" if (total == 0)
+      flash[:success] = "#{total} asignatura(s) habilitada(s) para calificar" if total > 0  
+      flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
 
       redirect_to principal_admin_index_path
     end

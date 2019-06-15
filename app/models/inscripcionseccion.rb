@@ -437,13 +437,6 @@ class Inscripcionseccion < ApplicationRecord
 			else
 				self.estado = :aplazado
 			end
-		else
-			self.tipo_calificacion_id = TipoCalificacion::PARCIAL
-			if self.segunda_calificacion
-				self.estado = :trimestre2
-			elsif self.primera_calificacion
-				self.estado = :trimestre1
-			end 
 		end
 
 	end

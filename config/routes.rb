@@ -102,6 +102,7 @@ Rails.application.routes.draw do
     resources :secciones do
       collection do
         get 'habilitar_calificar'
+        get 'habilitar_calificar_trim'
         post 'cambiar_capacidad'
         post 'cambiar_profe_seccion'
         post 'agregar_profesor_secundario'
@@ -113,6 +114,7 @@ Rails.application.routes.draw do
         post :calificar
         get 'descargar_notas'
         get 'habilitar_calificar'
+        get 'habilitar_calificar_trim'
       end
     end
 

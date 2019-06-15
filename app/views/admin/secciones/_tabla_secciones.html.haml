@@ -17,16 +17,11 @@
 				-# Agregar variable de Solo lectura
 				- activar = current_admin or (seccion.asignatura.numerica3? and !seccion.recientemente_calificada?) or (!seccion.asignatura.numerica3? and seccion.abierta? and seccion.calificada)
 				%tr
-					%td= link_to_if activar, class: 'btn btn-sm btn-outline-info'
+					%td= link_to seccion.numero, seccion, class: 'btn btn-sm btn-outline-info'
 					%td= seccion.periodo_id
+
 					%td= seccion.asignatura.descripcion.upcase
 					%td= seccion.asignatura.departamento.descripcion.upcase
 					%td= seccion.asignatura.catedra.descripcion.upcase
 					%td= seccion.escuela.descripcion.upcase
-					%td
-						- if seccion.calificada
-							= colocar_numeros_seccion seccion
-						- elsif seccion.asignatura.numerica3?
-							= raw seccion.colocar_reciente_estado_calificacion
-						- else
-							%span.badge.badge-warning{style: "font-size: 12px;"} Pendiente por calificar
+					%td= colocar_estado_seccion seccion
