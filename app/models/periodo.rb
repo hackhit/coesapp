@@ -23,6 +23,19 @@ class Periodo < ApplicationRecord
     validates :inicia, presence: true#, uniqueness: true
 
 	# FUNCIONES:
+	def getPeriodoLectivo
+		if self.anual?
+			return '0'
+		else
+			return getParcial
+		end
+
+	end
+
+	def getParcial
+		"#{id.last(2).first}"
+	end
+
 	def letra_final_de_id
 		id.last.upcase
 	end

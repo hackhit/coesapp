@@ -10,6 +10,45 @@ class ExportarExcel
 		return ic_ignore.iconv(valor).to_s
 	end
 
+
+	def self.estudiantes_x_plan_csv plan_id, periodo_id
+		require 'csv'
+		
+		atributos = ['CEDULA', 'ASIGNATURA', 'DENOMINACION', 'CREDITO', 'NOTA_FINAL', 'NOTA_DEFI', 'TIPO_EXAM', 'PER_LECTI', 'ANO_LECTI', 'SECCION', 'PLAN1']
+
+		csv_data =CSV.generate(headers: true, col_sep: ";") do |csv|
+
+			csv << atributos
+
+			plan = Plan.find plan_id
+			plan.estudiantes.each do |es|
+				(es.inscripcionsecciones.del_periodo periodo_id).each_with_index do |h,i| # puede cambiar por el periodo_id
+					est = h.estudiante
+					sec = h.seccion
+					asig = sec.asignatura
+
+					nota_def = h.pi? ? 'PI' : h.colocar_nota_final
+					nota_final = h.nota_final_para_csv
+					nota_def = nota_final if nota_final.eql? 'SN'
+
+					csv << [est.usuario_id, asig.id, asig.descripcion, asig.creditos, nota_final, nota_def, 'F', sec.periodo.getPeriodoLectivo, sec.periodo.anno, sec.numero, plan.id]
+
+					if h.calificacion_posterior
+
+						nota_final = nota_def = h.colocar_nota_posterior
+
+						csv << [est.usuario_id, asig.id, asig.descripcion, asig.creditos, nota_final, nota_def, h.tipo_calificacion_id.to_s.last, sec.periodo.getPeriodoLectivo, sec.periodo.anno, sec.numero, plan.id]
+
+					end
+
+				end
+			end
+
+		end
+		return csv_data
+	end
+
+
 	def self.inscritos_escuela_periodo periodo_id, escuela_id
 
 		require 'spreadsheet'

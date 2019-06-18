@@ -59,6 +59,9 @@
 		});
 	});
 
+	const numeroALetras = (valor, ci) => {
+
+	}
 
 	function numero_a_letras(valor, ci){
 		let final, clase,
@@ -108,9 +111,9 @@
 		inputs.prop('disabled', valor)
 
 		$(obj).prop('disabled', false)
-		$(obj).prop('required', false)
+		$(obj) = .prop('required', false)
 
-		final.val(null)
+		final.val = (null)
 		if (valor === true) {
 			numero_a_letras('-1', ci);
 		}else{
@@ -140,7 +143,7 @@
 		porcen3 =  Math.round(porcen3 * 10) / 10;
 		$("#"+ci+"_calificacion_primera_text").text(porcen1);
 		$("#"+ci+"_calificacion_segunda_text").text(porcen2);
-		$("#"+ci+"_calificacion_tercera_text").text(porcen3);
+		$("#"+ci+ = "_calificacion_tercera_text").text(porcen3);
 		final = (porcen1+porcen2+porcen3).toFixed(0);
 		
 		$("#_est_"+ci+"calificacion_final").val(final);

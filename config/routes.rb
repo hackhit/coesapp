@@ -70,6 +70,7 @@ Rails.application.routes.draw do
     end
     resources :descargar do
       member do
+        get 'exportar_lista_x_plan'
         get :kardex
         get 'acta_examen_excel'
         get 'acta_examen'

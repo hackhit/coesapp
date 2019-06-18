@@ -178,24 +178,30 @@ class Inscripcionseccion < ApplicationRecord
 		self.diferido?
 	end
 
-	def nota_final_para_csv
+	def d_or_r? 
+
+		tipo_calificacion_id.to_s.first
+
+		
+	end
+
+	def nota_final_para_csv reparacion = false
 		# Notas 00 a 20 / AP = Aplasado, A = Aprobado, PI = , SN = Sin nota, NP
-		if pi?
+		if self.pi?
 			return'00'
-		elsif retirado?
+		elsif self.retirado?
 			return 'RT'
-		elsif !calificacion_completa?
+		elsif self.sin_calificar?
 			return 'SN'
-		elsif seccion.asignatura.calificacion.eql? 0
-			if aprobada?
+		elsif self.seccion.asignatura.absoluta?
+			if self.aprobado?
 				return 'A'
 			else
 				return 'AP'
 			end
-		elsif reprobado?
-			return 'AP'
 		else
-			return colocar_nota.to_s
+
+			return self.colocar_nota_final.to_s
 		end
 
 	end
@@ -425,7 +431,7 @@ class Inscripcionseccion < ApplicationRecord
 			self.calificacion_final = nil
 			self.calificacion_posterior = nil
 		elsif self.calificacion_posterior
-			
+
 			if self.calificacion_posterior.to_i >= 10
 				self.estado = :aprobado
 			else

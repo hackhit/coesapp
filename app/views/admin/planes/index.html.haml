@@ -3,13 +3,13 @@
 = btn_add_success new_plan_path, 'Agregar Nuevo Plan de Estudio', 'Nuevo'
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-  %thead
+  %thead.text-center
     %tr
       %th= model_class.human_attribute_name(:id)
       %th Crétidos
       %th= model_class.human_attribute_name(:description)
       %th Escuela
-      %th Actividad
+      %th CSV
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @planes.each do |plan|
@@ -17,9 +17,16 @@
         %td= plan.id
         %td= plan.creditos
         %td= plan.descripcion
-        %td= plan.escuela.descripcion.titleize
-        %td=l plan.updated_at, format: :short
-        %td
+        %td= plan.escuela.descripcion.upcase
+        =#l plan.updated_at, format: :short
+        %td.text-center
+          -# plan.escuela.periodos.each do |periodo| 
+          - total_estudiantes = plan.estudiantes.joins(:inscripcionsecciones).joins(:secciones).where("secciones.periodo_id = ?", current_periodo.id).uniq.count
+          - if total_estudiantes > 0
+            = link_to "#{exportar_lista_x_plan_descargar_path(plan)}?periodo_id=#{current_periodo.id}", class: 'btn btn-sm btn-outline-success mx-2 mb-2 tooltip_btn', target: '_blank', 'data_toggle': :tooltip, title: "Total estudiantes: #{total_estudiantes}" do
+              = glyph 'download'
+              = current_periodo.id
+        %td.text-center
           = link_to edit_plan_path(plan), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
             = glyph 'pencil'
 
