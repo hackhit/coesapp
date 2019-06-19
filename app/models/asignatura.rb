@@ -56,6 +56,10 @@ class Asignatura < ApplicationRecord
 		programaciones.where(periodo_id: periodo_id).count > 0
 	end
 
+	def descripcion_id
+		"#{id}: #{descripcion}"
+	end
+
 	def descripcion_pci periodo_id
 
 		if self.pci? periodo_id

@@ -34,8 +34,8 @@ module SeccionesHelper
 		capture_haml do
 
 			haml_tag :span, class: "badge badge-info" do haml_concat 'Por Calificar' end
-			haml_tag :b, class: "tooltip-btn", 'data_toggle': 'tooltip' do 
-				haml_tag :span, class: "badge badge-bark" do haml_concat "#{seccion.total_sin_calificar}" end
+			haml_tag :b, class: "tooltip-btn", 'data_toggle': 'tooltip', title: 'Total Pendientes por calificar' do 
+				haml_tag :span, class: "badge badge-dark" do haml_concat "#{seccion.total_sin_calificar}" end
 			end
 		end
 		
