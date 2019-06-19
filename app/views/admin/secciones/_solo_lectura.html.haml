@@ -1,8 +1,9 @@
 
-%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+%table#tabla.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
 	%thead			
 		%tr
 			%th #
+			%th CI
 			%th Estudiante
 			- if @seccion.asignatura.numerica3?
 				%th TRIM I
@@ -19,8 +20,8 @@
 			- retirado = es.retirado?
 			%tr{class: es.tr_class_style_qualify}
 				%td= "#{i+1} (#{es.id})"
+				%td= es.estudiante_id
 				%td
-					= "(#{es.estudiante_id})"
 					- if current_admin
 						= link_to es.estudiante.usuario do
 							= raw es.nombre_estudiante_con_retiro_plus
@@ -43,3 +44,4 @@
 								= glyph :pencil
  
 = render 'admin/secciones/modal_cambio_calificacion' if current_admin
+
