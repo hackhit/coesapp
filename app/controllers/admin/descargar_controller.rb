@@ -16,8 +16,9 @@ module Admin
 
 		# PDFs
 		def listado_seccion
-			pdf = ExportarPdf.listado_seccion params[:id]
 			seccion = Seccion.find params[:id]
+
+			pdf = ExportarPdf.listado_seccion seccion, current_profesor
 			unless send_data pdf.render, filename: "listado_#{seccion.asignatura_id}_#{seccion.numero}.pdf", type: "application/pdf", disposition: "attachment"
 			flash[:mensaje] = "en estos momentos no se pueden descargar las notas, intentelo luego."
 			end

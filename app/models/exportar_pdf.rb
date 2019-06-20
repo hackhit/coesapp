@@ -3,8 +3,7 @@ class ExportarPdf
 	include Prawn::View
 
 
-	def self.listado_seccion seccion_id
-  		seccion = Seccion.find seccion_id
+	def self.listado_seccion seccion, profesor = false
   		asig = seccion.asignatura
 		# Variable Locales
 		pdf = Prawn::Document.new(top_margin: 20)
@@ -16,7 +15,11 @@ class ExportarPdf
 
 		pdf.move_down 10
 
-		pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
+		if profesor and seccion.profesores.ids.include? profesor.id 
+			pdf.text "Profesor Secundario: #{profesor.descripcion_usuario}", size: 10
+		else
+			pdf.text "Profesor: #{seccion.descripcion_profesor_asignado}", size: 10
+		end
 	 
 		pdf.move_down 10
 
