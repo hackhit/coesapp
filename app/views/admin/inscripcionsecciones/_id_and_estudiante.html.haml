@@ -1,6 +1,7 @@
-%td= "#{i+1} (#{es.id})"
+%td= "#{i+1}"
 %td
-	= "(#{es.estudiante_id})"
+	= es.estudiante_id
+%td
 	- if current_admin
 		= link_to es.estudiante.usuario do
 			= raw es.nombre_estudiante_con_retiro_plus

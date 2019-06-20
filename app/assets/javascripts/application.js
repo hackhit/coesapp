@@ -16,10 +16,10 @@
 //= require bootstrap-sprockets
 //= require select2-full
 
-//= require summernote/summernote-bs4.min
-//= require summernote-init
-//= require summernote/lang/summernote-es-ES
 //= require turbolinks
+//= require summernote/summernote-bs4.min
+//= require summernote/lang/summernote-es-ES
+//= require summernote-init
 //= require_tree .
 
 $(document).ready(function() {
