@@ -1,11 +1,11 @@
-- @noticias = Comentario.activos.publicos
-
 - if current_admin
-  - @noticias += Comentario.activos.admins
+  - @noticias = Comentario.activos.admins.order('created_at DESC')
 - elsif session[:estudiante_id]
-  - @noticias += Comentario.activos.estudiantes
+  - @noticias = Comentario.activos.estudiantes.order('created_at DESC')
 - elsif session[:profesor_id]
-  - @noticias += Comentario.activos.profesores
+  - @noticias = Comentario.activos.profesores.order('created_at DESC')
+- else
+  - @noticias = Comentario.activos.publicos.order('created_at DESC')
 
 - if @noticias.any?
   #newsCoes.breaking-news-ticker
