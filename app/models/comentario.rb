@@ -8,5 +8,4 @@ class Comentario < ApplicationRecord
 
 	enum estado: [:admins, :estudiantes, :profesores, :publicos]
 
-
 end

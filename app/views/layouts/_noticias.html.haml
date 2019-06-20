@@ -15,7 +15,8 @@
 
         - @noticias.each do |c|
           %li
-            %a= raw c.contenido # "#{c.to_a[2][1].message} | "
+            %a= raw como_noticia c
+
     .bn-controls
       %button
         %span.bn-arrow.bn-prev
