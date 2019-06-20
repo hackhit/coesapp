@@ -98,17 +98,17 @@ class VisitorsController < ApplicationController
 
         Su clave es:#{usuario.password}
 
-        Gracias por su colaboración. 
-        UCV La casa que vence las sombras.
+        Gracias por su colaboracion. 
+        UCV La casa que vence la sombra.
         Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com"
         unless m.blank?
 
-          system(".././sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACIÓN DE CONTRASEÑA COES-FHE' -m '#{texto}' -v")
+          system(".././sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACION DE CLAVE COES-FHE' -m '#{texto}' -v")
 
           system("echo 'Correo enviado! ----------------------------------'") 
 
-          # info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
           flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}, por favor revise su correo electrónico dentro de 5 minutos."
+          info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
         else
           flash[:error] = "El usuario no posee un correo registrado. Por favor contacte a las autoridades competentes para solvertar esta situación."
         end
