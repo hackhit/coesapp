@@ -1,15 +1,14 @@
 $(document).ready(function() {
 	$('.dataTable').DataTable({
-		// scrollY: 410,
-		// pageLength: 10,
-
+		scrollY: 410,
+		// pageLength: 100,
+		// lengthChange: false,
+		paging: false,
 		responsive: true,
 		/* dom: '<"html5buttons"B>lTfgitp',
 		buttons: [
-			{ extend: 'copy'},
-			{extend: 'csv'},
-			{extend: 'excel', title: 'ExampleFile'},
-			{extend: 'pdf', title: 'ExampleFile'},
+			{extend: 'excel', title: 'ExcelListaSeccion'},
+			{extend: 'pdf', title: 'PDFListaSeccion'}
 
 			{extend: 'print',
 				customize: function (win){
@@ -20,7 +19,7 @@ $(document).ready(function() {
 						.addClass('compact')
 						.css('font-size', 'inherit');
 			}
-			}
+			} 
 		], */
 		language: 
 			{
