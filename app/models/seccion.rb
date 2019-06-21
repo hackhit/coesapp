@@ -36,6 +36,22 @@ class Seccion < ApplicationRecord
 
 	# FUNCIONES:
 
+	def notas
+		self.inscripciones.each{|ins| p ins.calificacion_final}
+	end
+
+	def inscripciones
+		self.inscripcionsecciones
+	end
+
+	def promedio
+		self.inscripcionsecciones.average("calificacion_final").to_i#f.round(2)
+	end
+
+	def maximo
+		self.inscripcionsecciones.max("calificacion_final").to_i
+	end
+
 	def habilitada_para_calificadar_recientemente?
 		fecha_ultima_calificacion = Bitacora.where("tipo_objeto = 'Seccion' and id_objeto = #{self.id} and descripcion LIKE '%para calificar trimestral%'").last
 
@@ -51,6 +67,11 @@ class Seccion < ApplicationRecord
 		end
 	end
 
+
+	def tr_estilo_estado
+		self.calificada ? 'table-success' : ''
+
+	end
 
 	def recientemente_calificada?
 		fecha_ultima_calificacion = Bitacora.where("tipo_objeto = 'Seccion' and id_objeto = #{self.id} and descripcion LIKE '%Seccion Calificada%'").last

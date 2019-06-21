@@ -1,5 +1,30 @@
 module SeccionesHelper
 
+	def colocar_etiqueta valor, tipo, tooltip_title = nil
+		capture_haml do 
+			colocar_badge valor, tipo, tooltip_title
+		end
+	end
+
+	def colocar_badge valor, tipo, tooltip_title = nil
+		if tooltip_title
+			haml_tag :span, class: "badge badge-#{tipo} tooltip-btn", 'data_toggle': :tooltip, title: tooltip_title do
+				haml_concat "#{valor}"
+			end
+		else
+			haml_tag :span, class: "badge badge-#{tipo}" do haml_concat valor end
+		end
+
+	end
+
+	def colocar_etiqueta_califida seccion
+		if seccion.calificada
+			colocar_etiqueta 'Sí', 'success'
+		else
+			colocar_etiqueta 'No', 'danger'
+		end
+	end
+
 	def colocar_estado_seccion seccion
 		if seccion.calificada
 			return colocar_numeros_seccion seccion
@@ -13,30 +38,19 @@ module SeccionesHelper
 
 	def colocar_numeros_seccion seccion
 		capture_haml do
-			haml_tag :span, class: 'badge badge-secondary' do haml_concat 'Calificada' end
-			haml_tag :span, class: 'badge badge-info tooltip-btn', 'data_toggle': :tooltip, title: 'Inscritos' do
-				haml_concat "#{seccion.total_estudiantes}"
-			end
-			haml_tag :span, class: 'badge badge-success tooltip-btn', 'data_toggle': :tooltip, title: 'Aprobados' do
-				haml_concat "#{seccion.total_aprobados}"
-			end
-			haml_tag :span, class: 'badge badge-danger tooltip-btn', 'data_toggle': :tooltip, title: 'Aplazados (Pérdidas por Inasistencia)' do
-				haml_concat "#{seccion.total_reprobados} (#{seccion.total_perdidos} PI)"
-			end
-			haml_tag :span, class: 'badge badge-secondary tooltip-btn', 'data_toggle': :tooltip, title: 'Retirados' do
-				haml_concat "#{seccion.total_retirados}"
-			end
+			colocar_badge 'Calificada', 'secondary'
+			colocar_badge seccion.total_estudiantes, 'info', 'Inscritos'
+			colocar_badge seccion.total_aprobados, 'success', 'Aprobados'
+			colocar_badge seccion.total_reprobados, 'danger', 'Aplazados'
+			colocar_badge seccion.total_retirados, 'secondary', 'Retirados'
 		end
 
 	end
 
 	def colocar_por_calificar seccion
 		capture_haml do
-
-			haml_tag :span, class: "badge badge-info" do haml_concat 'Por Calificar' end
-			haml_tag :b, class: "tooltip-btn", 'data_toggle': 'tooltip', title: 'Total Pendientes por calificar' do 
-				haml_tag :span, class: "badge badge-dark" do haml_concat "#{seccion.total_sin_calificar}" end
-			end
+			colocar_badge 'Por Calificar', 'info'
+			colocar_badge seccion.total_sin_calificar, 'dark', 'Estudiantes Por Calificar'
 		end
 		
 	end
@@ -47,17 +61,16 @@ module SeccionesHelper
 		calificada_reciente = seccion.recientemente_calificada?
 
 		tipo_adicional = 'info'
-		size = 11
-		mensaje = 'Pendiente por calificar'
+
+		mensaje = 'Por calificar'
 		if seccion.tiene? 0 # Sin Calificar
-			mensaje = 'Pendiente por calificar 1er. Trimestre'
+			mensaje = 'Por calificar 1er. Trimestre'
 			tipo_adicional = 'warning'
 		elsif seccion.tiene_trimestres1?
 			if calificada_reciente
 				mensaje = '1er. Trimestre calificado'
 			else
-				size = 12
-				mensaje = 'Pendiente por calificar 2do. Trimestre'
+				mensaje = 'Por calificar 2do. Trimestre'
 				tipo_adicional = 'warning'
 			end
 			
@@ -65,15 +78,13 @@ module SeccionesHelper
 			if calificada_reciente
 				mensaje = '2do. Trimestre calificado'
 			else
-				size = 12
-				mensaje = 'Pendiente por calificar 3er. Trimestre'
+				mensaje = 'Por calificar 3er. Trimestre'
 				tipo_adicional = 'warning'
 
 			end
 		end
-		capture_haml do
-			haml_tag :span, class: "badge badge-#{tipo_adicional}", style: "font-size: #{size}px;" do haml_concat "#{mensaje}" end
-		end
+
+		colocar_etiqueta mensaje, tipo_adicional
 		
 	end
 

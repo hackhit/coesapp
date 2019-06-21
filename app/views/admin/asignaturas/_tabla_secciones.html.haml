@@ -7,5 +7,4 @@
 		%td.align-middle.text-center= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: seccion}
 		%td.align-middle= colocar_estado_seccion seccion
 		- if current_admin #and current_admin.altos? 
-			%td.align-middle
-				= render partial: 'admin/secciones/panel_detalle_opciones', locals: {seccion: seccion}
+			%td.align-middle= render partial: 'admin/secciones/panel_detalle_opciones', locals: {seccion: seccion}

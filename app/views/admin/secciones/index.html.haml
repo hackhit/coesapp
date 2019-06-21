@@ -1,81 +1,107 @@
-.border.p-md-3
-  .col-md-5
-    = text_field_tag 'filtro', nil ,{onkeyup: "filtrar();", placeholder: "Filtrar Contenido...", class: 'form-control form-control-sm'}
-  .col-md-3
-    %span#text.align-middle
 
-
-%seccion.content-area
-  .table-area
-    %table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
-      %thead#ordinal-thead
-        %tr
-          %th{style: 'width: 25px;'} #
-          %th Escuela
-          %th Departamento
-          %th Código
-          %th Asignatura
-          %th Profesor
-          %th{style: 'width: 75px;'} Total/Insc
-          %th{style: 'width: 30px;'} Califi
-          %th{style: 'width: 150px;'} Opciones
-      %tbody
-        - @secciones.each do |seccion|
-          %tr.filtrables
-            %td= seccion.numero
-            %td= seccion.asignatura.escuela.descripcion
-            %td= seccion.asignatura.departamento.descripcion
-            %td= seccion.asignatura.id_uxxi
-            %td= seccion.asignatura.descripcion
+%seccion
+  %table#tableSeccion.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
+    %thead#ordinal-thead
+      %tr
+        %th{style: 'width:15px;'} #
+        %th{style: 'max-width:220px;'} Escuela
+        %th{style: 'width:100px;'} Código
+        %th{style: 'width:15px;'} Sec
+        %th Asignatura
+        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Inscritos'} Ins
+        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: '¿Calificada?'} Cal
+        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aprobados'} Apr
+        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aplazados'} Apl
+        %th{style: 'width:10px;'} PI
+        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Retirados'} Ret
+        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Promedio de Calificaciones'} Prom
+    %tbody
+      - @secciones.each_with_index do |seccion, i| 
+        %tr{class: seccion.tr_estilo_estado}
+          %td= i + 1
+          %td= seccion.escuela.descripcion
+          %td= seccion.asignatura_id
+          %td= seccion.numero
+          %td= seccion.asignatura.descripcion
+          %td= seccion.total_estudiantes
+          %td= colocar_etiqueta_califida seccion
+          - if seccion.calificada
+            %td= colocar_etiqueta seccion.total_aprobados, 'success'
+            %td= colocar_etiqueta seccion.total_reprobados, 'danger'
+            %td= colocar_etiqueta seccion.total_perdidos, 'danger'
+            %td= colocar_etiqueta seccion.total_retirados, 'secondary'
+            %td= colocar_etiqueta seccion.promedio, 'info'
+          - else
             %td
-              = seccion.descripcion_profesor_asignado
-              = link_to 'javascript:void(0)', onclick: "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Cambiar para #{seccion.descripcion}');$('#editar_profesor').modal();" do
-                .text-success= glyph :pencil
-
-
-            %td= seccion.capacidad_vs_inscritos
             %td
-              = seccion.calificada_valor
             %td
-              - if seccion.estudiantes.count < 1
+            %td
+            %td
+
+          - if false
+            %td= colocar_estado_seccion seccion
+            %td
+              - if false #seccion.estudiantes.count < 1
                 %b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
                   = link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm mr-md-2 float-right', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
                     = glyph 'trash'
 
-              -if seccion.calificada
+              -if false #seccion.calificada
                 = link_to notas_seccion_descargar_path(seccion.id), class: "btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2" do
                   = glyph 'download'
 
-              = link_to listado_seccion_descargar_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
-                = glyph 'download'
-                X
+              =# link_to listado_seccion_descargar_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
+              =# glyph 'download'
 
-              = link_to seccion_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-primary float-right" do
-                = glyph 'info-sign'
+              =# link_to seccion_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-primary float-right" do
+              =# glyph 'info-sign'
 
-
-            =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
-            =# glyph :plus
+              =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
+              =# glyph :plus
       
 
-= render 'admin/secciones/modal_seleccionar_profesor'
+=# render 'admin/secciones/modal_seleccionar_profesor'
 =# link_to t('.new', default: t("helpers.links.new")), new_seccion_path, class: 'btn btn-primary'
 
 :javascript
 
-  function filtrar() {
-    var filtro = $('#filtro').val().toLowerCase() 
-    var total_mach = 0
-    var ids = ""
-    $("tr.filtrables").each(function(){
-      var temp = $(this).text().toLowerCase();
-      if (temp.match(filtro) == null) {
-        $(this).hide();
-      }else {
-        $(this).show();
-        total_mach += 1;
-        ids = ids + $(this).find('td').first().text() + ",";
-      }
-      $('#text').text(total_mach+" coincidencias");
+
+  $(document).ready(function() {
+    $('#tableSeccion').DataTable({
+      scrollY: 410,
+      // pageLength: 100,
+      // lengthChange: false,
+      paging: false,
+      dom: '<"html5buttons"B>lTfgitp',
+      buttons: [
+        {extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: 'Excel Lista Secciones', className: 'btn btn-sm btn-outline-info'},
+        {extend: 'pdf', text: "<span class='glyphicon glyphicon-download'></span> PDF", title: 'PDF Lista Secciones', className: 'btn btn-sm btn-outline-info'} 
+      ],
+      language: 
+        {
+          "sProcessing":     "Procesando...",
+          "sLengthMenu":     "Mostrar _MENU_ registros",
+          "sZeroRecords":    "No se encontraron resultados",
+          "sEmptyTable":     "Ningún dato disponible en esta tabla",
+          "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+          "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+          "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+          "sInfoPostFix":    "",
+          "sSearch":         "Buscar:",
+          "sUrl":            "",
+          "sInfoThousands":  ",",
+          "sLoadingRecords": "Cargando...",
+          "oPaginate": {
+            "sFirst":    "Primero",
+            "sLast":     "Último",
+            "sNext":     "Siguiente",
+            "sPrevious": "Anterior"
+          },
+          "oAria": {
+            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+          }
+        }
+
     });
-  };
+  } );
