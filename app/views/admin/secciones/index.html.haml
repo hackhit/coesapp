@@ -1,5 +1,7 @@
 
 .border.p-3
+  .alert#message{role: :alert, style: 'display:none'} 
+    %button.close{"aria-hidden": true, "data-dismiss": :alert, type: :button} &times;
   %seccion
     %table#tableSeccion.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
       %thead#ordinal-thead
@@ -9,7 +11,7 @@
 
           %th.text-center{style: 'width:100px;'} Código
           %th Asignatura
-          %th{style: 'width:15px;'} Sec
+          %th{style: 'width:30px;'} Sec
           %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Inscritos/Notas'} Ins
           %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: '¿Calificada?'} Cal
           %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aprobados'} Apr
@@ -19,12 +21,17 @@
           %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Promedio de Calificaciones'} Prom
       %tbody
         - @secciones.each_with_index do |seccion, i| 
-          %tr{class: seccion.tr_estilo_estado}
+          %tr{class: seccion.tr_estilo_estado, id: "tr#{seccion.id}"}
             %td.text-right= i + 1
             %td{escuela_id: seccion.escuela.id}= seccion.escuela.descripcion
             %td.text-center= seccion.asignatura_id
             %td= seccion.asignatura.descripcion
-            %td.text-center= link_to seccion.numero, seccion, target: '_black'
+            %td
+              = link_to seccion.numero, seccion, target: '_black'
+              - unless seccion.inscripciones.any?
+                = link_to 'javascript:void(0)', class: 'removeSeccion', onclick: "removeSeccion(#{seccion.id})" do 
+                  %span.text-danger= glyph 'trash'
+
             %td.text-center= "#{seccion.total_estudiantes}/#{seccion.total_calificados}"
             %td.text-center= colocar_etiqueta_califida seccion
             - if seccion.calificada
@@ -80,8 +87,38 @@
 
 :javascript
 
+  function removeSeccion(id) {
+    let conf = confirm('Esta acción es irreversible, ¿Está Seguro?')
+    if (conf === true) {
+
+      $.ajax( {
+        dataType: 'json',
+        url: `#{secciones_path}/${id}`,
+        method: 'DELETE',
+        success: function () {
+          document.getElementById(`tr${id}`).remove()
+          $('#message').removeClass('alert-danger')
+          $('#message').addClass('alert-info')
+          $('#message').html(`Seccion Eliminada con éxito`)
+          //message.classList.add('alert-info')
+          //message.innrHTML(`Seccion Eliminada con éxito <${json}>`)
+        },
+        error: function () {
+          $('#message').removeClass('alert-info')
+          $('#message').addClass('alert-danger')
+          $('#message').html(`No se pudo eliminar la sección. Inténtelo de nuevo o notifique del error al administrador del sitio`)
+          //message.classList.add('alert-danger')
+          //message.innerHTML(`No se pudo eliminar la sección. Inténtelo de nuevo o notifique del error al administrador del sitio`)
+        }
+      });
+
+      $('#message').show()
+
+    }
+  }
 
   $(document).ready(function() {
+
     $('#tableSeccion').DataTable({
       scrollY: 410,
       // pageLength: 100,
