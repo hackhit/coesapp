@@ -18,7 +18,7 @@ module Admin
         @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
       else
         @escuelas = current_admin.escuelas
-        @secciones = Seccion.joins(:asignatura).del_periodo(current_periodo.id).limit(30).order('asignaturas.descripcion ASC')#Seccion.all
+        @secciones = Seccion.joins(:asignatura).del_periodo(current_periodo.id).order('asignaturas.descripcion ASC')#Seccion.all
         @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos')
       end
     end
