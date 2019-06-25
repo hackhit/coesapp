@@ -24,7 +24,7 @@
             %td{escuela_id: seccion.escuela.id}= seccion.escuela.descripcion
             %td.text-center= seccion.asignatura_id
             %td= seccion.asignatura.descripcion
-            %td.text-center= link_to seccion.numero, "#{seccion}?redirect='seccion'", target: '_black'
+            %td.text-center= link_to seccion.numero, seccion, target: '_black'
             %td.text-center= "#{seccion.total_estudiantes}/#{seccion.total_calificados}"
             %td.text-center= colocar_etiqueta_califida seccion
             - if seccion.calificada
