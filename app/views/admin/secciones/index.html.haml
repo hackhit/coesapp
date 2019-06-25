@@ -6,23 +6,23 @@
         %th{style: 'width:15px;'} #
         %th{style: 'max-width:220px;'} Escuela
         %th{style: 'width:100px;'} Código
-        %th{style: 'width:15px;'} Sec
         %th Asignatura
+        %th{style: 'width:15px;'} Sec
         %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Inscritos'} Ins
         %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: '¿Calificada?'} Cal
         %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aprobados'} Apr
         %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aplazados'} Apl
         %th{style: 'width:10px;'} PI
         %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Retirados'} Ret
-        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Promedio de Calificaciones'} Prom
+        %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Promedio de Calificaciones'} Prom
     %tbody
       - @secciones.each_with_index do |seccion, i| 
         %tr{class: seccion.tr_estilo_estado}
           %td= i + 1
           %td= seccion.escuela.descripcion
           %td= seccion.asignatura_id
-          %td= seccion.numero
           %td= seccion.asignatura.descripcion
+          %td= seccion.numero 
           %td= seccion.total_estudiantes
           %td= colocar_etiqueta_califida seccion
           - if seccion.calificada
