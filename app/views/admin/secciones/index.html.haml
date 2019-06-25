@@ -67,20 +67,7 @@
 
                 =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
                 =# glyph :plus
-      
-      %tfoot
-        %th
-        %th
-        %th
-        %th 
-        %th 
-        %th 
-        %th 
-        %th 
-        %th 
-        %th 
-        %th 
-        %th 
+
 
 =# render 'admin/secciones/modal_seleccionar_profesor'
 =# link_to t('.new', default: t("helpers.links.new")), new_seccion_path, class: 'btn btn-primary'
@@ -159,8 +146,8 @@
         initComplete: function () {
             this.api().columns(1).every( function () {
                 var column = this;
-                var select = $('<select style="width: 220px;" class="form-control form-control-sm"><option value="">Sel. Escuela</option></select>')
-                    .appendTo( $(column.footer()).empty() )
+                var select = $('<select style="width: 220px;" class="form-control form-control-sm"><option value="">Filtrar Escuela</option></select>')
+                    .insertAfter( $('#tableSeccion_info') )
                     .on( 'change', function () {
                         var val = $.fn.dataTable.util.escapeRegex(
                             $(this).val()
