@@ -36,6 +36,10 @@ class Seccion < ApplicationRecord
 
 	# FUNCIONES:
 
+	def total_calificados
+	self.inscripciones.con_calificacion.count
+	end
+
 	def notas
 		self.inscripciones.each{|ins| p ins.calificacion_final}
 	end

@@ -1,64 +1,79 @@
 
-%seccion
-  %table#tableSeccion.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
-    %thead#ordinal-thead
-      %tr
-        %th{style: 'width:15px;'} #
-        %th{style: 'max-width:220px;'} Escuela
-        %th{style: 'width:100px;'} Código
-        %th Asignatura
-        %th{style: 'width:15px;'} Sec
-        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Inscritos'} Ins
-        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: '¿Calificada?'} Cal
-        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aprobados'} Apr
-        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aplazados'} Apl
-        %th{style: 'width:10px;'} PI
-        %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Retirados'} Ret
-        %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Promedio de Calificaciones'} Prom
-    %tbody
-      - @secciones.each_with_index do |seccion, i| 
-        %tr{class: seccion.tr_estilo_estado}
-          %td= i + 1
-          %td= seccion.escuela.descripcion
-          %td= seccion.asignatura_id
-          %td= seccion.asignatura.descripcion
-          %td= seccion.numero 
-          %td= seccion.total_estudiantes
-          %td= colocar_etiqueta_califida seccion
-          - if seccion.calificada
-            %td= colocar_etiqueta seccion.total_aprobados, 'success'
-            %td= colocar_etiqueta seccion.total_reprobados, 'danger'
-            %td= colocar_etiqueta seccion.total_perdidos, 'danger'
-            %td= colocar_etiqueta seccion.total_retirados, 'secondary'
-            %td= colocar_etiqueta seccion.promedio, 'info'
-          - else
-            %td
-            %td
-            %td
-            %td
-            %td
+.border.p-3
+  %seccion
+    %table#tableSeccion.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
+      %thead#ordinal-thead
+        %tr
+          %th{style: 'width:15px;'} #
+          %th{style: 'max-width:220px;'} Escuela
 
-          - if false
-            %td= colocar_estado_seccion seccion
-            %td
-              - if false #seccion.estudiantes.count < 1
-                %b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
-                  = link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm mr-md-2 float-right', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
-                    = glyph 'trash'
+          %th.text-center{style: 'width:100px;'} Código
+          %th Asignatura
+          %th{style: 'width:15px;'} Sec
+          %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Inscritos/Notas'} Ins
+          %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: '¿Calificada?'} Cal
+          %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aprobados'} Apr
+          %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Aplazados'} Apl
+          %th{style: 'width:10px;'} PI
+          %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Retirados'} Ret
+          %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Promedio de Calificaciones'} Prom
+      %tbody
+        - @secciones.each_with_index do |seccion, i| 
+          %tr{class: seccion.tr_estilo_estado}
+            %td.text-right= i + 1
+            %td{escuela_id: seccion.escuela.id}= seccion.escuela.descripcion
+            %td.text-center= seccion.asignatura_id
+            %td= seccion.asignatura.descripcion
+            %td.text-center= link_to seccion.numero, "#{seccion}?redirect='seccion'", target: '_black'
+            %td.text-center= "#{seccion.total_estudiantes}/#{seccion.total_calificados}"
+            %td.text-center= colocar_etiqueta_califida seccion
+            - if seccion.calificada
+              %td.text-right= colocar_etiqueta seccion.total_aprobados, 'success'
+              %td.text-right= colocar_etiqueta seccion.total_reprobados, 'danger'
+              %td.text-right= colocar_etiqueta seccion.total_perdidos, 'danger'
+              %td.text-right= colocar_etiqueta seccion.total_retirados, 'secondary'
+              %td.text-right= colocar_etiqueta seccion.promedio, 'info'
+            - else
+              %td
+              %td
+              %td
+              %td
+              %td
 
-              -if false #seccion.calificada
-                = link_to notas_seccion_descargar_path(seccion.id), class: "btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2" do
-                  = glyph 'download'
+            - if false
+              %td= colocar_estado_seccion seccion
+              %td
+                - if false #seccion.estudiantes.count < 1
+                  %b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
+                    = link_to "", {href: seccion_path(seccion), class: 'btn btn-danger btn-sm mr-md-2 float-right', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
+                      = glyph 'trash'
 
-              =# link_to listado_seccion_descargar_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
-              =# glyph 'download'
+                -if false #seccion.calificada
+                  = link_to notas_seccion_descargar_path(seccion.id), class: "btn btn-sm btn-outline-success float-right mr-md-2 mb-md-2" do
+                    = glyph 'download'
 
-              =# link_to seccion_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-primary float-right" do
-              =# glyph 'info-sign'
+                =# link_to listado_seccion_descargar_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-success float-right" do
+                =# glyph 'download'
 
-              =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
-              =# glyph :plus
+                =# link_to seccion_path(seccion.id), class: "mr-md-2 btn btn-sm btn-outline-primary float-right" do
+                =# glyph 'info-sign'
+
+                =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
+                =# glyph :plus
       
+      %tfoot
+        %th
+        %th
+        %th
+        %th 
+        %th 
+        %th 
+        %th 
+        %th 
+        %th 
+        %th 
+        %th 
+        %th 
 
 =# render 'admin/secciones/modal_seleccionar_profesor'
 =# link_to t('.new', default: t("helpers.links.new")), new_seccion_path, class: 'btn btn-primary'
@@ -101,7 +116,30 @@
             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
           }
+        },
+
+
+        initComplete: function () {
+            this.api().columns(1).every( function () {
+                var column = this;
+                var select = $('<select style="width: 220px;" class="form-control form-control-sm"><option value="">Sel. Escuela</option></select>')
+                    .appendTo( $(column.footer()).empty() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+ 
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
         }
+
 
     });
   } );

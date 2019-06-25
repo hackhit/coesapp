@@ -61,6 +61,8 @@ class Inscripcionseccion < ApplicationRecord
 
 	scope :secciones_creadas, -> { group(:seccion_id).count }
 
+	scope :con_calificacion, -> {where('estado >= 1 and estado <= 3')}
+
 # Inscripcionseccion.joins(:seccion).joins(:estudiante).where("estudiantes.escuela_id": 'IDIO', "secciones.periodo_id": '2018-02A').group(:estudiante_id).count.count
 
 
