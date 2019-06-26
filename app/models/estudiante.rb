@@ -41,6 +41,10 @@ class Estudiante < ApplicationRecord
 	# 	end
 	# end
 
+	def inscripciones
+		inscripcionsecciones
+	end
+
 	def tiene_alguna_inscripcion?
 		inscripcionsecciones.count > 0
 	end

@@ -10,7 +10,28 @@
 
 				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección del periodo actual: #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", "estudiante_seccion_#{@escuela.id}"
 				= render partial: '/admin/inscripcionsecciones/form'
-	%b Registro de Historial Académico:
+	%h5.titulo.text-center Registro de Historial Académico:
+	%b Resumen Académico:
+	%table.table
+		%tr
+			%th Créditos Inscritos
+			%th= @inscripciones.total_creditos_inscritos
+		%tr
+			%th Créditos Cursados
+			%th= @inscripciones.cursadas.total_creditos_inscritos
+		%tr
+			%th Créditos Aprobados (Sin Equivalencias)
+			%th= @inscripciones.sin_equivalencias.aprobadas.total_creditos_inscritos
+		%tr
+			%th Créditos Equivalencia
+			%th= @inscripciones.por_equivalencia.total_creditos_inscritos
+		%tr
+			%th Total Créditos Aprobados
+			%th= @inscripciones.aprobadas.total_creditos_inscritos
+
+		%tr
+			%th Eficiencia
+			%th= 
 
 	#accordion
 		- @periodos.each do |periodo|

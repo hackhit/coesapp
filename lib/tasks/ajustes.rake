@@ -1,3 +1,26 @@
+desc 'Actualizacion para asignar a Inscripcionseccion una escuelaestudiante'
+
+task :asociar_inscripcionseccion_a_escuelaestudiante => :environment do
+
+	p 'Iniciando actualizacion de asociacion entre inscripciones y escuelaestudiante (grado)...'
+	begin
+		Inscripcionseccion.all.each do |ins|
+			escuela_id = ins.pci_escuela_id ? ins.pci_escuela_id : ins.escuela.id
+
+			estudiante_id = ins.estudiante_id
+			ee = Escuelaestudiante.where(escuela_id: escuela_id, estudiante_id: estudiante_id)
+
+			ins.escuelaestudiante_id = ee.id
+			ins.save
+
+		end		
+	rescue Exception => e
+		p e
+	end
+	p 'Finalizado'
+end
+
+
 desc "Actualizacion de inscripciones_secciones a la estructura nueva"
 task :ajuste_inscripcionsecciones => :environment do
 	puts 'Iniciando Ajuste a Inscripciones Secciones con valores en TipoEstadoCalificacion...'

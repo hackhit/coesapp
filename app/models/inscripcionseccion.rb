@@ -9,12 +9,13 @@ class Inscripcionseccion < ApplicationRecord
 	# ASOCIACIONES: 
 	belongs_to :seccion
 	belongs_to :estudiante, primary_key: :usuario_id
-
+	belongs_to :escuelaestudiante
 
 	has_one :asignatura, through: :seccion
 	has_one :periodo, through: :seccion
 
 	has_one :escuela, through: :asignatura
+
 	belongs_to :pci_escuela, foreign_key: 'pci_escuela_id', class_name: 'Escuela', optional: true
 
 	# has_many :programaciones, through: :asignatura, source: :periodo
@@ -46,7 +47,15 @@ class Inscripcionseccion < ApplicationRecord
 	# scope :en_reparacion, -> {joins(:seccion).where "secciones.tipo_seccion_id = ?", TipoSeccion::REPARACION}
 	scope :en_reparacion, -> {where tipo_calificacion_id.eql? REPARACION}
 	# scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
+
 	scope :no_retirados, -> {where "estado != 3"}
+	scope :cursadas, -> {where "estado != 3"}
+	scope :aprobadas, -> {where "estado = 1"}
+	scope :sin_equivalencias, -> {joins(:seccion).where "secciones.tipo_seccion_id != 'EI' and secciones.tipo_seccion_id != 'EE'"} 
+	scope :por_equivalencia, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EI' or secciones.tipo_seccion_id = 'EE'"}
+	scope :por_equivalencia_interna, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EI'"}
+	scope :por_equivalencia_externa, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EE'"}
+	scope :total_creditos_inscritos, -> {joins(:asignatura).sum('asignaturas.creditos')}
 
 	scope :estudiantes_inscritos_del_periodo, lambda { |periodo_id| joins(:seccion).where("secciones.periodo_id": periodo_id).group(:estudiante_id).count } 
 
@@ -62,6 +71,7 @@ class Inscripcionseccion < ApplicationRecord
 	scope :secciones_creadas, -> { group(:seccion_id).count }
 
 	scope :con_calificacion, -> {where('estado >= 1 and estado <= 3')}
+
 
 # Inscripcionseccion.joins(:seccion).joins(:estudiante).where("estudiantes.escuela_id": 'IDIO', "secciones.periodo_id": '2018-02A').group(:estudiante_id).count.count
 
