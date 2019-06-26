@@ -6,7 +6,6 @@
     %table#tableSeccion.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
       %thead#ordinal-thead
         %tr
-          %th{style: 'width:15px;'} #
           %th{style: 'max-width:220px;'} Escuela
 
           %th.text-center{style: 'width:100px;'} Código
@@ -20,9 +19,8 @@
           %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: 'Retirados'} Ret
           %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Promedio de Calificaciones'} Prom
       %tbody
-        - @secciones.each_with_index do |seccion, i| 
+        - @secciones.each do |seccion| 
           %tr{class: seccion.tr_estilo_estado, id: "tr#{seccion.id}"}
-            %td.text-right= i + 1
             %td{escuela_id: seccion.escuela.id}= seccion.escuela.descripcion
             %td.text-center= seccion.asignatura_id
             %td= seccion.asignatura.descripcion
@@ -113,8 +111,8 @@
       paging: false,
       dom: '<"html5buttons"B>lTfgitp',
       buttons: [
-        {extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: 'Excel Lista Secciones', className: 'btn btn-sm btn-outline-info'},
-        {extend: 'pdf', text: "<span class='glyphicon glyphicon-download'></span> PDF", title: 'PDF Lista Secciones', className: 'btn btn-sm btn-outline-info'} 
+        {extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `Excel Lista Secciones #{current_periodo.id}`, className: 'btn btn-sm btn-outline-info'},
+        {extend: 'pdf', text: "<span class='glyphicon glyphicon-download'></span> PDF", title: `PDF Lista Secciones #{current_periodo.id}`, className: 'btn btn-sm btn-outline-info'} 
       ],
       language: 
         {
