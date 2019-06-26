@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$('.dataTable').DataTable({
-		scrollY: 410,
+		scrollY: 250,
 		// pageLength: 100,
 		// lengthChange: false,
 		paging: false,
