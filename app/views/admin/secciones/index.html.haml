@@ -142,7 +142,7 @@
 
 
         initComplete: function () {
-            this.api().columns(1).every( function () {
+            this.api().columns(0).every( function () {
                 var column = this;
                 var select = $('<select style="width: 220px;" class="form-control form-control-sm"><option value="">Filtrar Escuela</option></select>')
                     .insertAfter( $('#tableSeccion_info') )
