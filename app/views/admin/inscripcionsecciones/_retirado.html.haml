@@ -3,14 +3,12 @@
 - elsif es.asignatura.numerica?
 	- colspan = 3 
 - elsif es.asignatura.numerica3?
-	- if current_admin
-		- colspan = 5
-	- elsif es.sin_calificar?
+	- if es.sin_calificar?
 		- colspan = 2
 	- elsif es.trimestre1?
 		- colspan = 3
 	- else
 		- colspan = 5
-
+- colspan += 2 if current_admin and !es.asignatura.absoluta?
 %td{colspan: colspan}
 

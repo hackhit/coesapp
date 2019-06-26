@@ -107,27 +107,29 @@ module Admin
     def calificar
       @estudiantes = params[:est]
       error = false
-      @estudiantes.each_pair do |ci,valores|
-        @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).first
-        @valores = valores
-        if @seccion.asignatura.absoluta?
-          calificar_absoluta
-        elsif @valores['pi']
-          @inscripcionseccion.tipo_calificacion_id = TipoCalificacion::PI
-        elsif @seccion.asignatura.numerica3?
-          calificar_numerica3
-        elsif @seccion.asignatura.numerica?
-          calificar_numerica
-        end
+      if @estudiantes
+        @estudiantes.each_pair do |ci,valores|
+          @inscripcionseccion = @seccion.inscripcionsecciones.where(estudiante_id: ci).first
+          @valores = valores
+          if @seccion.asignatura.absoluta?
+            calificar_absoluta
+          elsif @valores['pi']
+            @inscripcionseccion.tipo_calificacion_id = TipoCalificacion::PI
+          elsif @seccion.asignatura.numerica3?
+            calificar_numerica3
+          elsif @seccion.asignatura.numerica?
+            calificar_numerica
+          end
 
-        if @inscripcionseccion.save
-          info_bitacora "Calificado Estudiante: #{@inscripcionseccion.estudiante.descripcion}, Seccion id: (#{@inscripcionseccion.seccion_id})" , Bitacora::ACTUALIZACION, @inscripcionseccion
-        else
-          error = true
-          flash[:danger] = "No se pudo guardar la calificación: #{@inscripcionseccion.errors.full_messages.to_sentence}."
-          break
-        end
+          if @inscripcionseccion.save
+            info_bitacora "Calificado Estudiante: #{@inscripcionseccion.estudiante.descripcion}, Seccion id: (#{@inscripcionseccion.seccion_id})" , Bitacora::ACTUALIZACION, @inscripcionseccion
+          else
+            error = true
+            flash[:danger] = "No se pudo guardar la calificación: #{@inscripcionseccion.errors.full_messages.to_sentence}."
+            break
+          end
 
+        end
       end
 
       unless error
