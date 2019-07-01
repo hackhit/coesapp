@@ -1,4 +1,4 @@
-
+.alert#message{role: :alert, style: 'display:none;position:absolute;left:50px; padding:5px; margin-top:15px'} 
 %br
 = form_tag(calificar_seccion_path) do
 	= hidden_field_tag "id", @seccion.id
@@ -64,14 +64,29 @@
 
 
 	window.onload = function() {
+
+		$('.numerica3').change(function(){
+			let id = $(this).attr('id_obj'),
+			tipo = $(this).attr('tipo_calificacion_id'),
+			cali = $(this).attr('calificacion_parcial')
+			let val = $(this).val() ? $(this).val() : -1
+
+			let values = `{"inscripcionseccion_id": ${id}, "valor": ${val}, "tipo_calificacion_id": "${tipo}", "calificacion_parcial": "${cali}" }`
+			console.log(values)
+			send_data(values)
+
+		});
+
 		$('.calificable').change(function(){
+
 			let id = $(this).attr('id_obj'),
 			tipo = $(this).attr('tipo_calificacion_id'),
 			val = $(this).val(),
-			values = `{"inscripcionseccion_id": ${id}, "calificacion": ${val}, "tipo_calificacion_id": "${tipo}"}`
+			values = `{"inscripcionseccion_id": ${id}, "calificacion_final": ${val}, "tipo_calificacion_id": "${tipo}"}`
 
 			console.log(values)
 			send_data(values)
+			console.log('finalmente calificada')
 
 		});
 
@@ -114,21 +129,36 @@
 			beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
 		})
 		.done(function( msg ) {
-			//$(`#reg_${msg}`).animate({backgroundColor: "#a7bf51"}, 800);
 
-
-			//$(`#reg_${msg}`).addClass(`table-success`)
-			//$(`#reg_${msg}`).delay(1200).animate({"background-color": "#c3e6cb"})
-
-			
-			//$(`#reg_${msg}`).delay(2000).removeClass(`table-success`) 
-			//removeClass(`table-success`)
-			//$('#mensaje').html(`<div class="alert alert-success">${msg}</div>`);
-			//$('#mensaje').hide(3000);
+			if (msg == true) {
+				messageSendData('alert-success', 'Calificación dínamica guardada')
+			}else{
+				messageSendData('alert-danger', 'Ocurrió un problema al intentar guardar. Por favor, intnete más tarde')
+			}
 		});
 
 	}
 	
+	function messageSendData(clase, msg) {
+		let elem = $('#message')
+
+		elem.removeClass()
+
+		elem.addClass(`alert ${clase}`)
+		elem.html(msg)
+		
+		elem.fadeIn()
+		elem.fadeOut(2000)
+
+		/*
+		setTimeout(function(){
+		elem.parentNode.removeChild(elem);
+		},5000);
+		document.body.appendChild(elem);
+		*/
+
+	}
+
 	function resetear_numericos(valor, ci){
 
 		if (valor === true) {
@@ -290,37 +320,50 @@
 
 
 	function calcular(p1,p2,p3,ci){
-		let nota1, nota2, nota3, porcen1, porcen2, porcen3, final, cali_final, values;
 		
-		nota1 = $(`#_est_${ci}primera_calificacion`).val()
-		nota2 = $(`#_est_${ci}segunda_calificacion`).val()
+		
+		let nota1 = $(`#_est_${ci}primera_calificacion`).val(),
+		nota2 = $(`#_est_${ci}segunda_calificacion`).val(),
 		nota3 = $(`#_est_${ci}tercera_calificacion`).val()
 
-		porcen1 = (p1*nota1)/100;
-		porcen1 =  Math.round(porcen1 * 10) / 10;
-		porcen2 = (p2*nota2)/100;
-		porcen2 =  Math.round(porcen2 * 10) / 10;
-		porcen3 = (p3*nota3)/100;
-		porcen3 =  Math.round(porcen3 * 10) / 10;
-		$("#"+ci+"_calificacion_primera_text").text(porcen1);
-		$("#"+ci+"_calificacion_segunda_text").text(porcen2);
-		$("#"+ci+"_calificacion_tercera_text").text(porcen3);
-		final = (porcen1+porcen2+porcen3).toFixed(0);
-		
-		cali_final = $("#_est_"+ci+"calificacion_final")
-		cali_final.val(final)
-		id = cali_final.attr('id_obj')
+		nota1 = parseFloat(nota1)
+		nota2 = parseFloat(nota2)
+		nota3 = parseFloat(nota3)
 
-		if (nota1 == '') {nota1 = 0}
-		if (nota2 == '') {nota2 = 0}
-		if (nota3 == '') {nota3 = 0}
 
-		values = `{"inscripcionseccion_id": ${id}, "calificacion": ${final}, "parciales": [${nota1},${nota2},${nota3}]}`
+		if (nota1 && nota2 && nota3) {
 
-		console.log(values)
+			let percent1 = ((p1*nota1)/100).toFixed(1)
+			percent1 = Math.round(percent1 * 10) / 10
 
-		send_data(values)
-		numero_a_letras(final, ci)
+			let percent2 = ((p2*nota2)/100).toFixed(1)
+			percent2 = Math.round(percent2 * 10) / 10
+
+			let percent3 = ((p3*nota3)/100).toFixed(1)
+			percent3 = Math.round(percent3 * 10) / 10
+
+			let final = (percent1 + percent2 + percent3).toFixed(0);
+			
+			let final_field = $("#_est_"+ci+"calificacion_final")
+			
+			final_field.val(final)
+			
+			let id = final_field.attr('id_obj'),
+			values = `{"inscripcionseccion_id": ${id}, "calificacion_final": ${final}}`
+
+			numero_a_letras(final, ci)
+
+			send_data(values)
+			console.log(values)
+			console.log('finalmente calificada')
+
+		}else{
+			$("#_est_"+ci+"calificacion_final").val('')
+			$(`#reg_${ci}`).removeClass().addClass('')
+			$(`#_${ci}calificacion_en_letras`).val('CALIFICACIÓN PENDIENTE')
+			
+		}
+
 	}
 
 
