@@ -231,6 +231,39 @@ class ExportarPdf
 		pdf.text "<b>Alumno:</b> #{estudiante.usuario.apellido_nombre.upcase}", size: 9, inline_format: true
 		pdf.move_down 10
 
+
+		cursados = inscripcionsecciones.total_creditos_cursados
+		aprobados = inscripcionsecciones.total_creditos_aprobados
+		eficiencia = (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
+
+		aux = inscripcionsecciones.no_absolutas.aprobadas
+		promedio_simple_aprob = aux.count > 0 ? aux.promedio.round(4) : 0.0
+
+		aux = inscripcionsecciones.no_absolutas.ponderado_aprobadas
+		ponderado_apro = aprobados > 0 ? (aux.to_f/aprobados.to_f).round(4) : 0.0
+
+		aux = inscripcionsecciones.no_absolutas.ponderado
+		ponderado = cursados > 0 ? (aux.to_f/cursados.to_f).round(4) : 0.0
+
+		pdf.text "<b>Resumen Académico:</b>", size: 10, inline_format: true
+
+		data = [["<b>Créditos Inscritos:</b>", inscripcionsecciones.total_creditos], 
+				["<b>Créditos Cursados:</b>", cursados], 
+				["<b>Créditos Aprobados (Sin Equivalencias):</b>", inscripcionsecciones.sin_equivalencias.total_creditos_aprobados],
+				["<b>Créditos Equivalencia:</b>", inscripcionsecciones.por_equivalencia.total_creditos],
+				["<b>Total Créditos Aprobados:</b>", aprobados],
+				["<b>Eficiencia:</b>", eficiencia],
+				["<b>Promedio Simple:</b>", inscripcionsecciones.no_absolutas.promedio.round(4)],
+				["<b>Promedio Simple Aprobado:</b>", promedio_simple_aprob],
+				["<b>Promedio Ponderado Aprobado:</b>", ponderado_apro],
+				["<b>Promedio Ponderado:</b>", ponderado]
+			]
+
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 340, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'})
+		t.columns(1..1).position = 'left'
+		t.draw
+
+
 		periodos.each do |periodo|
 			pdf.move_down 15
 			pdf.text "<b>Periodo:</b> #{periodo.id}", size: 10, inline_format: true

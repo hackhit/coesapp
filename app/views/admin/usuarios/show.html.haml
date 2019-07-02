@@ -69,6 +69,8 @@
               = render '/admin/historialplanes/index'
               = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
 
+              -# @curso = @estudiante.escuelaestudiantes.where(escuela_id: escuela.id).first
+              -# @inscripciones = @curso.inscripciones
               - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
               - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
               - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)

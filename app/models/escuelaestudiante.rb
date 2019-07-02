@@ -13,6 +13,8 @@ class Escuelaestudiante < ApplicationRecord
 	scope :total_creditos_inscritos, -> {joins(:asignatura).sum('asignaturas.creditos')}
 
 
-	
+	def inscripciones
+		Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)
+	end
 
 end

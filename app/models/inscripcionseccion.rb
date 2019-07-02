@@ -9,7 +9,6 @@ class Inscripcionseccion < ApplicationRecord
 	# ASOCIACIONES: 
 	belongs_to :seccion
 	belongs_to :estudiante, primary_key: :usuario_id
-	belongs_to :escuelaestudiante
 
 	has_one :asignatura, through: :seccion
 	has_one :periodo, through: :seccion
@@ -48,14 +47,27 @@ class Inscripcionseccion < ApplicationRecord
 	scope :en_reparacion, -> {where tipo_calificacion_id.eql? REPARACION}
 	# scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
 
+
+	scope :no_absolutas, -> {joins(:asignatura).where("asignaturas.calificacion != 1")}
+
 	scope :no_retirados, -> {where "estado != 3"}
 	scope :cursadas, -> {where "estado != 3"}
 	scope :aprobadas, -> {where "estado = 1"}
+
+	scope :total_creditos, -> {joins(:asignatura).sum('asignaturas.creditos')}
+	scope :total_creditos_cursados, -> {cursadas.total_creditos}
+	scope :total_creditos_aprobados, -> {aprobadas.total_creditos}
+	scope :promedio_aprobadas, -> {aprobadas.promedio}
+	scope :ponderado_aprobadas, -> {aprobadas.ponderado}
+
+
+
 	scope :sin_equivalencias, -> {joins(:seccion).where "secciones.tipo_seccion_id != 'EI' and secciones.tipo_seccion_id != 'EE'"} 
 	scope :por_equivalencia, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EI' or secciones.tipo_seccion_id = 'EE'"}
 	scope :por_equivalencia_interna, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EI'"}
 	scope :por_equivalencia_externa, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EE'"}
-	scope :total_creditos_inscritos, -> {joins(:asignatura).sum('asignaturas.creditos')}
+	scope :ponderado, -> {joins(:asignatura).sum('asignaturas.creditos * calificacion_final')}
+	scope :promedio, -> {average('calificacion_final')}
 
 	scope :estudiantes_inscritos_del_periodo, lambda { |periodo_id| joins(:seccion).where("secciones.periodo_id": periodo_id).group(:estudiante_id).count } 
 
@@ -98,6 +110,12 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	# Funciones Generales
+	def estudianteescuela
+		escuela_id = self.pci_escuela_id ? self.pci_escuela_id : self.escuela.id
+		Escuelaestudiante.where(estudiante_id: self.estudiante_id, escuela_id: escuela_id).first
+	end
+
+
 	def descripcion_asignatura_pdf
 		aux = seccion.asignatura.descripcion
 		aux += " <b> (PCI) </b>" if self.como_pci?
@@ -463,5 +481,6 @@ class Inscripcionseccion < ApplicationRecord
 	def set_default
 		self.tipo_calificacion_id ||= FINAL
 	end
+
 
 end

@@ -403,13 +403,13 @@ ActiveRecord::Schema.define(version: 2019_05_30_162905) do
   add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", name: "inscripcionperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "periodos", name: "inscripcionperiodos_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", name: "inscripcionperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "escuelas", column: "pci_escuela_id", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_3", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_5", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionsecciones", "tipo_calificaciones", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipo_estado_calificaciones", name: "inscripcionsecciones_ibfk_4", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipo_estado_inscripciones", name: "inscripcionsecciones_ibfk_6", on_update: :cascade, on_delete: :nullify
-  add_foreign_key "inscripcionsecciones", "tipoasignaturas", name: "inscripcionsecciones_ibfk_2", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "escuelas", column: "pci_escuela_id", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_4", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_6", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "inscripcionsecciones", "tipo_calificaciones", name: "inscripcionsecciones_ibfk_2", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipo_estado_calificaciones", name: "inscripcionsecciones_ibfk_5", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipo_estado_inscripciones", name: "inscripcionsecciones_ibfk_7", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "inscripcionsecciones", "tipoasignaturas", name: "inscripcionsecciones_ibfk_3", on_update: :cascade, on_delete: :nullify
   add_foreign_key "inscripcionsecciones_copy", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_copy_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones_copy", "secciones", name: "inscripcionsecciones_copy_ibfk_4", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones_copy", "tipo_estado_calificaciones", name: "inscripcionsecciones_copy_ibfk_3", on_update: :cascade, on_delete: :nullify

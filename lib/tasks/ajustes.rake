@@ -3,20 +3,32 @@ desc 'Actualizacion para asignar a Inscripcionseccion una escuelaestudiante'
 task :asociar_inscripcionseccion_a_escuelaestudiante => :environment do
 
 	p 'Iniciando actualizacion de asociacion entre inscripciones y escuelaestudiante (grado)...'
+	count = 0
+	nuevos = 0
 	begin
 		Inscripcionseccion.all.each do |ins|
 			escuela_id = ins.pci_escuela_id ? ins.pci_escuela_id : ins.escuela.id
 
-			estudiante_id = ins.estudiante_id
-			ee = Escuelaestudiante.where(escuela_id: escuela_id, estudiante_id: estudiante_id)
+			#ee = Escuelaestudiante.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
+			ee = ins.estudiante.escuelaestudiantes.where(escuela_id: escuela_id).first
+			nuevos +=1 if ee.nil? and ee = Escuelaestudiante.create(escuela_id: escuela_id, estudiante_id: ins.estudiante_id)
 
 			ins.escuelaestudiante_id = ee.id
-			ins.save
-
-		end		
+			p ins
+			p ee
+			if ins.save!
+				count +=1 
+				p '.'
+			else
+				p '-'
+				break
+			end
+		end
 	rescue Exception => e
 		p e
 	end
+	p "Creados: #{count} de #{Inscripcionseccion.count}"
+	p "Nuevos: #{nuevos}"
 	p 'Finalizado'
 end
 
