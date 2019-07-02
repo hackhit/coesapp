@@ -3,8 +3,12 @@
 	- cursados = ins.total_creditos_cursados
 	- aprobados = ins.total_creditos_aprobados
 	- eficiencia = (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
+
+	- aux = ins.no_absolutas
+	- promedio_simple = (aux and aux.count > 0 and !aux.average('calificacion_final').nil?) ? aux.average('calificacion_final').round(4) : 0.0
+
 	- aux = ins.no_absolutas.aprobadas
-	- promedio_simple_aprob = aux.count > 0 ? aux.promedio.round(4) : 0.0
+	- promedio_simple_aprob = (aux and aux.count > 0 and !aux.average('calificacion_final').nil?) ? aux.average('calificacion_final').round(4) : 0.0
 	
 	- aux = ins.no_absolutas.ponderado_aprobadas
 	- ponderado_apro = aprobados > 0 ? (aux.to_f/aprobados.to_f).round(4) : 0.0
@@ -32,13 +36,12 @@
 		%th= eficiencia
 	%tr
 		%td Promedio Simple:
-		%th= ins.no_absolutas.promedio.round(4)
+		%th= promedio_simple
 	%tr
 		%td Promedio Simple Aprobado:
 		%th= promedio_simple_aprob
 	%tr
 		%td Promedio Ponderado Aprobado:
-		
 		%th= ponderado_apro
 	%tr
 		%td Promedio Ponderado:

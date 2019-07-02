@@ -236,8 +236,11 @@ class ExportarPdf
 		aprobados = inscripcionsecciones.total_creditos_aprobados
 		eficiencia = (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
 
+		aux = inscripcionsecciones.no_absolutas
+		promedio_simple = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
+
 		aux = inscripcionsecciones.no_absolutas.aprobadas
-		promedio_simple_aprob = aux.count > 0 ? aux.promedio.round(4) : 0.0
+		promedio_simple_aprob = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
 
 		aux = inscripcionsecciones.no_absolutas.ponderado_aprobadas
 		ponderado_apro = aprobados > 0 ? (aux.to_f/aprobados.to_f).round(4) : 0.0
@@ -253,7 +256,7 @@ class ExportarPdf
 				["<b>Créditos Equivalencia:</b>", inscripcionsecciones.por_equivalencia.total_creditos],
 				["<b>Total Créditos Aprobados:</b>", aprobados],
 				["<b>Eficiencia:</b>", eficiencia],
-				["<b>Promedio Simple:</b>", inscripcionsecciones.no_absolutas.promedio.round(4)],
+				["<b>Promedio Simple:</b>", promedio_simple],
 				["<b>Promedio Simple Aprobado:</b>", promedio_simple_aprob],
 				["<b>Promedio Ponderado Aprobado:</b>", ponderado_apro],
 				["<b>Promedio Ponderado:</b>", ponderado]
