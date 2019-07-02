@@ -13,12 +13,12 @@
             %b.control-label.col-md-12 Calificación
             .col-md-12
               - if @seccion.asignatura.absoluta?
-                = radio_button_tag "calificacion", 1, false, required: true
+                = radio_button_tag "calificacion_final", 1, false, required: true
                 Aprobado
-                = radio_button_tag "calificacion", 2, false, required: true, class: 'ml-md-3'
+                = radio_button_tag "calificacion_final", 2, false, required: true, class: 'ml-md-3'
                 Aplazado
               - else
-                = number_field_tag "calificacion", "", {class: 'form-control form-control-sm', required: true, step: 1, in: 0...21}
+                = number_field_tag "calificacion_final", "", {class: 'form-control form-control-sm', required: true, step: 1, in: 0...21}
 
 
           .form-group
