@@ -1,8 +1,6 @@
-
 .border.p-3
-  .alert#message{role: :alert, style: 'display:none'} 
-    %button.close{"aria-hidden": true, "data-dismiss": :alert, type: :button} &times;
   %seccion
+    .alert#message{role: :alert, style: 'display:none;position:absolute;left:190px; padding:5px'} 
     %table#tableSeccion.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
       %thead#ordinal-thead
         %tr
@@ -97,7 +95,8 @@
         }
       });
 
-      $('#message').show()
+      $('#message').fadeIn()
+      $('#message').fadeOut(1500)
 
     }
   }

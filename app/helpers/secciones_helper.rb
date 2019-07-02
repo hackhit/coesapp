@@ -102,7 +102,7 @@ module SeccionesHelper
 			calificacion = 'tercera_calificacion'
 		end 
 		
-		number_field_tag "[est][#{inscripcion.estudiante_id}]#{calificacion}", {}, {value: valor, placeholder: holder, class: 'form-control form-control-sm numerica3', required: required, step: 0.1, in: 0...21, readonly: readonly, disabled: readonly, onchange: onchange}
+		number_field_tag "[est][#{inscripcion.estudiante_id}]#{calificacion}", {}, {value: valor, placeholder: holder, class: 'form-control form-control-sm numerica3', required: required, step: 0.1, in: 0...21, readonly: readonly, disabled: readonly, onchange: onchange, id_obj: inscripcion.id, tipo_calificacion_id: TipoCalificacion::PARCIAL, calificacion_parcial: calificacion}
 	end
 
 	def colocar_calificacion_final inscripcion, disable = false

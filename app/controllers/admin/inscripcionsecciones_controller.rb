@@ -38,43 +38,64 @@ module Admin
 
 			inscripcion = Inscripcionseccion.find params[:inscripcionseccion_id]
 
-			if inscripcion.asignatura.numerica3? and params[:parciales]
-				inscripcion.primera_calificacion = params[:parciales][0]
-				inscripcion.segunda_calificacion = params[:parciales][1]
-				inscripcion.tercera_calificacion = params[:parciales][2]
-			end
+			if inscripcion.asignatura.numerica3? and params[:tipo_calificacion_id].eql? TipoCalificacion::PARCIAL
+				params[:valor] = nil if params[:valor].eql? '-1'
+				inscripcion[params[:calificacion_parcial]] = params[:valor]
 
-			params[:tipo_calificacion_id] = 'NF' if params[:tipo_calificacion_id].nil?
-			if (params[:tipo_calificacion_id].eql? TipoCalificacion::DIFERIDO) or (params[:tipo_calificacion_id].eql? TipoCalificacion::REPARACION)
-				calificacion_anterior = inscripcion.calificacion_posterior
-				inscripcion.calificacion_posterior = params[:calificacion_posterior] ? params[:calificacion_posterior].to_i : params[:calificacion].to_i
+				if params[:calificacion_parcial].eql? 'primera_calificacion'
+					inscripcion.estado = :trimestre1
+					p 'solicitud de modificacion de estado a trimestre1'
+				elsif params[:calificacion_parcial].eql? 'segunda_calificacion'
+					inscripcion.estado = :trimestre2
+					p 'solicitud de modificacion de estado a trimestre2'
+				else
+					if params[:valor].nil?
+						if inscripcion.segunda_calificacion
+							inscripcion.estado = :trimestre2
+						elsif inscripcion.primera_calificacion
+							inscripcion.estado = :trimestre1
+						else
+							inscripcion.estado = 'sin_calificar'
+						end
+					end
+				end
 
-			elsif params[:tipo_calificacion_id].eql? TipoCalificacion::PI
-				calificacion_anterior = inscripcion.calificacion_final
-				inscripcion.calificacion_final = 0 
-				params[:calificacion] = 0
-				inscripcion.calificacion_posterior = nil 
-			else
-				calificacion_anterior = inscripcion.calificacion_final
-				inscripcion.calificacion_final = params[:calificacion].to_i
+				inscripcion.calificacion_final = nil if (inscripcion.primera_calificacion.nil? or inscripcion.segunda_calificacion.nil? or inscripcion.tercera_calificacion.nil?)
+
+			elsif inscripcion.seccion.asignatura.absoluta?
+				inscripcion.estado = Inscripcionseccion.estados.key params[:calificacion_final].to_i
 				inscripcion.calificacion_posterior = nil
-			end
+				inscripcion.calificacion_final = nil
+			else
+				params[:tipo_calificacion_id] = 'NF' if params[:tipo_calificacion_id].nil?
 
-			if inscripcion.calificacion_final.to_i.eql? 0 or inscripcion.calificacion_final.nil?
+				if (params[:tipo_calificacion_id].eql? TipoCalificacion::DIFERIDO) or (params[:tipo_calificacion_id].eql? TipoCalificacion::REPARACION)
+					calificacion_anterior = inscripcion.calificacion_posterior
+					inscripcion.calificacion_posterior = params[:calificacion_posterior] ? params[:calificacion_posterior].to_i : params[:calificacion_final].to_i
 
-				inscripcion.primera_calificacion = inscripcion.calificacion_final
-				inscripcion.segunda_calificacion = inscripcion.calificacion_final
-				inscripcion.tercera_calificacion = inscripcion.calificacion_final
+				elsif params[:tipo_calificacion_id].eql? TipoCalificacion::PI
+					calificacion_anterior = inscripcion.calificacion_final
+					inscripcion.calificacion_final = 0 
+					params[:calificacion_final] = 0
+					inscripcion.calificacion_posterior = nil 
+				else
+					calificacion_anterior = inscripcion.calificacion_final
+					inscripcion.calificacion_final = params[:calificacion_final].to_i
+					inscripcion.calificacion_posterior = nil
+				end
 
+				if inscripcion.calificacion_final.to_i.eql? 0 or inscripcion.calificacion_final.nil?
+
+					inscripcion.primera_calificacion = inscripcion.calificacion_final
+					inscripcion.segunda_calificacion = inscripcion.calificacion_final
+					inscripcion.tercera_calificacion = inscripcion.calificacion_final
+
+				end
+
+				inscripcion.estado = inscripcion.estado_segun_calificacion
 			end
 
 			inscripcion.tipo_calificacion_id = params[:tipo_calificacion_id]
-			inscripcion.estado = inscripcion.estado_segun_calificacion
-			if inscripcion.seccion.asignatura.absoluta?
-				inscripcion.estado = Inscripcionseccion.estados.key params[:calificacion].to_i
-				inscripcion.calificacion_posterior = nil
-				inscripcion.calificacion_final = nil
-			end
 
 			respond_to do |format|
 
@@ -91,8 +112,9 @@ module Admin
 				}
 
 				format.json {
-					inscripcion.save
-					render json: inscripcion.estudiante_id, status: :ok
+
+					render json: inscripcion.save, status: :ok
+
 				}
 
 
