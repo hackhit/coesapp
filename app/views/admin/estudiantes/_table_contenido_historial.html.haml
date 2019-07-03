@@ -1,6 +1,6 @@
 - tiene_numerica3 = inscripciones.por_total_calificaciones?
 - tiene_numerica3 = tiene_numerica3.include? 2
-- inscripciones = inscripciones.joins(:asignatura).order("asignaturas.descripcion DESC")
+- inscripciones = inscripciones.joins(:asignatura).order("asignaturas.descripcion ASC")
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md
 	%thead
 		%tr
