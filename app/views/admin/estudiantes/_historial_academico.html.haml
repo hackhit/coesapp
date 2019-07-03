@@ -18,7 +18,7 @@
 
 	#accordion
 		- @periodos.each do |periodo|
-			- secciones_periodo = @inscripciones.del_periodo(periodo.id)#.sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			- secciones_periodo = @inscripciones.del_periodo(periodo.id)
 			- if secciones_periodo.any?
 				.card
 					.card-header{id: "heading#{periodo.id}"}
