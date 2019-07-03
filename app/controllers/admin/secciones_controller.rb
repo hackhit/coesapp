@@ -193,6 +193,7 @@ module Admin
     end
 
     def cambiar_profe_seccion
+
       @seccion.profesor_id = params[:profesor_id]
 
       if params[:secundario].eql? 'true'
@@ -205,15 +206,23 @@ module Admin
           render action: 'seleccionar_profesor_secundario'
         end
       else
-        if @seccion.save
-          info_bitacora "Profesor principal ci: #{params[:profesor_id]} agregado a seccion: (#{@seccion.id})" , Bitacora::ACTUALIZACION, @seccion
 
-          flash[:success] = "Cambio realizado con éxito"
-        else
-          flash[:error] = "no se pudo guardar los cambios"
+        respond_to do |format|
+          if @seccion.save
+            msg = "Profesor principal ci: #{params[:profesor_id]} agregado a seccion: (#{@seccion.id})"
+            format.html {
+              info_bitacora msg, Bitacora::ACTUALIZACION, @seccion
+              flash[:success] = "Cambio realizado con éxito"
+              redirect_back fallback_location: principal_admin_index_path
+               }
+            format.json { head :no_content }
+          else
+            flash[:danger] = "No se pudo guardar el cambio: #{@seccion.errors.full_messages.to_sentence}." 
+            format.html { redirect_back fallback_location: principal_admin_index_path }
+            format.json { render json: @seccion.errors, status: :unprocessable_entity }
+          end
         end
       end
-      redirect_back fallback_location: principal_admin_index_path
     end
 
     def desasignar_profesor_secundario

@@ -235,16 +235,17 @@ class Seccion < ApplicationRecord
 		"#{descripcion} (#{escuela.descripcion})"
 	end
 
-	def descripcion_profesor_asignado_edit
+	# Se convirtió en un partial 
+	# def descripcion_profesor_asignado_edit
 		
-		if profesor
-			aux = profesor.descripcion_usuario
-		else
-			aux = "No asignado"
-		end
+	# 	if profesor
+	# 		aux = profesor.descripcion_usuario
+	# 	else
+	# 		aux = "No asignado"
+	# 	end
 
-		aux += " <a role='button' class='tooltip-btn' data_toggle='tooltip' title='Actualizar Tutor-Calificador' href=#{seleccionar_profesor_seccion_path(self.id)}><span class='glyphicon glyphicon-pencil'></span></a> "
-	end
+	# 	aux += " <a role='button' class='tooltip-btn' data_toggle='tooltip' title='Actualizar Tutor-Calificador' href=#{seleccionar_profesor_seccion_path(self.id)}><span class='glyphicon glyphicon-pencil'></span></a> "
+	# end
 
 	
 	def descripcion_profesor_asignado

@@ -5,9 +5,10 @@
       %thead#ordinal-thead
         %tr
           %th{style: 'max-width:220px;'} Escuela
-
+          %th Departamento
           %th.text-center{style: 'width:100px;'} Código
           %th Asignatura
+          %th Profesor
           %th{style: 'width:30px;'} Sec
           %th.tooltip-btn{style: 'width:20px;', 'data_toggle': :tooltip, title: 'Inscritos/Notas'} Ins
           %th.tooltip-btn{style: 'width:10px;', 'data_toggle': :tooltip, title: '¿Calificada?'} Cal
@@ -20,8 +21,10 @@
         - @secciones.each do |seccion| 
           %tr{class: seccion.tr_estilo_estado, id: "tr#{seccion.id}"}
             %td{escuela_id: seccion.escuela.id}= seccion.escuela.descripcion
+            %td= seccion.asignatura.departamento.descripcion
             %td.text-center= seccion.asignatura_id
             %td= seccion.asignatura.descripcion
+            %td= render partial: '/admin/secciones/descripcion_profesor_asignado_edit', locals: {seccion: seccion}
             %td
               = link_to seccion.numero, seccion, target: '_black'
               - unless seccion.inscripciones.any?
@@ -64,6 +67,7 @@
                 =# link_to "#{new_seccion_path}?asignatura_id=#{seccion.asignatura_id}&back=#{secciones_path}", class: 'btn btn-sm btn-outline-success' do
                 =# glyph :plus
 
+= render 'admin/secciones/modal_seleccionar_profesor'
 
 =# render 'admin/secciones/modal_seleccionar_profesor'
 =# link_to t('.new', default: t("helpers.links.new")), new_seccion_path, class: 'btn btn-primary'
