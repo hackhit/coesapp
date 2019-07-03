@@ -215,7 +215,7 @@ module Admin
               flash[:success] = "Cambio realizado con éxito"
               redirect_back fallback_location: principal_admin_index_path
                }
-            format.json { head :no_content }
+            format.json {render json: true, status: :ok}
           else
             flash[:danger] = "No se pudo guardar el cambio: #{@seccion.errors.full_messages.to_sentence}." 
             format.html { redirect_back fallback_location: principal_admin_index_path }

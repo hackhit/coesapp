@@ -65,7 +65,7 @@ module Admin
 			elsif inscripcion.seccion.asignatura.absoluta?
 				inscripcion.estado = Inscripcionseccion.estados.key params[:calificacion_final].to_i
 				inscripcion.calificacion_posterior = nil
-				inscripcion.calificacion_final = nil
+				inscripcion.calificacion_final = inscripcion.aprobado? ? 20 : 1
 			else
 				params[:tipo_calificacion_id] = 'NF' if params[:tipo_calificacion_id].nil?
 
@@ -75,8 +75,8 @@ module Admin
 
 				elsif params[:tipo_calificacion_id].eql? TipoCalificacion::PI
 					calificacion_anterior = inscripcion.calificacion_final
-					inscripcion.calificacion_final = 0 
-					params[:calificacion_final] = 0
+					inscripcion.calificacion_final = 1 
+					params[:calificacion_final] = 1
 					inscripcion.calificacion_posterior = nil 
 				else
 					calificacion_anterior = inscripcion.calificacion_final
@@ -111,11 +111,7 @@ module Admin
 					redirect_to inscripcion.seccion
 				}
 
-				format.json {
-
-					render json: inscripcion.save, status: :ok
-
-				}
+				format.json {render json: inscripcion.save, status: :ok}
 
 
 			end

@@ -236,16 +236,16 @@ class ExportarPdf
 		aprobados = inscripcionsecciones.total_creditos_aprobados
 		eficiencia = (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
 
-		aux = inscripcionsecciones.no_absolutas
+		aux = inscripcionsecciones.cursadas
 		promedio_simple = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
 
-		aux = inscripcionsecciones.no_absolutas.aprobadas
+		aux = inscripcionsecciones.aprobadas
 		promedio_simple_aprob = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
 
-		aux = inscripcionsecciones.no_absolutas.ponderado_aprobadas
+		aux = inscripcionsecciones.ponderado_aprobadas
 		ponderado_apro = aprobados > 0 ? (aux.to_f/aprobados.to_f).round(4) : 0.0
 
-		aux = inscripcionsecciones.no_absolutas.ponderado
+		aux = inscripcionsecciones.ponderado
 		ponderado = cursados > 0 ? (aux.to_f/cursados.to_f).round(4) : 0.0
 
 		pdf.text "<b>Resumen Académico:</b>", size: 10, inline_format: true
@@ -262,8 +262,8 @@ class ExportarPdf
 				["<b>Promedio Ponderado:</b>", ponderado]
 			]
 
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 340, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'})
-		t.columns(1..1).position = 'left'
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, cell_style: { inline_format: true, size: 9, padding: 3, border_color: '818284'})
+		t.columns(1..1).position = 'right'
 		t.draw
 
 
