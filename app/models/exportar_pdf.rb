@@ -215,7 +215,6 @@ class ExportarPdf
 		# periodos = estudiante.escuela.periodos.order("inicia DESC")
 		escuela = Escuela.find escuela_id
 
-
 		inscripcionsecciones = estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: escuela_id)
 
 		periodo_ids = inscripcionsecciones.joins(:seccion).group("secciones.periodo_id").count.keys
@@ -229,43 +228,6 @@ class ExportarPdf
 		hplan = hplan ? hplan.plan.descripcion_completa : "--"
 		pdf.text "<b>Plan:</b> #{hplan}", size: 9, inline_format: true
 		pdf.text "<b>Alumno:</b> #{estudiante.usuario.apellido_nombre.upcase}", size: 9, inline_format: true
-		pdf.move_down 10
-
-
-		cursados = inscripcionsecciones.total_creditos_cursados
-		aprobados = inscripcionsecciones.total_creditos_aprobados
-		eficiencia = (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
-
-		aux = inscripcionsecciones.cursadas
-		promedio_simple = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
-
-		aux = inscripcionsecciones.aprobadas
-		promedio_simple_aprob = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
-
-		aux = inscripcionsecciones.ponderado_aprobadas
-		ponderado_apro = aprobados > 0 ? (aux.to_f/aprobados.to_f).round(4) : 0.0
-
-		aux = inscripcionsecciones.ponderado
-		ponderado = cursados > 0 ? (aux.to_f/cursados.to_f).round(4) : 0.0
-
-		pdf.text "<b>Resumen Académico:</b>", size: 10, inline_format: true
-
-		data = [["<b>Créditos Inscritos:</b>", inscripcionsecciones.total_creditos], 
-				["<b>Créditos Cursados:</b>", cursados], 
-				["<b>Créditos Aprobados (Sin Equivalencias):</b>", inscripcionsecciones.sin_equivalencias.total_creditos_aprobados],
-				["<b>Créditos Equivalencia:</b>", inscripcionsecciones.por_equivalencia.total_creditos],
-				["<b>Total Créditos Aprobados:</b>", aprobados],
-				["<b>Eficiencia:</b>", eficiencia],
-				["<b>Promedio Simple:</b>", promedio_simple],
-				["<b>Promedio Simple Aprobado:</b>", promedio_simple_aprob],
-				["<b>Promedio Ponderado Aprobado:</b>", ponderado_apro],
-				["<b>Promedio Ponderado:</b>", ponderado]
-			]
-
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, cell_style: { inline_format: true, size: 9, padding: 3, border_color: '818284'})
-		t.columns(1..1).position = 'right'
-		t.draw
-
 
 		periodos.each do |periodo|
 			pdf.move_down 15
@@ -302,6 +264,10 @@ class ExportarPdf
 
 			t = Time.new
 		end
+
+		pdf.move_down 10
+
+		resumen pdf, inscripcionsecciones
 		# pdf.start_page_numbering(250, 15, 7, nil, to_utf16("#{t.day} / #{t.month} / #{t.year}       Página: <PAGENUM> de <TOTALPAGENUM>"), 1)
 
 		pdf.move_down 20
@@ -318,6 +284,47 @@ class ExportarPdf
 
 
 	private
+
+
+	def self.resumen pdf, inscripcion
+
+		cursados = inscripcion.total_creditos_cursados
+		aprobados = inscripcion.total_creditos_aprobados
+		eficiencia = (cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
+
+		aux = inscripcion.cursadas
+		promedio_simple = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
+
+		aux = inscripcion.aprobadas
+		promedio_simple_aprob = (aux and aux.count > 0 and aux.average('calificacion_final')) ? aux.average('calificacion_final').round(4) : 0.0
+
+		aux = inscripcion.ponderado_aprobadas
+		ponderado_apro = aprobados > 0 ? (aux.to_f/aprobados.to_f).round(4) : 0.0
+
+		aux = inscripcion.ponderado
+		ponderado = cursados > 0 ? (aux.to_f/cursados.to_f).round(4) : 0.0
+
+		pdf.text "<b>Resumen Académico:</b>", size: 10, inline_format: true
+
+		data = [["<b>Créditos Inscritos:</b>", inscripcion.total_creditos], 
+				["<b>Créditos Cursados:</b>", cursados], 
+				["<b>Créditos Aprobados (Sin Equivalencias):</b>", inscripcion.sin_equivalencias.total_creditos_aprobados],
+				["<b>Créditos Equivalencia:</b>", inscripcion.por_equivalencia.total_creditos],
+				["<b>Total Créditos Aprobados:</b>", aprobados],
+				["<b>Eficiencia:</b>", eficiencia],
+				["<b>Promedio Simple:</b>", promedio_simple],
+				["<b>Promedio Simple Aprobado:</b>", promedio_simple_aprob],
+				["<b>Promedio Ponderado Aprobado:</b>", ponderado_apro],
+				["<b>Promedio Ponderado:</b>", ponderado]
+			]
+
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, cell_style: { inline_format: true, size: 9, padding: 3, border_color: '818284'})
+		t.columns(1..1).position = 'right'
+		t.draw
+
+
+	end
+
 
 	def self.insertar_tabla_convocados pdf, inscripciones#, k
 
