@@ -17,17 +17,25 @@
 					- else
 						= render partial: 'admin/secciones/tabla_content_tipo_seccion', locals: {i: i, es: es, seccion: @seccion, disable: disable}
 						- unless @seccion.asignatura.absoluta?
-							%td= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id, disabled: es.retirado?}
+							%td
+								%b.tooltip-btn{'data_toggle': :tooltip, title: 'Marcar como perdida por inasistencia'}
+									= check_box_tag "[est][#{es.estudiante_id}]pi", true, es.pi?, {onclick: "desactivar_por_pi(this, #{es.estudiante_id});", class: 'pi', ci: es.estudiante_id, disabled: es.retirado?}
 							- if !@seccion.asignatura.numerica3?
-								%td= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "ND", disabled: es.retirado?}
+								%td
+									%b.tooltip-btn{'data_toggle': :tooltip, title: 'Colocar Califición Diferida'}
+										= check_box_tag "[est][#{es.estudiante_id}]nd", true, es.diferido?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "ND", disabled: es.retirado?}
 
-							%td= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "NR", disabled: es.retirado?}
+							%td
+								%b.tooltip-btn{'data_toggle': :tooltip, title: 'Colocar Calificación Reparación'}
+									= check_box_tag "[est][#{es.estudiante_id}]nr", true, es.reparacion?, {onclick: "desactivar_por_nd(this, #{es.estudiante_id});", tipo: "NR", disabled: es.retirado?}
 						
 							- tipo = ""
 							- tipo = "ND" if es.diferido?
 							- tipo = "NR" if es.reparacion?
 							- valor_posterior = es.calificacion_posterior.to_i if es.calificacion_posterior
-							%td= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: valor_posterior, class: 'form-control form-control-sm otra_calificacion', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});", tipo_calificacion_id: tipo, id_obj: es.id}
+							%td
+								%b.tooltip-btn{'data_toggle': :tooltip, title: 'Valor calificación posterior'}
+									= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: valor_posterior, class: 'form-control form-control-sm otra_calificacion', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});", tipo_calificacion_id: tipo, id_obj: es.id}
 
 					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
 	%hr

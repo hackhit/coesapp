@@ -469,10 +469,18 @@ class Inscripcionseccion < ApplicationRecord
 			end
 		elsif self.calificacion_final
 			if self.calificacion_final.to_i >= 10
+				self.tipo_calificacion_id ||= FINAL
+				self.calificacion_posterior = nil
 				self.estado = :aprobado
 			else
 				self.estado = :aplazado
 			end
+		end
+
+		if self.calificacion_final && self.calificacion_final.to_i >= 10
+			self.tipo_calificacion_id = FINAL
+			self.calificacion_posterior = nil
+			self.estado = :aprobado
 		end
 
 	end
