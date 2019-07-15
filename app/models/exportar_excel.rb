@@ -31,6 +31,8 @@ class ExportarExcel
 					nota_final = h.nota_final_para_csv
 					nota_def = nota_final if nota_final.eql? 'SN'
 
+					nota_def = nota_final if asig.absoluta?
+
 					csv << [est.usuario_id, asig.id, asig.descripcion, asig.creditos, nota_final, nota_def, 'F', sec.periodo.getPeriodoLectivo, sec.periodo.anno, sec.numero, plan.id]
 
 					if h.calificacion_posterior
