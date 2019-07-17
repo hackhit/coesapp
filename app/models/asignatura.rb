@@ -48,6 +48,10 @@ class Asignatura < ApplicationRecord
 
 	# FUNCIONES:
 
+	def proyecto?
+		self.tipoasignatura_id.eql? Tipoasignatura::PROYECTO
+	end
+
 	def pci? periodo_id
 		programaciones.pcis.del_periodo(periodo_id).any?
 	end

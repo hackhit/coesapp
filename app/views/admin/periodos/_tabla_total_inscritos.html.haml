@@ -24,7 +24,7 @@
               - e.planes.each do |plan| 
                 - totalXPlan = plan.estudiantes.joins(:inscripcionsecciones).joins(:secciones).where("secciones.periodo_id = ?", periodo.id).uniq.count
                 - if totalXPlan > 0
-                  = link_to "#{exportar_lista_x_plan_descargar_path(plan)}?periodo_id=#{periodo.id}", class: 'btn btn-sm mx-1 tooltip-btn', target: '_blank', 'data_toggle': :tooltip, title: "Total: #{totalXPlan}"  do
+                  = link_to "#{exportar_lista_csv_descargar_path(plan)}?periodo_id=#{periodo.id}", class: 'btn btn-sm mx-1 tooltip-btn', target: '_blank', 'data_toggle': :tooltip, title: "Total: #{totalXPlan}"  do
                     = glyph 'download'
                     = plan.id.upcase
 

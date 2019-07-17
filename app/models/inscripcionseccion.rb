@@ -48,6 +48,11 @@ class Inscripcionseccion < ApplicationRecord
 	# scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
 
 
+	scope :de_las_escuelas, lambda {|escuelas_ids| includes(:escuela).where("escuelas.id IN (?)", escuelas_ids).references(:escuelas)}
+
+
+	scope :grados, -> {joins(:asignatura).where("asignaturas.tipoasignatura_id = ?", Tipoasignatura::PROYECTO)}
+
 	scope :no_absolutas, -> {joins(:asignatura).where("asignaturas.calificacion != 1")}
 	scope :absolutas, -> {joins(:asignatura).where("asignaturas.calificacion = 1")}
 
@@ -109,8 +114,21 @@ class Inscripcionseccion < ApplicationRecord
 		return valor
 	end
 
+	def descripcion_ultimo_plan
+		plan = ultimo_plan
+		if plan
+			plan.descripcion_filtro
+		else
+			'Sin Plan Asignado'
+		end
+	end
+
+	def ultimo_plan
+		escuelaestudiante.ultimo_plan
+	end
+
 	# Funciones Generales
-	def estudianteescuela
+	def escuelaestudiante #Esto es el grado
 		escuela_id = self.pci_escuela_id ? self.pci_escuela_id : self.escuela.id
 		Escuelaestudiante.where(estudiante_id: self.estudiante_id, escuela_id: escuela_id).first
 	end
@@ -485,6 +503,9 @@ class Inscripcionseccion < ApplicationRecord
 
 	end
 
+	def update_states_grade
+		# grado = self.escuelaestudiante.estado = 
+	end
 
 	def set_default
 		self.tipo_calificacion_id ||= FINAL

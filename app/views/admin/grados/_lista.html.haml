@@ -1,0 +1,14 @@
+%h1 Tesistas
+
+%table.table
+	%thead
+		%tr
+			%th Seccion
+			%th Estudiante
+			%th Escuela
+	%tbody
+		- @tesistas.each do |inscripcion| 
+			%tr
+				%td= inscripcion.seccion.numero
+				%td= inscripcion.estudiante.descripcion
+				%td= inscripcion.escuela.descripcion

@@ -6,12 +6,14 @@ module Admin
 		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria]
 		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :constancia_estudio, :listado_seccion, :notas_seccion, :listado_seccion_excel]
 
-		def exportar_lista_x_plan
-
-			periodo_id = params[:periodo_id]
-			data = ExportarExcel.estudiantes_x_plan_csv params[:id], periodo_id
-			send_data data, filename: "estudiantes_x_plan_#{periodo_id}_#{params[:id]}.csv"
-
+		def exportar_lista_csv
+			if params[:periodo_id]
+				data = ExportarExcel.estudiantes_csv params[:id], params[:periodo_id]
+				send_data data, filename: "estudiantes_x_plan_#{params[:periodo_id]}_#{params[:id]}.csv"
+			elsif params[:seccion_id]
+				data = ExportarExcel.estudiantes_csv nil, nil, params[:seccion_id]
+				send_data data, filename: "estudiantes_x_seccion_#{params[:seccion_id]}.csv"
+			end
 		end
 
 		# PDFs

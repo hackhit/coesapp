@@ -1,0 +1,24 @@
+- if @seccion.asignatura.proyecto?
+	- classes = 'btn-outline-secondary float-right'
+	- href = "#{exportar_lista_csv_descargar_path}?seccion_id=#{@seccion.id}"
+	- if @any_outplan
+		- classes += ' btn btn-sm'
+		- msg = 'Atención: No es posible generar ésta lista (SCV) ya que existe(n) en la lista estudiante(s) sin plan asociado.'
+		%span.tooltip-btn.d-inline-block.float-right{"data-toggle" => "tooltip", :tabindex => "0", :title => msg}
+			%button{:disabled => "disabled", :style => "pointer-events: none;", :type => "button", class: classes}
+				= glyph 'download-alt'
+				= glyph 'file'
+
+	- else
+		= btn_toggle_download classes, href, 'Lista (CSV)', "#{glyph 'file'}"
+
+-if @seccion.calificada
+	- classes = 'btn-outline-success float-right mr-md-2'
+	= btn_toggle_download classes, acta_examen_excel_descargar_path(@seccion.id), 'Acta de Notas (Excel)', "#{glyph 'file'}"
+
+- classes = 'btn-outline-success float-right mr-md-2'
+= btn_toggle_download classes, listado_seccion_excel_descargar_path(@seccion.id), 'Listado (Excel)', "#{glyph 'list'}"
+
+- classes = 'btn-outline-info float-right mr-md-2'
+= btn_toggle_download classes, notas_seccion_descargar_path(@seccion.id), 'Acta de Notas (PDF)', "#{glyph 'file'}"
+= btn_toggle_download classes, listado_seccion_descargar_path(@seccion.id), 'Listado (PDF)', "#{glyph 'list'}"

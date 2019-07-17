@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   scope module: :admin do
 
+    resources :grados, only: :index
+
     resources :comentarios do
       member do
         get 'habilitar'
@@ -70,7 +72,7 @@ Rails.application.routes.draw do
     end
     resources :descargar do
       member do
-        get 'exportar_lista_x_plan'
+        get 'exportar_lista_csv'
         get :kardex
         get 'acta_examen_excel'
         get 'acta_examen'

@@ -23,7 +23,7 @@
           -# plan.escuela.periodos.each do |periodo| 
           - total_estudiantes = plan.estudiantes.joins(:inscripcionsecciones).joins(:secciones).where("secciones.periodo_id = ?", current_periodo.id).uniq.count
           - if total_estudiantes > 0
-            = link_to "#{exportar_lista_x_plan_descargar_path(plan)}?periodo_id=#{current_periodo.id}", class: 'btn btn-sm btn-outline-success mx-2 mb-2 tooltip_btn', target: '_blank', 'data_toggle': :tooltip, title: "Total estudiantes: #{total_estudiantes}" do
+            = link_to "#{exportar_lista_csv_descargar_path(plan)}?periodo_id=#{current_periodo.id}", class: 'btn btn-sm btn-outline-success mx-2 mb-2 tooltip_btn', target: '_blank', 'data_toggle': :tooltip, title: "Total estudiantes: #{total_estudiantes}" do
               = glyph 'download'
               = current_periodo.id
         %td.text-center

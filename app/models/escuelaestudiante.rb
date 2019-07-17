@@ -17,4 +17,9 @@ class Escuelaestudiante < ApplicationRecord
 		Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)
 	end
 
+	def ultimo_plan
+		hp = estudiante.historialplanes.por_escuela(escuela_id).order('periodo_id DESC').first
+		hp ? hp.plan : nil
+	end
+
 end

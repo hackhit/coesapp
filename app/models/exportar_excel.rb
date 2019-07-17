@@ -10,42 +10,24 @@ class ExportarExcel
 		return ic_ignore.iconv(valor).to_s
 	end
 
-
-	def self.estudiantes_x_plan_csv plan_id, periodo_id
+	def self.estudiantes_csv plan_id, periodo_id, seccion_id = nil
 		require 'csv'
 		
-		atributos = ['CEDULA', 'ASIGNATURA', 'DENOMINACION', 'CREDITO', 'NOTA_FINAL', 'NOTA_DEFI', 'TIPO_EXAM', 'PER_LECTI', 'ANO_LECTI', 'SECCION', 'PLAN1']
 
 		csv_data =CSV.generate(headers: true, col_sep: ";") do |csv|
 
-			csv << atributos
+			csv << %w(CEDULA ASIGNATURA DENOMINACION CREDITO NOTA_FINAL NOTA_DEFI TIPO_EXAM PER_LECTI ANO_LECTI SECCION PLAN1)
 
-			plan = Plan.find plan_id
-			plan.estudiantes.each do |es|
-				(es.inscripcionsecciones.del_periodo periodo_id).each_with_index do |h,i| # puede cambiar por el periodo_id
-					est = h.estudiante
-					sec = h.seccion
-					asig = sec.asignatura
 
-					nota_def = h.pi? ? 'PI' : h.colocar_nota_final
-					nota_final = h.nota_final_para_csv
-					nota_def = nota_final if nota_final.eql? 'SN'
-
-					nota_def = nota_final if asig.absoluta?
-
-					csv << [est.usuario_id, asig.id, asig.descripcion, asig.creditos, nota_final, nota_def, 'F', sec.periodo.getPeriodoLectivo, sec.periodo.anno, sec.numero, plan.id]
-
-					if h.calificacion_posterior
-
-						nota_final = nota_def = h.colocar_nota_posterior
-
-						csv << [est.usuario_id, asig.id, asig.descripcion, asig.creditos, nota_final, nota_def, h.tipo_calificacion_id.to_s.last, sec.periodo.getPeriodoLectivo, sec.periodo.anno, sec.numero, plan.id]
-
-					end
-
+			if periodo_id
+				plan = Plan.find plan_id
+				plan.estudiantes.each do |es|
+					insertar_inscripciones csv, (es.inscripcionsecciones.del_periodo periodo_id), plan
 				end
+			elsif seccion_id
+				seccion = Seccion.find seccion_id
+				insertar_inscripciones csv, seccion.inscripciones.aprobado
 			end
-
 		end
 		return csv_data
 	end
@@ -153,6 +135,39 @@ class ExportarExcel
 		file_name = "reporte_seccion.xls"
 		return file_name if @book.write file_name
 	end
+
+	private
+
+	def self.insertar_inscripciones csv, inscripciones, plan = nil
+		inscripciones.each do |insc|
+			insertar_inscripcion csv, insc, plan
+		end
+	end
+
+	def self.insertar_inscripcion csv, inscripcion, plan = nil
+
+		est = inscripcion.estudiante
+		sec = inscripcion.seccion
+		asig = sec.asignatura
+
+		# ============ Mover a Inscripcionseccion =========== #
+		nota_def = inscripcion.pi? ? 'PI' : inscripcion.colocar_nota_final
+		nota_final = inscripcion.nota_final_para_csv
+		nota_def = nota_final if nota_final.eql? 'SN' or asig.absoluta?
+		# ============ Mover a Inscripcionseccion =========== #
+
+		
+		plan = inscripcion.ultimo_plan unless plan
+
+		csv << [est.usuario_id, asig.id, asig.descripcion, asig.creditos, nota_final, nota_def, 'F', sec.periodo.getPeriodoLectivo, sec.periodo.anno, sec.numero, plan.id]
+
+		if inscripcion.calificacion_posterior
+			nota_final = nota_def = inscripcion.colocar_nota_posterior
+			csv << [est.usuario_id, asig.id, asig.descripcion, asig.creditos, nota_final, nota_def, inscripcion.tipo_calificacion_id.to_s.last, sec.periodo.getPeriodoLectivo, sec.periodo.anno, sec.numero, plan.id]
+		end
+		
+	end
+
 
 
 end

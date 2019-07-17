@@ -8,7 +8,6 @@ module ApplicationHelper
 
 	end
 
-
 	def col_filter objetos
 		haml_tag :b, "#{objetos.name.titleize}:"
 		capture_haml do 
@@ -159,13 +158,16 @@ module ApplicationHelper
 		btn_toggle 'btn-outline-success', icon, href, title_tooltip, value
 	end
 
+	def btn_toggle_download classes, href, title_tooltip, value
+		btn_toggle classes, 'download-alt', href, "Descargar #{title_tooltip}", value
+	end
+
 	def btn_toggle type, icon, href, title_tooltip, value, onclick_action=nil
 
 		target = (href.include? 'descargar') ? '_blank' : ''
-		content_tag :b, class: 'tooltip-btn', 'data_toggle': :tooltip, title: title_tooltip, 'data-placement': :rigth do
-			link_to href, class: "btn btn-sm #{type}", onclick: onclick_action, target: target do
-				capture_haml{"#{glyph icon} #{value}"}
-			end
+
+		link_to href, class: "btn btn-sm #{type} tooltip-btn", 'data_toggle': :tooltip,  title: title_tooltip, onclick: onclick_action, target: target do
+			capture_haml{"#{glyph icon} #{value}"}
 		end
 	end
 
@@ -177,9 +179,9 @@ module ApplicationHelper
 		simple_toggle 'javascript:void(0)', '', title_tooltip, color_type, icon, "$('##{id_modal}').modal();"
 	end
 
-	def simple_toggle_rounded href, value, title_tooltip, color_type, icon, onclick_action=nil
+	def simple_toggle_rounded href, value, title_tooltip, color_type, icon, onclick_action = nil
 		target = (href.include? 'descargar') ? '_blank' : ''
-		content_tag :b, class: "tooltip-btn border p-1 border-#{color_type} rounded", 'data_toggle'=> :tooltip, title: title_tooltip do
+		content_tag :b, class: "tooltip-btn border p-1 border-#{color_type} rounded", 'data_toggle': :tooltip, title: title_tooltip do
 			link_to href, class: "text-#{color_type}", onclick: onclick_action, target: target do
 				capture_haml{"#{glyph icon} #{value}"}
 			end
@@ -187,9 +189,24 @@ module ApplicationHelper
 
 	end
 
-	def simple_toggle href, value, title_tooltip, color_type, icon, onclick_action=nil
+	def simple_tooltip_plan plan
+
+		if plan
+			id = plan.id
+			desc = plan.descripcion_filtro
+		else
+			id = 'SP'
+			desc = 'Sin plan asignado'
+		end
+
+		content_tag :b, class: "tooltip-btn", 'data_toggle': :tooltip, title: desc do
+			capture_haml{id}
+		end		
+	end
+
+	def simple_toggle href, value, title_tooltip, color_type, icon, onclick_action = nil
 		target = (href.include? 'descargar') ? '_blank' : ''
-		content_tag :b, class: "tooltip-btn", 'data_toggle'=> :tooltip, title: title_tooltip do
+		content_tag :b, class: "tooltip-btn", 'data_toggle': :tooltip, title: title_tooltip do
 			link_to href, class: "text-#{color_type}", onclick: onclick_action, target: target do
 				capture_haml{"#{glyph icon} #{value}"}
 			end
@@ -199,5 +216,7 @@ module ApplicationHelper
 
 	def btn_toggle_modal icon, title_tooltip, value, id_modal
 		btn_toggle 'btn-outline-success', icon, 'javascript:void(0)', title_tooltip, value, "$('##{id_modal}').modal();"
-	end	
+	end
+
+
 end

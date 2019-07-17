@@ -2,6 +2,9 @@ class Tipoasignatura < ApplicationRecord
 	# Relaciones:
 	has_many :asignaturas
 
+	PROYECTO = 'P'
+
+
 	# Validaciones:
 	validates :id, presence: true
 	validates :descripcion, presence: true
