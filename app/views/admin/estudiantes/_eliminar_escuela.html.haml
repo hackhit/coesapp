@@ -6,7 +6,7 @@
           %span{"aria-hidden": true} ×
         %h4.text-center=  "Eliminar Escuela #{@escuela.id}"
       .modal-body.border.p-2
-        =form_tag(eliminar_escuelaestudiante_escuela_path([@escuela.id.to_s, @estudiante.id.to_s]), class: "form-horizontal")  do
+        =form_tag(eliminar_escuelaestudiante_escuela_path("#{@escuela.id.to_s}-#{@estudiante.id.to_s}"), class: "form-horizontal")  do
           =# hidden_field_tag :id
           .alert.alert-warning= "Se procederá a eliminar la asociación del estudiante con la escuela #{@escuela.descripcion.upcase}"
 

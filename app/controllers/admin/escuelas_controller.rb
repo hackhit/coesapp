@@ -10,7 +10,7 @@ module Admin
     # GET /escuelas
     # GET /escuelas.json
     def eliminar_escuelaestudiante
-      escuela_id, estudiante_id = params[:id].split("/")
+      escuela_id, estudiante_id = params[:id].split("-")
       escuela = Escuela.find escuela_id
       usuario = Usuario.find estudiante_id
       p escuela.descripcion.center(200, "#")
