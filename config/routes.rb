@@ -57,11 +57,17 @@ Rails.application.routes.draw do
 
     resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones
 
-    resources :periodos, :planes, :escuelas, :departamentos, :catedras
+    resources :periodos, :planes, :departamentos, :catedras
     
     resources :inscripcionperiodos, :historialplanes
 
     resources :catedradepartamentos, only: [:create, :destroy]
+
+    resources :escuelas do
+      member do
+        post 'eliminar_escuelaestudiante'
+      end
+    end
 
     resources :carteleras do
       member do

@@ -56,23 +56,25 @@
               - @foraneas = true
               = render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @secciones_pci_pendientes}
         - @foraneas = false
-        - @estudiante.escuelas.each do |escuela|
+
+        - @escuelas_del_estudiante = @estudiante.escuelas
+        - @escuelas_del_estudiante.each do |escuela|
           - @escuela = escuela
           .tab-pane{id: "pane_#{escuela.id}"}
             .border.mt-3.p-3
+              - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
+              - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
               %h6.alert.alert-info.pb-ms-3
                 = "Escuela: #{@escuela.descripcion.titleize}"
-                - if current_admin.maestros? and !@estudiante.con_registro_en_escuela escuela.id
-                  =# AGREGAR ELIMINAR ESCUELAESTUDIANTES PARA MAESTROS
-                  = glyph 'minus'
+                - if current_admin.maestros?
+                  = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'minus', "eliminar#{escuela.id}"
+                  = render partial: '/admin/estudiantes/eliminar_escuela'
 
               = render '/admin/historialplanes/index'
               = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
 
               -# @curso = @estudiante.escuelaestudiantes.where(escuela_id: escuela.id).first
               -# @inscripciones = @curso.inscripciones
-              - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
-              - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
               - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
 
               = render partial: '/admin/estudiantes/historial_academico'

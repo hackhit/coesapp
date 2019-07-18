@@ -1,0 +1,54 @@
+.modal.fade{'aria-hidden': true, role: :dialog, tabindex: '-1', id: "eliminar#{@escuela.id}"}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×
+        %h4.text-center=  "Eliminar Escuela #{@escuela.id}"
+      .modal-body.border.p-2
+        =form_tag(eliminar_escuelaestudiante_escuela_path([@escuela.id.to_s, @estudiante.id.to_s]), class: "form-horizontal")  do
+          =# hidden_field_tag :id
+          .alert.alert-warning= "Se procederá a eliminar la asociación del estudiante con la escuela #{@escuela.descripcion.upcase}"
+
+          - if @escuelas_del_estudiante.count > 1
+            - disponibles = @escuelas_del_estudiante.reject{|e| e.id.eql? @escuela.id}
+            .form-group
+              .control-label= "Se agregaran como pci un total de #{@inscripciones.count} inscripciones a la escuela que seleccione a continuación:"
+              %br
+              - value = (disponibles.count.eql? 1) ? disponibles.first.id : ""
+              = collection_select nil, :escuela_destino_id, disponibles, :id, :descripcion, {selected: value, prompt: 'Selecciona Escuela...'}, { class: ' form-control form-control-sm', required: true}
+
+          - elsif @estudiante.con_registro_en_escuela @escuela.id
+            - msg = "Se procederá a eliminar un total de #{@inscripciones.count} registros de inscripción para éste estudiante en la escuela de #{@escuela.descripcion}."
+            %h5.alert.alert-danger
+              %b ¡Atención! 
+              = msg
+
+          .alert.alert-danger
+            = "Recuerde que las acciones que pretende llevar a cabo son irrevesribles. Para continuar por favor escriba el identificador de la escuela (#{@escuela.id})"
+            = text_field_tag "confirmacion#{@escuela.id}", nil, class: 'form-control form-control-sm'
+
+          .modal-footer 
+            %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Aceptar', class: 'btn btn-outline-success btn-sm disabled', id: "submit#{@escuela.id}", disabled: true
+
+:javascript
+
+
+  $(`#confirmacion#{@escuela.id}`).on('input',function(evt){ 
+    var node = $(this);
+    let sutmitBtn = $(`#submit#{@escuela.id}`)
+
+    node.val(node.val().toUpperCase());
+    node.val(node.val().replace(/[^A-Z|a-z]/g,'') );
+    if (node.val() == `#{@escuela.id}`) {
+
+      sutmitBtn.removeClass('disabled')
+      sutmitBtn.prop('disabled', '')
+
+    }else{
+      console.log(node.val())
+      sutmitBtn.addClass('disabled')
+      sutmitBtn.prop('disabled', 'disabled')
+    }
+  });
