@@ -2,13 +2,13 @@
 	%table.mt-3.mb-3.flex-column
 		%tr
 			- if @estudiante.tiene_alguna_inscripcion?
-				%td= btn_success 'download', "#{kardex_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Descargar Kardex de #{@nickname}", 'Kardex'
-				%td= btn_success 'download', "#{constancia_inscripcion_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción'
-				%td= btn_success 'download', "#{constancia_estudio_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
+				%td= btn_success 'download-alt', "#{kardex_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Descargar Kardex de #{@nickname}", 'Kardex'
+				%td= btn_success 'download-alt', "#{constancia_inscripcion_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción'
+				%td= btn_success 'download-alt', "#{constancia_estudio_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
 
 			- if current_admin
 
-				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección del periodo actual: #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", "estudiante_seccion_#{@escuela.id}"
+				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección de esta escuela en periodo #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", "estudiante_seccion_#{@escuela.id}"
 				= render partial: '/admin/inscripcionsecciones/form'
 	%h5.titulo.text-center Registro de Historial Académico:
 	.row

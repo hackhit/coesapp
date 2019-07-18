@@ -165,7 +165,6 @@ module ApplicationHelper
 	def btn_toggle type, icon, href, title_tooltip, value, onclick_action=nil
 
 		target = (href.include? 'descargar') ? '_blank' : ''
-
 		link_to href, class: "btn btn-sm #{type} tooltip-btn", 'data_toggle': :tooltip,  title: title_tooltip, onclick: onclick_action, target: target do
 			capture_haml{"#{glyph icon} #{value}"}
 		end
