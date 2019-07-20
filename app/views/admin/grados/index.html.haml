@@ -1,14 +1,13 @@
-%h1 Tesistas
+%nav
+  .nav.nav-tabs
+    = link_to 'Tesistas', "#tesistas", "data-toggle": "tab", class: 'nav-item nav-link'
+    = link_to 'Graduandos', "#graduandos", "data-toggle": "tab", class: 'nav-item nav-link'
 
-%table.table
-	%thead
-		%tr
-			%th Seccion
-			%th Estudiante
-			%th Escuela
-	%tbody
-		- @tesistas.each do |inscripcion| 
-			%tr
-				%td= inscripcion.seccion.numero
-				%td= inscripcion.estudiante.descripcion
-				%td= inscripcion.escuela.descripcion
+      
+.tab-content
+  .tab-pane#tesistas
+    .border.mt-3.p-3
+      = render partial: '/admin/grados/lista', locals: {inscripciones: @tesistas, grado: 'tesistas'}
+  .tab-pane#graduandos
+    .border.mt-3.p-3
+      = render partial: '/admin/grados/lista', locals: {inscripciones: @graduandos, grado: 'graduandos'}

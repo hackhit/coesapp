@@ -1,14 +1,23 @@
-%h1 Tesistas
-
-%table.table
+- href = "#{exportar_lista_csv_descargar_path(1)}?grado=#{grado}"
+= btn_toggle_download 'btn btn-sm btn-outline-secondary',href , 'Descargar listado de graduandos (CSV)', "#{glyph 'file'}"
+%br
+%br
+%table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
 	%thead
 		%tr
-			%th Seccion
 			%th Estudiante
 			%th Escuela
+			%th Plan
+			%th Opciones
 	%tbody
-		- @tesistas.each do |inscripcion| 
+		- inscripciones.each do |inscripcion| 
 			%tr
-				%td= inscripcion.seccion.numero
-				%td= inscripcion.estudiante.descripcion
+				%td= link_to inscripcion.estudiante.descripcion, usuario_path(inscripcion.estudiante)
 				%td= inscripcion.escuela.descripcion
+				%td= inscripcion.descripcion_ultimo_plan
+				- if grado.eql? 'tesistas'
+
+					%td
+						= btn_toggle 'btn-outline-success mr-2 ml-2', 'check', '#', 'Aprobar', ''
+						= btn_toggle 'btn-outline-danger mr-2', 'minus', '#', 'Aplazar', ''
+						= btn_toggle 'btn-outline-warning mr-2', 'minus', '#', 'Retirar', ''

@@ -10,16 +10,15 @@ class ExportarExcel
 		return ic_ignore.iconv(valor).to_s
 	end
 
-	def self.estudiantes_csv plan_id, periodo_id, seccion_id = nil
+	def self.estudiantes_csv plan_id, periodo_id, seccion_id = nil, grado = false, escuelas_ids = false
 		require 'csv'
-		
 
 		csv_data =CSV.generate(headers: true, col_sep: ";") do |csv|
 
 			csv << %w(CEDULA ASIGNATURA DENOMINACION CREDITO NOTA_FINAL NOTA_DEFI TIPO_EXAM PER_LECTI ANO_LECTI SECCION PLAN1)
 
 
-			if periodo_id
+			if periodo_id and !grado
 				plan = Plan.find plan_id
 				plan.estudiantes.each do |es|
 					insertar_inscripciones csv, (es.inscripcionsecciones.del_periodo periodo_id), plan
@@ -27,6 +26,23 @@ class ExportarExcel
 			elsif seccion_id
 				seccion = Seccion.find seccion_id
 				insertar_inscripciones csv, seccion.inscripciones.aprobado
+			elsif grado.eql? 'graduandos'
+				grados = Inscripcionseccion.grados.del_periodo(periodo_id).de_las_escuelas(escuelas_ids)
+				graduandos = grados.aprobado
+
+				graduandos.each do |inscripcion|
+					plan = inscripcion.ultimo_plan
+					insertar_inscripciones csv, inscripcion.estudiante.inscripciones, plan
+				end
+			elsif grado.eql? 'tesistas'
+				grados = Inscripcionseccion.grados.del_periodo(periodo_id).de_las_escuelas(escuelas_ids)
+				tesistas = grados.sin_calificar
+
+				tesistas.each do |inscripcion|
+					plan = inscripcion.ultimo_plan
+					insertar_inscripciones csv, inscripcion.estudiante.inscripciones, plan
+				end
+
 			end
 		end
 		return csv_data
