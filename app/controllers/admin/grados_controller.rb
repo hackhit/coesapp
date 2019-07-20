@@ -4,6 +4,21 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_administrador
 
+    def agregar
+
+      @estudiante = Estudiante.find params[:id]
+      @escuela = Escuela.find params[:escuela_id]
+
+      if @estudiante.grados.create(escuela_id: params[:escuela_id])
+        info_bitacora "Registrado en Escuela #{@escuela.descripcion}", Bitacora::CREACION, @estudiante
+        flash[:success] = '¡Registro exitoso en escuela!'
+      else
+        flash[:danger] = 'Error al intentar registrar en Escuela. Por favor verifique e inténtelo de nuevo.'
+      end
+      redirect_to usuario_path(@estudiante.id)
+
+    end
+
     def index
       escuelas_ids = current_admin.escuelas.ids
 
@@ -20,8 +35,8 @@ module Admin
       usuario = Usuario.find estudiante_id
       p escuela.descripcion.center(200, "#")
 
-      ee = Escuelaestudiante.where(escuela_id: escuela_id, estudiante_id: estudiante_id)
-      inscripciones = ee.first.inscripciones
+      grados = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id)
+      inscripciones = grados.first.inscripciones
       total = 0
       if params[:escuela_destino_id] and inscripciones.any?
         inscripciones.each do |inscrip|
@@ -30,8 +45,8 @@ module Admin
         end
       end
 
-      info_bitacora_crud Bitacora::ELIMINACION, ee.first
-      if ee.delete_all
+      info_bitacora_crud Bitacora::ELIMINACION, grados.first
+      if grados.delete_all
         flash[:info] = '¡Escuela Eliminada con éxito!'
         flash[:info] += " Se transfirieró un total de #{total} asignatura(s) como pci a la escuela de #{escuela.descripcion}"
       else

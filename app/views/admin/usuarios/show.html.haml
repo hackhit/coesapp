@@ -73,7 +73,7 @@
               = render '/admin/historialplanes/index'
               = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
 
-              -# @curso = @estudiante.escuelaestudiantes.where(escuela_id: escuela.id).first
+              -# @curso = @estudiante.grados.where(escuela_id: escuela.id).first
               -# @inscripciones = @curso.inscripciones
               - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
 

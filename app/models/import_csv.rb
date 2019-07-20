@@ -80,11 +80,11 @@ class ImportCsv
 
 					if hay_estudiante
 						p "HAY ESTUDIANTE"
-						if estudiante.escuelaestudiantes.where(escuela_id: escuela_id).first
+						if estudiante.grados.where(escuela_id: escuela_id).first
 							estudiantescuelas_existentes << estudiante.id
 						else
 							p "ESCUALA ESTUDIANTE AGREGADO"
-							total_agregados += 1 if estudiante.escuelaestudiantes.create(escuela_id: escuela_id)
+							total_agregados += 1 if estudiante.grados.create(escuela_id: escuela_id)
 						end
 						
 						if estudiante.historialplanes.where(plan_id: plan_id).count < 1

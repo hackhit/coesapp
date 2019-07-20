@@ -43,7 +43,7 @@ module Admin
       e = Estudiante.new
       e.usuario_id = @usuario.id
       if e.save
-        e.escuelaestudiantes.create(escuela_id: params[:estudiante][:escuela_id])
+        e.grados.create(escuela_id: params[:estudiante][:escuela_id])
         flash[:success] = 'Estudiante registrado con éxito'
         # OJO: No se puede implementar esto ya que no se tiene información sobre a partir de cuando (PERIODO_ID) es el plan
         # Debería incorporarse al form de set estudiante y al form de create usuario el plan y apartir de cuando
@@ -214,7 +214,7 @@ module Admin
           flash[:success] = 'Usuario creado con éxito.'
           if params[:estudiante_set]
             if e = Estudiante.create(usuario_id: @usuario.id) #, escuela_id: params[:estudiante][:escuela_id])
-              e.escuelaestudiantes.create(escuela_id: params[:escuela_id])
+              e.grados.create(escuela_id: params[:escuela_id])
               info_bitacora_crud Bitacora::CREACION, e
               flash[:success] = 'Estudiante creado con éxito.' 
             else

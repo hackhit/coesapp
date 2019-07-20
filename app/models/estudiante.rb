@@ -5,8 +5,8 @@ class Estudiante < ApplicationRecord
 
 	belongs_to :citahoraria, optional: true
 
-	has_many :escuelaestudiantes#, dependent: :destroy
-	has_many :escuelas, through: :escuelaestudiantes
+	has_many :grados#, dependent: :destroy
+	has_many :escuelas, through: :grados
 
 	has_many :historialplanes	
 	accepts_nested_attributes_for :historialplanes

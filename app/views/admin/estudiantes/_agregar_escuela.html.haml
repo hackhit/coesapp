@@ -6,7 +6,7 @@
           %span{"aria-hidden": true} ×
         %h4.text-center Registrar en Escuela
       .modal-body.border.p-2
-        =form_tag(agregar_estudiante_escuela_principal_admin_path(@estudiante.id), class: "form-horizontal")  do
+        =form_tag(agregar_grado_path(@estudiante.id), class: "form-horizontal")  do
           .form-group
             %label.control-label.col-md-3 Escuela 
             .col-md-12

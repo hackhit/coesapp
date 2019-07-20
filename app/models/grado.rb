@@ -1,4 +1,4 @@
-class Escuelaestudiante < ApplicationRecord
+class Grado < ApplicationRecord
 	# ASOCIACIONES:
 	belongs_to :escuela
 	belongs_to :estudiante

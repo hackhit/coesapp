@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_30_162905) do
+ActiveRecord::Schema.define(version: 2019_07_20_043227) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -119,17 +119,6 @@ ActiveRecord::Schema.define(version: 2019_05_30_162905) do
     t.index ["id"], name: "index_departamentos_on_id"
   end
 
-  create_table "escuelaestudiantes", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "escuela_id"
-    t.string "estudiante_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["escuela_id", "estudiante_id"], name: "index_escuelaestudiantes_on_escuela_id_and_estudiante_id", unique: true
-    t.index ["escuela_id"], name: "index_escuelaestudiantes_on_escuela_id"
-    t.index ["estudiante_id", "escuela_id"], name: "index_escuelaestudiantes_on_estudiante_id_and_escuela_id", unique: true
-    t.index ["estudiante_id"], name: "index_escuelaestudiantes_on_estudiante_id"
-  end
-
   create_table "escuelaperiodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "periodo_id"
     t.string "escuela_id"
@@ -171,6 +160,17 @@ ActiveRecord::Schema.define(version: 2019_05_30_162905) do
     t.index ["citahoraria_id"], name: "index_estudiantes_on_citahoraria_id"
     t.index ["tipo_estado_inscripcion_id"], name: "index_estudiantes_on_tipo_estado_inscripcion_id"
     t.index ["usuario_id"], name: "index_estudiantes_on_usuario_id"
+  end
+
+  create_table "grados", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "escuela_id"
+    t.string "estudiante_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["escuela_id", "estudiante_id"], name: "index_grados_on_escuela_id_and_estudiante_id", unique: true
+    t.index ["escuela_id"], name: "index_grados_on_escuela_id"
+    t.index ["estudiante_id", "escuela_id"], name: "index_grados_on_estudiante_id_and_escuela_id", unique: true
+    t.index ["estudiante_id"], name: "index_grados_on_estudiante_id"
   end
 
   create_table "historialplanes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -391,12 +391,12 @@ ActiveRecord::Schema.define(version: 2019_05_30_162905) do
   add_foreign_key "combinaciones", "estudiantes", primary_key: "usuario_id", name: "combinaciones_ibfk_4", on_update: :cascade, on_delete: :cascade
   add_foreign_key "combinaciones", "periodos", name: "combinaciones_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "departamentos", "escuelas", name: "departamentos_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "escuelaestudiantes", "escuelas", name: "escuelaestudiantes_ibfk_2", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "escuelaestudiantes", "estudiantes", primary_key: "usuario_id", name: "escuelaestudiantes_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "escuelaperiodos", "escuelas", name: "escuelaperiodos_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "escuelaperiodos", "periodos", name: "escuelaperiodos_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "estudiantes", "citahorarias", name: "estudiantes_ibfk_1", on_update: :cascade, on_delete: :nullify
   add_foreign_key "estudiantes", "usuarios", primary_key: "ci", name: "estudiantes_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "grados", "escuelas", name: "grados_ibfk_2", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "grados", "estudiantes", primary_key: "usuario_id", name: "grados_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", name: "historialplanes_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade

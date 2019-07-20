@@ -103,7 +103,7 @@ class Inscripcionseccion < ApplicationRecord
 
 	scope :como_pcis, -> {where "pci_escuela_id IS NOT NULL"}
 
-	# scope :pcis_pendientes_por_asociar, -> {joins(:escuela).where("pci_escuela_id IS NULL and (escuela.id ON ( SELECT escuelas.id FROM escuelas INNER JOIN escuelaestudiantes ON escuelas.id = escuelaestudiantes.escuela_id WHERE escuelaestudiantes.estudiante_id = ? ) )", self.estudiante_id)}
+	# scope :pcis_pendientes_por_asociar, -> {joins(:escuela).where("pci_escuela_id IS NULL and (escuela.id ON ( SELECT escuelas.id FROM escuelas INNER JOIN grados ON escuelas.id = grados.escuela_id WHERE grados.estudiante_id = ? ) )", self.estudiante_id)}
 
 	# Funciones de Estilo
 	def tr_class_style_qualify
@@ -124,13 +124,13 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def ultimo_plan
-		escuelaestudiante.ultimo_plan
+		grado.ultimo_plan
 	end
 
 	# Funciones Generales
-	def escuelaestudiante #Esto es el grado
+	def grado #Esto es el grado
 		escuela_id = self.pci_escuela_id ? self.pci_escuela_id : self.escuela.id
-		Escuelaestudiante.where(estudiante_id: self.estudiante_id, escuela_id: escuela_id).first
+		Grado.where(estudiante_id: self.estudiante_id, escuela_id: escuela_id).first
 	end
 
 
@@ -504,7 +504,7 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def update_states_grade
-		# grado = self.escuelaestudiante.estado = 
+		# grado = self.grado.estado = 
 	end
 
 	def set_default

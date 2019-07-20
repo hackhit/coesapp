@@ -1,21 +1,21 @@
-desc 'Actualizacion para asignar a Inscripcionseccion una escuelaestudiante'
+desc 'Actualizacion para asignar a Inscripcionseccion una grado'
 
-task :asociar_inscripcionseccion_a_escuelaestudiante => :environment do
+task :asociar_inscripcionseccion_a_grado => :environment do
 
-	p 'Iniciando actualizacion de asociacion entre inscripciones y escuelaestudiante (grado)...'
+	p 'Iniciando actualizacion de asociacion entre inscripciones y grado (grado)...'
 	count = 0
 	nuevos = 0
 	begin
 		Inscripcionseccion.all.each do |ins|
 			escuela_id = ins.pci_escuela_id ? ins.pci_escuela_id : ins.escuela.id
 
-			#ee = Escuelaestudiante.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
-			ee = ins.estudiante.escuelaestudiantes.where(escuela_id: escuela_id).first
-			nuevos +=1 if ee.nil? and ee = Escuelaestudiante.create(escuela_id: escuela_id, estudiante_id: ins.estudiante_id)
+			#ee = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
+			grado = ins.estudiante.grados.where(escuela_id: escuela_id).first
+			nuevos +=1 if grado.nil? and grado = Escuelaestudiante.create(escuela_id: escuela_id, estudiante_id: ins.estudiante_id)
 
-			ins.escuelaestudiante_id = ee.id
+			ins.grado_id = grado.id
 			p ins
-			p ee
+			p grado
 			if ins.save!
 				count +=1 
 				p '.'
@@ -179,7 +179,7 @@ task estudiantes_a_escuela_estudiantes: :environment do
 
 	Estudiante.all.each do |es|
 		if es.escuela_id
-			print '.' if es.escuelaestudiantes.create!(escuela_id: es.escuela_id)
+			print '.' if es.grados.create!(escuela_id: es.escuela_id)
 		end
 	end
 

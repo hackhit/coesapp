@@ -18,20 +18,6 @@ module Admin
 			redirect_to usuario_path(@estudiante.id)
 		end
 
-
-		def agregar_estudiante_escuela
-			@estudiante = Estudiante.find params[:id]
-			@escuela = Escuela.find params[:escuela_id]
-
-			if @estudiante.escuelaestudiantes.create(escuela_id: params[:escuela_id])
-				info_bitacora "Registrado en Escuela #{@escuela.descripcion}", Bitacora::CREACION, @estudiante
-				flash[:success] = '¡Registro exitoso en escuela!'
-			else
-				flash[:danger] = 'Error al intentar registrar en Escuela. Por favor verifique e inténtelo de nuevo.'
-			end
-			redirect_to usuario_path(@estudiante.id)
-		end
-
 		def cambiar_sesion_periodo
 			session['periodo_actual_id'] = params[:nuevo]
 			@current_periodo = Periodo.find session['periodo_actual_id']
