@@ -481,7 +481,7 @@ class Inscripcionseccion < ApplicationRecord
 			self.calificacion_final = self.aprobado? ? 20 : 1
 			self.calificacion_posterior = nil
 			self.tipo_calificacion_id = TipoCalificacion::FINAL
-		elsif self.tipo_calificacion_id.eql? TipoCalificacion::PI
+		elsif self.pi?
 			self.estado = :aplazado
 			self.primera_calificacion = nil
 			self.segunda_calificacion = nil
@@ -502,6 +502,12 @@ class Inscripcionseccion < ApplicationRecord
 				self.estado = :aprobado
 			else
 				self.estado = :aplazado
+			end
+		elsif self.asignatura and self.asignatura.numerica3?
+			if self.segunda_calificacion
+				self.estado = :trimestre2
+			elsif self.primera_calificacion
+				self.estado = :trimestre1
 			end
 		end
 

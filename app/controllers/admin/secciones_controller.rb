@@ -136,7 +136,7 @@ module Admin
 
         if @seccion.tiene_trimestres1? or @seccion.tiene_trimestres2?
           aux = @seccion.tiene_trimestres1? ? "Trimestre1" : "Trimestre2"
-          flash[:success] = "Calificaciones guardada satisfactoriamente."
+          flash[:success] = "Calificaciones parciales guardada satisfactoriamente."
           info_bitacora "Sección Calificada (#{aux})" , Bitacora::ACTUALIZACION, @seccion
         else
           @seccion.calificada = true
@@ -329,7 +329,6 @@ module Admin
     private
 
       def calificar_numerica3
-
         @inscripcionseccion.primera_calificacion = @valores[:primera_calificacion] unless @valores[:primera_calificacion].blank?
 
         @inscripcionseccion.segunda_calificacion = @valores[:segunda_calificacion] unless @valores[:segunda_calificacion].blank?
