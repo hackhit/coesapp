@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       member do
         post 'agregar'
         post 'eliminar'
+        get 'cambiar_estado'
       end
     end
 
@@ -102,7 +103,7 @@ Rails.application.routes.draw do
       member do
         get :seleccionar
         get :resumen
-        get 'set_retirar'
+        get 'cambiar_estado'
       end
     end
 

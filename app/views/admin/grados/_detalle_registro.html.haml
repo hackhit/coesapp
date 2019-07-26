@@ -1,0 +1,5 @@
+%tr
+	%td= link_to registro.estudiante.descripcion, usuario_path(registro.estudiante)
+	%td= registro.escuela.descripcion
+	%td= registro.descripcion_ultimo_plan
+	%td= render partial: '/admin/grados/opciones', locals: {registro: registro, estado: estado}

@@ -15,8 +15,8 @@ module Admin
 				send_data data, filename: "estudiantes_x_seccion_#{params[:seccion_id]}.csv"
 			elsif params[:grado]
 				escuelas_ids = current_admin.escuelas.ids
-				data = ExportarExcel.estudiantes_csv nil, current_periodo.id, nil, params[:grado], escuelas_ids
-				send_data data, filename: "graduandos_#{current_periodo.id}.csv"
+				data = ExportarExcel.estudiantes_csv nil, nil, nil, params[:grado], escuelas_ids
+				send_data data, filename: "grado_#{params[:grado]}.csv"
 			end
 		end
 

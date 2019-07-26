@@ -2,33 +2,36 @@ desc 'Actualizacion para asignar a Inscripcionseccion una grado'
 
 task :asociar_inscripcionseccion_a_grado => :environment do
 
-	p 'Iniciando actualizacion de asociacion entre inscripciones y grado (grado)...'
-	count = 0
-	nuevos = 0
+	p 'Iniciando actualizacion de asociacion entre inscripciones y grado...'
+	# count = 0
+	# nuevos = 0
+
+
+
 	begin
-		Inscripcionseccion.all.each do |ins|
-			escuela_id = ins.pci_escuela_id ? ins.pci_escuela_id : ins.escuela.id
+		Inscripcionseccion.where("pci_escuela_id IS NOT NULL").update_all("pci = TRUE, escuela_id =  pci_escuela_id")
+		Inscripcionseccion.joins(:escuela).where("pci_escuela_id IS NULL").update_all("inscripcionsecciones.escuela_id =  escuelas.id")
+		# Inscripcionseccion.all.each do |ins|
+		# 	escuela_id = ins.pci_escuela_id ? ins.pci_escuela_id : ins.escuela.id
 
-			#ee = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
-			grado = ins.estudiante.grados.where(escuela_id: escuela_id).first
-			nuevos +=1 if grado.nil? and grado = Escuelaestudiante.create(escuela_id: escuela_id, estudiante_id: ins.estudiante_id)
+		# 	#ee = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
+		# 	grado = ins.estudiante.grados.where(escuela_id: escuela_id).first
+		# 	nuevos +=1 if grado.nil? and grado = Grado.create(escuela_id: escuela_id, estudiante_id: ins.estudiante_id)
 
-			ins.grado_id = grado.id
-			p ins
-			p grado
-			if ins.save!
-				count +=1 
-				p '.'
-			else
-				p '-'
-				break
-			end
-		end
+		# 	ins.grado_id = grado.id
+		# 	p ins
+		# 	p grado
+		# 	if ins.save!
+		# 		count +=1 
+		# 		p '.'
+		# 	else
+		# 		p '-'
+		# 		break
+		# 	end
+		# end
 	rescue Exception => e
 		p e
 	end
-	p "Creados: #{count} de #{Inscripcionseccion.count}"
-	p "Nuevos: #{nuevos}"
 	p 'Finalizado'
 end
 

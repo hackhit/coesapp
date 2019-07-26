@@ -1,8 +1,8 @@
-- href = "#{exportar_lista_csv_descargar_path(1)}?grado=#{grado}"
+- href = "#{exportar_lista_csv_descargar_path(1)}?grado=#{estado}"
 = btn_toggle_download 'btn btn-sm btn-outline-secondary',href , 'Descargar listado de graduandos (CSV)', "#{glyph 'file'}"
 %br
 %br
-%table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
+%table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table{id: "table#{estado}"}
 	%thead
 		%tr
 			%th Estudiante
@@ -10,14 +10,5 @@
 			%th Plan
 			%th Opciones
 	%tbody
-		- inscripciones.each do |inscripcion| 
-			%tr
-				%td= link_to inscripcion.estudiante.descripcion, usuario_path(inscripcion.estudiante)
-				%td= inscripcion.escuela.descripcion
-				%td= inscripcion.descripcion_ultimo_plan
-				- if grado.eql? 'tesistas'
-
-					%td
-						= btn_toggle 'btn-outline-success mr-2 ml-2', 'check', '#', 'Aprobar', ''
-						= btn_toggle 'btn-outline-danger mr-2', 'minus', '#', 'Aplazar', ''
-						= btn_toggle 'btn-outline-warning mr-2', 'minus', '#', 'Retirar', ''
+		- registros.each do |registro| 
+			= render partial: '/admin/grados/detalle_registro', locals: {registro: registro, estado: estado}

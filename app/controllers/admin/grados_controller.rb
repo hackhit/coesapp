@@ -4,8 +4,28 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_administrador
 
-    def agregar
+    def cambiar_estado
+      estado = params[:estado].to_i
+        escuela_id, estudiante_id = params[:id].split("-")
+        grado = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
+      if estado.eql? 1
+        escuelas_ids = current_admin.escuelas.ids
+        # Creo que pudieran publicarse todas los grados no solo del periodo como en la linea d abajo
+        # inscripcion = grado.inscripciones.grados.de_la_escuela(escuela_id).first
+        inscripcion = grado.inscripciones.grados.del_periodo(current_periodo.id).de_la_escuela(escuela_id).first
+        estado_anterior = inscripcion.estado
+        info_bitacora "Cambio de estado del estudiante #{estudiante_id} de #{estado_anterior} a #{inscripcion.estado}", Bitacora::ACTUALIZACION, inscripcion if inscripcion.update_attributes(estado: :sin_calificar)
+      elsif estado > 1
+        Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).update_all(estado: estado)
+      end
+      tr = view_context.render partial: '/admin/grados/detalle_registro', locals: {registro: grado, estado: estado}
+      msg = "Cambio de estado de #{grado.estudiante.usuario.descripcion}"
 
+      render json: {tr: tr, msg: msg}, status: :ok
+
+    end
+
+    def agregar
       @estudiante = Estudiante.find params[:id]
       @escuela = Escuela.find params[:escuela_id]
 
@@ -22,10 +42,12 @@ module Admin
     def index
       escuelas_ids = current_admin.escuelas.ids
 
-      @grados = Inscripcionseccion.grados.del_periodo(current_periodo.id).de_las_escuelas(escuelas_ids)
+      @tesistas = Inscripcionseccion.grados.del_periodo(current_periodo.id).de_las_escuelas(escuelas_ids).sin_calificar
+      @posibles_graduandos = Grado.posible_graduando
+      @graduandos = Grado.graduando
+      @graduados = Grado.graduado
+      # @graduandos = @grados.aprobado
 
-      @tesistas = @grados.sin_calificar
-      @graduandos = @grados.aprobado
     end
     # Fin Index
 
@@ -33,7 +55,6 @@ module Admin
       escuela_id, estudiante_id = params[:id].split("-")
       escuela = Escuela.find escuela_id
       usuario = Usuario.find estudiante_id
-      p escuela.descripcion.center(200, "#")
 
       grados = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id)
       inscripciones = grados.first.inscripciones
@@ -56,7 +77,6 @@ module Admin
 
     end
     # Fin Eliminar
-
 
   end
 end

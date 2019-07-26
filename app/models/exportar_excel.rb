@@ -26,21 +26,19 @@ class ExportarExcel
 			elsif seccion_id
 				seccion = Seccion.find seccion_id
 				insertar_inscripciones csv, seccion.inscripciones.aprobado
-			elsif grado.eql? 'graduandos'
-				grados = Inscripcionseccion.grados.del_periodo(periodo_id).de_las_escuelas(escuelas_ids)
-				graduandos = grados.aprobado
-
-				graduandos.each do |inscripcion|
-					plan = inscripcion.ultimo_plan
-					insertar_inscripciones csv, inscripcion.estudiante.inscripciones, plan
+			else
+				if grado.eql? 1
+					grados = Grado.tesista
+				elsif grado.eql? 2
+					grados = Grado.posible_graduando
+				elsif grado.eql? 3
+					grados = Grado.graduando
+				else
+					grados = Grado.graduado
 				end
-			elsif grado.eql? 'tesistas'
-				grados = Inscripcionseccion.grados.del_periodo(periodo_id).de_las_escuelas(escuelas_ids)
-				tesistas = grados.sin_calificar
-
-				tesistas.each do |inscripcion|
-					plan = inscripcion.ultimo_plan
-					insertar_inscripciones csv, inscripcion.estudiante.inscripciones, plan
+				grados.each do |g|
+					plan = g.ultimo_plan
+					insertar_inscripciones csv, g.estudiante.inscripciones, plan
 				end
 
 			end

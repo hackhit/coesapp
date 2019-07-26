@@ -13,9 +13,13 @@ class Inscripcionseccion < ApplicationRecord
 	has_one :asignatura, through: :seccion
 	has_one :periodo, through: :seccion
 
-	has_one :escuela, through: :asignatura
+	belongs_to :escuela
 
-	belongs_to :pci_escuela, foreign_key: 'pci_escuela_id', class_name: 'Escuela', optional: true
+	# belongs_to :grado#, primary_key: [:escuela_id, :estudiante_id]
+
+	# has_one :escuela, through: :asignatura
+
+	# belongs_to :pci_escuela, foreign_key: 'pci_escuela_id', class_name: 'Escuela', optional: true
 
 	# has_many :programaciones, through: :asignatura, source: :periodo
 
@@ -30,6 +34,7 @@ class Inscripcionseccion < ApplicationRecord
 	# TRIGGERS:
 	after_initialize :set_default, :if => :new_record?
 	before_validation :set_estados
+	after_save :actualizar_estado_grado
 
 	# VALIDACIONES:
 	validates_uniqueness_of :estudiante_id, scope: [:seccion_id], message: 'El estudiante ya está inscrito en la sección', field_name: false
@@ -47,11 +52,11 @@ class Inscripcionseccion < ApplicationRecord
 	scope :en_reparacion, -> {where tipo_calificacion_id.eql? REPARACION}
 	# scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
 
-
 	scope :de_las_escuelas, lambda {|escuelas_ids| includes(:escuela).where("escuelas.id IN (?)", escuelas_ids).references(:escuelas)}
 
-
 	scope :grados, -> {joins(:asignatura).where("asignaturas.tipoasignatura_id = ?", Tipoasignatura::PROYECTO)}
+
+	scope :posibles_graduandos, -> {joins(:grado).where("grados.estado = 2")}
 
 	scope :no_absolutas, -> {joins(:asignatura).where("asignaturas.calificacion != 1")}
 	scope :absolutas, -> {joins(:asignatura).where("asignaturas.calificacion = 1")}
@@ -128,8 +133,13 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	# Funciones Generales
-	def grado #Esto es el grado
-		escuela_id = self.pci_escuela_id ? self.pci_escuela_id : self.escuela.id
+
+	def grado_id
+		"#{escuela_id}-#{estudiante_id}"
+	end
+
+	def grado
+		# escuela_id = self.pci_escuela_id ? self.pci_escuela_id : self.escuela.id
 		Grado.where(estudiante_id: self.estudiante_id, escuela_id: escuela_id).first
 	end
 
@@ -503,8 +513,17 @@ class Inscripcionseccion < ApplicationRecord
 
 	end
 
-	def update_states_grade
-		# grado = self.grado.estado = 
+	def actualizar_estado_grado
+		if asignatura.tipoasignatura_id.eql? Tipoasignatura::PROYECTO
+			if self.sin_calificar?
+				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 1)
+			elsif self.retirado? or self.aplazado?
+				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 0)
+			elsif self.aprobado?
+				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 2)
+			end
+		end
+		return true
 	end
 
 	def set_default

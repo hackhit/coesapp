@@ -56,10 +56,10 @@
 								= collection_select nil, :pci_escuela_id, @estudiante.escuelas, :id, :descripcion, {selected: inscripcion.pci_escuela_id, prompt: 'Asignar Escuela'}, { class: '', style: 'width:150px', onChange: "$(this).parent().submit()"}
 
 						- if retirado
-							=# simple_toggle "/coesapp/inscripcionsecciones/#{inscripcion.id}/set_retirar?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
-							= simple_toggle "#{set_retirar_inscripcionseccion_path(inscripcion)}?valor=0", '', 'Reinscribir Asignatura', 'success', 'ok'
+							=# simple_toggle "/coesapp/inscripcionsecciones/#{inscripcion.id}/cambiar_estado?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
+							= simple_toggle "#{cambiar_estado_inscripcionseccion_path(inscripcion)}?estado=0", '', 'Reinscribir Asignatura', 'success', 'ok'
 						- else
-							= simple_toggle "#{set_retirar_inscripcionseccion_path(inscripcion)}?valor=3", '', 'Retirar Asignatura', 'danger', 'remove'
+							= simple_toggle "#{cambiar_estado_inscripcionseccion_path(inscripcion)}?estado=3", '', 'Retirar Asignatura', 'danger', 'remove'
 
 						%b.tooltip-btn.ml-1{'data_toggle'=>'tooltip', 'title'=>'Eliminar Asignatura'}
 							= link_to(inscripcion, {class: 'btn-danger btn-sm', :method => :delete, :data => {:confirm => "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }}) do

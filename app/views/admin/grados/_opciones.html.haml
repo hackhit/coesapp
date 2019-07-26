@@ -1,0 +1,17 @@
+- if estado.eql? 1
+	=# btn_toggle 'btn-outline-success mr-2 ml-2', 'ok', '#', 'Aprobar', ''
+	= btn_toggle 'btn-outline-success mr-2 ml-2', 'ok', 'javascript:void(0)', 'Aprobar Proyecto', '', "moveRow('#{cambiar_estado_inscripcionseccion_path(registro.id)}', 1, $(this))"
+	= btn_toggle 'btn-outline-danger mr-2', 'remove', 'javascript:void(0)', 'Aplazar Proyecto', '', "moveRow('#{cambiar_estado_inscripcionseccion_path(registro.id)}', 2, $(this))"
+	= btn_toggle 'btn-outline-danger mr-2', 'minus', 'javascript:void(0)', 'Retirar Proyecto', '', "moveRow('#{cambiar_estado_inscripcionseccion_path(registro.id)}', 3, $(this))"
+- if estado > 1
+	- if estado.eql? 2
+		- if registro.is_a? Inscripcionseccion
+			- aux = registro
+		- else
+			- aux = registro.inscripciones.grados.del_periodo(current_periodo.id).de_la_escuela(registro.escuela_id).first 
+		= btn_toggle 'btn-outline-danger mr-2 ml-2', 'chevron-left', 'javascript:void(0)', 'Enviar al grupo anterior', '', "moveRow('#{cambiar_estado_inscripcionseccion_path(aux.id)}', 0, $(this))"
+	- else
+		= btn_toggle 'btn-outline-danger mr-2 ml-2', 'chevron-left', 'javascript:void(0)', 'Enviar al grupo anterior', '', "moveRow('#{cambiar_estado_grado_path(registro.id)}', '#{estado-1}', $(this))"
+
+	- if estado < 4
+		= btn_toggle 'btn-outline-success mr-2 ml-2', 'chevron-right', 'javascript:void(0)', 'Promover al siguinete grupo', '', "moveRow('#{cambiar_estado_grado_path(registro.id)}', '#{estado+1}', $(this))"

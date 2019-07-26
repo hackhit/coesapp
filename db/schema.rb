@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_20_043227) do
+ActiveRecord::Schema.define(version: 2019_07_23_100440) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -137,20 +137,6 @@ ActiveRecord::Schema.define(version: 2019_07_20_043227) do
     t.index ["id"], name: "index_escuelas_on_id"
   end
 
-  create_table "escuelas_estudiantes", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "estudiante_id", null: false
-    t.bigint "escuela_id", null: false
-    t.index ["escuela_id", "estudiante_id"], name: "index_escuelas_estudiantes_on_escuela_id_and_estudiante_id"
-    t.index ["estudiante_id", "escuela_id"], name: "index_escuelas_estudiantes_on_estudiante_id_and_escuela_id"
-  end
-
-  create_table "escuelas_usuarios", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "usuario_id", null: false
-    t.bigint "escuela_id", null: false
-    t.index ["escuela_id", "usuario_id"], name: "index_escuelas_usuarios_on_escuela_id_and_usuario_id"
-    t.index ["usuario_id", "escuela_id"], name: "index_escuelas_usuarios_on_usuario_id_and_escuela_id"
-  end
-
   create_table "estudiantes", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "tipo_estado_inscripcion_id"
     t.boolean "activo", default: false
@@ -167,6 +153,7 @@ ActiveRecord::Schema.define(version: 2019_07_20_043227) do
     t.string "estudiante_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "estado", default: 0, null: false
     t.index ["escuela_id", "estudiante_id"], name: "index_grados_on_escuela_id_and_estudiante_id", unique: true
     t.index ["escuela_id"], name: "index_grados_on_escuela_id"
     t.index ["estudiante_id", "escuela_id"], name: "index_grados_on_estudiante_id_and_escuela_id", unique: true
@@ -214,6 +201,9 @@ ActiveRecord::Schema.define(version: 2019_07_20_043227) do
     t.integer "estado", default: 0, null: false
     t.string "tipo_calificacion_id"
     t.string "pci_escuela_id"
+    t.string "escuela_id"
+    t.boolean "pci", default: false
+    t.index ["escuela_id"], name: "index_inscripcionsecciones_on_escuela_id"
     t.index ["estudiante_id", "seccion_id"], name: "index_inscripcionsecciones_on_estudiante_id_and_seccion_id", unique: true
     t.index ["estudiante_id"], name: "index_inscripcionsecciones_on_estudiante_id"
     t.index ["pci_escuela_id"], name: "fk_rails_24a264013f"

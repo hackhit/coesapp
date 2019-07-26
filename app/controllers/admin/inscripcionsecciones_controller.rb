@@ -235,33 +235,38 @@ module Admin
 
 		end
 
-		def set_retirar
+		def cambiar_estado
 			if es = Inscripcionseccion.find(params[:id])
 				estado_anterior = es.estado
+				es.estado = Inscripcionseccion.estados.key params[:estado].to_i
 
-				# if params[:valor].eql? 0
-				# 	es.estado = es.estado_segun_calificacion
-				# else
-				# 	es.estado = Inscripcionseccion.estados.key params[:valor]
-				# end
-				es.estado = Inscripcionseccion.estados.key params[:valor].to_i
-				
 				if es.save
-					if es.retirado?
-						flash[:success] = "Se retiró a #{es.estudiante.usuario.nickname} de la sección #{es.seccion.descripcion}."
-						info_bitacora "Se retiró al estudiante #{es.estudiante.usuario.descripcion} de la sección #{es.seccion.descripcion}. Estado anterior: #{estado_anterior.upcase}" , Bitacora::ACTUALIZACION, es
-					else
-						flash[:success] = "Se reinscribió a #{es.estudiante.usuario.nickname} de la sección #{es.seccion.descripcion}."
-						info_bitacora "Se reinscribió al estudiante #{es.estudiante.usuario.descripcion} de la sección #{es.seccion.descripcion}. Estado anterior: #{estado_anterior.upcase}" , Bitacora::ACTUALIZACION, es
-					end
+					flash[:success] = "Se guardó el estado #{es.estado} del estudiante #{es.estudiante.usuario.descripcion} en la sección #{es.seccion.descripcion}."
+					info_bitacora "Cambio de estado del estudiante #{es.estudiante_id} de #{estado_anterior} a #{es.estado}", Bitacora::ACTUALIZACION, es
 				else
 					flash[:error] = "No se pudo cambiar el valor de retiro, intentelo de nuevo: #{es.errors.full_messages.join' | '}"
-				end				
+				end
 			else
 				flash[:error] = "El estudiante no fue encontrado en la sección especificada"
 			end
-			redirect_to es.estudiante.usuario
 
+			if es.grado.posible_graduando?
+				tr = view_context.render partial: '/admin/grados/detalle_registro', locals: {registro: es.grado, estado: 2}
+			elsif es.grado.tesista?
+				tr = view_context.render partial: '/admin/grados/detalle_registro', locals: {registro: es.grado, estado: 1}
+			else
+				tr = ''
+			end
+
+			respond_to do |format|
+				format.html { redirect_to es.estudiante.usuario}
+				format.json do 
+					flash[:success] = flash[:error] = nil
+					msg = "Cambio de estado de #{es.estudiante.usuario.descripcion}"
+					render json: {tr: tr, msg: msg}, status: :ok 
+				end
+
+	        end
 		end
 
 
