@@ -19,7 +19,7 @@ class Inscripcionseccion < ApplicationRecord
 
 	# has_one :escuela, through: :asignatura
 
-	# belongs_to :pci_escuela, foreign_key: 'pci_escuela_id', class_name: 'Escuela', optional: true
+	belongs_to :pci_escuela, foreign_key: 'pci_escuela_id', class_name: 'Escuela', optional: true
 
 	# has_many :programaciones, through: :asignatura, source: :periodo
 
