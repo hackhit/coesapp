@@ -21,7 +21,7 @@
 		- inscripciones.each_with_index do |es,i|
 			- retirado = es.retirado?
 			%tr{class: es.tr_class_style_qualify}
-				%td= simple_tooltip_plan es.ultimo_plan
+				%td= simple_tooltip_plan es.ultimo_plan if es.grado
 				%td= es.estudiante_id
 				%td
 					- if current_admin
