@@ -174,11 +174,16 @@ module Admin
 					if pci_escuela_id and !(pci_escuela_id.eql? 'on')
 						escuela = Escuela.find pci_escuela_id
 						ins.pci_escuela_id = escuela.id 
+						ins.escuela_id = escuela.id
+						ins.pci = true 
+					else
+						ins.escuela_id = seccion.asignatura.escuela.id
 					end
+
 					if ins.save
 						guardadas += 1
 					else
-						flash[:error] = "#{es_se.errors.full_messages.join' | '}"
+						flash[:error] = "#{ins.errors.full_messages.join' | '}"
 					end
 					flash[:info] = "Para mayor información vaya al detalle del estudiante haciendo clic <a href='#{usuario_path(id)}' class='btn btn-primary btn-sm'>aquí</a> "
 				end 
