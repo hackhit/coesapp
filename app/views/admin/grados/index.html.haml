@@ -10,16 +10,16 @@
 .tab-content
   .tab-pane.active.show#tab1
     .border.mt-3.p-3
-      = render partial: '/admin/grados/lista', locals: {registros: @tesistas, estado: 1}
+      = render partial: '/admin/grados/lista', locals: {registros: @tesistas, estado: 1, tipo: 'Tesistas'}
   .tab-pane#tab2
     .border.mt-3.p-3
-      = render partial: '/admin/grados/lista', locals: {registros: @posibles_graduandos, estado: 2}
+      = render partial: '/admin/grados/lista', locals: {registros: @posibles_graduandos, estado: 2, tipo: 'Posibles Graduandos'}
   .tab-pane#tab3
     .border.mt-3.p-3
-      = render partial: '/admin/grados/lista', locals: {registros: @graduandos, estado: 3}
+      = render partial: '/admin/grados/lista', locals: {registros: @graduandos, estado: 3, tipo: 'Graduandos'}
   .tab-pane#tab4
     .border.mt-3.p-3
-      = render partial: '/admin/grados/lista', locals: {registros: @graduados, estado: 4}
+      = render partial: '/admin/grados/lista', locals: {registros: @graduados, estado: 4, tipo: 'Graduados'}
 
 :javascript
 
