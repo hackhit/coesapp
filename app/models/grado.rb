@@ -14,6 +14,9 @@ class Grado < ApplicationRecord
 	scope :por_equivalencia_externa, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EE'"}
 	scope :total_creditos_inscritos, -> {joins(:asignatura).sum('asignaturas.creditos')}
 
+	scope :culminado_en_periodo, lambda { |periodo_id| where "culminacion_periodo_id = ?", periodo_id}
+
+
 	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado]
 
 	def inscripciones

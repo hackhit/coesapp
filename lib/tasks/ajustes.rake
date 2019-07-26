@@ -1,5 +1,18 @@
 desc 'Actualizacion para asignar a Inscripcionseccion una grado'
 
+task :actualizar_estado_grado_a_posible_graduando => :environment do
+	Inscripcionseccion.grados.aprobado.each do |ins|
+		if Grado.where(escuela_id: ins.escuela_id, estudiante_id: ins.estudiante_id).update_all(estado: 4, culminacion_periodo_id: ins.periodo.id)
+			print '.'
+		else
+			print 'x'
+		end
+	end
+
+end
+
+desc 'Actualizacion asociacion escuela con inscripciones y pci'
+
 task :asociar_inscripcionseccion_a_grado => :environment do
 
 	p 'Iniciando actualizacion de asociacion entre inscripciones y grado...'

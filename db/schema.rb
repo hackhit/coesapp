@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_23_100440) do
+ActiveRecord::Schema.define(version: 2019_07_26_033639) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_100440) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "estado", default: 0, null: false
+    t.string "culminacion_periodo_id"
     t.index ["escuela_id", "estudiante_id"], name: "index_grados_on_escuela_id_and_estudiante_id", unique: true
     t.index ["escuela_id"], name: "index_grados_on_escuela_id"
     t.index ["estudiante_id", "escuela_id"], name: "index_grados_on_estudiante_id_and_escuela_id", unique: true

@@ -16,7 +16,7 @@ module Admin
         estado_anterior = inscripcion.estado
         info_bitacora "Cambio de estado del estudiante #{estudiante_id} de #{estado_anterior} a #{inscripcion.estado}", Bitacora::ACTUALIZACION, inscripcion if inscripcion.update_attributes(estado: :sin_calificar)
       elsif estado > 1
-        Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).update_all(estado: estado)
+        Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).update_all(estado: estado, culminacion_periodo_id: grado.inscripciones.first.periodo.id)
       end
       tr = view_context.render partial: '/admin/grados/detalle_registro', locals: {registro: grado, estado: estado}
       msg = "Cambio de estado de #{grado.estudiante.usuario.descripcion}"
@@ -43,9 +43,9 @@ module Admin
       escuelas_ids = current_admin.escuelas.ids
 
       @tesistas = Inscripcionseccion.grados.del_periodo(current_periodo.id).de_las_escuelas(escuelas_ids).sin_calificar
-      @posibles_graduandos = Grado.posible_graduando
-      @graduandos = Grado.graduando
-      @graduados = Grado.graduado
+      @posibles_graduandos = Grado.posible_graduando.culminado_en_periodo(current_periodo.id)
+      @graduandos = Grado.graduando.culminado_en_periodo(current_periodo.id)
+      @graduados = Grado.graduado.culminado_en_periodo(current_periodo.id)
       # @graduandos = @grados.aprobado
 
     end

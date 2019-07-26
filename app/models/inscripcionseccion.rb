@@ -522,11 +522,11 @@ class Inscripcionseccion < ApplicationRecord
 	def actualizar_estado_grado
 		if asignatura.tipoasignatura_id.eql? Tipoasignatura::PROYECTO
 			if self.sin_calificar?
-				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 1)
+				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 1, culminacion_periodo_id: nil)
 			elsif self.retirado? or self.aplazado?
-				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 0)
+				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 0, culminacion_periodo_id: nil)
 			elsif self.aprobado?
-				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 2)
+				Grado.where(escuela_id: escuela.id, estudiante_id: estudiante_id).update_all(estado: 2, culminacion_periodo_id: periodo.id)
 			end
 		end
 		return true

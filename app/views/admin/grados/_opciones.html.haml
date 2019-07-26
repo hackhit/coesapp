@@ -10,7 +10,7 @@
 			- aux = registro
 		- else
 			- aux = registro.inscripciones.grados.del_periodo(current_periodo.id).de_la_escuela(registro.escuela_id).first 
-		= btn_toggle 'btn-outline-danger mr-2 ml-2', 'chevron-left', 'javascript:void(0)', "Enviar a Tesistas", '', "moveRow('#{cambiar_estado_inscripcionseccion_path(aux.id)}', 0, $(this))"
+		= btn_toggle 'btn-outline-danger mr-2 ml-2', 'chevron-left', 'javascript:void(0)', "Enviar a Tesistas", '', "moveRow('#{cambiar_estado_inscripcionseccion_path(aux.id)}', 0, $(this))" if aux
 	- else
 		- if estado.eql? 3
 			- anterior = 'Posibles Graduandos'
