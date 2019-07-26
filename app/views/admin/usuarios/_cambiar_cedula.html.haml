@@ -17,8 +17,15 @@
               %label.control-label.col-md-12
                 Nueva Cédula:
               .col-md-10
-                = text_field_tag :cedula, nil, placeholder: "Cédula…", required: true, class: 'text_field form-control'
+                = text_field_tag :cedula, nil, placeholder: "Cédula…", required: true, class: 'text_field form-control ci'
 
           .modal-footer
             %a.btn{data: {dismiss: 'modal'}} Cancelar
             = submit_tag 'Guardar', class: 'btn btn-primary'
+
+:javascript
+
+  $('.ci').on('input', function(evt){
+    let node = $(this)
+    node.val(node.val().replace(/[^0-9]/g,''))
+  })
