@@ -64,6 +64,7 @@ module Admin
     end
 
     def habilitar_calificar
+
       if params[:id]
         @secciones = Seccion.where(id: params[:id])
         info_bitacora "Seccion: #{params[:id]} habilitada para calificar" , Bitacora::ACTUALIZACION, @secciones.first
@@ -83,7 +84,6 @@ module Admin
           es.calificacion_posterior = nil
           es.estado = 'sin_calificar' unless es.retirado?
           es.save
-
         end
         if seccion.save
           total += 1
@@ -95,7 +95,11 @@ module Admin
       flash[:success] = "#{total} asignatura(s) habilitada(s) para calificar" if total > 0  
       flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
 
-      redirect_to principal_admin_index_path
+      if params[:id] and params[:return].eql? 'back'
+        redirect_to secciones_path(@secciones.first)
+      else
+        redirect_to principal_admin_index_path
+      end
     end
 
     def importar_secciones
