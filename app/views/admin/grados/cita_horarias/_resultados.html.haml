@@ -13,17 +13,14 @@
       %tbody
         - @grados.each do |grado|
           - eficiencia = grado.eficiencia @periodos_ids
-
           - promedio_simple = grado.promedio_simple @periodos_ids
           - ponderado = grado.promedio_ponderado @periodos_ids
           %tr
             %td= grado.escuela.descripcion
             %td= grado.estudiante_id
-            %td= link_to grado.estudiante.usuario.nombre_completo, usuario_path(grado.estudiante)
+            %td= link_to grado.estudiante.usuario.nombre_completo, usuario_path(grado.estudiante), target: '_black'
             %td= promedio_simple
             %td= ponderado
             %td= eficiencia
-
-
   - else
     %h5.alert.alert-danger Sin resultados de fitrado

@@ -11,6 +11,8 @@ module Admin
       if params[:criterios]
         @escuela = Escuela.find params[:criterios][:escuela_id]
         @periodos_ids = params[:criterios][:periodo_ids]#.reject(&:empty?)
+        aux = params[:criterios][:periodo_ids] ? params[:criterios][:periodo_ids].to_sentence : 'Todos'
+        flash[:success] = "<b>Criterios de Búsqueda: </b> Escuela: #{@escuela.descripcion}. Períodos: #{aux}"
 
         periodo_anterior = @escuela.periodo_anterior current_periodo
 
