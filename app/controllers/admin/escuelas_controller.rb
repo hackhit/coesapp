@@ -2,7 +2,7 @@ module Admin
   class EscuelasController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_super_admin!, except: [:destroy]
+    before_action :filtro_super_admin!, except: [:destroy, :periodos]
     before_action :filtro_ninja!, only: [:destroy]
 
     before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos]
