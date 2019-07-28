@@ -24,6 +24,10 @@ Rails.application.routes.draw do
         post 'eliminar'
         get 'cambiar_estado'
       end
+      collection do
+        get 'citas_horarias'
+        post 'citas_horarias'
+      end
     end
 
     resources :comentarios do
@@ -65,6 +69,11 @@ Rails.application.routes.draw do
     resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones
 
     resources :periodos, :planes, :departamentos, :catedras, :escuelas
+    resources :escuelas do 
+      member do
+        get 'periodos'
+      end
+    end
     
     resources :inscripcionperiodos, :historialplanes
 

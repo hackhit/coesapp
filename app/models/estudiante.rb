@@ -31,6 +31,8 @@ class Estudiante < ApplicationRecord
 	# SCOPES:
 	scope :con_cita_horaria, -> {where "citahoraria_id IS NOT NULL"}
 
+	scope :con_inscripcion_en_periodo, lambda{|periodo_id| joins(:inscripcionsecciones).joins(:secciones).where("secciones.periodo_id = ?", periodo_id)} 
+
 	# FUNCIONES:
 
 	# def self.estudiantes_a_escuela_estudiantes
@@ -47,6 +49,14 @@ class Estudiante < ApplicationRecord
 
 	def tiene_alguna_inscripcion?
 		inscripcionsecciones.count > 0
+	end
+
+	def total_creditos_cursados_en_periodos periodos_ids
+		inscripciones.de_la_escuela(escuela_id).total_creditos_cursados_en_periodos periodos_ids
+	end
+
+	def total_creditos_aprobados_en_periodos periodos_ids
+		inscripciones.de_la_escuela(escuela_id).total_creditos_aprobados_en_periodos periodos_ids
 	end
 
 	# def any_asign_inscrita_numerica3?

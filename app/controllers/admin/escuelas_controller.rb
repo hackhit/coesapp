@@ -5,10 +5,14 @@ module Admin
     before_action :filtro_super_admin!, except: [:destroy]
     before_action :filtro_ninja!, only: [:destroy]
 
-    before_action :set_escuela, only: [:show, :edit, :update, :destroy]
+    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos]
 
     # GET /escuelas
     # GET /escuelas.json
+    def periodos
+      render json: {ids: @escuela.periodos.where("periodos.id != ?", params[:periodo_actual_id]).order(inicia: :desc).ids.to_a}
+    end
+
 
     def index
       @titulo = "Escuelas"

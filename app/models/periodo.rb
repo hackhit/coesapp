@@ -23,6 +23,10 @@ class Periodo < ApplicationRecord
     validates :inicia, presence: true#, uniqueness: true
 
 	# FUNCIONES:
+	def inscripciones
+		inscripcionsecciones
+	end
+
 	def getPeriodoLectivo
 		if self.anual?
 			return '0'
@@ -70,7 +74,7 @@ class Periodo < ApplicationRecord
 		indice -= 1
 		indice = 0 if indice < 0
 		
-		return todos[indice]		
+		return todos[indice]
 	end
 
 

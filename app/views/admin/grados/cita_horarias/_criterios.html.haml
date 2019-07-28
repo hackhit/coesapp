@@ -1,0 +1,28 @@
+.border.m-3.p-3
+  %h4.titulo.text-center Criterios:
+  = form_tag citas_horarias_grados_path, class: 'form-horizontal' do
+    
+    .row.form-group
+      %b.control-label.col-md-1.text-lg-right Escuela:
+      - value = params[:criterios] ? params[:criterios][:escuela_id] : ''
+      .col-md-11= collection_select :criterios, :escuela_id, @escuelas, :id, :descripcion, {prompt: '-- Seleccione --'}, class: 'form-control form-control-sm', required: true, value: value
+    .row.form-group
+      / %b.control-label.col-md-1.text-lg-right 1er. Criterio:
+      / .col-md-11=# select_tag 'criterios[criterio1]', options_for_select(['EFICIENCIA', 'PROMEDIO SIMPLE', 'PROMEDIO PONDERADO']), class: 'form-control form-control-sm', prompt: '-- Seleccione --', required: true
+    .row.form-group
+      / %b.control-label.col-md-1.text-lg-right 2do. Criterio:
+      / .col-md-11=# select_tag 'criterios[criterio2]', options_for_select(['EFICIENCIA', 'PROMEDIO SIMPLE', 'PROMEDIO PONDERADO']), class: 'form-control form-control-sm', prompt: '-- Seleccione --'
+    .row.form-group
+      %b.control-label.col-md-1.text-lg-right Períodos:
+      .col-md-11
+        = check_box_tag 'todos', nil
+        Todos los Períodos
+        = select_tag 'criterios[periodo_ids]', nil, class: 'form-control form-control-sm', prompt: '-- Seleccione --', required: true, multiple: true
+        =# collection_select :criterios, :periodo_ids, @periodos.order(inicia: :desc), :id, :id, {prompt: '-- Seleccione --', required: true}, class: 'form-control form-control-sm', multiple: true
+
+    .float-right
+      = submit_tag 'Enviar', class: 'btn btn-outline-success'
+
+  - # Colocar Valores Para mostrar: Apellidos y Nombres, promedio ponderado, pormedio simple, eficiencia
+  %br
+  %br

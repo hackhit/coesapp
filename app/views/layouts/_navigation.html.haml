@@ -34,6 +34,7 @@
               Reportes
             .dropdown-menu{"aria-labelledby" => "Reportes"}
               = link_to 'Reporte PIC', secciones_path, class: 'dropdown-item'
+              = link_to 'Reporte Citas Horarias', citas_horarias_grados_path, class: 'dropdown-item'
 
           - if current_admin.altos?
             %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}

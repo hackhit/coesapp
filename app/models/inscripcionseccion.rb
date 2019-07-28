@@ -45,12 +45,18 @@ class Inscripcionseccion < ApplicationRecord
 	# SON EQUIVALENTES LAS 2 SIGUIENTES SCOPE PERO FUNCIONAN DIFERENTES EN CONDICIONES PARTICULARES: 
 	# scope :del_periodo, lambda { |periodo_id| includes(:seccion).where "secciones.periodo_id = ?", periodo_id}
 	scope :del_periodo, lambda { |periodo_id| joins(:seccion).where "secciones.periodo_id = ?", periodo_id}
+	scope :de_los_periodos, lambda { |periodos_ids| joins(:seccion).where "secciones.periodo_id IN (?)", periodos_ids}
 
-	scope :de_la_escuela, lambda {|escuela_id| includes(:escuela).where("escuelas.id = ?", escuela_id).references(:escuelas)}
 
 	# scope :en_reparacion, -> {joins(:seccion).where "secciones.tipo_seccion_id = ?", TipoSeccion::REPARACION}
 	scope :en_reparacion, -> {where tipo_calificacion_id.eql? REPARACION}
 	# scope :no_retirados, -> {where "tipo_estado_inscripcion_id != ?", RETIRADA}
+
+	scope :de_la_escuela, lambda {|escuela_id| includes(:escuela).where("escuelas.id = ?", escuela_id).references(:escuelas)}
+
+	# Así debe ser de_la_escuela
+	# scope :de_la_escuela, lambda {|escuela_id| where("escuelas_id = ?", escuela_id)}
+	# scope :de_las_escuelas, lambda {|escuelas_ids| where("escuelas.id IN (?)", escuelas_ids)}
 
 	scope :de_las_escuelas, lambda {|escuelas_ids| includes(:escuela).where("escuelas.id IN (?)", escuelas_ids).references(:escuelas)}
 
@@ -65,8 +71,13 @@ class Inscripcionseccion < ApplicationRecord
 	scope :cursadas, -> {where "estado = 1 or estado = 2"}
 	scope :en_curso, -> {where "estado != 1 and estado != 2 and estado != 3"} # Excluye retiradas también
 	scope :aprobadas, -> {where "estado = 1"}
+	
+	scope :total_creditos_cursados_en_periodos, lambda{|periodos_ids| cursadas.joins(:seccion).where('secciones.periodo_id IN (?)', periodos_ids).joins(:asignatura).sum('asignaturas.creditos')}
+
+	scope :total_creditos_aprobados_en_periodos, lambda{|periodos_ids| aprobadas.joins(:seccion).where('secciones.periodo_id IN (?)', periodos_ids).joins(:asignatura).sum('asignaturas.creditos')}
 
 	scope :total_creditos, -> {joins(:asignatura).sum('asignaturas.creditos')}
+
 	scope :total_creditos_cursados, -> {cursadas.total_creditos}
 	scope :total_creditos_aprobados, -> {aprobadas.total_creditos}
 	scope :ponderado, -> {joins(:asignatura).sum('asignaturas.creditos * calificacion_final')}

@@ -16,12 +16,69 @@ class Grado < ApplicationRecord
 
 	scope :culminado_en_periodo, lambda { |periodo_id| where "culminacion_periodo_id = ?", periodo_id}
 
+	scope :de_las_escuelas, lambda {|escuelas_ids| where("escuela_id IN (?)", escuelas_ids)}
 
 	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado]
 
 	def inscripciones
 		Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)
 	end
+
+	# Así debe ser inscripciones
+	# def inscripciones
+	# 	Inscripcionseccion.where("estudiante_id = ? and escuelas_id = ?", estudiante_id, escuela_id)
+	# end
+
+
+	def total_creditos_cursados periodos_ids = nil
+		if periodos_ids
+			inscripciones.total_creditos_cursados_en_periodos periodos_ids
+		else
+			inscripciones.total_creditos_cursados
+		end
+	end
+
+	def total_creditos_aprobados periodos_ids = nil
+		if periodos_ids
+ 			inscripciones.total_creditos_aprobados_en_periodos periodos_ids
+ 		else
+ 			inscripciones.total_creditos_aprobados
+ 		end
+	end
+
+	def eficiencia periodos_ids = nil 
+        cursados = self.total_creditos_cursados periodos_ids
+        aprobados = self.total_creditos_aprobados periodos_ids
+		(cursados and cursados > 0) ? (aprobados.to_f/cursados.to_f).round(4) : 0.0
+	end
+
+	def promedio_simple periodos_ids = nil
+		if periodos_ids
+			aux = inscripciones.de_los_periodos(periodos_ids).cursadas
+		else
+			aux = inscripciones.cursadas
+		end
+
+        (aux and aux.count > 0 and !aux.average('calificacion_final').nil?) ? aux.average('calificacion_final').round(4) : 0.0
+
+	end
+
+	def promedio_ponderado periodos_ids = nil
+		if periodos_ids
+			aux = inscripciones.de_los_periodos(periodos_ids).ponderado
+		else
+			aux = inscripciones.ponderado
+		end
+		cursados = self.total_creditos_cursados periodos_ids
+
+		cursados > 0 ? (aux.to_f/cursados.to_f).round(4) : 0.0
+	end
+
+
+	def inscrito_en_periodo? periodo_id
+		(inscripciones.del_periodo(periodo_id)).count > 0
+	end
+
 
 	def id
 		"#{escuela_id}-#{estudiante_id}"

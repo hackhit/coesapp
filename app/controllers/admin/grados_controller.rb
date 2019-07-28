@@ -4,6 +4,28 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_administrador
 
+    def citas_horarias
+      # Colocar un mensaje que si en el periodo actual no está dentro de los periodos de la escuela debe cambiarlos
+      @escuelas = current_periodo.escuelas.merge current_admin.escuelas
+      @periodos = Periodo.all # Esto debe ser dinamico en funcion a los periodods de la escuela seleccionada
+      if params[:criterios]
+        @escuela = Escuela.find params[:criterios][:escuela_id]
+        @periodos_ids = params[:criterios][:periodo_ids]#.reject(&:empty?)
+
+        periodo_anterior = @escuela.periodo_anterior current_periodo
+
+        @grados = @escuela.grados.reject{|grado| !grado.inscrito_en_periodo? periodo_anterior}
+
+        if params[:criterios][:criterio1].eql? 'EFICIENCIA'
+          # @grados = @grdos.order_by{|o| o.eficiencia @periodos_ids}
+          @grados = @grados.sort {|a,b| a.eficiencia(@periodos_ids) <=> b.eficiencia(@periodos_ids)}
+        end
+
+        # @grados = Grado.de_las_escuelas(@escuelas.ids).limit 50
+      end
+    end
+
+
     def cambiar_estado
       estado = params[:estado].to_i
         escuela_id, estudiante_id = params[:id].split("-")

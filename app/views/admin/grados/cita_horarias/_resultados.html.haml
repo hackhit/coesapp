@@ -1,0 +1,29 @@
+.border.m-3.p-3
+  %h4.titulo.text-center Resultado:
+  - if @grados and @grados.any?
+    %table#tableData.table.table-striped.table-sm.table-hover.table-bordered.responsive-table
+      %thead
+        %tr
+          %th Escuela
+          %th Cédula
+          %th Nombre y Apellido
+          %th Promedio
+          %th Ponderado
+          %th Eficiencia
+      %tbody
+        - @grados.each do |grado|
+          - eficiencia = grado.eficiencia @periodos_ids
+
+          - promedio_simple = grado.promedio_simple @periodos_ids
+          - ponderado = grado.promedio_ponderado @periodos_ids
+          %tr
+            %td= grado.escuela.descripcion
+            %td= grado.estudiante_id
+            %td= link_to grado.estudiante.usuario.nombre_completo, usuario_path(grado.estudiante)
+            %td= promedio_simple
+            %td= ponderado
+            %td= eficiencia
+
+
+  - else
+    %h5.alert.alert-danger Sin resultados de fitrado

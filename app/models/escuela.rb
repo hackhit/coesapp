@@ -54,6 +54,15 @@ class Escuela < ApplicationRecord
 		end
 	end
 
+	def periodo_anterior periodo
+		todos = periodos.order(inicia: :asc)
+		indice = todos.index periodo
+		indice -= 1
+		indice = 0 if indice < 0
+		
+		return todos[indice]
+	end
+
 	def descripcion_filtro
 		self.descripcion.titleize
 	end
