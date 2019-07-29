@@ -9,28 +9,7 @@
         $("#criterios_periodo_ids").attr('disabled', this.checked)
     });
 
-    $('#criterios_escuela_id').change(function(){
-      let id = $(this).val()
-      let select = document.getElementById('criterios_periodo_ids');
 
-      select.innerHTML = ""
-
-      if(id!= ""){
-        $.get(`/coesapp/escuelas/${id}/periodos?periodo_actual_id=#{@current_periodo.id}`, function(data){
-
-          // Add options
-          for (var i in data.ids) {
-              $(select).append('<option value=' + data.ids[i] + '>' + data.ids[i] + '</option>');
-          }
-
-          // Set selected value
-          // $(select).val(data[1]);
-
-        });
-
-      }
-
-    })
 
     $('#tableData').DataTable({
       scrollY: 410,
