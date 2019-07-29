@@ -17,8 +17,8 @@
       .col-md-11
         = check_box_tag 'todos', nil
         Todos los Períodos
-        =# select_tag 'criterios[periodo_ids]', nil, class: 'form-control form-control-sm', prompt: '-- Seleccione --', required: true, multiple: true
-        = collection_select :criterios, :periodo_ids, @periodos.order(inicia: :desc), :id, :id, {prompt: '-- Seleccione --'}, class: 'form-control form-control-sm', multiple: true
+        = select_tag 'criterios[periodo_ids]', nil, class: 'form-control form-control-sm', prompt: '-- Seleccione --', required: true, multiple: true
+        =# collection_select :criterios, :periodo_ids, @periodos.order(inicia: :desc), :id, :id, {prompt: '-- Seleccione --', required: true}, class: 'form-control form-control-sm', multiple: true
 
     .float-right
       = submit_tag 'Enviar', class: 'btn btn-outline-success'
