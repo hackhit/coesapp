@@ -44,6 +44,9 @@ class VisitorsController < ApplicationController
         return
       else
         cargar_parametros_generales
+        if roles.include? 'Profesor'
+          flash[:danger] = "<h4><b>¡ATENCIÓN PROFESOR!</b> RECUERDA QUE PARA CALIFICAR ALGUNA DE TUS SECCIONES DE MANERA ORDINARIA, DEBES INICIAR LA SESIÓN COMO PROFESOR Y <b>NO</b> COMO ADMINISTRADOR</h4>"
+        end
         flash[:warning] = "Tiene más de un rol, selecciona uno de ellos"
         redirect_to action: "seleccionar_rol"
         return
@@ -54,7 +57,7 @@ class VisitorsController < ApplicationController
   end 
 
   
-  def seleccionar_rol    
+  def seleccionar_rol
     usuario = Usuario.find session[:usuario_ci]
     @roles = usuario.roles_generales
   end
