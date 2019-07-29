@@ -1,4 +1,4 @@
-- if current_admin.maestros? 
+- if current_admin and current_admin.maestros? 
 	- if @seccion.calificada
 		= btn_toggle 'float-right btn-outline-success btn-sm ml-md-1', 'off', "#{habilitar_calificar_seccion_path(@seccion.id)}?return=back", 'Habilitar para Calificar Nuevamente', nil
 - if @seccion.asignatura.proyecto?
