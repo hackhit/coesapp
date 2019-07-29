@@ -140,7 +140,7 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def ultimo_plan
-		grado.ultimo_plan
+		grado ? grado.ultimo_plan : nil
 	end
 
 	# Funciones Generales
