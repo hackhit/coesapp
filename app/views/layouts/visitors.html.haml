@@ -15,8 +15,12 @@
         = render 'layouts/noticias'
         = render 'layouts/visitors_nav'
     %main{:role => "main"}
+      - if Rails.root.to_s.include? 'coes_dev'
+        %nav.navbar.navbar-expand-lg.navbar-dark.bg-danger.justify-content-center
+          ATENCIÓN: ESCENARIO DE PRUEBA
       = render 'layouts/messages'
       = yield
+
     %br
     %br
 
