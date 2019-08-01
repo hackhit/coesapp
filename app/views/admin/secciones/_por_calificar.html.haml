@@ -3,7 +3,7 @@
 = form_tag(calificar_seccion_path) do
 	= hidden_field_tag "id", @seccion.id
 
-	%table.dataTable.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+	%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
 		= render 'admin/secciones/tabla_headers_tipo_seccion'
 
 		%tbody
