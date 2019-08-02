@@ -83,7 +83,18 @@
         url: `#{secciones_path}/${id}`,
         method: 'DELETE',
         success: function () {
-          document.getElementById(`tr${id}`).remove()
+          // document.getElementById(`tr${id}`).remove().clear();
+          // document.getElementById(`tr${id}`).delete();
+          //table.draw();
+          // $('#tableSeccion').DataTable().draw()
+          // document.getElementById(`tr${id}`).outerHTML = "";
+
+          // let element = document.getElementById(`tr${id}`);
+          // element.parentNode.removeChild(element);
+          
+          let table = $('#tableSeccion').DataTable();
+          table.row($(`tr#tr${id}`)).remove().draw();
+
           $('#message').removeClass('alert-danger')
           $('#message').addClass('alert-info')
           $('#message').html(`Seccion Eliminada con éxito`)
@@ -100,7 +111,7 @@
       });
 
       $('#message').fadeIn()
-      $('#message').fadeOut(1500)
+      $('#message').fadeOut(3500)
 
     }
   }
