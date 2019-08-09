@@ -1,6 +1,6 @@
 module Admin
 	class ImportadorController < ApplicationController
-		before_action :filtro_ninja!
+		before_action :filtro_super_admin!
 
 		def index
 			@titulo = "Importador"
