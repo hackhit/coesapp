@@ -1,0 +1,10 @@
+%tr
+	- unless object.is_a? Asignatura
+		%td.align-middle= seccion.asignatura.descripcion_id
+	%td.align-middle.text-center= seccion.tipo_seccion_id
+	%td.align-middle= seccion.numero
+	%td.align-middle= render partial: '/admin/secciones/descripcion_profesor_asignado_edit', locals: {seccion: seccion}
+	%td.align-middle= render partial: '/admin/secciones/tabla_profesores_secundarios', locals: {seccion: seccion}
+	%td.align-middle.text-center= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: seccion}
+	%td.align-middle.text-center= render partial: '/admin/secciones/estado', locals: {seccion: seccion}
+	%td.align-middle.text-center= render partial: '/admin/secciones/panel_detalle_opciones', locals: {seccion: seccion}

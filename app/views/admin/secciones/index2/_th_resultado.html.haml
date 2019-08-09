@@ -1,0 +1,15 @@
+%table#resultado.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+	%thead
+		%tr
+			- unless object and object.is_a? Asignatura
+				%th.text-center{style: "width: 20%"} Asignatura
+			%th.text-center Tipo
+			%th.text-center Sec.
+			%th{style: "width: 20%"} Profesor Tutor (Calificador)
+			%th{style: "width: 20%"} Profesores Secundarios
+			%th.text-center Capacidad
+			%th.text-center Estado
+			%th.text-center Opciones
+	%tbody
+		- secciones.each do |seccion| 
+			= render partial: '/admin/secciones/index2/tr_descripcion', locals: {seccion: seccion, object: object} 

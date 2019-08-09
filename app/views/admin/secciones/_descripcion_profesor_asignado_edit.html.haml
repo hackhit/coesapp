@@ -1,4 +1,3 @@
 = seccion.descripcion_profesor_asignado
 - if current_admin.altos?
-	= link_to 'javascript:void(0)', {role: 'button', class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'Actualizar Tutor-Calificador', onclick: "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Cambiar para #{seccion.descripcion}');$('#editar_profesor').modal();"} do
-		= glyph :pencil
+	= simple_toggle 'javascript:void(0)', '', 'Actualizar Tutor-Calificador', '', 'pencil', "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Cambiar para #{seccion.descripcion}');$('#editar_profesor').modal();"

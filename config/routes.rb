@@ -118,6 +118,11 @@ Rails.application.routes.draw do
 
     resources :secciones do
       collection do
+        get 'get_profesores'
+        get 'set_tab'
+        get 'get_tab_objects'
+        get 'index2'
+        get 'get_secciones'
         get 'habilitar_calificar'
         get 'habilitar_calificar_trim'
         post 'cambiar_capacidad'

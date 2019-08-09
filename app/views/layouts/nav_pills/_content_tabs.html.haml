@@ -1,0 +1,42 @@
+- object_name = objects.first.class.name.downcase if objects and objects.first
+- if objects and objects.any?
+	.row
+		.col-md-2 
+			%ul.nav.nav-pills.mb-3.flex-column{role: :tablist, "aria-orientation": 'vertical', id: "pills-#{object_name}-tab"}
+				- objects.each do |obj|
+					- obj_activo = (session["#{object_name}_id"].eql? obj.id) ? 'active' : ''
+					%li.nav-item
+						= link_to obj.descripcion, "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "set_tab('#{object_name}_id', '#{obj.id}');", class: "nav-link #{obj_activo}"
+				- if object_name.eql? 'escuela'
+					- obj_activo = (session[:escuela_id].eql? 'pci') ? 'active' : ''
+					%li.nav-item= link_to "PCI", "#pci", "data-toggle": "tab", class: "nav-link #{obj_activo}", onclick: "set_tab('escuela_id', 'pci');"
+
+- object_name = objects.first.class.name.downcase if objects and objects.first
+- if objects and objects.any?
+	.col-md-10
+		.tab-content{id: "#pills-#{object_name}-tabContent"}
+
+			- @objects.each do |obj|
+				- @pcis = nil
+				- obj_activo = (session["#{object_name}_id"].eql? obj.id) ? 'active show' : ''
+				.tab-pane.fade{"aria-labelledby" => "pills-#{object_name}-tab", role: :tabpanel, class: obj_activo, id: "#{object_name}_#{obj.id}"}
+					- if current_admin.admin_departamento?
+						- @departamentos = current_admin.departamentos
+					- else
+						- @departamentos = obj.departamentos
+
+					- if controller_name.eql? 'asignaturas'
+						- @asignaturas = obj.asignaturas.order(:descripcion)
+						= render '/admin/asignaturas/index_colocar_tabla'
+					- else
+						= render '/admin/principal_admin/tabs_estructura/departamentos'
+			- obj_activo = (session[:esc_id].eql? 'pci') ? 'active show' : ''
+			.tab-pane.fade{"aria-labelledby": "pills-escuelas-tab", role: :tabpanel, id: "pci", class: obj_activo, id: "pci" }
+
+				-# @asignaturas = current_periodo.asignaturas.pcis current_periodo.id
+				- @asignaturas = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}
+				- if @asignaturas.any?
+					- @pcis = '_pci'
+					= render '/admin/principal_admin/tabs_estructura/asignaturas'
+				- else
+					%b.text-muted Sin Asignaturas Pci En Este Período

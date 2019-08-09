@@ -1,13 +1,14 @@
+
 .row
 	.col-md-2
-		= collection_select nil, :escuela_id, current_admin.escuelas, :id, :descripcion, {prompt: 'Selecciona Escuela...', selected: session[:esc_id]}, { class: 'form-control form-control-sm', multiple: true}
+		= collection_select nil, :escuela_id, @escuelas, :id, :descripcion, {prompt: 'Selecciona Escuela...', selected: session[:esc_id]}, { class: 'form-control form-control-sm', multiple: true, style: 'height: 200px;'}
 	.col-md-2
-		= grouped_collection_select nil, :departamento_id, current_admin.escuelas, :departamentos, :descripcion, :id, :descripcion, { prompt: "Selecciona Departamento...", selected: session[:dpto_id] }, { class: 'form-control form-control-sm', multiple: true }
+		= grouped_collection_select nil, :departamento_id, current_admin.escuelas, :departamentos, :descripcion, :id, :descripcion, { prompt: "Selecciona Departamento...", selected: session[:dpto_id] }, { class: 'form-control form-control-sm', multiple: true, style: 'height: 200px;' }
 	.col-md-4
-		= grouped_collection_select nil, :catedra_id, Departamento.all, :catedras, :descripcion, :id, :descripcion, { prompt: "Selecciona Cátedra...", selected: session[:cat_id] }, { class: 'form-control form-control-sm', multiple: true }
+		= grouped_collection_select nil, :catedra_id, Departamento.all, :catedras, :descripcion, :id, :descripcion, { prompt: "Selecciona Cátedra...", selected: session[:cat_id] }, { class: 'form-control form-control-sm', multiple: true, style: 'height: 200px;' }
 
 	.col-md-4
-		= grouped_collection_select nil, :asignatura_id, Catedra.all, :asignaturas, :descripcion, :id, :descripcion, { prompt: "Selecciona Asignatura...", selected: session[:mat_id] }, { class: 'form-control form-control-sm', multiple: true }
+		= grouped_collection_select nil, :asignatura_id, Catedra.all, :asignaturas, :descripcion, :id, :descripcion, { prompt: "Selecciona Asignatura...", selected: session[:mat_id] }, { class: 'form-control form-control-sm', multiple: true, style: 'height: 200px;' }
 
 .border.p-md-2.mt-md-3
 	- hidden = session[:mat_id] ? '' : 'hideble'

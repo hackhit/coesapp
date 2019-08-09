@@ -39,11 +39,11 @@ class VisitorsController < ApplicationController
         redirect_to root_path
         return
       elsif roles.size == 1
-        cargar_parametros_generales
+        # cargar_parametros_generales
         redirect_to action: "un_rol", tipo: roles.first
         return
       else
-        cargar_parametros_generales
+        # cargar_parametros_generales
         if roles.include? 'Profesor'
           flash[:danger] = "<h4><b>¡ATENCIÓN PROFESOR!</b> RECUERDA QUE PARA CALIFICAR ALGUNA DE TUS SECCIONES DE MANERA ORDINARIA, DEBES INICIAR LA SESIÓN COMO PROFESOR Y <b>NO</b> COMO ADMINISTRADOR</h4>"
         end

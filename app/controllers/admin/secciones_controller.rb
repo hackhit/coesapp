@@ -7,10 +7,125 @@ module Admin
     before_action :filtro_admin_mas_altos!, only: [:cambiar_capacidad, :create, :new, :create, :update]
     #before_action :filtro_ninja!, only: [:destroy, :index]
 
-    before_action :set_seccion, except: [:index, :new, :create, :habilitar_calificar]
+    before_action :set_seccion, except: [:index, :index2, :get_secciones, :get_tab_objects, :set_tab, :new, :create, :habilitar_calificar, :get_profesores]
 
     # GET /secciones
     # GET /secciones.json
+    def set_tab
+      session[params[:type]] = params[:valor]
+      p session.to_h
+      
+      respond_to do |format|
+        format.html { redirect_to :back }
+        format.json { head :ok }
+      end
+    end
+
+    def get_profesores
+      if escuela = current_admin.pertenece_a_escuela
+        @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
+      else
+        @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos').collect{|pro| [pro.id, pro.descripcion]}
+      end
+
+      render json: {profesores: @profesores, status: :success}
+      
+    end
+
+    def get_tab_objects
+        session[params[:type]] = params[:valor]
+
+        if params[:valor].eql? 'pci'
+          @childrens = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+        else  
+          objeto = params[:type].camelize.constantize.find(params[:valor])
+          if objeto.is_a? Escuela
+            @childrens = objeto.departamentos
+            session[:departamento] = session[:catedra] = session[:asignatura] = nil
+          elsif objeto.is_a? Departamento
+            session[:catedra] = session[:asignatura] = nil
+            @childrens = objeto.catedras
+          else 
+            session[:asignatura] = nil if objeto.is_a? Catedra
+            if session[:departamento]
+              @childrens = objeto.asignaturas.del_departamento(session[:departamento])
+            else
+              @childrens = objeto.asignaturas
+            end
+          end
+        end
+        # tabs = view_context.render partial: 'layouts/nav_pills/tabs', locals: {objects: @childrens}
+
+        # respond_to do |format|
+        #   format.json { head :ok}
+        # end        
+
+        # render json: {tabs: tabs}, status: :ok
+
+    end
+
+
+    def get_secciones
+        if params[:id].eql? 'pci'
+          # ids = Programacion.pcis.del_periodo(current_periodo.id).collect{|pr| pr.secciones.ids}.uniq.flatten
+          @secciones = Seccion.where(id: [])
+          @objeto = nil
+        else
+          @objeto = params[:type].camelize.constantize.find(params[:id])
+          if session[:departamento] and session[:escuela] and !session[:escuela].eql? 'pci'
+            @secciones = @objeto.secciones.del_departamento(session[:departamento]).del_periodo(current_periodo.id)
+          else
+            @secciones = @objeto.secciones.del_periodo(current_periodo.id)
+          end
+        end
+
+        #render json: {secciones: secciones, status: :success}
+      
+    end
+
+    def index2
+      @titulo = "Secciones (Periodo Académico: #{current_periodo.id})"
+      @usuario = current_usuario
+      @escuelas = current_periodo.escuelas.merge current_admin.escuelas
+      #@editar_asignaturas = true if current_admin.altos?
+      @seccion = Seccion.new
+      @departamentos = current_admin.departamentos #Departamento.all
+      if escuela = current_admin.pertenece_a_escuela
+        @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
+      else
+        @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos')
+      end
+
+      if session[:escuela] and session[:escuela].eql? 'pci'
+
+        @asigTabs = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+        if session[:asignatura]
+          # ids = Programacion.pcis.del_periodo(current_periodo.id).collect{|pr| pr.secciones.ids}.uniq.flatten
+          # @secciones = Seccion.where(id: ids)
+          @asignatura = Asignatura.find session[:asignatura]
+          @secciones = @asignatura.secciones.del_periodo(current_periodo.id)          
+        else
+          @secciones = Seccion.where(id: [])
+        end
+
+      else
+        @dptosTabs = Escuela.find(session[:escuela]).departamentos if session[:escuela] 
+        if session[:departamento]
+          @catTabs = Departamento.find(session[:departamento]).catedras
+          @asigTabs = Catedra.find(session[:catedra]).asignaturas.del_departamento(session[:departamento]) if session[:catedra]
+          if session[:asignatura]
+            @asignatura = Asignatura.find session[:asignatura]
+            @secciones = @asignatura.secciones.del_periodo(current_periodo.id)
+          elsif session[:catedra]
+            @secciones = Catedra.find(session[:catedra]).secciones.del_periodo(current_periodo.id).del_departamento(session[:departamento])
+          end
+        end
+
+      end
+
+    end
+
+
     def index
       @titulo = "Secciones del Periodo: #{current_periodo.id}"
       if escuela = current_admin.pertenece_a_escuela
@@ -197,7 +312,6 @@ module Admin
     end
 
     def cambiar_profe_seccion
-
       @seccion.profesor_id = params[:profesor_id]
 
       if params[:secundario].eql? 'true'
@@ -207,8 +321,8 @@ module Admin
           info_bitacora "Agregado como profesor secunadario Seccion" , Bitacora::CREACION, sp
         else
           flash[:error] = "No se pudo agregar la Asignatura"
-          render action: 'seleccionar_profesor_secundario'
         end
+        redirect_back fallback_location: index2_secciones_path
       else
 
         respond_to do |format|
@@ -237,8 +351,7 @@ module Admin
       else
         flash[:error] = "Profesor No Encontrado, por favor revisar su solicitud."
       end
-
-      redirect_to principal_admin_index_path
+      redirect_back fallback_location: principal_admin_index_path
     end
 
     # GET /secciones/1
@@ -293,7 +406,7 @@ module Admin
             if params[:back]
               url = params[:back]
             else
-              url = principal_admin_index_path
+              url = index2_secciones_path
             end
             redirect_to url
              }

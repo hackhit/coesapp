@@ -31,6 +31,7 @@ class Seccion < ApplicationRecord
     scope :trimestrales2, -> {joins(:inscripcionsecciones).where("inscripcionsecciones.estado = 5")}
 	scope :calificadas, -> {where "calificada IS TRUE"}
 	scope :sin_calificar, -> {where "calificada IS NOT TRUE"}
+	scope :del_departamento, lambda {|dpto_id| joins(:asignatura).where('asignaturas.departamento_id = ?', dpto_id)}
 	scope :del_periodo, lambda { |periodo_id| where "periodo_id = ?", periodo_id}
 	# scope :del_periodo_actual, -> { where "periodo_id = ?", ParametroGeneral.periodo_actual_id}
 

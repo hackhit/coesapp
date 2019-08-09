@@ -74,10 +74,12 @@ module Admin
 		end
 
 		def index
+			@titulo = "Escritorio (Periodo Académico: #{current_periodo.id})"
 			@usuario = current_usuario
 			@principal_admin_add_asig = true
-			@escuelas = current_admin.escuelas
-			@editar_asignaturas = true if current_admin.altos?
+			# @escuelas = current_admin.escuelas
+			@escuelas = current_periodo.escuelas.merge current_admin.escuelas
+			#@editar_asignaturas = true if current_admin.altos?
 			@seccion = Seccion.new
 			@departamentos = current_admin.departamentos #Departamento.all
 	      if escuela = current_admin.pertenece_a_escuela

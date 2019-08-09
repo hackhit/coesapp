@@ -1,0 +1,20 @@
+- object_name = objects.first.class.name.downcase if objects and objects.first
+- if objects
+	- if (object_name.eql? 'asignatura')
+		- col =  'col-md-4'
+	- elsif (object_name.eql? 'escuela')
+		- col =  'col-md-2'
+	- else
+		- col =  'col-md-3'
+	%div{id: "#{object_name}Tabs", class: "tabs #{col}", style: "max-height: 400px;overflow: scroll;"}
+		%h6.text-center= object_name.titleize if object_name
+		%ul.nav.nav-pills.mb-3.flex-column{role: :tablist, "aria-orientation": 'vertical', id: "pills-#{object_name}-tab"}
+			- objects.each do |obj|
+				- obj_activo = (session[object_name].eql? obj.id) ? 'active' : ''
+				%li.nav-item
+					- desc = (obj.is_a?(Asignatura) and obj.pci?(current_periodo.id)) ? obj.descripcion_completa : obj.descripcion
+					= link_to desc.upcase, "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}"
+			- if object_name.eql? 'escuela'
+				- obj_activo = (session[:escuela].eql? 'pci') ? 'active' : ''
+				%li.nav-item= link_to "PCI", "#pci", "data-toggle": :tab, class: "nav-link #{obj_activo}", onclick: "updatePage('#{object_name}', 'pci');", id: "#{object_name}_pci"
+

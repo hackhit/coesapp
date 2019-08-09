@@ -1,0 +1,121 @@
+
+= render '/admin/usuarios/datos_modal'
+= render 'admin/secciones/modal_form'
+= render 'admin/secciones/modal_seleccionar_profesor'
+.row#filterTabs
+	=# Escuelas
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @escuelas}
+	=# Departamentos
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @dptosTabs} if (@dptosTabs and @dptosTabs.any?)
+	=# Catedras
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @catTabs} if (@catTabs and @catTabs.any?)
+	=# Asingaturas
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @asigTabs} if (@asigTabs and @asigTabs.any?)
+
+.border.p-md-2.mt-md-3
+	
+	- hidden = @asignatura ? '' : 'hideble'
+	.text-center
+		#btnNuevaSeccion{class: hidden}= simple_icon_toggle_modal 'Agregar Sección', 'success', 'plus', 'nueva_seccion'
+		%b#descAsignatura
+			= @asignatura.descripcion_id if @asignatura
+
+	#tableResponse
+		- if @secciones and @secciones.any?
+			= render partial: '/admin/secciones/index2/th_resultado.html.haml', locals: {object: @asignatura, secciones: @secciones}
+	#no_encontrado.pagination-centered.text-center.hideble.p-0
+		.alert-danger No se encontrado secciones
+
+#cargando.modal
+	.pagination-centered.text-center{style: 'padding-top: 400px'}
+		.ibox-content
+			.spiner-example
+				.sk-spinner.sk-spinner-chasing-dots
+					.sk-dot1
+					.sk-dot2
+
+
+
+:javascript
+
+	function limpiarResultados(){
+		$('#no_encontrado').hide();
+		$("#resultado tbody").html(""); 
+		$("#descAsignatura").html(""); 
+		$('#btnNuevaSeccion').hide();
+	}
+
+	function paintTabObjects(type, id){
+
+		let ele = $('#' + type + 'Tabs')
+		ele.nextAll('.tabs').remove()
+
+		$.ajax({
+			url: "#{get_tab_objects_secciones_path}",
+			data: {type: type, valor: id},
+			dataType: 'json', 
+			success: function(data){
+				$('#filterTabs').append(data.tabs)
+			},
+			beforeSend: function(){
+				$(`#cargandoTab${type}`).show();
+			},
+			complete: function(){
+				$(`#cargandoTab${type}`).hide();
+			}
+
+		});
+	}
+
+	function getSecciones(type,id) {
+		if (type == 'asignatura'){
+			let desc = $('#'+type+'_'+id).text()
+			$('#_seccionasignatura_id').val(`${id}`)
+			$('#nueva_seccion_titulo').html(`Nueva Sección para ${desc}`)
+			$('#descAsignatura').html(`${id}: ${desc}`)
+
+			$('#btnNuevaSeccion').show();
+		}
+
+		$.ajax({
+			url: '#{get_secciones_secciones_path}',
+			data: {id: id, type: type},
+			dataType: 'json', 
+			beforeSend: function() {$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'});},
+			success: function(data){
+				console.log(data)
+				if(data.secciones_length === 0){
+					$('#no_encontrado').show();
+				}else{
+					$('#tableResponse').html(data.th)
+				}
+			},
+			complete: function(){
+				$('.modal').modal('hide')
+				console.log('Completed')
+				if (type != 'asignatura'){
+					paintTabObjects(type,id)
+				}
+			}
+		});
+	}
+
+	function setTab(type, id){
+		$.ajax({
+			url: "#{set_tab_secciones_path}", 
+			data: {type: type, valor: id}, 
+			dataType: 'json'
+			});
+	}
+
+	function updatePage(type, id){
+		limpiarResultados()
+		setTab(type, id)
+
+		if (type == 'asignatura' || type == 'catedra' || id == 'pci'){
+			getSecciones(type, id)
+
+		}else{
+			paintTabObjects(type,id)
+		}
+	}

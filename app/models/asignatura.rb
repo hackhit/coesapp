@@ -30,6 +30,8 @@ class Asignatura < ApplicationRecord
 	validates :tipoasignatura_id, presence: true
 
 	# SCOPE
+	scope :del_departamento, lambda {|dpto_id| where(departamento_id: dpto_id)}
+
 	scope :activas, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ?', periodo_id) }
 
 	scope :pcis, lambda { |periodo_id| joins(:programaciones).where('programaciones.periodo_id = ? and programaciones.pci IS TRUE', periodo_id) }
