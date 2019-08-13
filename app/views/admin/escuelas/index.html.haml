@@ -8,7 +8,9 @@
       %th= model_class.human_attribute_name(:descripcion)
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Secciones Periodo actual'} Sec
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Inscritos Periodo actual'} Inscritos
-      %th Opciones
+      %th{width: '10%'} Opciones
+      - if current_admin.maestros?
+        %th Inscripción
   %tbody
     - @escuelas.each do |escuela|
       - @ins = escuela.inscripcionsecciones.del_periodo(current_periodo.id)
@@ -22,8 +24,32 @@
             = glyph 'info-sign'
           = link_to edit_escuela_path(escuela), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
             = glyph 'pencil'
-          - if current_admin.ninja?  
+          - if current_admin.ninja?
             = link_to escuela_path(escuela), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
               .text-danger= glyph 'trash'
 
+          - if current_admin.maestros?
+            %td
+              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: '¿Inscripción Abierta?'}
+                = check_box nil, :activa, checked: escuela.inscripcion_abierta, class: 'onoffswitch-checkbox', id: "swidth_#{escuela.id}", onChange: "switches('#{set_inscripcion_abierta_escuela_path(escuela.id)}')"
+                %label.onoffswitch-label{for: "swidth_#{escuela.id}"}
+                  %span.onoffswitch-inner
+                  %span.onoffswitch-switch
 
+= render 'layouts/cargando'
+
+:javascript
+
+  function switches(url){
+    $.ajax({
+      url: url,
+      type: 'POST',
+      dataType: 'json', 
+      beforeSend: function() {
+        $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
+      },
+      complete: function(){$('#cargando').modal('hide')}
+        
+    });
+
+  }

@@ -159,6 +159,7 @@ module Admin
 
 				#@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
 			end
+
 		end
 
 		def inscribir

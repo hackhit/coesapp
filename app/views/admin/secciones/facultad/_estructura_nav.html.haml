@@ -1,0 +1,112 @@
+- if session[:escuela] and session[:escuela].eql? 'pci'
+	- @asigTabs = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+	- if session[:asignatura]
+		- @asignatura = Asignatura.find session[:asignatura]
+		- @secciones = @asignatura.secciones.del_periodo(current_periodo.id)          
+	- else
+		- @secciones = Seccion.where(id: [])
+
+- else
+	- @dptosTabs = Escuela.find(session[:escuela]).departamentos.order('descripcion ASC') if session[:escuela] 
+	- if session[:departamento]
+		- @catTabs = Departamento.find(session[:departamento]).catedras.order('descripcion ASC')
+		- @asigTabs = Catedra.find(session[:catedra]).asignaturas.del_departamento(session[:departamento]).order('descripcion ASC') if session[:catedra]
+		- if session[:asignatura]
+			- @asignatura = Asignatura.find session[:asignatura]
+			- @secciones = @asignatura.secciones.del_periodo(current_periodo.id)
+		- elsif session[:catedra]
+			- @secciones = Catedra.find(session[:catedra]).secciones.del_periodo(current_periodo.id).del_departamento(session[:departamento])
+
+= render '/admin/secciones/facultad/all_tabs_nav'
+= render '/admin/secciones/facultad/table_response_nav'
+= render 'layouts/cargando'
+
+:javascript
+
+	function updatePage(type, id, controller){
+		limpiarResultados()
+		setTab(type, id)
+		console.log(controller)
+		if (type == 'asignatura' || ((controller == 'secciones') && (type == 'catedra' || id == 'pci'))){
+			getSecciones(type, id, controller)
+		}else{
+			paintTabObjects(type,id)
+		}
+
+	}
+
+	function limpiarResultados(){
+		$('#no_encontrado').hide();
+		$("#resultado tbody").html(""); 
+		$("#descAsignatura").html(""); 
+		$('#btnNuevaSeccion').hide();
+	}
+
+	function showNewAsig(id) {
+		let desc = $('#asignatura_'+id).text()
+		$('#_seccionasignatura_id').val(`${id}`)
+		$('#nueva_seccion_titulo').html(`Nueva Sección para ${desc}`)
+		$('#descAsignatura').html(`${id}: ${desc}`)
+		$('#btnNuevaSeccion').show();
+	}
+
+	function getSecciones(type,id) {
+		let currentUrl = window.location.href
+		let controller = (currentUrl.includes('inscripcionsecciones/seleccionar')) ? 'inscripcionsecciones' : 'secciones'
+
+		if (type == 'asignatura' && !currentUrl.includes('inscripcion')){
+			showNewAsig(id)
+		}
+
+		$.ajax({
+			url: '#{get_secciones_secciones_path}',
+			data: {id: id, type: type, controlador: controller},
+			dataType: 'json', 
+			beforeSend: function() {$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'});},
+			success: function(data){
+				console.log(data)
+				if(data.secciones_length === 0){
+					$('#no_encontrado').show();
+				}else{
+					$('#tableResponse').html(data.th)
+				}
+			},
+			complete: function(){
+				$('.modal').modal('hide')
+				if (type != 'asignatura'){
+					paintTabObjects(type,id)
+				}
+			}
+		});
+	}
+
+	function paintTabObjects(type, id){
+
+		let ele = $('#' + type + 'Tabs')
+		ele.nextAll('.tabs').remove()
+
+		$.ajax({
+			url: "#{get_tab_objects_secciones_path}",
+			data: {type: type, valor: id},
+			dataType: 'json', 
+			success: function(data){
+				$('#filterTabs').append(data.tabs)
+			},
+			beforeSend: function(){
+				$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
+			},
+			complete: function(){
+				$('.modal').modal('hide')
+			}
+
+		});
+	}
+
+
+	function setTab(type, id){
+		$.ajax({
+			url: "#{set_tab_secciones_path}", 
+			data: {type: type, valor: id}, 
+			dataType: 'json'
+			});
+	}

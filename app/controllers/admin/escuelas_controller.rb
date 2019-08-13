@@ -5,7 +5,7 @@ module Admin
     before_action :filtro_super_admin!, except: [:destroy, :periodos]
     before_action :filtro_ninja!, only: [:destroy]
 
-    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos]
+    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta]
 
     # GET /escuelas
     # GET /escuelas.json
@@ -81,6 +81,18 @@ module Admin
       end
     end
 
+    def set_inscripcion_abierta
+      @escuela.inscripcion_abierta = !@escuela.inscripcion_abierta
+        respond_to do |format|
+          if @escuela.save
+            format.json { head :ok }
+          else
+            format.json { head :error }
+          end
+        end
+      
+    end
+
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_escuela
@@ -89,7 +101,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def escuela_params
-        params.require(:escuela).permit(:descripcion, :id)
+        params.require(:escuela).permit(:descripcion, :id, :inscripcion_abierta)
       end
   end
 end

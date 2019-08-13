@@ -1,0 +1,18 @@
+
+.border.p-md-2.mt-md-3
+	- hidden = @asignatura ? '' : 'hideble'
+	.text-center
+		- if controller_name.eql? 'secciones' 
+			#btnNuevaSeccion{class: hidden}= simple_icon_toggle_modal 'Agregar Sección', 'success', 'plus', 'nueva_seccion'
+		%b#descAsignatura= @asignatura.descripcion_id if @asignatura
+		- if controller_name.eql? 'inscripcionsecciones'
+			%b= "Secciones disponibles:" 
+	#tableResponse
+		- if @secciones and @secciones.any?
+			- if controller_name.eql? 'inscripcionsecciones'
+				= render partial: '/admin/inscripcionsecciones/secciones_inscripcion', locals: {object: @asignatura, secciones: @secciones} if @asignatura
+			- else
+				= render partial: '/admin/secciones/index2/th_resultado', locals: {object: @asignatura, secciones: @secciones}
+
+	#no_encontrado.pagination-centered.text-center.hideble.p-0
+		.alert.alert-danger No se encontraron secciones

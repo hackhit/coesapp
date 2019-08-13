@@ -11,9 +11,34 @@
 		%ul.nav.nav-pills.mb-3.flex-column{role: :tablist, "aria-orientation": 'vertical', id: "pills-#{object_name}-tab"}
 			- objects.each do |obj|
 				- obj_activo = (session[object_name].eql? obj.id) ? 'active' : ''
+				- if obj.is_a? Catedra and session[:departamento]
+					- total_secciones = obj.secciones.del_periodo(current_periodo.id).del_departamento(session[:departamento]).count
+				- else
+					- total_secciones = obj.secciones.del_periodo(current_periodo.id).count
+
 				%li.nav-item
-					- desc = (obj.is_a?(Asignatura) and obj.pci?(current_periodo.id)) ? obj.descripcion_completa : obj.descripcion
-					= link_to desc.upcase, "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}"
+					- if obj.is_a? Asignatura
+						- desc = obj.descripcion_id
+						- desc = obj.descripcion_completa if obj.pci? current_periodo.id
+
+						- if @ids_asignaturas and @ids_asignaturas.include? obj.id
+							.text-muted.alert.alert-warning.p-1
+								= desc
+								%span.badge.badge-secondary ya inscrita
+						- elsif total_secciones < 1
+							.text-muted.alert.alert-secondary.p-1
+								= desc
+								%span.badge.badge-secondary Sin Secciones
+						- else
+							= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
+								= desc.upcase
+								%span.badge.badge-light= total_secciones
+
+					- else
+						- desc = obj.descripcion
+						= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
+							= desc.upcase
+							%span.badge.badge-light= total_secciones
 			- if object_name.eql? 'escuela'
 				- obj_activo = (session[:escuela].eql? 'pci') ? 'active' : ''
 				%li.nav-item= link_to "PCI", "#pci", "data-toggle": :tab, class: "nav-link #{obj_activo}", onclick: "updatePage('#{object_name}', 'pci');", id: "#{object_name}_pci"

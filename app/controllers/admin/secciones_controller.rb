@@ -40,20 +40,21 @@ module Admin
         else  
           objeto = params[:type].camelize.constantize.find(params[:valor])
           if objeto.is_a? Escuela
-            @childrens = objeto.departamentos
+            @childrens = objeto.departamentos.order('descripcion ASC')
             session[:departamento] = session[:catedra] = session[:asignatura] = nil
           elsif objeto.is_a? Departamento
             session[:catedra] = session[:asignatura] = nil
-            @childrens = objeto.catedras
+            @childrens = objeto.catedras.order('descripcion ASC')
           else 
             session[:asignatura] = nil if objeto.is_a? Catedra
             if session[:departamento]
-              @childrens = objeto.asignaturas.del_departamento(session[:departamento])
+              @childrens = objeto.asignaturas.del_departamento(session[:departamento]).order('descripcion ASC')
             else
-              @childrens = objeto.asignaturas
+              @childrens = objeto.asignaturas.order('descripcion ASC')
             end
           end
         end
+
         # tabs = view_context.render partial: 'layouts/nav_pills/tabs', locals: {objects: @childrens}
 
         # respond_to do |format|
@@ -64,8 +65,8 @@ module Admin
 
     end
 
-
     def get_secciones
+        @controller = params[:controlador]
         if params[:id].eql? 'pci'
           # ids = Programacion.pcis.del_periodo(current_periodo.id).collect{|pr| pr.secciones.ids}.uniq.flatten
           @secciones = Seccion.where(id: [])
@@ -78,9 +79,7 @@ module Admin
             @secciones = @objeto.secciones.del_periodo(current_periodo.id)
           end
         end
-
         #render json: {secciones: secciones, status: :success}
-      
     end
 
     def index2
@@ -94,33 +93,6 @@ module Admin
         @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
       else
         @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos')
-      end
-
-      if session[:escuela] and session[:escuela].eql? 'pci'
-
-        @asigTabs = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
-        if session[:asignatura]
-          # ids = Programacion.pcis.del_periodo(current_periodo.id).collect{|pr| pr.secciones.ids}.uniq.flatten
-          # @secciones = Seccion.where(id: ids)
-          @asignatura = Asignatura.find session[:asignatura]
-          @secciones = @asignatura.secciones.del_periodo(current_periodo.id)          
-        else
-          @secciones = Seccion.where(id: [])
-        end
-
-      else
-        @dptosTabs = Escuela.find(session[:escuela]).departamentos if session[:escuela] 
-        if session[:departamento]
-          @catTabs = Departamento.find(session[:departamento]).catedras
-          @asigTabs = Catedra.find(session[:catedra]).asignaturas.del_departamento(session[:departamento]) if session[:catedra]
-          if session[:asignatura]
-            @asignatura = Asignatura.find session[:asignatura]
-            @secciones = @asignatura.secciones.del_periodo(current_periodo.id)
-          elsif session[:catedra]
-            @secciones = Catedra.find(session[:catedra]).secciones.del_periodo(current_periodo.id).del_departamento(session[:departamento])
-          end
-        end
-
       end
 
     end

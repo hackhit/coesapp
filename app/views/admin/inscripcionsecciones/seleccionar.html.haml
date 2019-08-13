@@ -1,11 +1,13 @@
 .p-2= simple_toggle usuario_path(@estudiante.id), "#{@estudiante.descripcion}:", "Ir al detalle del usuario", '', 'search'
 %br
 
+= render '/admin/secciones/facultad/estructura_nav'
+
 = form_tag(inscribir_inscripcionsecciones_path) do
 	=hidden_field_tag :id, @estudiante.usuario_id
-	.border.p-3{style: 'max-height: 350px;overflow-y: scroll;'}
+	/ .border.p-3{style: 'max-height: 350px;overflow-y: scroll;'}
 
-		= render '/admin/principal_admin/tabs_estructura/escuelas'
+	=# render '/admin/principal_admin/tabs_estructura/escuelas'
 
 	.border.p-3.hideble#seleccion
 		%h6.titulo= "Selección:"

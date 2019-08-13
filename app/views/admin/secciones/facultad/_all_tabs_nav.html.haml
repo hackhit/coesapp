@@ -1,0 +1,9 @@
+.row#filterTabs
+	=# Escuelas
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @escuelas}
+	=# Departamentos
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @dptosTabs} if (@dptosTabs and @dptosTabs.any?)
+	=# Catedras
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @catTabs} if (@catTabs and @catTabs.any?)
+	=# Asingaturas
+	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @asigTabs} if (@asigTabs and @asigTabs.any?)

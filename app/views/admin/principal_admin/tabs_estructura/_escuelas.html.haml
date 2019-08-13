@@ -17,16 +17,19 @@
 				- @pcis = nil
 				- esc_activo = (session[:esc_id].eql? esc.id) ? 'active show' : ''
 				.tab-pane.fade{"aria-labelledby" => "pills-escuelas-tab", role: :tabpanel, class: esc_activo, id: "esc_#{esc.id}"}
-					- if current_admin.admin_departamento?
-						- @departamentos = current_admin.departamentos
-					- else
-						- @departamentos = esc.departamentos
+					- if esc.inscripcion_abierta
+						- if current_admin.admin_departamento?
+							- @departamentos = current_admin.departamentos
+						- else
+							- @departamentos = esc.departamentos
 
-					- if controller_name.eql? 'asignaturas'
-						- @asignaturas = esc.asignaturas.order(:descripcion)
-						= render '/admin/asignaturas/index_colocar_tabla'
+						- if controller_name.eql? 'asignaturas'
+							- @asignaturas = esc.asignaturas.order(:descripcion)
+							= render '/admin/asignaturas/index_colocar_tabla'
+						- else
+							= render '/admin/principal_admin/tabs_estructura/departamentos'
 					- else
-						= render '/admin/principal_admin/tabs_estructura/departamentos'
+						%b.text-muted Inscripción cerrada para la escuela seleccionada
 			- esc_activo = (session[:esc_id].eql? 'pci') ? 'active show' : ''
 			.tab-pane.fade{"aria-labelledby": "pills-escuelas-tab", role: :tabpanel, id: "pci", class: esc_activo, id: "pci" }
 

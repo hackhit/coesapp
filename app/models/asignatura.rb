@@ -85,7 +85,7 @@ class Asignatura < ApplicationRecord
 		return aux
 	end
 	def descripcion_completa
-		"#{descripcion.titleize} - #{catedra.descripcion_completa} - #{departamento.descripcion_completa}"
+		"#{descripcion_id} - #{catedra.descripcion_completa} - #{departamento.descripcion_completa}"
 	end
 
 	def descripcion_reversa

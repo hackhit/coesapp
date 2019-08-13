@@ -72,6 +72,7 @@ Rails.application.routes.draw do
     resources :escuelas do 
       member do
         get 'periodos'
+        post 'set_inscripcion_abierta'
       end
     end
     
