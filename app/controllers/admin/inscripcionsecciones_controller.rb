@@ -139,7 +139,7 @@ module Admin
 				@asignatura = Asignatura.find session[:asignatura] if session[:asignatura]
 				
 				inscripciones = @estudiante.inscripciones
-				@inscripciones = inscripciones.del_periodo(current_periodo.id) #joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id": current_periodo.id)
+				@inscripciones = inscripciones.del_periodo(current_periodo.id) 
 
 				if inscripciones
 					@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} 
@@ -149,16 +149,9 @@ module Admin
 				@titulo = "Inscripción para el período #{current_periodo.id} - Paso 2 - Seleccionar Secciones"
 
 				@escuelas = current_admin.escuelas.merge @estudiante.escuelas 
+
+				@creditLimits = current_periodo.anual? ? 49 : 25
 				
-				secciones_disponibles = current_periodo.secciones.joins(:escuela).where("escuelas.id": @escuelas.ids)#("escuelas.id = ?", @escuelas.ids)#.ids
-				
-				# pcis = current_periodo.secciones.select{|s|s.pci?}#.map(&:id)
-
-				# pcis << @secciones_disponibles
-
-				# @pcis_disponibles = current_periodo.secciones.select{|s|s.pci?}.reject{|s| secciones_disponibles.include? s}#Seccion.where(id: pcis.flatten.uniq)
-
-				#@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
 			end
 
 		end
@@ -168,6 +161,7 @@ module Admin
 			guardadas = 0
 			id = params[:id]
 			asignaturas_pci_error = []
+			asignaturas_impropias = []
 			begin
 				secciones.each_pair do |sec_id, pci_escuela_id|
 					seccion = Seccion.find sec_id
@@ -185,8 +179,10 @@ module Admin
 							ins.escuela_id = escuela.id
 							ins.pci = true 
 						end
-					else
+					elsif ins.estudiante.escuelas.include? seccion.escuela
 						ins.escuela_id = seccion.escuela.id
+					else
+						asignaturas_impropias << seccion.asignatura_id
 					end
 
 					if ins.save
@@ -200,11 +196,16 @@ module Admin
 				flash[:error] = "Error Excepcional: #{e}"
 			end
 			flash[:success] = "Estudiante inscrito en #{guardadas} seccion(es)"
-			flash[:danger] = "La asignatura(s) con código(s): #{asignaturas_pci_error.to_sentence} se intenta(n) inscribir como PCI, sin embargo para este periodo no está(n) ofertada(s) como tal. Por favor, corrija el error e inténtelo de nuevo." if asignaturas_pci_error.any?
-			redirect_to action: :resumen, id: id #, flash: flash
+			flash[:danger] = "La(s) asignatura(s) con código(s): #{asignaturas_pci_error.to_sentence} se intenta(n) inscribir como PCI, sin embargo para este periodo no está(n) ofertada(s) como tal. Por favor, corrija el error e inténtelo de nuevo." if asignaturas_pci_error.any?
+			
+			flash[:danger] = "La(s) asignatura(s) con código(s): #{asignaturas_impropias.to_sentence} se intenta(n) inscribir inapropiadamente. Por favor, corrija el error e inténtelo nuevamente." if asignaturas_impropias.any?
+
+			redirect_to action: :resumen, id: id
+
 		end
 
 		def resumen
+			session[:inscripcion_estudiante_id] = nil
 			id = params[:id]
 			@estudiante = Estudiante.find id
 			@inscripciones = @estudiante.inscripcionsecciones.del_periodo(current_periodo.id)#.sort {|a,b| a.descripcion(current_periodo.id) <=> b.descripcion(current_periodo.id)}

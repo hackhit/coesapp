@@ -117,7 +117,7 @@ class Inscripcionseccion < ApplicationRecord
 
 	scope :perdidos, -> {where "tipo_calificacion_id = ?", PI}
 
-	scope :como_pcis, -> {where "pci_escuela_id IS NOT NULL"}
+	scope :como_pcis, -> {where pci: true}
 
 	# scope :pcis_pendientes_por_asociar, -> {joins(:escuela).where("pci_escuela_id IS NULL and (escuela.id ON ( SELECT escuelas.id FROM escuelas INNER JOIN grados ON escuelas.id = grados.escuela_id WHERE grados.estudiante_id = ? ) )", self.estudiante_id)}
 

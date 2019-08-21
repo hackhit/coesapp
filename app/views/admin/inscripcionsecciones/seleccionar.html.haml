@@ -18,17 +18,19 @@
 		let totalCreditos = document.getElementById('totalCreditosNumero').textContent
 		let totalNuevas = document.getElementsByClassName('nuevas').length
 		totalCreditos = Number(totalCreditos)
-		if(totalNuevas > 0 && totalCreditos > 0 && totalCreditos < 25){
-			$('#btn-confirmacion').removeAttr("disabled")
+		let btnConfirm = document.getElementById('btn-confirmacion')
+		let master = #{current_admin and current_admin.maestros?}
+		let limit = #{@creditLimits}
+		if(totalNuevas > 0 && (master || (totalCreditos > 0 && totalCreditos < limit))){
+			btnConfirm.disabled = false
 		}else{
-			$('#btn-confirmacion').attr("disabled", "disabled")
+			btnConfirm.disabled = true
 		}
 	};
 
 	function borrarSeleccion(asig_id) {
 		$('.'+asig_id).prop('checked', false)
 		$('.tr'+asig_id).remove()
-		// $('#pci_sel_'+asig_id).attr("disabled", "disabled")
 		comprobarInscripcion()
 	};
 

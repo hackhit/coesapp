@@ -7,7 +7,7 @@ class Escuela < ApplicationRecord
 	has_many :departamentos
 	accepts_nested_attributes_for :departamentos
 	
-	has_many :inscripciones_pci, class_name: 'Inscripcionseccion', foreign_key: 'pci_escuela_id'
+	# has_many :inscripciones_pci, class_name: 'Inscripcionseccion', foreign_key: 'pci_escuela_id'
 
 	has_many :asignaturas, through: :departamentos
 	
