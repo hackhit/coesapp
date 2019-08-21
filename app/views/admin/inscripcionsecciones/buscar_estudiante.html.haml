@@ -17,7 +17,7 @@
 
 		$( ".selects2" ).select2({
 			ajax: {
-			url: "#{busquedas_usuarios_path}.json?estudiantes=true",
+			url: "#{busquedas_usuarios_path}?estudiantes=true",
 			dataType: 'json',
 			delay: 250,
 			processResults: function (data) {

@@ -1,5 +1,14 @@
 module SeccionesHelper
 
+	def colocar_total_secciones_badge valor
+		capture_haml do
+			haml_tag :span, class: 'badge badge-light float-right tooltip-btn', 'data-toggle': :tolltip, title: 'Total Secciones' do
+				haml_concat "#{valor}"
+			end
+		end
+		
+	end
+
 	def colocar_etiqueta valor, tipo, tooltip_title = nil
 		capture_haml do 
 			colocar_badge valor, tipo, tooltip_title
@@ -109,7 +118,6 @@ module SeccionesHelper
 		calificacion_final = inscripcion.calificacion_final.nil? ? nil : sprintf("%02i", inscripcion.calificacion_final.to_i)
 
 		number_field_tag "[est][#{inscripcion.estudiante_id}]calificacion_final", {}, {value: calificacion_final, placeholder: 'Final', class: 'form-control form-control-sm calificable', required: !disable, disabled: disable, step: 1, in: 0...21, onchange: "numero_a_letras($(this).val(), #{inscripcion.estudiante_id});", id_obj: inscripcion.id, tipo_calificacion_id: 'NF'}
-		
 	end
 
 	def colocar_calificacion_absoluta inscripcion, valor, disable = false

@@ -13,7 +13,6 @@ module Admin
     # GET /secciones.json
     def set_tab
       session[params[:type]] = params[:valor]
-      p session.to_h
       
       respond_to do |format|
         format.html { redirect_to :back }
@@ -34,9 +33,22 @@ module Admin
 
     def get_tab_objects
         session[params[:type]] = params[:valor]
-
         if params[:valor].eql? 'pci'
-          @childrens = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+          if session[:inscripcion_estudiante_id]
+              estudiante = Estudiante.find session[:inscripcion_estudiante_id]
+              inscripciones = estudiante.inscripciones
+              @ids_asignaturas = inscripciones.del_periodo(current_periodo.id).collect{|i| i.seccion.asignatura_id}          
+              @ids_aprobadas = inscripciones.aprobadas.collect{|i| i.seccion.asignatura_id}
+              escuelas = current_admin.escuelas.merge estudiante.escuelas
+              if escuelas.count.eql? 1
+                @childrens = current_periodo.programaciones.pcis.reject{|pr| escuelas.include? pr.asignatura.escuela}.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+              else
+                @childrens = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+              end
+
+          else
+            @childrens = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+          end
         else  
           objeto = params[:type].camelize.constantize.find(params[:valor])
           if objeto.is_a? Escuela
@@ -46,12 +58,21 @@ module Admin
             session[:catedra] = session[:asignatura] = nil
             @childrens = objeto.catedras.order('descripcion ASC')
           else 
-            session[:asignatura] = nil if objeto.is_a? Catedra
+            if objeto.is_a? Catedra
+              session[:asignatura] = nil 
+              if session[:inscripcion_estudiante_id]
+                estudiante = Estudiante.find session[:inscripcion_estudiante_id]
+                inscripciones = estudiante.inscripciones
+                @ids_asignaturas = inscripciones.del_periodo(current_periodo.id).collect{|i| i.seccion.asignatura_id}          
+                @ids_aprobadas = inscripciones.aprobadas.collect{|i| i.seccion.asignatura_id}
+              end
+            end
             if session[:departamento]
               @childrens = objeto.asignaturas.del_departamento(session[:departamento]).order('descripcion ASC')
             else
               @childrens = objeto.asignaturas.order('descripcion ASC')
             end
+
           end
         end
 
@@ -66,23 +87,28 @@ module Admin
     end
 
     def get_secciones
-        @controller = params[:controlador]
-        if params[:id].eql? 'pci'
-          # ids = Programacion.pcis.del_periodo(current_periodo.id).collect{|pr| pr.secciones.ids}.uniq.flatten
-          @secciones = Seccion.where(id: [])
-          @objeto = nil
+      @controller = params[:controlador]
+      if params[:id].eql? 'pci'
+        # ids = Programacion.pcis.del_periodo(current_periodo.id).collect{|pr| pr.secciones.ids}.uniq.flatten
+        @secciones = Seccion.where(id: [])
+        @objeto = nil
+      else
+        @objeto = params[:type].camelize.constantize.find(params[:id])
+        if session[:departamento] and session[:escuela] and !session[:escuela].eql? 'pci'
+          @secciones = @objeto.secciones.del_departamento(session[:departamento]).del_periodo(current_periodo.id)
         else
-          @objeto = params[:type].camelize.constantize.find(params[:id])
-          if session[:departamento] and session[:escuela] and !session[:escuela].eql? 'pci'
-            @secciones = @objeto.secciones.del_departamento(session[:departamento]).del_periodo(current_periodo.id)
-          else
-            @secciones = @objeto.secciones.del_periodo(current_periodo.id)
-          end
+          @secciones = @objeto.secciones.del_periodo(current_periodo.id)
         end
+        if session[:escuela].eql? 'pci' and session[:inscripcion_estudiante_id]          
+          @estudiante = Estudiante.find session[:inscripcion_estudiante_id]
+          @escuelas = current_admin.escuelas.merge @estudiante.escuelas 
+        end
+      end
         #render json: {secciones: secciones, status: :success}
     end
 
     def index2
+      session[:inscripcion_estudiante_id] = nil
       @titulo = "Secciones (Periodo Académico: #{current_periodo.id})"
       @usuario = current_usuario
       @escuelas = current_periodo.escuelas.merge current_admin.escuelas

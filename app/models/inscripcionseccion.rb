@@ -478,8 +478,16 @@ class Inscripcionseccion < ApplicationRecord
 	# 	# return (cal_tipo_estado_inscripcion_id.eql? RETIRADA) ? true : false
 	# 	tipo_estado_inscripcion_id.eql? RETIRADA
 	# end
+ 
+	def inscrita_como_pci?
+		self.escuela_id and self.escuela_id.eql? seccion.escuela.id ? false : true
+	end
 
 	protected
+
+	def set_escuela_default
+		self.escuela_id = estudiante.escuelas.first.id if (escuela_id.nil? and estudiante and estudiante.escuelas.count == 1)
+	end
 
 	def set_estados
 		self.tipo_calificacion_id ||= FINAL
@@ -527,7 +535,9 @@ class Inscripcionseccion < ApplicationRecord
 			self.calificacion_posterior = nil
 			self.estado = :aprobado
 		end
-
+		self.set_escuela_default
+		
+		self.pci = self.inscrita_como_pci?
 	end
 
 	def actualizar_estado_grado

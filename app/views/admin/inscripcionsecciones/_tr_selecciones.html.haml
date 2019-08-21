@@ -1,0 +1,20 @@
+-# hide = borrar_seleccion ? '' : 'hideble'
+- if (ins and ins.is_a? Inscripcionseccion)
+	- sec = ins.seccion
+- else
+	- sec = ins
+	- ins = nil
+
+- a = sec.asignatura
+%tr.table-info.text-muted{id: "sel_#{sec.asignatura_id}_#{sec.numero}", class: "sel_#{sec.asignatura_id} inscritas tooltip-btn",'data_toggle': :tooltip, title: 'Previamente inscrita' } 
+	%td= sec.periodo_id
+	%td= sec.asignatura_id
+	%td= ins.escuela.descripcion
+	%td= a.departamento.descripcion
+	%td= a.catedra.descripcion
+	%td= a.descripcion_pci current_periodo.id
+	%td= sec.numero
+	%td.creditos.text-right= a.creditos
+	%td
+		= link_to(ins, {method: :delete, data: {:confirm => "Se perderan los datos, ¿Está seguro de esta acción?" }}) do
+			.text-danger= glyph 'trash'

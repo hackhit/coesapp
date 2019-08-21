@@ -14,11 +14,11 @@ module Admin
     def busquedas
       # @usuarios = Usuario.search(params[:term])
       if params[:estudiantes]
-        @usuarios = Usuario.search(params[:term]).reject{|u| u.estudiante.nil?} 
+        @usuarios = Usuario.search(params[:term]).limit(10).reject{|u| u.estudiante.nil?} 
       elsif params[:profesores]
-        @usuarios = Usuario.search(params[:term]).reject{|u| u.profesor.nil?}
+        @usuarios = Usuario.search(params[:term]).limit(10).reject{|u| u.profesor.nil?}
       else
-        @usuarios = Usuario.search(params[:term])
+        @usuarios = Usuario.search(params[:term]).limit(10)
       end
     end
 

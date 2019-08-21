@@ -1,5 +1,18 @@
 - if session[:escuela] and session[:escuela].eql? 'pci'
-	- @asigTabs = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+
+	- if session[:inscripcion_estudiante_id]
+		- estudiante = Estudiante.find session[:inscripcion_estudiante_id]
+		- inscripciones = estudiante.inscripciones
+		- @ids_asignaturas = inscripciones.del_periodo(current_periodo.id).collect{|i| i.seccion.asignatura_id}
+		- @ids_aprobadas = inscripciones.aprobadas.collect{|i| i.seccion.asignatura_id}
+		- escuelas = current_admin.escuelas.merge estudiante.escuelas
+		- if escuelas.count.eql? 1
+			- @asigTabs = current_periodo.programaciones.pcis.reject{|pr| escuelas.include? pr.asignatura.escuela}.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+		- else
+			- @asigTabs = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+	- else
+		- @asigTabs = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
+
 	- if session[:asignatura]
 		- @asignatura = Asignatura.find session[:asignatura]
 		- @secciones = @asignatura.secciones.del_periodo(current_periodo.id)          
@@ -23,52 +36,65 @@
 
 :javascript
 
-	function updatePage(type, id, controller){
+	function updatePage(type, id){
+		let currentUrl = window.location.href
+		let controller = (currentUrl.includes('inscripcionsecciones/seleccionar')) ? 'inscripcionsecciones' : 'secciones'
+
 		limpiarResultados()
 		setTab(type, id)
-		console.log(controller)
+		// console.log(controller)
 		if (type == 'asignatura' || ((controller == 'secciones') && (type == 'catedra' || id == 'pci'))){
 			getSecciones(type, id, controller)
 		}else{
 			paintTabObjects(type,id)
 		}
-
 	}
 
 	function limpiarResultados(){
-		$('#no_encontrado').hide();
-		$("#resultado tbody").html(""); 
-		$("#descAsignatura").html(""); 
-		$('#btnNuevaSeccion').hide();
+		$('#responseTotal').hide()
+		$('#tableResponse').html("")
+		$('#no_encontrado').hide()
+		$("#resultado tbody").html("")
+		$("#descAsignatura").html("") 
+		$('#btnNuevaSeccion').hide()
 	}
 
 	function showNewAsig(id) {
 		let desc = $('#asignatura_'+id).text()
 		$('#_seccionasignatura_id').val(`${id}`)
 		$('#nueva_seccion_titulo').html(`Nueva Sección para ${desc}`)
-		$('#descAsignatura').html(`${id}: ${desc}`)
 		$('#btnNuevaSeccion').show();
 	}
 
-	function getSecciones(type,id) {
-		let currentUrl = window.location.href
-		let controller = (currentUrl.includes('inscripcionsecciones/seleccionar')) ? 'inscripcionsecciones' : 'secciones'
-
-		if (type == 'asignatura' && !currentUrl.includes('inscripcion')){
-			showNewAsig(id)
+	function getSecciones(type,id, controller) {
+		if (type == 'asignatura'){
+			// let desc = $('#asignatura_'+id).text()
+			let desc = document.getElementById("asignatura_"+id).firstChild.textContent
+			let cred = document.getElementById("bagCreditos"+id).firstChild.textContent
+			desc += " ("+cred+" Unidades de Créditos)"
+			$('#descAsignatura').html(`${desc}`)
+			if (controller == 'secciones') showNewAsig(id)
 		}
-
+		$('#responseTotal').show()
 		$.ajax({
 			url: '#{get_secciones_secciones_path}',
 			data: {id: id, type: type, controlador: controller},
 			dataType: 'json', 
 			beforeSend: function() {$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'});},
 			success: function(data){
-				console.log(data)
 				if(data.secciones_length === 0){
 					$('#no_encontrado').show();
 				}else{
 					$('#tableResponse').html(data.th)
+					if (type == 'asignatura' && controller == 'inscripcionsecciones'){
+						let radios = document.getElementsByClassName(id)
+						for (var i=0; i<radios.length; i++)  {
+							
+							let aux = document.getElementById('tr'+radios[i].id)
+							if (aux !== null) radios[i].checked = true
+						}
+					}
+
 				}
 			},
 			complete: function(){
@@ -76,6 +102,7 @@
 				if (type != 'asignatura'){
 					paintTabObjects(type,id)
 				}
+				$('.tooltip-btn').tooltip()
 			}
 		});
 	}
@@ -97,6 +124,7 @@
 			},
 			complete: function(){
 				$('.modal').modal('hide')
+				$('.tooltip-btn').tooltip()
 			}
 
 		});

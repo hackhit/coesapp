@@ -135,27 +135,28 @@ module Admin
 				flash[:info] = "El estudiante no encontrado"
 				redirect_to action: 'buscar_estudiante'#, id: params[:id]
 			else 
-				@vertical = 'flex-column'
-				@orientacion = "vertical"
-				@admin_inscripcion = true 
-				@row = 'row'
-				@col2 = 'col-2'
-				@col10 = 'col-10'
-				@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id": current_periodo.id)
+				session[:inscripcion_estudiante_id] = @estudiante.id
+				@asignatura = Asignatura.find session[:asignatura] if session[:asignatura]
+				
+				inscripciones = @estudiante.inscripciones
+				@inscripciones = inscripciones.del_periodo(current_periodo.id) #joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id": current_periodo.id)
 
-				@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} if @inscripciones
+				if inscripciones
+					@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} 
+					@ids_aprobadas = inscripciones.aprobadas.collect{|i| i.seccion.asignatura_id}
+				end
 
-				@titulo = "Inscripción para el período #{current_periodo} - Paso 2 - Seleccionar Secciones"
+				@titulo = "Inscripción para el período #{current_periodo.id} - Paso 2 - Seleccionar Secciones"
 
 				@escuelas = current_admin.escuelas.merge @estudiante.escuelas 
 				
-				@secciones_disponibles = current_periodo.secciones.joins(:escuela).where("escuelas.id": @escuelas.ids)#("escuelas.id = ?", @escuelas.ids)#.ids
+				secciones_disponibles = current_periodo.secciones.joins(:escuela).where("escuelas.id": @escuelas.ids)#("escuelas.id = ?", @escuelas.ids)#.ids
 				
 				# pcis = current_periodo.secciones.select{|s|s.pci?}#.map(&:id)
 
 				# pcis << @secciones_disponibles
 
-				@pcis_disponibles = current_periodo.secciones.select{|s|s.pci?}.reject{|s| @secciones_disponibles.include? s}#Seccion.where(id: pcis.flatten.uniq)
+				# @pcis_disponibles = current_periodo.secciones.select{|s|s.pci?}.reject{|s| secciones_disponibles.include? s}#Seccion.where(id: pcis.flatten.uniq)
 
 				#@secciones_disponibles = secciones_disponibles #Seccion.joins(:asignaturas).del_periodo(current_periodo.id).where('asi')
 			end
@@ -166,6 +167,7 @@ module Admin
 			secciones = params[:secciones]
 			guardadas = 0
 			id = params[:id]
+			asignaturas_pci_error = []
 			begin
 				secciones.each_pair do |sec_id, pci_escuela_id|
 					seccion = Seccion.find sec_id
@@ -173,12 +175,18 @@ module Admin
 					ins.seccion_id = seccion.id
 					ins.estudiante_id = id
 					if pci_escuela_id and !(pci_escuela_id.eql? 'on')
-						escuela = Escuela.find pci_escuela_id
-						ins.pci_escuela_id = escuela.id 
-						ins.escuela_id = escuela.id
-						ins.pci = true 
+
+						unless seccion.pci?
+							# Error:
+							asignaturas_pci_error << seccion.asignatura_id
+						else
+							escuela = Escuela.find pci_escuela_id
+							ins.pci_escuela_id = escuela.id 
+							ins.escuela_id = escuela.id
+							ins.pci = true 
+						end
 					else
-						ins.escuela_id = seccion.asignatura.escuela.id
+						ins.escuela_id = seccion.escuela.id
 					end
 
 					if ins.save
@@ -192,6 +200,7 @@ module Admin
 				flash[:error] = "Error Excepcional: #{e}"
 			end
 			flash[:success] = "Estudiante inscrito en #{guardadas} seccion(es)"
+			flash[:danger] = "La asignatura(s) con código(s): #{asignaturas_pci_error.to_sentence} se intenta(n) inscribir como PCI, sin embargo para este periodo no está(n) ofertada(s) como tal. Por favor, corrija el error e inténtelo de nuevo." if asignaturas_pci_error.any?
 			redirect_to action: :resumen, id: id #, flash: flash
 		end
 

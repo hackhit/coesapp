@@ -1,66 +1,111 @@
 .p-2= simple_toggle usuario_path(@estudiante.id), "#{@estudiante.descripcion}:", "Ir al detalle del usuario", '', 'search'
 %br
-
-= render '/admin/secciones/facultad/estructura_nav'
-
 = form_tag(inscribir_inscripcionsecciones_path) do
+	= render '/admin/secciones/facultad/estructura_nav'
 	=hidden_field_tag :id, @estudiante.usuario_id
-	/ .border.p-3{style: 'max-height: 350px;overflow-y: scroll;'}
-
-	=# render '/admin/principal_admin/tabs_estructura/escuelas'
-
-	.border.p-3.hideble#seleccion
+	%br
+	.border.p-3#seleccion
 		%h6.titulo= "Selección:"
-		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @secciones_disponibles, borrar_seleccion: true, escuelas: false}
-		%h6.titulo= " Selección de PCIs:"
-		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {secciones: @pcis_disponibles, borrar_seleccion: true, escuelas: @estudiante.escuelas}
+		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {escuelas: @escuelas}
 
 		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-success', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
 
-	- if @inscripciones.count > 0
-		.border.p-3
-			%h6.alert.alert-warning= "Ya inscritas en el periodo actual : #{current_periodo.id}"
-			%table.table.table-bordered.table-striped.table-sm.table-hover
-				%thead
-					%tr
-						%th Departamento
-						%th Cátedra
-						%th Sección
-						%th Opciones
-
-				%tbody
-					- @inscripciones.each do |ins| 
-						%tr
-							%td= ins.seccion.asignatura.departamento.descripcion
-							%td= ins.seccion.asignatura.catedra.descripcion
-							%td= ins.seccion.descripcion
-							%td								
-								= link_to(ins, {:method => :delete, :data => {:confirm => "Se perderan los datos, ¿Está seguro de esta acción?" }}) do
-									.text-danger= glyph 'trash'
 :javascript
 
-	function chequear_total_seleccionados(){
-		var total = $('input:radio:checked').length
-		if(total > 0){
-			$('#btn-confirmacion').removeAttr("disabled");
-			$('#seleccion').show();
+	function comprobarInscripcion(){
+		totalizarCreditos()
 
+		let totalCreditos = document.getElementById('totalCreditosNumero').textContent
+		let totalNuevas = document.getElementsByClassName('nuevas').length
+		totalCreditos = Number(totalCreditos)
+		if(totalNuevas > 0 && totalCreditos > 0 && totalCreditos < 25){
+			$('#btn-confirmacion').removeAttr("disabled")
 		}else{
-			$('#btn-confirmacion').attr("disabled", "disabled");
-			$('#seleccion').hide();
+			$('#btn-confirmacion').attr("disabled", "disabled")
 		}
 	};
 
-	function borrar_seleccion(materia_id) {
-		$('.'+materia_id).prop('checked', false);
-		$('.sel_'+materia_id).hide();
-		$('#pci_sel_'+materia_id).attr("disabled", "disabled");
-		chequear_total_seleccionados();
+	function borrarSeleccion(asig_id) {
+		$('.'+asig_id).prop('checked', false)
+		$('.tr'+asig_id).remove()
+		// $('#pci_sel_'+asig_id).attr("disabled", "disabled")
+		comprobarInscripcion()
 	};
-	function agregar_a_seleccion(materia_id,seccion_numero) {
-		$('.sel_'+materia_id).hide();
-		$('#sel_'+materia_id+'_'+seccion_numero).show();
-		chequear_total_seleccionados();
-		$('#pci_sel_'+materia_id).removeAttr("disabled");
+
+	function insertCell(row, obj) {
+		let cell = row.insertCell()
+		let content = document.createTextNode(obj)
+		cell.appendChild(content)
+		return cell
+	}
+
+	function writeRow(row, cells){
+
+		for (let elem in cells){
+			cell = insertCell(row, cells[elem])
+			if (elem == 'cred') {
+				cell.setAttribute('class', 'creditos text-right')
+			} 
+		}
+
+	}
+
+	function colocarTotalCreditos(table){
+
+		newRow = table.insertRow()
+		newRow.setAttribute('id', 'trTotalCreditos')
+		newRow.setAttribute('class', 'text-right font-weight-bold')
+		cell = newRow.insertCell()
+		cell.setAttribute('colspan', 7)
+
+		content = document.createTextNode('Total U. Créditos')
+		cell.appendChild(content)
+		
+		cell = newRow.insertCell()
+		cell.setAttribute('id', "totalCreditosNumero")
+		comprobarInscripcion()
+
+	}
+
+	function totalizarCreditos(){
+
+		let sum = 0 
+		let creditos = document.getElementsByClassName('creditos')
+		for(var i = 0; i < creditos.length; i++) sum += Number(creditos[i].textContent)
+		document.getElementById('totalCreditosNumero').textContent = sum
+
+	}
+
+	function agregarASeleccionas(obj) {
+
+		let auxRow = document.getElementsByClassName('tr'+obj.cells.asig_id)[0]
+		if (auxRow !== undefined) auxRow.parentNode.removeChild(auxRow)
+
+		let table = document.getElementById('seleccionadas').getElementsByTagName('tbody')[0]
+
+		let newRow = table.insertRow()
+		$('#trTotalCreditos').remove()
+		newRow.setAttribute('id', 'tr'+obj.sec.id)
+		newRow.setAttribute('class', 'nuevas tr'+obj.cells.asig_id)
+
+		writeRow(newRow, obj.cells)
+
+		cell = newRow.insertCell()
+		content = document.getElementById('borrarSeleccion'+obj.cells.asig_id)
+
+		let content2 = content.cloneNode(true)
+		cell.appendChild(content2)
+
+		if (obj.select != null) {			
+			newRow.cells[2].innerHTML  = obj.select.content
+		}else{
+			let input = document.createElement('input')
+			input.name = `[secciones]${obj.sec.id}`
+			input.type = 'hidden'
+			input.value = 'on'
+			newRow.append(input)
+		}
+
+		colocarTotalCreditos(table)
 
 	};

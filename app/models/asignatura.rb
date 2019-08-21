@@ -66,6 +66,10 @@ class Asignatura < ApplicationRecord
 		"#{id}: #{descripcion}"
 	end
 
+	def descripcion_id_con_creditos
+		"#{descripcion_id} (#{creditos} Unidades de Créditos)"
+	end
+
 	def descripcion_pci periodo_id
 
 		if self.pci? periodo_id

@@ -18,28 +18,53 @@
 
 				%li.nav-item
 					- if obj.is_a? Asignatura
-						- desc = obj.descripcion_id
-						- desc = obj.descripcion_completa if obj.pci? current_periodo.id
+						- desc = obj.descripcion_id.upcase
+						- if obj.pci? current_periodo.id
+							- desc = obj.descripcion_completa.upcase
+							- desc += "<span class= 'badge badge-light float-right ml-1'>pci</span>"
 
-						- if @ids_asignaturas and @ids_asignaturas.include? obj.id
-							.text-muted.alert.alert-warning.p-1
-								= desc
-								%span.badge.badge-secondary ya inscrita
+						- if @ids_aprobadas and @ids_aprobadas.include? obj.id
+							.text-muted.alert.alert-success.mb-0.px-3.py-2
+								= raw desc
+								= colocar_total_secciones_badge total_secciones
+								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
+								%span.badge.badge-secondary.float-right.ml-1 Aprobada
+
+						- elsif @ids_asignaturas and @ids_asignaturas.include? obj.id
+							.text-muted.alert.alert-info.mb-0.px-3.py-2
+								= raw desc
+								= colocar_total_secciones_badge total_secciones
+								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
+								%span.badge.badge-secondary.float-right.ml-1 Previamente Inscrita
 						- elsif total_secciones < 1
-							.text-muted.alert.alert-secondary.p-1
-								= desc
-								%span.badge.badge-secondary Sin Secciones
+							.text-muted.alert.alert-secondary.mb-0.px-3.py-2
+								= raw desc
+								= colocar_total_secciones_badge total_secciones
+								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
 						- else
 							= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
-								= desc.upcase
-								%span.badge.badge-light= total_secciones
+								= raw desc
+								= colocar_total_secciones_badge total_secciones
+								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
+								
 
 					- else
 						- desc = obj.descripcion
-						= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
-							= desc.upcase
-							%span.badge.badge-light= total_secciones
+						- if controller_name.eql? 'inscripcionsecciones' and obj.is_a? Escuela and obj.inscripcion_cerrada?
+							- @dptosTabs = @catTabs = @asigTabs = nil
+							.text-muted.alert.alert-danger.p-1
+								= desc.upcase
+								%span.badge.badge-secondary.float-right Inscripción cerrada
+								= colocar_total_secciones_badge total_secciones
+						- else
+							= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
+								= desc.upcase
+								= colocar_total_secciones_badge total_secciones
+
 			- if object_name.eql? 'escuela'
 				- obj_activo = (session[:escuela].eql? 'pci') ? 'active' : ''
-				%li.nav-item= link_to "PCI", "#pci", "data-toggle": :tab, class: "nav-link #{obj_activo}", onclick: "updatePage('#{object_name}', 'pci');", id: "#{object_name}_pci"
+				%li.nav-item
+					= link_to "#pci", "data-toggle": :tab, class: "nav-link #{obj_activo}", onclick: "updatePage('#{object_name}', 'pci');", id: "#{object_name}_pci" do
+						PCI
+						= colocar_total_secciones_badge current_periodo.programaciones.pcis.collect{|pr| pr.secciones.del_periodo(current_periodo.id).count}.sum
 

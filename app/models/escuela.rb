@@ -54,6 +54,14 @@ class Escuela < ApplicationRecord
 		end
 	end
 
+	def inscripcion_abierta?
+		inscripcion_abierta.eql? true
+	end
+
+	def inscripcion_cerrada?
+		!inscripcion_abierta?
+	end
+
 	def periodo_anterior periodo
 		todos = periodos.order(inicia: :asc)
 		indice = todos.index periodo

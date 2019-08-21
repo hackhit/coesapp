@@ -1,33 +1,20 @@
-%table.table.table-bordered.table-striped.table-sm.table-hover
+%table.table.table-bordered.table-striped.table-sm.table-hover#seleccionadas
 	%thead
 		%tr
+			%th Período
+			%th Código
+			%th Escuela
 			%th Departamento
 			%th Cátedra
+			%th Asignatura
 			%th Sección
-			%th Período
-			- if escuelas
-				%th Para Escuela
-			- if borrar_seleccion
-				- hide = 'hideble'
-				%th
-			- else
-				- hide = ''
+			%th U. Créditos 
+
+			%th
 	%tbody
-		- secciones.each do |sec| 
-			%tr{id: "sel_#{sec.asignatura_id}_#{sec.numero}", class: "sel_#{sec.asignatura_id} #{hide}"} 
-
-				%td= sec.asignatura.departamento.descripcion
-				%td= sec.asignatura.catedra.descripcion
-				%td
-					= sec.descripcion
-					- if @estudiante
-						- ins = sec.inscripcionsecciones.where(estudiante_id: @estudiante.id).first
-						= raw ins.label_pci if ins
-
-				%td= sec.periodo_id
-				- if escuelas
-					- value = (escuelas.count.eql? 1) ? escuelas.first.id : ""
-					%td= collection_select :secciones, sec.id, escuelas, :id, :descripcion, {selected: value, prompt: true}, { class: 'pci_seleccion form-control', required: true, disabled: true, id: "pci_sel_#{sec.asignatura_id}"}
-				- if borrar_seleccion
-					%td.text-center= borrar_seleccion_link sec.asignatura_id
-
+		- if @inscripciones and @inscripciones.any?
+			- @inscripciones.each do |ins| 
+				= render partial: '/admin/inscripcionsecciones/tr_selecciones', locals: {ins: ins, escuelas: @escuelas}
+			%tr.font-weight-bold#trTotalCreditos{style: 'text-align: right;font-weight: bold;'} 
+				%td{colspan: 7} Total U. Créditos
+				%td.text-right#totalCreditosNumero= @inscripciones.total_creditos 
