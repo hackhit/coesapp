@@ -18,50 +18,59 @@
 				%th TRIM III
 			%th Definitiva
 			- if current_admin and controller_name.eql? 'usuarios'
-				%th Opciones
+				%th{colspan: 4} Opciones
 	%tbody
 		- inscripciones.each do |inscripcion|
 			- retirado = inscripcion.retirado?
 			-# tipo_calificacion = 'info' if (@periodo.id.eql? '2016-02A' and inscripcion.confirmar_inscripcion.eql? 1)
 			%tr{class: inscripcion.tr_class_style_qualify, id: inscripcion.id_foranea}
-				%td= inscripcion.id
+				%td.align-middle= inscripcion.id
 				- if @foraneas
 					%td= inscripcion.seccion.periodo_id
-				%td
+				%td.align-middle
 					= link_to_if current_admin, inscripcion.seccion.asignatura.descripcion, inscripcion.seccion
 					.badge.badge-dark= inscripcion.seccion.asignatura.id_uxxi
 					.badge.badge-info= 'Retirada' if retirado #inscripcion.retirado?
 					.badge.badge-info= 'PCI' if false #inscripcion.seccion.asignatura.pci? inscripcion.seccion.periodo_id
 					= raw inscripcion.label_pci
 					
-				%td= inscripcion.seccion.numero
-				%td= inscripcion.seccion.asignatura.creditos
+				%td.align-middle= inscripcion.seccion.numero
+				%td.align-middle= inscripcion.seccion.asignatura.creditos
 				- if current_admin
-					%td= inscripcion.seccion.profesor.descripcion if inscripcion.seccion.profesor
-					%td=raw inscripcion.seccion.profesores.collect{|p| p.descripcion}.join(" </br> ") if inscripcion.seccion.profesores.count > 0
+					%td.align-middle= inscripcion.seccion.profesor.descripcion if inscripcion.seccion.profesor
+					%td.align-middle=raw inscripcion.seccion.profesores.collect{|p| p.descripcion}.join(" </br> ") if inscripcion.seccion.profesores.count > 0
 				- else
-					%td= inscripcion.seccion.profesor.usuario.apellido_nombre if inscripcion.seccion.profesor
-					%td=raw inscripcion.seccion.profesores.collect{|p| p.usuario.apellido_nombre}.join(" </br>") if inscripcion.seccion.profesores.count > 0
+					%td.align-middle= inscripcion.seccion.profesor.usuario.apellido_nombre if inscripcion.seccion.profesor
+					%td.align-middle=raw inscripcion.seccion.profesores.collect{|p| p.usuario.apellido_nombre}.join(" </br>") if inscripcion.seccion.profesores.count > 0
 
 				- if inscripcion.seccion.asignatura.numerica3?
-					%td= inscripcion.primera_calificacion
-					%td= inscripcion.segunda_calificacion
-					%td= inscripcion.tercera_calificacion
-				%td= inscripcion.valor_calificacion true
+					%td.align-middle= inscripcion.primera_calificacion
+					%td.align-middle= inscripcion.segunda_calificacion
+					%td.align-middle= inscripcion.tercera_calificacion
+				%td.align-middle= inscripcion.valor_calificacion true
 				- if current_admin and controller_name.eql? 'usuarios'
-					%td
-						- if inscripcion.foranea? 
-							= form_tag(set_escuela_pci_inscripcionsecciones_path, id: "form_#{inscripcion.id}") do
-								= hidden_field_tag :id, inscripcion.id
-								= collection_select nil, :pci_escuela_id, @estudiante.escuelas, :id, :descripcion, {selected: inscripcion.pci_escuela_id, prompt: 'Asignar Escuela'}, { class: '', style: 'width:150px', onChange: "$(this).parent().submit()"}
+
+					- if inscripcion.foranea? 
+						= form_tag(set_escuela_pci_inscripcionsecciones_path, id: "form_#{inscripcion.id}") do
+							= hidden_field_tag :id, inscripcion.id
+							%td.align-middle= collection_select nil, :pci_escuela_id, @estudiante.escuelas, :id, :descripcion, {selected: inscripcion.pci_escuela_id, prompt: 'Asignar Escuela'}, { class: '', style: 'width:150px', onChange: "$(this).parent().submit()"}
+					%td.align-middle
+						= link_to(inscripcion, class: 'tooltip-btn', method: :delete, data: {toggle: :tooltip, confirm: "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }, title: 'Eliminar Inscripción') do
+							.text-danger= glyph 'trash'
+
+					- seccionesAlternas = inscripcion.asignatura.secciones.del_periodo(inscripcion.seccion.periodo_id).where("id != ?", inscripcion.seccion_id).collect{|s| [s.id, s.numero]}
+
+					%td.align-middle
+						- if seccionesAlternas.any?
+							= link_to 'javascript:void(0)', class: 'tooltip-btn', 'data-toggle': 'tooltip', title: "Cambiar de Sección", onclick: "setupCambioSeccion('#{inscripcion.id}', #{seccionesAlternas.to_json})" do
+								%span= glyph 'link'
+						- else
+							.tooltip-btn.text-muted{'data-toggle': 'tooltip', title: "Sección Única"}= glyph 'link'
 
 						- if retirado
 							=# simple_toggle "/coesapp/inscripcionsecciones/#{inscripcion.id}/cambiar_estado?valor=INS", '', 'Reinscribir Asignatura', 'success', 'ok'
-							= simple_toggle "#{cambiar_estado_inscripcionseccion_path(inscripcion)}?estado=0", '', 'Reinscribir Asignatura', 'success', 'ok'
+							%td.align-middle= simple_toggle "#{cambiar_estado_inscripcionseccion_path(inscripcion)}?estado=0", '', 'Reinscribir Asignatura', 'success', 'ok'
 						- else
-							= simple_toggle "#{cambiar_estado_inscripcionseccion_path(inscripcion)}?estado=3", '', 'Retirar Asignatura', 'danger', 'remove'
-
-						%b.tooltip-btn.ml-1{'data_toggle'=>'tooltip', 'title'=>'Eliminar Asignatura'}
-							= link_to(inscripcion, {class: 'btn-danger btn-sm', :method => :delete, :data => {:confirm => "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }}) do
-								= glyph 'trash'
+							%td.align-middle= simple_toggle "#{cambiar_estado_inscripcionseccion_path(inscripcion)}?estado=3", '', 'Retirar Asignatura', 'danger', 'remove'
+						=# current_periodo.id	
 

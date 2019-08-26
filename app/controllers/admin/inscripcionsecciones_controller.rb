@@ -5,10 +5,24 @@ module Admin
 		# before_action :filtro_admin_mas_altos!, except: [:destroy]
 		# before_action :filtro_ninja!, only: [:destroy]
 
+		before_action :set_inscripcionseccion, only: [:cambiar_seccion]
+
 		# def set_pci
 		# 	inscripcion = Inscripcionseccion.find params[:inscripcionseccion_id]
 		# 	inscripcion.pci_escuela_id = params[:escuela_pci_id]
 		# end
+
+		def cambiar_seccion
+			seccion_anterior = @inscripcionseccion.seccion
+			@inscripcionseccion.seccion_id = params[:inscripcionseccion][:seccion_id]
+			if @inscripcionseccion.save
+				flash[:success] = 'Cambio de sección exitoso'
+				info_bitacora "Cambio de sección de la #{seccion_anterior.descripcion} (#{seccion_anterior.id}) a la #{@inscripcionseccion.seccion.descripcion} (#{@inscripcionseccion.seccion.id}) al estudiante #{@inscripcionseccion.estudiante.usuario.descripcion}" , Bitacora::ACTUALIZACION, @inscripcionseccion
+			else
+				flash[:danger] = "Error al intentar realizar el cambio en la inscripción: #{@inscripcionseccion.errors.full_messages.to_sentence}"
+			end
+			redirect_back fallback_location: @inscripcionseccion.estudiante.usuario
+		end
 
 		def set_escuela_pci
 			inscripcion = Inscripcionseccion.find params[:id]
@@ -284,7 +298,11 @@ module Admin
 
 	        end
 		end
+		private
 
+		def set_inscripcionseccion
+			@inscripcionseccion = Inscripcionseccion.find(params[:id])
+		end
 
 	end
 end

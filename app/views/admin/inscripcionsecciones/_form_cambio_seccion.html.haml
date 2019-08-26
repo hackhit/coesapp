@@ -1,0 +1,2 @@
+= hidden_field_tag :id, nil
+= collection_select(:inscripcionseccion, :seccion_id, secciones, :id, :numero, {prompt: true, name: 'formSeccionId'}, {required: true, class: 'form-control'})
