@@ -316,6 +316,5 @@ module Admin
       def administrador_params
         params.require(:administrador).permit(:rol, :departamento_id, :escuela_id)
       end
-
   end
 end

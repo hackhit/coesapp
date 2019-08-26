@@ -1,20 +1,4 @@
-.modal.hide.fade#set_estudiante{'aria-hidden'=> false}
-  .modal-dialog
-    .modal-content
-      .alert.alert-info.text-center
-        %h6 Registrar como estudiante a:
-        %h6.text-italic= @usuario.nombre_completo 
-        <button type="button" class="close fade" data-dismiss="modal" aria-hidden="true">×</button>
-      .modal-body
 
-        = form_tag(set_estudiante_usuario_path, class: 'form-horizontal') do
-          = hidden_field_tag :id, @usuario.id
-          .modal-body
-            .form-group
-              %h6.col-md-2 Escuela
-              .col-md-10
-                = collection_select(:estudiante, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
+- content = render partial: 'admin/usuarios/form_estu'
 
-          .modal-footer
-            %a.btn{data: {dismiss: 'modal'}} Cancelar
-            = submit_tag 'Guardar', class: 'btn btn-primary'
+= render partial: '/layouts/modal_layout', locals: {url: set_estudiante_usuario_path, id_modal: 'set_estudiante', title: "Registrar a #{@usuario.nombre_completo} como estudiante", content: content}

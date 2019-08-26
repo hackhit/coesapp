@@ -114,7 +114,7 @@
 
 		$.ajax({
 			url: "#{get_tab_objects_secciones_path}",
-			data: {type: type, valor: id},
+			data: {type: type, value: id},
 			dataType: 'json', 
 			success: function(data){
 				$('#filterTabs').append(data.tabs)
@@ -133,8 +133,8 @@
 
 	function setTab(type, id){
 		$.ajax({
-			url: "#{set_tab_secciones_path}", 
-			data: {type: type, valor: id}, 
+			url: "#{set_tab_principal_admin_index_path}", 
+			data: {key: type, value: id}, 
 			dataType: 'json'
 			});
 	}

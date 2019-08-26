@@ -27,40 +27,48 @@
       = btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
 %nav
   .nav.nav-tabs
-    = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: 'nav-item nav-link'
-    = link_to 'Como Estudiante', "#historial", "data-toggle"=> "tab", class: 'nav-item nav-link' if @estudiante
-    = link_to 'Como Profesor', "#profesor", "data-toggle"=> "tab", class: 'nav-item nav-link' if @profesor
-    = link_to 'Como Administrador', "#administrador", "data-toggle"=> "tab", class: 'nav-item nav-link' if @administrador
+    - activeTab = (session[:usuarioTypeTab].eql? 'personal') ? 'active' : '' 
+    = link_to 'Datos Personales y de Contacto', "#personales", "data-toggle"=> "tab", class: "nav-item nav-link #{activeTab}", onclick: "setTab('usuarioTypeTab', 'personal')"
+    - activeTab = (session[:usuarioTypeTab].eql? 'estudiante') ? 'active' : ''  
+    = link_to 'Como Estudiante', "#historial", "data-toggle"=> "tab", class: "nav-item nav-link #{activeTab}", onclick: "setTab('usuarioTypeTab', 'estudiante')" if @estudiante
+    - activeTab = (session[:usuarioTypeTab].eql? 'profesor') ? 'active' : ''  
+    = link_to 'Como Profesor', "#profesor", "data-toggle"=> "tab", class: "nav-item nav-link #{activeTab}", onclick: "setTab('usuarioTypeTab', 'profesor')" if @profesor
+    - activeTab = (session[:usuarioTypeTab].eql? 'administrador') ? 'active' : ''  
+    = link_to 'Como Administrador', "#administrador", "data-toggle"=> "tab", class: "nav-item nav-link #{activeTab}", onclick: "setTab('usuarioTypeTab', 'administrador')" if @administrador
       
 .tab-content
-  .tab-pane#personales
+  - activeTab = (session[:usuarioTypeTab].eql? 'personal') ? 'active' : ''  
+  .tab-pane#personales{class: activeTab}
     .border.mt-3.p-3
       = render partial: '/admin/usuarios/personales_contacto'
   - if @estudiante
-    .tab-pane#historial.p-3
+    - activeTab = (session[:usuarioTypeTab].eql? 'estudiante') ? 'active' : ''  
+    .tab-pane#historial.p-3{class: activeTab}
       %nav
         .nav.nav-tabs
           - if @secciones_pci_pendientes.any?
-            = link_to '¡Asignaturas sin Escuela asignadas!', "#pane_PCI", "data-toggle": :tab, class: 'nav-item nav-link alert alert-danger'
+            - activeTabPCI = (session[:tabEscuela].eql? 'pci') ? 'active' : ''
+            = link_to '¡Asignaturas sin Escuela asignadas!', "#pane_PCI", "data-toggle": :tab, class: "nav-item nav-link alert alert-danger #{activeTab}", onclick: "setTab('tabEscuela', 'pci')"
           - @estudiante.escuelas.each do |escuela|
-            = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
+            - activeTab = (session[:tabEscuela].eql? escuela.id) ? 'active' : ''  
+            = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: "nav-item nav-link #{activeTab}", onclick: "setTab('tabEscuela', '#{escuela.id}')"
           .nav-item.nav-link
             = simple_icon_toggle_modal 'Registrar en Escuela', 'success', 'plus', 'agregar_escuela'
             = render '/admin/estudiantes/agregar_escuela'
       .tab-content
         - if @secciones_pci_pendientes.any?
-          .tab-pane{id: "pane_PCI"}
+          .tab-pane{id: "pane_PCI", class: activeTabPCI}
             .border.mt-3.p-3
               %h6.alert.alert-danger.pb-ms-3#alertPCI Tome en cuenta que el estudiante puede no estar inscrito en todas sus escuelas. Por favor verifique que aparecen las pestañas correspondiantes.
               %h6.alert.alert-danger.pb-ms-3#alertPCI Asignaturas pendientes por asignar escuelas (PCI):
               - @foraneas = true
               = render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @secciones_pci_pendientes}
         - @foraneas = false
-
         - @escuelas_del_estudiante = @estudiante.escuelas
         - @escuelas_del_estudiante.each do |escuela|
+          - activeTab = (session[:tabEscuela].eql? escuela.id) ? 'active' : ''
           - @escuela = escuela
-          .tab-pane{id: "pane_#{escuela.id}"}
+          .tab-pane{id: "pane_#{escuela.id}", class: activeTab}
             .border.mt-3.p-3
               - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
               - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
@@ -80,11 +88,13 @@
               = render partial: '/admin/estudiantes/historial_academico'
 
   - if @profesor
-    .tab-pane#profesor
+    - activeTab = (session[:usuarioTypeTab].eql? 'profesor') ? 'active' : ''  
+    .tab-pane#profesor{class: activeTab}
       = render partial: '/admin/profesores/show'
 
   - if current_admin.mas_altos? and @administrador
-    .tab-pane#administrador
+    - activeTab = (session[:usuarioTypeTab].eql? 'administrador') ? 'active' : ''  
+    .tab-pane#administrador{class: activeTab}
 
       .border.mt-3.p-3
         %h6.alert.alert-info.pb-ms-3
@@ -92,6 +102,40 @@
           - if current_admin.maestros?
             = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'set_admin'
             = render '/admin/usuarios/set_administrador'
+
+- content = render partial: 'admin/inscripcionsecciones/form_cambio_seccion', locals: {secciones: Seccion.where(id: nil)}
+- url = cambiar_seccion_inscripcionsecciones_path
+= render partial: '/layouts/modal_layout', locals: {url: url, id_modal: 'cambiarSeccion', title: 'Cambiar Sección', content: content}
+
+:javascript
+
+  function setupCambioSeccion(id, secciones){
+
+    document.getElementById('cambiarSeccionForm')[2].value = id
+    let select = document.getElementById('inscripcionseccion_seccion_id')
+
+    for(var i = 1; i < select.options.length; i++) {
+      //select.options[i] = null
+      select.remove(i)
+    }
+    console.log(select.length)
+    for(var i = 0; i < secciones.length; i++) select.options[i+1] = new Option(secciones[i][1], secciones[i][0]);
+
+    // document.getElementById('cabiarSeccion').modal()
+    $('#cambiarSeccion').modal()
+  }
+
+  function setTab(type, id){
+    $.ajax({
+      url: "#{set_tab_principal_admin_index_path}", 
+      data: {key: type, value: id}, 
+      dataType: 'json'
+      });
+  }
+
+  $('.setSession').click(function(elem){
+    console.log(elem)
+  })
 
 - if false #@secciones_pci_pendientes.any?
   :javascript

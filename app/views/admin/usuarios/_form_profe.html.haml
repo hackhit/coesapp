@@ -1,0 +1,9 @@
+= hidden_field_tag :id, @usuario.id
+= hidden_field_tag :cambiar_dpto, true if @profesor
+
+.modal-body
+
+  .form-group
+    %h6.col-md-12 Departamento
+    .col-md-12
+      = grouped_collection_select :profesor, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, { class: 'text_field form-control'}

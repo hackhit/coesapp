@@ -1,36 +1,7 @@
-.modal.hide.fade#set_admin{'aria-hidden'=> false}
-  .modal-dialog
-    .modal-content
-      .alert.alert-info.text-center
-        %h6 Registrar como administrador a:
-        %h6.text-italic= @usuario.nombre_completo 
-        <button type="button" class="close fade" data-dismiss="modal" aria-hidden="true">×</button>
-      .modal-body
 
-        = form_tag(set_administrador_usuario_path, class: 'form-horizontal') do
-          = hidden_field_tag :id, @usuario.id
-          .modal-body
+- content = render partial: 'admin/usuarios/form_admin'
 
-            .form-group
-              %h6.col-md-12 Rol del Adminstrador
-              .col-md-12
-                = select_tag '[administrador]rol', options_for_select(Administrador.roles.reject{|a| a.eql? 'ninja'}.map {|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text_field form-control', id: :roles_admin
-            #adminDepartamento.hideble
-              .form-group
-                %h6.col-md-12 Departamento
-                .col-md-12
-                  = grouped_collection_select :administrador, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, { class: 'text_field form-control'}
-                  =# collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion_completa, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text_field form-control'})                  
-            #adminEscuela.hideble
-              .form-group
-                %h6.col-md-2 Escuela
-                .col-md-10
-                  = collection_select(:administrador, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
-
-          .modal-footer
-            %a.btn{data: {dismiss: 'modal'}} Cancelar
-            = submit_tag 'Guardar', class: 'btn btn-primary'
-
+= render partial: '/layouts/modal_layout', locals: {url: set_administrador_usuario_path, id_modal: 'set_admin', title: "Registrar como administrador a: #{@usuario.nombre_completo}", content: content}
 
 :javascript
   $('#roles_admin').on('change',function(evt){ 

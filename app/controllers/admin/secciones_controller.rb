@@ -7,18 +7,10 @@ module Admin
     before_action :filtro_admin_mas_altos!, only: [:cambiar_capacidad, :create, :new, :create, :update]
     #before_action :filtro_ninja!, only: [:destroy, :index]
 
-    before_action :set_seccion, except: [:index, :index2, :get_secciones, :get_tab_objects, :set_tab, :new, :create, :habilitar_calificar, :get_profesores]
+    before_action :set_seccion, except: [:index, :index2, :get_secciones, :get_tab_objects, :new, :create, :habilitar_calificar, :get_profesores]
 
     # GET /secciones
     # GET /secciones.json
-    def set_tab
-      session[params[:type]] = params[:valor]
-      
-      respond_to do |format|
-        format.html { redirect_to :back }
-        format.json { head :ok }
-      end
-    end
 
     def get_profesores
       if escuela = current_admin.pertenece_a_escuela

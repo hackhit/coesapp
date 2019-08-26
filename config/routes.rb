@@ -109,6 +109,7 @@ Rails.application.routes.draw do
         post :crear
         post 'cambiar_calificacion' 
         post 'set_escuela_pci'
+        post 'cambiar_seccion'
       end
       member do
         get :seleccionar
@@ -120,7 +121,6 @@ Rails.application.routes.draw do
     resources :secciones do
       collection do
         get 'get_profesores'
-        get 'set_tab'
         get 'get_tab_objects'
         get 'index2'
         get 'get_secciones'
