@@ -24,8 +24,8 @@ module Admin
     end
 
     def get_tab_objects
-        session[params[:type]] = params[:valor]
-        if params[:valor].eql? 'pci'
+        session[params[:type]] = params[:value]
+        if params[:value].eql? 'pci'
           if session[:inscripcion_estudiante_id]
               estudiante = Estudiante.find session[:inscripcion_estudiante_id]
               inscripciones = estudiante.inscripciones
@@ -42,7 +42,7 @@ module Admin
             @childrens = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}.sort_by{|a| a.descripcion}
           end
         else  
-          objeto = params[:type].camelize.constantize.find(params[:valor])
+          objeto = params[:type].camelize.constantize.find(params[:value])
           if objeto.is_a? Escuela
             @childrens = objeto.departamentos.order('descripcion ASC')
             session[:departamento] = session[:catedra] = session[:asignatura] = nil
