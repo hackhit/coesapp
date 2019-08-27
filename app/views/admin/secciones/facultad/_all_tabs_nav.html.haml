@@ -1,3 +1,22 @@
+- hidden = (session[:escuela] and session[:escuela].eql? 'pci') ? 'd-none' : ''
+#normalHeader{class: hidden}
+	.row
+		.col-md-2
+			%h6.text-center Escuelas
+		.col-md-3
+			%h6.text-center Departamentos
+		.col-md-3
+			%h6.text-center Cátedras
+		.col-md-4
+			%h6.text-center Asignaturas
+- hidden = (session[:escuela] and session[:escuela].eql? 'pci') ? '' : 'd-none'	
+#pciHeader{class: hidden}
+	.row
+		.col-md-2
+			%h6.text-center Escuelas
+		.col-md-4
+			%h6.text-center Asignaturas
+
 .row#filterTabs
 	=# Escuelas
 	= render partial: 'layouts/nav_pills/tabs', locals: {objects: @escuelas}

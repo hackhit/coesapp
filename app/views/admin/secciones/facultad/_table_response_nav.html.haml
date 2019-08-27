@@ -2,8 +2,8 @@
 .border.p-md-2.mt-md-3#responseTotal{class: hidden}
 	
 	.text-center
-		- if controller_name.eql? 'secciones' 
-			#btnNuevaSeccion{class: hidden}= simple_icon_toggle_modal 'Agregar Sección', 'success', 'plus', 'nueva_seccion'
+		- if controller_name.eql? 'secciones' or (@controller and @controller.eql? 'secciones')
+			#btnNuevaSeccion{class: hidden}= btn_toggle_modal 'plus', 'Agregar Sección', '', 'nueva_seccion'
 		%b#descAsignatura= @asignatura.descripcion_id_con_creditos if @asignatura
 	- if controller_name.eql? 'inscripcionsecciones'
 		%h6.titulo= "Secciones disponibles:" 

@@ -42,11 +42,21 @@
 
 		limpiarResultados()
 		setTab(type, id)
-		// console.log(controller)
+		setHeader(id)
 		if (type == 'asignatura' || ((controller == 'secciones') && (type == 'catedra' || id == 'pci'))){
 			getSecciones(type, id, controller)
 		}else{
 			paintTabObjects(type,id)
+		}
+	}
+
+	function setHeader(id){
+		if(id == 'pci') {
+			$('#normalHeader').addClass('d-none')
+			$('#pciHeader').removeClass('d-none')
+		}else{
+			$('#normalHeader').removeClass('d-none')
+			$('#pciHeader').addClass('d-none')
 		}
 	}
 
@@ -59,11 +69,15 @@
 		$('#btnNuevaSeccion').hide()
 	}
 
-	function showNewAsig(id) {
-		let desc = $('#asignatura_'+id).text()
+	function setAsignaturaToNewSeccion(id, desc){
 		$('#_seccionasignatura_id').val(`${id}`)
 		$('#nueva_seccion_titulo').html(`Nueva Sección para ${desc}`)
-		$('#btnNuevaSeccion').show();
+	}
+
+	function showNewAsig(id) {
+		let desc = $('#asignatura_'+id).text()
+		setAsignaturaToNewSeccion(id, desc)
+		$('#btnNuevaSeccion').show()
 	}
 
 	function getSecciones(type,id, controller) {

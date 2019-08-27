@@ -11,7 +11,7 @@
     = render '/admin/historialplanes/form'
 %b Planes:
 
-%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+%table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md
   -# @estudiante.historialplanes.order("periodo_id DESC").each do |hp|
   -# @estudiante.historialplanes.joins(:plan).where("planes.escuela_id = '#{@escuela.id}'").order("periodo_id DESC").each do |hp|
   - @estudiante.historialplanes.por_escuela(@escuela.id).order("periodo_id DESC").each do |hp|
