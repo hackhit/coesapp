@@ -133,12 +133,6 @@ module Admin
 		end
 		
 		def buscar_estudiante
-			# if params[:id]
-			# 	@inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: params[:id], "secciones.periodo_id" => current_periodo.id)
-			# 	if @inscripciones.count > 2
-			# 		flash[:info] = "El estudiante ya posee más de 2 asignaturas inscritas en el periodo actual. Por favor haga clic <a href='#{usuario_path(params[:id])}' class='btn btn-primary btn-sm'>aquí</a> para mayor información y realizar ajustes sobre las asignaturas" 
-			# 	end
-			# end
 			@titulo = "Inscripción para el período #{current_periodo.id} - Paso 1 - Buscar Estudiante"
 			estudiantes = Estudiante.last(5).sort_by{|e| e.usuario.apellidos}
 			@estudiantes = estudiantes

@@ -35,14 +35,9 @@
 = render 'layouts/cargando'
 
 :javascript
-
-	function updatePage(type, id){
+	function loadData(type, id) {
 		let currentUrl = window.location.href
-		let controller = (currentUrl.includes('inscripcionsecciones/seleccionar')) ? 'inscripcionsecciones' : 'secciones'
-
-		limpiarResultados()
-		setTab(type, id)
-		setHeader(id)
+		let controller = (currentUrl.includes('inscripcionsecciones')) ? 'inscripcionsecciones' : 'secciones'
 		if (type == 'asignatura' || ((controller == 'secciones') && (type == 'catedra' || id == 'pci'))){
 			getSecciones(type, id, controller)
 		}else{
@@ -50,8 +45,18 @@
 		}
 	}
 
-	function setHeader(id){
-		if(id == 'pci') {
+	function updatePage(type, id){
+
+		limpiarResultados()
+		setTab(type, id)
+		setHeader()
+		loadData(type, id)
+
+	}
+
+	function setHeader(){
+		console.log(sessionStorage.getItem('escuela'))
+		if(sessionStorage.getItem('escuela') == 'pci') {
 			$('#normalHeader').addClass('d-none')
 			$('#pciHeader').removeClass('d-none')
 		}else{
@@ -151,4 +156,5 @@
 			data: {key: type, value: id}, 
 			dataType: 'json'
 			});
+		sessionStorage.setItem(type, id)
 	}

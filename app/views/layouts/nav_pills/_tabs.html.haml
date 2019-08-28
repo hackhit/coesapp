@@ -67,4 +67,3 @@
 					= link_to "#pci", "data-toggle": :tab, class: "nav-link #{obj_activo}", onclick: "updatePage('#{object_name}', 'pci');", id: "#{object_name}_pci" do
 						PCI
 						= colocar_total_secciones_badge current_periodo.programaciones.pcis.collect{|pr| pr.secciones.del_periodo(current_periodo.id).count}.sum
-
