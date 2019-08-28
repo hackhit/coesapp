@@ -29,9 +29,8 @@
               %tr
                 - asignatura.secciones.del_periodo(current_periodo).each do |s| 
                   %td= s.numero
-                %td.tooltip-btn{'data_toggle': :tooltip, title: 'Agregar Sección'}
-                  = link_to 'javascript:void(0)', onclick: "$('#_seccionasignatura_id').val('#{asignatura.id}');$('#nueva_seccion_titulo').html('Nueva Sección para #{asignatura.descripcion}');$('#nueva_seccion').modal();" do
-                    .text-success= glyph :plus
+
+                %td= btn_plus_seccion_modal asignatura
           %td
             = render partial: '/layouts/onoffswitch', locals: {titulo: '¿Activar Asignatura?', url: set_activa_asignatura_path(asignatura.id), id: asignatura.id, chequeada: (asignatura.activa? current_periodo.id), id_html: "activas_#{asignatura.id}"}
           %td 

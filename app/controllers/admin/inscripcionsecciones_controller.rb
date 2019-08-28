@@ -238,10 +238,15 @@ module Admin
 				ins = Inscripcionseccion.new
 				ins.estudiante_id = id
 				ins.seccion_id = seccion_id
-				if ins.save
-					flash[:success] = "Estudiante inscrito satisfactoriamente"
+				if !(ins.estudiante.escuelas.include? ins.seccion.escuela)
+					flash[:danger] = 'La asignatura debe pertenecer a la Escuela'
 				else
-					flash[:danger] = "Error al intentar inscribir en la sección: #{ins.errors.full_messages.to_sentence}"
+					ins.escuela_id = ins.seccion.escuela.id
+					if ins.save
+						flash[:success] = "Estudiante inscrito satisfactoriamente"
+					else
+						flash[:danger] = "Error al intentar inscribir en la sección: #{ins.errors.full_messages.to_sentence}"
+					end
 				end
 			end
 			redirect_back fallback_location: "/usuarios/#{id}"

@@ -8,6 +8,7 @@
 		- col =  'col-md-3'
 	%div{id: "#{object_name}Tabs", class: "tabs #{col}", style: "max-height: 400px;overflow: scroll;"}
 		%ul.nav.nav-pills.mb-3.flex-column{role: :tablist, "aria-orientation": 'vertical', id: "pills-#{object_name}-tab"}
+			- bloqueado = false
 			- objects.each do |obj|
 				- obj_activo = (session[object_name].eql? obj.id) ? 'active' : ''
 				- if obj.is_a? Catedra and session[:departamento]
@@ -20,7 +21,7 @@
 						- desc = obj.descripcion_id.upcase
 						- if obj.pci? current_periodo.id
 							- desc = obj.descripcion_completa.upcase
-							- desc += "<span class= 'badge badge-light float-right ml-1'>pci</span>"
+							- desc += "<span class= 'badge badge-info ml-1'>pci</span>"
 
 						- if @ids_aprobadas and @ids_aprobadas.include? obj.id
 							.text-muted.alert.alert-success.mb-0.px-3.py-2
@@ -36,10 +37,10 @@
 								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
 								%span.badge.badge-secondary.float-right.ml-1 Previamente Inscrita
 						- elsif total_secciones < 1
-							
 							.text-muted.alert.alert-secondary.mb-0.px-3.py-2
-								- if (@controller and @controller.eql? 'secciones')
-									= btn_toggle 'btn-outline-success', 'plus', 'javascript:void(0)', 'Agregar Sección', '', "setAsignaturaToNewSeccion(`#{obj.id}`,`#{obj.descripcion}` );$(`#nueva_seccion`).modal();"
+								- if @controller and @controller.eql? 'secciones'
+									= btn_plus_seccion_modal obj
+									=# btn_toggle 'btn-outline-success', 'plus', 'javascript:void(0)', 'Agregar Sección', '', "setAsignaturaToNewSeccion(`#{obj.id}`,`#{obj.descripcion}` );$(`#nueva_seccion`).modal();"
 								= raw desc
 								= colocar_total_secciones_badge total_secciones
 								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
@@ -50,20 +51,44 @@
 								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
 					- else
 						- desc = obj.descripcion
-						- if controller_name.eql? 'inscripcionsecciones' and obj.is_a? Escuela and obj.inscripcion_cerrada?
-							- @dptosTabs = @catTabs = @asigTabs = nil
-							.text-muted.alert.alert-danger.p-1
-								= desc.upcase
-								%span.badge.badge-secondary.float-right Inscripción cerrada
-								= colocar_total_secciones_badge total_secciones
+						- if controller_name.eql? 'inscripcionsecciones' and obj.is_a? Escuela
+							- if obj.inscripcion_cerrada?
+								- @dptosTabs = @catTabs = @asigTabs = nil
+								.text-muted.alert.alert-danger.p-1
+									= desc.upcase
+									%span.badge.badge-secondary.float-right Inscripción Cerrada
+									= colocar_total_secciones_badge total_secciones
+							- elsif @estudiante and !(@estudiante.valido_para_inscribir? current_periodo.id, obj.id)
+								- if current_admin and current_admin.maestros?
+									= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
+										= desc.upcase
+										%span.badge.badge-secondary.float-right Estudiante Bloqueado
+										= colocar_total_secciones_badge total_secciones
+								- else
+									- bloqueado = true
+									- @dptosTabs = @catTabs = @asigTabs = nil
+									.text-muted.alert.alert-danger.p-1
+										= desc.upcase
+										%span.badge.badge-secondary.float-right Estudiante Bloqueado
+							- else
+								= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
+									= desc.upcase
+									= colocar_total_secciones_badge total_secciones
+
 						- else
 							= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
 								= desc.upcase
 								= colocar_total_secciones_badge total_secciones
 
 			- if object_name.eql? 'escuela'
-				- obj_activo = (session[:escuela].eql? 'pci') ? 'active' : ''
-				%li.nav-item
-					= link_to "#pci", "data-toggle": :tab, class: "nav-link #{obj_activo}", onclick: "updatePage('#{object_name}', 'pci');", id: "#{object_name}_pci" do
+				- if bloqueado and objects.count < 2
+					.text-muted.alert.alert-danger.p-1
 						PCI
-						= colocar_total_secciones_badge current_periodo.programaciones.pcis.collect{|pr| pr.secciones.del_periodo(current_periodo.id).count}.sum
+						%span.badge.badge-secondary.float-right Estudiante Bloqueado
+
+				- else
+					- obj_activo = (session[:escuela].eql? 'pci') ? 'active' : ''
+					%li.nav-item
+						= link_to "#pci", "data-toggle": :tab, class: "nav-link #{obj_activo}", onclick: "updatePage('#{object_name}', 'pci');", id: "#{object_name}_pci" do
+							PCI
+							= colocar_total_secciones_badge current_periodo.programaciones.pcis.collect{|pr| pr.secciones.del_periodo(current_periodo.id).count}.sum

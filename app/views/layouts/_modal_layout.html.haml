@@ -5,9 +5,9 @@
       .alert.alert-info
         %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
           %span{"aria-hidden": true} ×      
-        %h4.text-center{id: "#{id_modal}"}= title
+        %h4.text-center{id: "#{id_modal}Title"}= title
       .modal-body.border.p-2
-        = form_tag(url, id: "cambiarSeccionForm", class: 'form-horizontal') do
+        = form_tag(url, id: "#{id_modal}Form", class: 'form-horizontal') do
           = content
           .modal-footer
             %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar

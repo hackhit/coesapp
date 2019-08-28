@@ -65,7 +65,7 @@ module Admin
 		end
 
 		def set_tab
-			session[params[:key]] = params[:value]
+			session[params[:type]] = params[:value]
 
 			respond_to do |format|
 			format.html { redirect_to :back }

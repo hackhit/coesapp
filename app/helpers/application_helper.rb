@@ -215,5 +215,10 @@ module ApplicationHelper
 		btn_toggle 'btn-outline-success', icon, 'javascript:void(0)', title_tooltip, value, "$('##{id_modal}').modal();"
 	end
 
+	def btn_plus_seccion_modal a
+		onClick = "$('#newSeccion').modal();"
+		onClick += "setAsignaturaToNewSeccion('#{a.id}', '#{a.descripcion}')" if a
+		btn_toggle 'btn-outline-success', 'plus', 'javascript:void(0)', 'Agregar Sección', '', onClick
+	end
 
 end

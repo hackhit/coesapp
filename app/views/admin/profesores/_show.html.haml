@@ -6,7 +6,7 @@
 		= @profesor.departamento.descripcion_completa
 
 		- if current_admin and current_admin.maestros?
-			= simple_icon_toggle_modal_edit "Cambiar a Profesor #{@nickname} de Escuela", 'set_profesor'
+			= simple_icon_toggle_modal_edit "Cambiar a Profesor #{@nickname} de Escuela", 'setProfesor'
 			= render partial: '/admin/usuarios/set_profesor'
 
 	%hr

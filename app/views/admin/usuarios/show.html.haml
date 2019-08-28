@@ -14,13 +14,13 @@
   %h6
     Agregar Roles:
     - unless @estudiante
-      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'set_estudiante'
+      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'setEstudiante'
       = render '/admin/usuarios/set_estudiante'
     - if !@administrador and current_admin.maestros?
-      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'set_admin'
+      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'setAdmin'
       = render '/admin/usuarios/set_administrador'
     - unless @profesor
-      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'set_profesor'
+      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'setProfesor'
       = render '/admin/usuarios/set_profesor'
 
     - if @estudiante #and @estudiante.valido_para_inscribir? current_periodo.id
@@ -100,7 +100,7 @@
         %h6.alert.alert-info.pb-ms-3
           = @administrador.descripcion
           - if current_admin.maestros?
-            = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'set_admin'
+            = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'setAdmin'
             = render '/admin/usuarios/set_administrador'
 
 - content = render partial: 'admin/inscripcionsecciones/form_cambio_seccion', locals: {secciones: Seccion.where(id: nil)}
@@ -124,18 +124,6 @@
     // document.getElementById('cabiarSeccion').modal()
     $('#cambiarSeccion').modal()
   }
-
-  function setTab(type, id){
-    $.ajax({
-      url: "#{set_tab_principal_admin_index_path}", 
-      data: {key: type, value: id}, 
-      dataType: 'json'
-      });
-  }
-
-  $('.setSession').click(function(elem){
-    console.log(elem)
-  })
 
 - if false #@secciones_pci_pendientes.any?
   :javascript

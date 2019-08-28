@@ -79,20 +79,38 @@ class Estudiante < ApplicationRecord
 		end
 	end
 
+	# def inscrito? periodo_id, escuela_id = nil
+	# 	if escuela_id
+	# 		(inscripcionsecciones.del_periodo(periodo_id)).reject{|is| !is.escuela.id.eql? escuela_id}.count > 0
+	# 	else
+	# 		(inscripcionsecciones.del_periodo(periodo_id)).count > 0
+	# 	end
+	# end
+
 	def inscrito? periodo_id, escuela_id = nil
 		if escuela_id
-			(inscripcionsecciones.del_periodo(periodo_id)).reject{|is| !is.escuela.id.eql? escuela_id}.count > 0
+			(inscripcionsecciones.del_periodo(periodo_id)).de_la_escuela(escuela_id).count > 0
 		else
 			(inscripcionsecciones.del_periodo(periodo_id)).count > 0
 		end
+
 	end
 
 	def con_registro_en_escuela escuela_id
 		inscripcionsecciones.reject{|is| !is.escuela.id.eql? escuela_id}.count > 0
 	end
 
-	def valido_para_inscribir? periodo_id
-		!(inscrito? periodo_id)
+	def valido_para_inscribir? periodo_id, escuela_id
+		escuela = escuelas.where(id: escuela_id).first
+		return false unless escuela
+		aux_periodo_anterior = Periodo.find periodo_id
+		aux_periodo_anterior = escuela.periodo_anterior aux_periodo_anterior
+
+		if aux_periodo_anterior.nil?
+			return true
+		else
+			return (inscrito? aux_periodo_anterior.id, escuela_id)
+		end
 	end
 
 	def ultimo_plan_de_escuela escuela_id

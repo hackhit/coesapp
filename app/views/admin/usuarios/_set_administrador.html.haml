@@ -1,7 +1,7 @@
 
 - content = render partial: 'admin/usuarios/form_admin'
 
-= render partial: '/layouts/modal_layout', locals: {url: set_administrador_usuario_path, id_modal: 'set_admin', title: "Registrar como administrador a: #{@usuario.nombre_completo}", content: content}
+= render partial: '/layouts/modal_layout', locals: {url: set_administrador_usuario_path, id_modal: 'setAdmin', title: "Registrar como administrador a: #{@usuario.nombre_completo}", content: content}
 
 :javascript
   $('#roles_admin').on('change',function(evt){ 

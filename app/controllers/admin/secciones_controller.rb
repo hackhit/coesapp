@@ -24,6 +24,8 @@ module Admin
     end
 
     def get_tab_objects
+
+      @controller = params[:controlador]
         session[params[:type]] = params[:value]
         if params[:value].eql? 'pci'
           if session[:inscripcion_estudiante_id]
@@ -51,7 +53,7 @@ module Admin
             @childrens = objeto.catedras.order('descripcion ASC')
           else 
             if objeto.is_a? Catedra
-              session[:asignatura] = nil 
+              # session[:asignatura] = nil 
               if session[:inscripcion_estudiante_id]
                 estudiante = Estudiante.find session[:inscripcion_estudiante_id]
                 inscripciones = estudiante.inscripciones
@@ -91,7 +93,7 @@ module Admin
         else
           @secciones = @objeto.secciones.del_periodo(current_periodo.id)
         end
-        if session[:escuela].eql? 'pci' and session[:inscripcion_estudiante_id]          
+        if session[:inscripcion_estudiante_id]          
           @estudiante = Estudiante.find session[:inscripcion_estudiante_id]
           @escuelas = current_admin.escuelas.merge @estudiante.escuelas 
         end
@@ -100,6 +102,7 @@ module Admin
     end
 
     def index2
+      @controller = 'secciones'
       session[:inscripcion_estudiante_id] = nil
       @titulo = "Secciones (Periodo Académico: #{current_periodo.id})"
       @usuario = current_usuario

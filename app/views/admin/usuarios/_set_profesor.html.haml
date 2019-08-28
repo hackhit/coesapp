@@ -1,4 +1,4 @@
 - content = render partial: 'admin/usuarios/form_profe'
 - titulo = @usuario.nombre_completo
 - titulo = @profesor ? "Cambiar de departamento a: #{titulo}" : "Registrar como profesor a: #{titulo}"
-= render partial: '/layouts/modal_layout', locals: {url: set_profesor_usuario_path, id_modal: 'set_profesor', title: titulo, content: content}
+= render partial: '/layouts/modal_layout', locals: {url: set_profesor_usuario_path, id_modal: 'setProfesor', title: titulo, content: content}

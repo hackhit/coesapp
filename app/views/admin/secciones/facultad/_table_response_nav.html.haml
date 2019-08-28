@@ -3,7 +3,7 @@
 	
 	.text-center
 		- if controller_name.eql? 'secciones' or (@controller and @controller.eql? 'secciones')
-			#btnNuevaSeccion{class: hidden}= btn_toggle_modal 'plus', 'Agregar Sección', '', 'nueva_seccion'
+			#btnNewSeccion{class: hidden}= btn_plus_seccion_modal @asignatura
 		%b#descAsignatura= @asignatura.descripcion_id_con_creditos if @asignatura
 	- if controller_name.eql? 'inscripcionsecciones'
 		%h6.titulo= "Secciones disponibles:" 
@@ -14,5 +14,5 @@
 			- else
 				= render partial: '/admin/secciones/index2/th_resultado', locals: {object: @asignatura, secciones: @secciones}
 
-	#no_encontrado.pagination-centered.text-center.hideble.p-0
+	#noEncontrado.pagination-centered.text-center.hideble.p-0
 		.alert.alert-danger No se encontraron secciones
