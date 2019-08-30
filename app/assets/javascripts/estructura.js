@@ -54,7 +54,7 @@
 
 	function getSecciones(type, id, controller) {
 		$.ajax({
-			url: `/coes_dev/secciones/get_tab_objects`,
+			url: `/coes_dev/secciones/get_secciones`,
 			data: {id: id, type: type, controlador: controller},
 			dataType: 'json', 
 			beforeSend: function() {$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'});},
@@ -102,7 +102,7 @@
 
 		$.ajax({
 
-			url: `/coes_dev/secciones/get_tab_objects`,
+			url: `/coes_dev/secciones/get_secciones`,
 			data: {type: type, value: id, controlador: controller},
 			dataType: 'json', 
 			success: function(data){
@@ -124,7 +124,7 @@
 
 function setTab(type, id){
 	$.ajax({
-		url: `/coes_dev/principal_admin/set_tab`, 
+		url: `/coes_dev/principal_adsecciones`, 
 		data: {type: type, value: id}, 
 		dataType: 'json'
 		});
