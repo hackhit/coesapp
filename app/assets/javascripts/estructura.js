@@ -102,7 +102,7 @@
 
 		$.ajax({
 
-			url: `/coes_dev/secciones/get_secciones`,
+			url: `/coes_dev/secciones/get_tab_objects`,
 			data: {type: type, value: id, controlador: controller},
 			dataType: 'json', 
 			success: function(data){
@@ -124,7 +124,7 @@
 
 function setTab(type, id){
 	$.ajax({
-		url: `/coes_dev/principal_adsecciones`, 
+		url: `/coes_dev/principal_admin/set_tab`, 
 		data: {type: type, value: id}, 
 		dataType: 'json'
 		});
