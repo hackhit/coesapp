@@ -47,9 +47,9 @@ module Admin
           objeto = params[:type].camelize.constantize.find(params[:value])
           if objeto.is_a? Escuela
             @childrens = objeto.departamentos.order('descripcion ASC')
-            session[:departamento] = session[:catedra] = session[:asignatura] = nil
+            # session[:departamento] = session[:catedra] = session[:asignatura] = nil
           elsif objeto.is_a? Departamento
-            session[:catedra] = session[:asignatura] = nil
+            # session[:catedra] = session[:asignatura] = nil
             @childrens = objeto.catedras.order('descripcion ASC')
           else 
             if objeto.is_a? Catedra

@@ -66,6 +66,9 @@ module Admin
 
 		def set_tab
 			session[params[:type]] = params[:value]
+            session[:asignatura] = nil if params[:type].eql? 'catedra'
+            session[:catedra] = nil if params[:type].eql? 'departamento'
+            session[:departamento] = nil if params[:type].eql? 'escuela'
 
 			respond_to do |format|
 			format.html { redirect_to :back }

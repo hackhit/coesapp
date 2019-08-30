@@ -1,22 +1,20 @@
 
 
-	function loadData(type, id) {
+	function loadData(type, id, callback) {
 		let currentUrl = window.location.href
 		let controller = (currentUrl.includes('inscripcionsecciones')) ? 'inscripcionsecciones' : 'secciones'
 		if (type == 'asignatura' || ((controller == 'secciones') && (type == 'catedra' || id == 'pci'))){
 			getSecciones(type, id, controller)
 		}else{
-			paintTabObjects(type,id, controller)
+			paintTabObjects(type,id, controller, callback)
 		}
 	}
 
 	function updatePage(type, id){
-
 		limpiarResultados()
 		setTab(type, id)
 		setHeader()
 		loadData(type, id)
-
 	}
 
 	function setHeader(){
@@ -55,15 +53,6 @@
 	}
 
 	function getSecciones(type, id, controller) {
-		if (type == 'asignatura'){
-			// let desc = $('#asignatura_'+id).text()
-			let desc = document.getElementById("asignatura_"+id).firstChild.textContent
-			let cred = document.getElementById("bagCreditos"+id).firstChild.textContent
-			desc += " ("+cred+" Unidades de Créditos)"
-			$('#descAsignatura').html(`${desc}`)
-			if (controller == 'secciones') showNewAsig(id)
-		}
-		$('#responseTotal').show()
 		$.ajax({
 			url: '/secciones/get_secciones',
 			data: {id: id, type: type, controlador: controller},
@@ -86,18 +75,29 @@
 				}
 			},
 			complete: function(){
-				$('.modal').modal('hide')
 				if (type != 'asignatura'){
 					paintTabObjects(type,id, controller)
 				}
+
+				if (type == 'asignatura'){
+					// let desc = $('#asignatura_'+id).text()
+					let desc = document.getElementById("asignatura_"+id).firstChild.textContent
+					let cred = document.getElementById("bagCreditos"+id).firstChild.textContent
+					desc += " ("+cred+" Unidades de Créditos)"
+					$('#descAsignatura').html(`${desc}`)
+					if (controller == 'secciones') showNewAsig(id)
+				}
+				$('#responseTotal').show()
+
+				$('.modal').modal('hide')
 				$('.tooltip-btn').tooltip()
 			}
 		});
 	}
 
-	function paintTabObjects(type, id,controller){
+	function paintTabObjects(type, id,controller, callback){
 
-		let ele = $('#' + type + 'Tabs')
+		let ele = $(`#${type}Tabs`)
 		ele.nextAll('.tabs').remove()
 
 		$.ajax({
@@ -109,6 +109,7 @@
 				$('#filterTabs').append(data.tabs)
 			},
 			beforeSend: function(){
+				$('#cargando a').html(`Cangando ${type}... `)
 				$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
 			},
 			complete: function(){
@@ -117,8 +118,8 @@
 			}
 
 		});
+		if (callback) callback()
 	}
-
 
 
 function setTab(type, id){
