@@ -31,7 +31,7 @@
     %main{:role => "main"}
       - if Rails.root.to_s.include? 'coes_dev'
         %nav.navbar.navbar-expand-lg.navbar-dark.bg-danger.justify-content-center
-          ATENCIÓN: ESCENARIO DE PRUEBA
+          %h5 AMBIENTE DE PRUEBAS
       = render 'layouts/titulo'
       = render 'layouts/messages'
       = yield
