@@ -66,7 +66,7 @@ class Escuela < ApplicationRecord
 		todos = periodos.order(inicia: :asc)
 		indice = todos.index periodo
 		indice -= 1 if indice
-		indice = 0 if indice.nil? and indice < 0
+		indice = 0 if indice.nil? or indice < 0
 		
 		return todos[indice]
 	end
