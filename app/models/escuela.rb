@@ -65,8 +65,8 @@ class Escuela < ApplicationRecord
 	def periodo_anterior periodo
 		todos = periodos.order(inicia: :asc)
 		indice = todos.index periodo
-		indice -= 1
-		indice = 0 if indice < 0
+		indice -= 1 if indice
+		indice = 0 if indice.nil? and indice < 0
 		
 		return todos[indice]
 	end
