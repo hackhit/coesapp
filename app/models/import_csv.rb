@@ -7,7 +7,7 @@ class ImportCsv
 
 	# 	csv_text = File.read(url)
 		
-	# 	return CSV.parse(csv_text, headers: true)
+	# 	return CSV.parse(csv_text, headers: true, encoding: 'iso-8859-1:utf-8')
 	# end
 
 	def self.importar_estudiantes file, escuela_id, plan_id, periodo_id
@@ -24,7 +24,7 @@ class ImportCsv
 		total_planes_agregados = 0
 		total_planes_no_agregados = 0
 
-		csv = CSV.parse(csv_text, headers: true)
+		csv = CSV.parse(csv_text, headers: true, encoding: 'iso-8859-1:utf-8')
 		# csv.each do |row|
 		csv.group_by{|ci| ci[0]}.values.each do |row|
 			begin
@@ -136,7 +136,7 @@ class ImportCsv
 		usuarios_no_agregados = []
 		profes_no_agregados = []
 
-		csv = CSV.parse(csv_text, headers: true)
+		csv = CSV.parse(csv_text, headers: true, encoding: 'iso-8859-1:utf-8')
 		csv.each do |row|
 			begin
 				row['ci'].delete! '^0-9'
@@ -206,7 +206,7 @@ class ImportCsv
 		total_retirados = 0
 		total_no_calificados = 0
 
-		csv = CSV.parse(csv_text, headers: true)
+		csv = CSV.parse(csv_text, headers: true, encoding: 'iso-8859-1:utf-8')
 			csv.each do |row|
 				begin
 					row.field(0).delete! '^0-9'
@@ -316,7 +316,7 @@ class ImportCsv
 		total_retirados = 0
 		total_no_calificados = 0		
 		p "RESULTADO".center(200, "=")
-		rows = CSV.parse(csv_text, headers: true)
+		rows = CSV.parse(csv_text, headers: true, encoding: 'iso-8859-1:utf-8')
 
 		rows.group_by{|row| row[2]}.values.each do |asig|
 			id_uxxi = limpiar_cadena asig[0][1]
