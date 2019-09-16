@@ -103,12 +103,13 @@
 		if (obj.select != null) {			
 			newRow.cells[2].innerHTML  = obj.select.content
 		}else{
-			let input = document.createElement('input')
-			input.name = `[secciones]${obj.sec.id}`
-			input.type = 'hidden'
-			input.value = 'on'
-			console.log(input)
-			newRow.append(input)
+			let elem = document.createElement('input')
+			elem.name = `[secciones]${obj.sec.id}`
+			elem.type = 'hidden'
+			elem.value = 'on'
+			// document.getElementById('tr'+obj.sec.id).appendChild(elem)
+
+			newRow.appendChild(elem)
 		}
 
 		colocarTotalCreditos(table)
