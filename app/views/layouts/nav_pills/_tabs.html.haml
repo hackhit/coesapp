@@ -58,18 +58,6 @@
 									= desc.upcase
 									%span.badge.badge-secondary.float-right Inscripción Cerrada
 									= colocar_total_secciones_badge total_secciones
-							- elsif @estudiante and !(@estudiante.valido_para_inscribir? current_periodo.id, obj.id)
-								- if current_admin and current_admin.maestros?
-									= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
-										= desc.upcase
-										%span.badge.badge-secondary.float-right Estudiante Bloqueado
-										= colocar_total_secciones_badge total_secciones
-								- else
-									- bloqueado = true
-									- @dptosTabs = @catTabs = @asigTabs = nil
-									.text-muted.alert.alert-danger.p-1
-										= desc.upcase
-										%span.badge.badge-secondary.float-right Estudiante Bloqueado
 							- else
 								= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
 									= desc.upcase
@@ -81,7 +69,7 @@
 								= colocar_total_secciones_badge total_secciones
 
 			- if object_name.eql? 'escuela'
-				- if bloqueado and objects.count < 2
+				- if false #bloqueado and objects.count < 2
 					.text-muted.alert.alert-danger.p-1
 						PCI
 						%span.badge.badge-secondary.float-right Estudiante Bloqueado
