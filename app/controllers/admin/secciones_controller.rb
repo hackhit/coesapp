@@ -62,9 +62,9 @@ module Admin
               end
             end
             if session[:departamento]
-              @childrens = objeto.asignaturas.del_departamento(session[:departamento]).order('descripcion ASC')
+              @childrens = objeto.asignaturas.activas(current_periodo.id).del_departamento(session[:departamento]).order('descripcion ASC')
             else
-              @childrens = objeto.asignaturas.order('descripcion ASC')
+              @childrens = objeto.asignaturas.activas(current_periodo.id).order('descripcion ASC')
             end
 
           end
