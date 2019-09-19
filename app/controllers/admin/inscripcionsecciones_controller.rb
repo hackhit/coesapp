@@ -159,6 +159,9 @@ module Admin
 				@escuelas = current_admin.escuelas.merge @estudiante.escuelas 
 
 				@creditLimits = current_periodo.anual? ? 49 : 25
+
+				aux = current_periodo.escuelas.merge @estudiante.escuelas
+				@creditLimits *= aux.count
 				
 			end
 
