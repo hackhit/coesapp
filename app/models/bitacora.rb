@@ -7,6 +7,10 @@ class Bitacora < ApplicationRecord
   DESCARGA = 4
   ESPECIAL = 5
 
+  #SCOPE
+  scope :search, lambda {|value| where("descripcion LIKE ? OR comentario LIKE ? OR id_objeto LIKE ?", "%#{value}%", "%#{value}%", "%#{value}%")}
+  scope :search_by_type, lambda {|type| where(tipo_objeto: type)}
+
   # VARIABLES
   enum tipo: [:general, :creacion, :actualizacion, :eliminacion, :descarga, :especial]
 

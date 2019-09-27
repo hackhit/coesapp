@@ -1,0 +1,22 @@
+
+%table.table.table-sm.table-responsive-md.mt-3
+	%thead
+		%tr.text-center
+			%th Cód. UXXI
+			%th Descripción
+			%th Departamento
+			%th Cátedra
+			%th Tipo
+			%th U. Créditos
+			%th T. Secciones
+
+	%tbody
+		%tr.text-center
+
+			%td= @asignatura.id
+			%td= @asignatura.descripcion
+			%td= @asignatura.departamento.descripcion
+			%td= @asignatura.catedra.descripcion
+			%td= @asignatura.tipoasignatura.descripcion
+			%td= @asignatura.creditos
+			%td= @asignatura.secciones.count

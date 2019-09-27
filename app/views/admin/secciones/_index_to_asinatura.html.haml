@@ -1,0 +1,20 @@
+.border.mt-3.p-3
+  %table.table.table-striped.table-sm.table-hover.table-bordered
+    %thead
+      %tr
+        %th Período
+        %th Seccion
+        %th Tipo
+        %th Profesor Principal
+        %th Estado
+        %th Opciones
+
+    %tbody
+      - @asignatura.secciones.each do |seccion| 
+        %tr.align-middle
+          %td.text-center= seccion.periodo_id
+          %td= link_to seccion.numero, seccion_path(seccion.id)
+          %td= seccion.tipo_seccion_id
+          %td= seccion.profesor.descripcion if seccion.profesor
+          %td= render partial: '/admin/secciones/estado', locals: {seccion: seccion}
+          %td.text-center= render partial: '/admin/secciones/panel_detalle_opciones', locals: {seccion: seccion}

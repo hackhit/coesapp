@@ -1,33 +1,18 @@
-- model_class = Asignatura
-.fieldset
-  %dl
-    %dt.label.label-default= model_class.human_attribute_name(:id_uxxi)
-    %dd
-      %pre.prettyprint
-        = @asignatura.id_uxxi
-    %dt.label.label-default= model_class.human_attribute_name(:descripcion)
-    %dd
-      %pre.prettyprint= @asignatura.descripcion
-    %dt.label.label-default Tipo
-    %dd
-      %pre.prettyprint= @asignatura.tipoasignatura.descripcion.titleize
-    %dt.label.label-default= model_class.human_attribute_name(:calificacion)
-    %dd
-      %pre.prettyprint= @asignatura.calificacion.titleize
+= render '/admin/asignaturas/descripcion_general'
 
-    %dt.label.label-default= model_class.human_attribute_name(:departamento_id)
-    %dd
-      %pre.prettyprint= @asignatura.departamento.descripcion.titleize
-    %dt.label.label-default= model_class.human_attribute_name(:catedra_id)
-    %dd
-      %pre.prettyprint= @asignatura.catedra.descripcion.titleize
-    %dt.label.label-default Bloque
-    %dd
-      %pre.prettyprint= @asignatura.anno
-    %dt.label.label-default= model_class.human_attribute_name(:creditos)
-    %dd
-      %pre.prettyprint= @asignatura.creditos
-
+%nav
+  .nav.nav-tabs
+    - if @asignatura.secciones.any?
+      = link_to 'Histórico de secciones', "#secciones", "data-toggle"=> "tab", class: "nav-item nav-link"
+    - if @bitacoras.any?
+      = link_to 'Bitácora', "#bitacora", "data-toggle"=> "tab", class: "nav-item nav-link"
+  .tab-content
+    - if @asignatura.secciones.any?
+      .tab-pane#secciones
+        = render '/admin/secciones/index_to_asinatura'
+    - if @bitacoras.any?
+      .tab-pane#bitacora
+        = render '/admin/bitacoras/index'
 
 .form-group.mt-3
   = link_to asignaturas_path, class: 'btn btn-outline-secondary ml-2' do

@@ -54,6 +54,8 @@ module Admin
     # GET /asignaturas/1.json
     def show
       @titulo = @asignatura.descripcion.titleize
+
+      @bitacoras = Bitacora.search @asignatura.id
     end
 
     # GET /asignaturas/new

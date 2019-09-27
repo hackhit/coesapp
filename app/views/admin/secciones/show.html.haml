@@ -5,7 +5,27 @@
 
 	= render '/admin/secciones/tabla_descripcion'
 	= render '/admin/secciones/opciones_descarga'
-	= render '/admin/secciones/detalle_seccion'
+	
+	- if current_admin and current_admin.maestros?
+		%nav
+			.nav.nav-tabs
+				= link_to 'Datalle Sección', "#seccion", "data-toggle"=> "tab", class: "nav-item nav-link active show"
+				= link_to 'Bitácora', "#bitacora", "data-toggle"=> "tab", class: "nav-item nav-link"
+			.tab-content
+				.tab-pane#seccion.active.show
+					.border.mt-3.p-3= render '/admin/secciones/detalle_seccion'
+				.tab-pane#bitacora
+					%br
+					.text-center.titulo De la Sección:
+					= render '/admin/bitacoras/index'
+					%br
+					.text-center.titulo De Inscripciones:
+					- @bitacoras = Bitacora.search("Seccion id: (#{@seccion.id})")
+					= render '/admin/bitacoras/index'
+		
+	- else
+		%br	
+		= render '/admin/secciones/detalle_seccion'
 	%br
 	= btn_atras @back
 

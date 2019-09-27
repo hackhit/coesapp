@@ -1,6 +1,4 @@
 - calificada = @seccion.calificada
-%br
-%br
 - if current_profesor
 	- if @seccion.profesor_id.eql? current_profesor.id and ((!@seccion.asignatura.numerica3? and !calificada) or (@seccion.asignatura.numerica3? and !calificada))
 		= render partial: 'admin/secciones/por_calificar', locals: {inscripciones: @inscripciones_secciones}
