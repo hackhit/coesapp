@@ -37,6 +37,25 @@ class Seccion < ApplicationRecord
 
 	# FUNCIONES:
 
+	# FUNCION Temporal de actualizacion de Periodos E y S
+	def self.actualizar_periodos
+		Periodo.where("id like '%C%' || id like '%E%'").each do |pe| 
+			aux_pe_id = pe.id
+			aux_pe_id[aux_pe_id.length-1] = "S"
+			pe.secciones.each do |sec|
+				sec.periodo_id = aux_pe_id
+				aux = sec.save ? "." : "x"
+				print aux
+					
+			end
+			pe.programaciones.each do |prog|
+				prog.periodo_id = aux_pe_id
+				aux = prog.save ? "." : "x"
+				print aux
+			end
+		end
+	end
+
 	def total_calificados
 	self.inscripciones.con_calificacion.count
 	end
