@@ -40,7 +40,7 @@ class Seccion < ApplicationRecord
 	# FUNCION Temporal de actualizacion de Periodos E y S
 	def self.actualizar_periodos
 		secciones_actualizadas = 0
-		Seccion.where("periodo_id like '%C%' || periodo_id like '%E%'").each do |se| 
+		Seccion.where("periodo_id like '%E%'").each do |se| 
 			aux_pe_id = se.periodo_id
 			aux_pe_id[aux_pe_id.length-1] = "S"
 			se.periodo_id = aux_pe_id
@@ -49,7 +49,7 @@ class Seccion < ApplicationRecord
 
 		total_existentes = 0
 		total_nuevas = 0
-		Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").each do |pr|
+		Programacion.where("periodo_id like '%E%'").each do |pr|
 
 			aux_pe_id = pr.periodo_id
 			aux_pe_id[aux_pe_id.length-1] = "S"
@@ -64,7 +64,7 @@ class Seccion < ApplicationRecord
 
 		planes_actualizados = 0
 
-		Historialplan.where("periodo_id like '%C%' || periodo_id like '%E%'").each do |plan|
+		Historialplan.where("periodo_id like '%E%'").each do |plan|
 			aux_pe_id = plan.periodo_id
 			aux_pe_id[aux_pe_id.length-1] = "S"
 			plan.periodo_id = aux_pe_id
@@ -74,11 +74,11 @@ class Seccion < ApplicationRecord
 		p " Total Secciones actualizadas: #{secciones_actualizadas} ".center(200, "=")
 
 		# Programaciones:
-		total_a_eliminar = Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").count
+		total_a_eliminar = Programacion.where("periodo_id like '%E%'").count
 		p " Total programaciones Existentes: #{total_existentes} ".center(200, "*")
 		p " Total programaciones Creadas: #{total_nuevas} ".center(200, "*")
 		p " Total programaciones a eliminar: #{total_a_eliminar} ".center(200, "*")
-		p ' Programaciones eliminadas' if Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").delete_all
+		p ' Programaciones eliminadas' if Programacion.where("periodo_id like '%E%'").delete_all
 		total_a_eliminar = Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").count
 		p " Total programaciones restantes: #{total_a_eliminar} ".center(200, "*")
 
@@ -89,7 +89,7 @@ class Seccion < ApplicationRecord
 		total_periodos = Periodo.where("id like '%C%' || id like '%E%'").count
 
 		p " Total Periodos eliminados: #{total_periodos} ".center(200, "^")
-		Periodo.where("id like '%C%' || id like '%E%'").delete_all
+		Periodo.where("id like '%E%'").delete_all
 		
 		total_periodos = Periodo.where("id like '%C%' || id like '%E%'").count
 		p " Total Periodos restantes: #{total_periodos} ".center(200, "^")
