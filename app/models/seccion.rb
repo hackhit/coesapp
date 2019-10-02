@@ -39,21 +39,61 @@ class Seccion < ApplicationRecord
 
 	# FUNCION Temporal de actualizacion de Periodos E y S
 	def self.actualizar_periodos
-		Periodo.where("id like '%C%' || id like '%E%'").each do |pe| 
-			aux_pe_id = pe.id
+		secciones_actualizadas = 0
+		Seccion.where("periodo_id like '%C%' || periodo_id like '%E%'").each do |se| 
+			aux_pe_id = se.periodo_id
 			aux_pe_id[aux_pe_id.length-1] = "S"
-			pe.secciones.each do |sec|
-				sec.periodo_id = aux_pe_id
-				aux = sec.save ? "." : "x"
-				print aux
-					
-			end
-			pe.programaciones.each do |prog|
-				prog.periodo_id = aux_pe_id
-				aux = prog.save ? "." : "x"
-				print aux
+			se.periodo_id = aux_pe_id
+			secciones_actualizadas += 1 if se.save
+		end
+
+		total_existentes = 0
+		total_nuevas = 0
+		Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").each do |pr|
+
+			aux_pe_id = pr.periodo_id
+			aux_pe_id[aux_pe_id.length-1] = "S"
+
+			begin
+				total_nuevas +=1 if Programacion.create(periodo_id: aux_pe_id, asignatura_id: pr.asignatura_id)
+			rescue Exception => e
+				puts "Programacion Ya Exitente: #{e}"
+				total_existentes += 1
 			end
 		end
+
+		planes_actualizados = 0
+
+		Historialplan.where("periodo_id like '%C%' || periodo_id like '%E%'").each do |plan|
+			aux_pe_id = plan.periodo_id
+			aux_pe_id[aux_pe_id.length-1] = "S"
+			plan.periodo_id = aux_pe_id
+			planes_actualizados += 1 if plan.save
+		end
+		# Secciones:
+		p " Total Secciones actualizadas: #{secciones_actualizadas} ".center(200, "=")
+
+		# Programaciones:
+		total_a_eliminar = Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").count
+		p " Total programaciones Existentes: #{total_existentes} ".center(200, "*")
+		p " Total programaciones Creadas: #{total_nuevas} ".center(200, "*")
+		p " Total programaciones a eliminar: #{total_a_eliminar} ".center(200, "*")
+		p ' Programaciones eliminadas' if Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").delete_all
+		total_a_eliminar = Programacion.where("periodo_id like '%C%' || periodo_id like '%E%'").count
+		p " Total programaciones restantes: #{total_a_eliminar} ".center(200, "*")
+
+		# Planes:
+		p " Total Planes actualizados: #{planes_actualizados} ".center(200, "=")
+
+		# Periodos:
+		total_periodos = Periodo.where("id like '%C%' || id like '%E%'").count
+
+		p " Total Periodos eliminados: #{total_periodos} ".center(200, "^")
+		Periodo.where("id like '%C%' || id like '%E%'").delete_all
+		
+		total_periodos = Periodo.where("id like '%C%' || id like '%E%'").count
+		p " Total Periodos restantes: #{total_periodos} ".center(200, "^")
+
 	end
 
 	def total_calificados
