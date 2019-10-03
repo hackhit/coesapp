@@ -7,8 +7,9 @@
 				- esc_activo = (session[:esc_id].eql? esc.id) ? 'active' : ''
 				%li.nav-item
 					= link_to esc.descripcion, "#esc_#{esc.id}", "data-toggle": :tab, onclick: "set_tab('esc_id', '#{esc.id}');", class: "nav-link #{esc_activo}"
-			- esc_activo = (session[:esc_id].eql? 'pci') ? 'active' : ''
-			%li.nav-item= link_to "PCI", "#pci", "data-toggle": "tab", class: "nav-link #{esc_activo}", onclick: "set_tab('esc_id', 'pci');"
+			- unless controller_name.eql? 'asignaturas'
+				- esc_activo = (session[:esc_id].eql? 'pci') ? 'active' : ''
+				%li.nav-item= link_to "PCI", "#pci", "data-toggle": "tab", class: "nav-link #{esc_activo}", onclick: "set_tab('esc_id', 'pci');"
 
 	%div{class: @col10}
 		#pills-escuelas-tabContent.tab-content
@@ -17,7 +18,7 @@
 				- @pcis = nil
 				- esc_activo = (session[:esc_id].eql? esc.id) ? 'active show' : ''
 				.tab-pane.fade{"aria-labelledby" => "pills-escuelas-tab", role: :tabpanel, class: esc_activo, id: "esc_#{esc.id}"}
-					- if esc.inscripcion_abierta
+					- if esc.inscripcion_abierta or controller_name.eql? 'asignaturas'
 						- if current_admin.admin_departamento?
 							- @departamentos = current_admin.departamentos
 						- else
@@ -30,16 +31,16 @@
 							= render '/admin/principal_admin/tabs_estructura/departamentos'
 					- else
 						%b.text-muted Inscripción cerrada para la escuela seleccionada
-			- esc_activo = (session[:esc_id].eql? 'pci') ? 'active show' : ''
-			.tab-pane.fade{"aria-labelledby": "pills-escuelas-tab", role: :tabpanel, id: "pci", class: esc_activo, id: "pci" }
-
-				-# @asignaturas = current_periodo.asignaturas.pcis current_periodo.id
-				- @asignaturas = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}
-				- if @asignaturas.any?
-					- @pcis = '_pci'
-					= render '/admin/principal_admin/tabs_estructura/asignaturas'
-				- else
-					%b.text-muted Sin Asignaturas Pci En Este Período
+				- unless controller_name.eql? 'asignaturas'
+					- esc_activo = (session[:esc_id].eql? 'pci') ? 'active show' : ''
+					.tab-pane.fade{"aria-labelledby": "pills-escuelas-tab", role: :tabpanel, id: "pci", class: esc_activo, id: "pci" }
+						-# @asignaturas = current_periodo.asignaturas.pcis current_periodo.id
+						- @asignaturas = current_periodo.programaciones.pcis.collect{|pr| pr.asignatura}
+						- if @asignaturas.any? 
+							- @pcis = '_pci'
+							= render '/admin/principal_admin/tabs_estructura/asignaturas'
+						- else
+							%b.text-muted Sin Asignaturas Pci En Este Período
 
 :javascript
 
