@@ -1,46 +1,46 @@
 = form_for @usuario, html: { class: 'form-horizontal' } do |f|
   - if params[:estudiante]
     = hidden_field_tag 'estudiante_set', true
-    .form-group
+    .form-group.row
       %label.control-label.col-md-2 Escuela
       .col-md-10
         = collection_select(nil, :escuela_id , Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
 
   - elsif params[:profesor]
-    .form-group
+    .form-group.row
       %label.control-label.col-md-2 Departamento
       .col-md-10
         =# collection_select(:profesor, :departamento_id, Departamento.all, :id, :descripcion_completa, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text-field form-control'})
 
         = grouped_collection_select :profesor, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {:prompt => "-- Seleccione Departamento --"}, { class: 'selects2 form-control text_field'}
   - elsif params[:administrador]
-    .form-group
+    .form-group.row
       %label.control-label.col-md-2 Rol del Adminstrador
       .col-md-10
         = select_tag '[administrador]rol', options_for_select(Administrador.roles.reject{|a| a.eql? 'ninja'}.map{|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text-field form-control', id: :roles_admin
     #jefeDepartamento.hideble
-      .form-group
+      .form-group.row
         %label.control-label.col-md-2 Departamento
         .col-md-10
           = grouped_collection_select :administrador, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, { class: 'text_field form-control'}
           =# grouped_collection_select :cal_seccion, :cal_profesor_ci, @departamentos, :cal_profesores, :descripcion, :id, :descripcion, {:prompt => "Profesor"}, { class: 'selects2', style: 'width:30%'}
           =# collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion_completa, {prompt: "-- Seleccione Departamento --"}, {class: 'text-field form-control'})
     #jefeEscuela.hideble
-      .form-group
+      .form-group.row
         %label.control-label.col-md-2 Escuela
         .col-md-10
           = collection_select(:administrador, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
 
   - if action_name.eql? 'new'
-    .form-group
+    .form-group.row
       = f.label :ci, class: 'control-label col-md-2'
       .col-md-10
         = f.text_field :ci, required: true, class: 'text_field form-control ci'
-    .form-group
+    .form-group.row
       = f.label :password, class: 'control-label col-md-2', value: 'Contraseña'
       .col-md-10
         = f.password_field :password, required: true, class: 'text_field form-control'
-    .form-group
+    .form-group.row
       = f.label :password_confirmation, class: 'control-label col-md-2', value: 'Confirme Contraseña'
       .col-md-10
         = f.password_field :password_confirmation, required: true, class: 'text_field form-control'
