@@ -1,48 +1,102 @@
+
 .tab-content
-  %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-    %thead
-      %tr
-        %th ID
-        %th Descripción
-        %th Departamento
-        %th Cátedra
-        %th Tipo
-        %th Calif.
-        %th U. Créditos
-        %th Secciones
-        %th Activa
-        %th PCI
-        %th Opciones
-    - @asignaturas.each do |asignatura| 
-      %tbody
-        -# success_class = (asignatura.activa? current_periodo.id) ? 'table-success' : ''
-        %tr.filtrables
-          %td= asignatura.id_uxxi
-          %td= asignatura.descripcion
-          %td= asignatura.departamento.descripcion
-          %td= asignatura.catedra.descripcion
-          %td= asignatura.tipoasignatura.descripcion.titleize
-          %td= asignatura.calificacion.to_s
-          %td= asignatura.creditos
-          %td
-            %table
-              %tr
-                - asignatura.secciones.del_periodo(current_periodo).each do |s| 
-                  %td= s.numero
-
-                %td= btn_plus_seccion_modal asignatura
-          %td
-            = render partial: '/layouts/onoffswitch', locals: {titulo: '¿Activar Asignatura?', url: set_activa_asignatura_path(asignatura.id), id: asignatura.id, chequeada: (asignatura.activa? current_periodo.id), id_html: "activas_#{asignatura.id}"}
-          %td 
-            - hidden = (asignatura.tiene_programaciones? current_periodo.id) ? '' : 'hideble'
-            .div{id: "pci_#{asignatura.id}", class: hidden} 
-              = render partial: '/layouts/onoffswitch', locals: {titulo: '¿PCI?', url: set_pci_asignatura_path(asignatura.id), id: asignatura.id, chequeada: asignatura.pci?(current_periodo.id), id_html: "pci_switch_#{asignatura.id}"}
-          %td
-            .tooltip-btn{'data_toggle': :tooltip, title: 'Editar Asignatura'}
-              = link_to edit_asignatura_path(asignatura), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-                = glyph 'pencil'
+  .border.p-3
+    - if periodo_anterior = @asignaturas.first.escuela.periodo_anterior(current_periodo.id)
+      = link_to clonar_programacion_escuela_path(@asignaturas.first.escuela.id), class: 'btn btn-outline-info btn-sm tooltip-btn', 'data_toggle': :tooltip, title: "Clonar Programación del Periodo anterior #{periodo_anterior.id}", 'data-confirm': "¿Seguro que desea clonar la planificación del periodo anterior #{periodo_anterior.id}. Se conservarán las secciones ya existentes."  do
+        = glyph 'file'
+        = glyph 'chevron-right'
+        = glyph 'duplicate'
 
 
-            - if false#asignatura.secciones.count == 0
-              = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-                .text-danger= glyph 'trash'
+    =# Borrar Todas las programaciones
+
+
+    %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+      %thead
+        %tr
+          %th ID
+          %th Descripción
+          %th Departamento
+          %th Cátedra
+          %th Tipo
+          %th Calif.
+          %th U. Créditos
+          %th Secciones
+          %th Activa
+          %th PCI
+          %th Opciones
+      - @asignaturas.each do |asignatura| 
+        %tbody
+          -# success_class = (asignatura.activa? current_periodo.id) ? 'table-success' : ''
+          %tr.filtrables
+            %td= asignatura.id_uxxi
+            %td= asignatura.descripcion
+            %td= asignatura.departamento.descripcion
+            %td= asignatura.catedra.descripcion
+            %td= asignatura.tipoasignatura.descripcion.titleize
+            %td= asignatura.calificacion.to_s
+            %td= asignatura.creditos
+            %td
+              %table
+                %tr
+                  - asignatura.secciones.del_periodo(current_periodo).each do |s| 
+                    %td= s.numero
+
+                  %td= btn_plus_seccion_modal asignatura
+            %td
+              = render partial: '/layouts/onoffswitch', locals: {titulo: '¿Activar Asignatura?', url: set_activa_asignatura_path(asignatura.id), id: asignatura.id, chequeada: (asignatura.activa? current_periodo.id), id_html: "activas_#{asignatura.id}"}
+            %td 
+              - hidden = (asignatura.tiene_programaciones? current_periodo.id) ? '' : 'hideble'
+              .div{id: "pci_#{asignatura.id}", class: hidden} 
+                = render partial: '/layouts/onoffswitch', locals: {titulo: '¿PCI?', url: set_pci_asignatura_path(asignatura.id), id: asignatura.id, chequeada: asignatura.pci?(current_periodo.id), id_html: "pci_switch_#{asignatura.id}"}
+            %td
+              .tooltip-btn{'data_toggle': :tooltip, title: 'Editar Asignatura'}
+                = link_to edit_asignatura_path(asignatura), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+                  = glyph 'pencil'
+
+              - if false#asignatura.secciones.count == 0
+                = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+                  .text-danger= glyph 'trash'
+        -# break
+
+:javascript
+
+  $(document).ready(function() {
+
+    $('.dataTable').DataTable({
+      scrollY: 460,
+      // pageLength: 100,
+      // lengthChange: false,
+      paging: false,
+      dom: '<"html5buttons"B>lTfgitp',
+      buttons: [
+        {extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `Inscripciones-#{current_periodo.id}-#{@asignaturas.first.escuela.id}`, className: 'btn btn-sm btn-outline-info'},
+        {extend: 'pdf', text: "<span class='glyphicon glyphicon-download'></span> PDF", title: `PDF-Inscripciones-#{current_periodo.id}-#{@asignaturas.first.escuela.id}`, className: 'btn btn-sm btn-outline-info'} 
+      ],
+      language: 
+        {
+        "sProcessing":     "Procesando...",
+        "sLengthMenu":     "Mostrar _MENU_ registros",
+        "sZeroRecords":    "No se encontraron resultados",
+        "sEmptyTable":     "Ningún dato disponible en esta tabla",
+        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix":    "",
+        "sSearch":         "Buscar:",
+        "sUrl":            "",
+        "sInfoThousands":  ",",
+        "sLoadingRecords": "Cargando...",
+        "oPaginate": {
+        "sFirst":    "Primero",
+        "sLast":     "Último",
+        "sNext":     "Siguiente",
+        "sPrevious": "Anterior"
+        },
+        "oAria": {
+          "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        }
+      }
+    });
+  });

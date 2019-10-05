@@ -1,0 +1,27 @@
+.modal.fade#clonar_programacion{'aria-hidden': true, role: :dialog, tabindex: "-1" }
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×
+        %h4.text-center Clonar Periodo
+      .modal-body
+
+        = form_tag({controller: 'escuela', action: 'clonar_programacion'}, class: 'form-horizontal', method: :get) do
+          = hidden_field :escuela_id
+          .modal-body
+            .control-group
+              %span.control-label
+                Período Actual:
+              .controls
+                = text_field_tag :actual, current_periodo.id, readonly: true, disabled: true, class: 'form-control'
+            %br
+            .control-group
+              %span.control-label
+                Clonar Períodos:
+              .controls
+                = collection_select nil, :nuevo, Periodos.all.order(inicia: :desc), :id, :id, {:prompt => 'Seleccione Período'}, { class: 'form-control', required: true }
+
+          .modal-footer
+            %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
+            = submit_tag 'Guardar', class: 'btn btn-sm btn-outline-primary'

@@ -62,13 +62,35 @@ class Escuela < ApplicationRecord
 		!inscripcion_abierta?
 	end
 
-	def periodo_anterior periodo
-		todos = periodos.order(inicia: :asc)
-		indice = todos.index periodo
+	def periodo_anterior periodo_id
+		periodo_aux = Periodo.find periodo_id
+		if periodo_aux.anual?
+			todos = periodos.anual
+		else
+			todos = periodos.semestral
+		end
+
+		todos = todos.order(inicia: :asc).ids
+		indice = todos.index periodo_id
 		indice -= 1 if indice
 		indice = 0 if indice.nil? or indice < 0
 		
-		return todos[indice]
+		return Periodo.find todos[indice]
+	end
+
+	def periodos_anteriores periodo_id
+		periodo_aux = Periodo.find periodo_id
+		if periodo_aux.anual?
+			todos = periodos.anual
+		else
+			todos = periodos.semestral
+		end
+		todos = todos.order(inicia: :asc).ids
+		todos = todos.split periodo_id
+		todos = todos.first
+
+		return Periodo.where(id: todos)
+		
 	end
 
 	def descripcion_filtro
@@ -83,13 +105,13 @@ class Escuela < ApplicationRecord
 		self.secciones.where("periodo_id = ?", periodo_id).count > 0
 	end
 
-	def inscripciones_en_periodo_actual?
-		self.inscripcionsecciones.where("secciones.periodo_id = ?", ParametroGeneral.periodo_actual_id).count > 0
-	end
+	# def inscripciones_en_periodo_actual?
+	# 	self.inscripcionsecciones.where("secciones.periodo_id = ?", ParametroGeneral.periodo_actual_id).count > 0
+	# end
 
-	def inscripciones_en_periodo_actual
-		self.inscripcionsecciones.where("secciones.periodo_id = ?", ParametroGeneral.periodo_actual_id)
-	end
+	# def inscripciones_en_periodo_actual
+	# 	self.inscripcionsecciones.where("secciones.periodo_id = ?", ParametroGeneral.periodo_actual_id)
+	# end
 
 	protected
 

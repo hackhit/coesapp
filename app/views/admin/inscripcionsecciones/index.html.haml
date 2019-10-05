@@ -1,11 +1,11 @@
 
-= link_to "#{inscritos_escuela_periodo_descargar_path(params[:periodo_id])}?escuela_id=#{@escuela.id}", class: 'btn btn-sm btn-success float-right', target: "_blank" do
+= link_to "#{inscritos_escuela_periodo_descargar_path(params[:periodo_id])}?escuela_id=#{@escuela.id}", class: 'btn btn-sm btn-outline-success float-right ml-2', target: "_blank" do
 	= glyph 'download-alt'
 	= glyph 'file'
 	X Descargar
 
 
-%table.table.table-sm
+%table#dataTable.table.table-sm
 	%thead
 		%tr
 			%th Cédula
@@ -23,7 +23,7 @@
 		- @inscripciones.each do |ins|
 			- est = Estudiante.find ins.estudiante_id
 			%tr
-				%td= ins.estudiante_id
+				%td= link_to ins.estudiante_id, usuario_path(est.id)
 				%td= ins.apellidos
 				%td= ins.nombres
 				%td= est.escuelas.ids.to_sentence
@@ -34,8 +34,46 @@
 				%td= ins.total_creditos
 				%td= ins.aprobados
 				%td= hplan.plan.creditos if hplan
-				%td=# u.apellidos
-				%td=# v
-				%td=# c_ins
 
 
+:javascript
+
+	$(document).ready(function() {
+
+		$('#dataTable').DataTable({
+			scrollY: 460,
+			// pageLength: 100,
+			// lengthChange: false,
+			paging: false,
+			dom: '<"html5buttons"B>lTfgitp',
+			buttons: [
+				{extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `Inscripciones-#{current_periodo.id}-#{@escuela.id}`, className: 'btn btn-sm btn-outline-info'},
+				{extend: 'pdf', text: "<span class='glyphicon glyphicon-download'></span> PDF", title: `PDF-Inscripciones-#{current_periodo.id}-#{@escuela.id}`, className: 'btn btn-sm btn-outline-info'} 
+			],
+			language: 
+				{
+				"sProcessing":     "Procesando...",
+				"sLengthMenu":     "Mostrar _MENU_ registros",
+				"sZeroRecords":    "No se encontraron resultados",
+				"sEmptyTable":     "Ningún dato disponible en esta tabla",
+				"sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+				"sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+				"sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+				"sInfoPostFix":    "",
+				"sSearch":         "Buscar:",
+				"sUrl":            "",
+				"sInfoThousands":  ",",
+				"sLoadingRecords": "Cargando...",
+				"oPaginate": {
+				"sFirst":    "Primero",
+				"sLast":     "Último",
+				"sNext":     "Siguiente",
+				"sPrevious": "Anterior"
+				},
+				"oAria": {
+					"sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+					"sSortDescending": ": Activar para ordenar la columna de manera descendente"
+				}
+			}
+		});
+	});

@@ -104,7 +104,7 @@ class Estudiante < ApplicationRecord
 		escuela = escuelas.where(id: escuela_id).first
 		return false unless escuela
 		aux_periodo_anterior = Periodo.find periodo_id
-		aux_periodo_anterior = escuela.periodo_anterior aux_periodo_anterior
+		aux_periodo_anterior = escuela.periodo_anterior aux_periodo_anterior.id
 
 		if aux_periodo_anterior.nil?
 			return true

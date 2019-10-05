@@ -5,7 +5,7 @@ module Admin
     before_action :filtro_super_admin!, except: [:destroy, :periodos]
     before_action :filtro_ninja!, only: [:destroy]
 
-    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta]
+    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta, :clonar_programacion]
 
     # GET /escuelas
     # GET /escuelas.json
@@ -13,6 +13,40 @@ module Admin
       render json: {ids: @escuela.periodos.where("periodos.id != ?", params[:periodo_actual_id]).order(inicia: :desc).ids.to_a}
     end
 
+
+    def clonar_programacion
+      
+      periodo_anterior = @escuela.periodo_anterior current_periodo.id
+      errores_programaciones = []
+      errores_secciones = []
+      total_secciones = periodo_anterior.secciones.count
+      total_programaciones = periodo_anterior.programaciones.count
+
+      @escuela.secciones.del_periodo(periodo_anterior.id).each do |se|
+        begin
+          Seccion.create(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id, profesor_id: se.profesor_id, capacidad: se.capacidad, tipo_seccion_id: se.tipo_seccion_id)
+        rescue Exception => e
+          errores_secciones << "#{se.asignatura_id} - #{se.numero}"
+        end
+      end
+
+      periodo_anterior.programaciones.each do |pr|
+        begin
+          Programacion.create(periodo_id: current_periodo.id, asignatura_id: pr.asignatura_id)
+        rescue Exception => e
+          errores_programaciones << pr.asignatura_id
+        end
+      end
+
+      flash[:success] = "Migración con éxito de un total de #{total_secciones - errores_secciones.count} secciones."
+      
+      flash[:danger] = "Las siguientes #{errores_secciones.count} seccines ya existen en el periodo actual: #{errores_secciones.to_sencence}" if errores_secciones.any?
+      
+      flash[:info] = "Las siguientes #{errores_programaciones.count} asignaturas ya estaban activas en el periodo actual" if errores_programaciones.any?
+
+      redirect_back fallback_location: asignaturas_path
+
+    end
 
     def index
       @titulo = "Escuelas"

@@ -17,6 +17,8 @@ class Periodo < ApplicationRecord
 
 	has_many :asignaturas, through: :escuelas#, source: :estudiantes
 	
+	# scope :anuales, ->{where("periodos.id LIKE '%A'")}
+	# scope :semestrales, -> {where("periodos.id LIKE '%S' || periodos.id LIKE '%U'")}
 
 	# VALIDACIONES:
     validates :id, presence: true, uniqueness: true
@@ -26,6 +28,14 @@ class Periodo < ApplicationRecord
 	def inscripciones
 		inscripcionsecciones
 	end
+
+	# def anual?
+	# 	id.include? 'A'
+	# end
+
+	# def semestral?
+	# 	id.include? 'S' or id.include? 'U'
+	# end
 
 	def getPeriodoLectivo
 		if self.anual?

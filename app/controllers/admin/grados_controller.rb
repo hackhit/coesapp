@@ -14,7 +14,7 @@ module Admin
         aux = params[:criterios][:periodo_ids] ? params[:criterios][:periodo_ids].to_sentence : 'Todos'
         flash[:success] = "<b>Criterios de Búsqueda: </b> Escuela: #{@escuela.descripcion}. Períodos: #{aux}"
 
-        periodo_anterior = @escuela.periodo_anterior current_periodo
+        periodo_anterior = @escuela.periodo_anterior current_periodo.id
 
         @grados = @escuela.grados.reject{|grado| !grado.inscrito_en_periodo? periodo_anterior}
 
