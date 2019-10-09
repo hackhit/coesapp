@@ -36,12 +36,11 @@
       
   .tab-content
     - activeTab = (session[:usuarioTypeTab].eql? 'personal') ? 'active' : ''  
-    .tab-pane#personales{class: activeTab}
-      .border.mt-3.p-3
-        = render partial: '/admin/usuarios/personales_contacto'
+    .tab-pane#personales.border.p-3.border-top-0{class: activeTab}
+      = render partial: '/admin/usuarios/personales_contacto'
     - if @estudiante
       - activeTab = (session[:usuarioTypeTab].eql? 'estudiante') ? 'active' : ''  
-      .tab-pane#historial.p-3{class: activeTab}
+      .tab-pane#historial.p-3.border.p-3.border-top-0{class: activeTab}
         %nav
           .nav.nav-tabs
             - if @secciones_pci_pendientes.any?
@@ -57,12 +56,11 @@
               .nav-item= btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
         .tab-content
           - if @secciones_pci_pendientes.any?
-            .tab-pane{id: "pane_PCI", class: activeTabPCI}
-              .border.mt-3.p-3
-                %h6.alert.alert-danger.pb-ms-3#alertPCI Tome en cuenta que el estudiante puede no estar inscrito en todas sus escuelas. Por favor verifique que aparecen las pestañas correspondiantes.
-                %h6.alert.alert-danger.pb-ms-3#alertPCI Asignaturas pendientes por asignar escuelas (PCI):
-                - @foraneas = true
-                = render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @secciones_pci_pendientes}
+            .tab-pane.border.p-3.border-top-0{id: "pane_PCI", class: activeTabPCI}            
+              %h6.alert.alert-danger.pb-ms-3#alertPCI Tome en cuenta que el estudiante puede no estar inscrito en todas sus escuelas. Por favor verifique que aparecen las pestañas correspondiantes.
+              %h6.alert.alert-danger.pb-ms-3#alertPCI Asignaturas pendientes por asignar escuelas (PCI):
+              - @foraneas = true
+              = render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @secciones_pci_pendientes}
           - @foraneas = false
           -# @escuelas_del_estudiante = @estudiante.grados
           - @escuelas_del_estudiante = @estudiante.escuelas
@@ -70,89 +68,86 @@
             - escuela = grado.escuela
             - activeTab = (session[:tabEscuela].eql? escuela.id) ? 'active' : ''
             - @escuela = escuela
-            .tab-pane{id: "pane_#{escuela.id}", class: activeTab}
-              .border.mt-3.p-3
-                - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
-                -# @inscripciones = grado.inscripcionsecciones # ¡¡¡ Probar !!!
-                - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
-                %h6.alert.alert-info.pb-ms-3
-                  = "Escuela: #{@escuela.descripcion.titleize}"
-                  - if current_admin.maestros?
-                    = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'minus', "eliminar#{escuela.id}"
-                    = render partial: '/admin/estudiantes/eliminar_escuela'
-                .border.p-1
-                  %h6.titulo.text-center Información de la inscripción
-                  %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-                    %tbody
-                      %tr
-                        %th Periodo de la Inscripción: 
-                        %td= grado.iniciado_periodo_id
-                        %td                      
-                      %tr
-                        %th Estado de la Inscripción: 
-                        %td= grado.estado_inscripcion.upcase
-                        %td
-                          = link_to 'javascript:void(0)', onclick: "$('#cambiarEstadoInscripcion#{grado.id}').modal()" do
-                            = glyph 'pencil'
-                      %tr
-                        %th Tipo de Ingreso:
-                        %td= grado.tipo_ingreso
-                        %td
-                          = link_to 'javascript:void(0)', onclick: "$('#cambiarTipoIngreso#{grado.id}').modal()" do
-                            = glyph 'pencil'
-                      %tr
-                        %th Inscrito en la UCV:
-                        %td
-                          - if grado.inscrito_ucv
-                            .text-success= glyph 'ok'
-                          - else
-                            .text-danger= glyph 'remove'
-                        %td
-                          = link_to "#{cambiar_inscripcion_grado_path}?estudiante_id=#{@estudiante.id}&escuela_id=#{@escuela.id}&[grado]inscrito_ucv=#{!grado.inscrito_ucv}", method: 'post'  do
-                            = glyph 'pencil'
-                %br
-                - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Estado de Inscripción:', group: Grado.estado_inscripciones, field_name: 'estado_inscripcion', grade: grado}
-                - url = cambiar_inscripcion_grado_path
-                = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarEstadoInscripcion#{grado.id}", title: 'Cambiar Inscripción', content: content}
-                - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Tipo Inscripción:', group: Grado.tipos_ingreso, field_name: 'tipo_ingreso', grade: grado}
-                = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarTipoIngreso#{grado.id}", title: 'Cambiar Tipo Ingreso', content: content}                
+            .tab-pane.border.p-3.border-top-0{id: "pane_#{escuela.id}", class: activeTab}
+              - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
+              -# @inscripciones = grado.inscripcionsecciones # ¡¡¡ Probar !!!
+              - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
+              %h6.alert.alert-info.pb-ms-3
+                = "Escuela: #{@escuela.descripcion.titleize}"
+                - if current_admin.maestros?
+                  = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'minus', "eliminar#{escuela.id}"
+                  = render partial: '/admin/estudiantes/eliminar_escuela'
+              .border.p-1
+                %h6.titulo.text-center Información de la inscripción
+                %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+                  %tbody
+                    %tr
+                      %th Periodo de la Inscripción: 
+                      %td= grado.iniciado_periodo_id
+                      %td                      
+                    %tr
+                      %th Estado de la Inscripción: 
+                      %td= grado.estado_inscripcion.upcase
+                      %td
+                        = link_to 'javascript:void(0)', onclick: "$('#cambiarEstadoInscripcion#{grado.id}').modal()" do
+                          = glyph 'pencil'
+                    %tr
+                      %th Tipo de Ingreso:
+                      %td= grado.tipo_ingreso
+                      %td
+                        = link_to 'javascript:void(0)', onclick: "$('#cambiarTipoIngreso#{grado.id}').modal()" do
+                          = glyph 'pencil'
+                    %tr
+                      %th Inscrito en la UCV:
+                      %td
+                        - if grado.inscrito_ucv
+                          .text-success= glyph 'ok'
+                        - else
+                          .text-danger= glyph 'remove'
+                      %td
+                        = link_to "#{cambiar_inscripcion_grado_path}?estudiante_id=#{@estudiante.id}&escuela_id=#{@escuela.id}&[grado]inscrito_ucv=#{!grado.inscrito_ucv}", method: 'post'  do
+                          = glyph 'pencil'
+              %br
+              - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Estado de Inscripción:', group: Grado.estado_inscripciones, field_name: 'estado_inscripcion', grade: grado}
+              - url = cambiar_inscripcion_grado_path
+              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarEstadoInscripcion#{grado.id}", title: 'Cambiar Inscripción', content: content}
+              - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Tipo Inscripción:', group: Grado.tipos_ingreso, field_name: 'tipo_ingreso', grade: grado}
+              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarTipoIngreso#{grado.id}", title: 'Cambiar Tipo Ingreso', content: content}                
 
-                = render '/admin/historialplanes/index'
-                = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
+              = render '/admin/historialplanes/index'
+              = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
 
-                -# @curso = @estudiante.grados.where(escuela_id: escuela.id).first
-                -# @inscripciones = @curso.inscripciones
-                - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
+              -# @curso = @estudiante.grados.where(escuela_id: escuela.id).first
+              -# @inscripciones = @curso.inscripciones
+              - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
 
-                = render partial: '/admin/estudiantes/historial_academico'
+              = render partial: '/admin/estudiantes/historial_academico'
 
     - if @profesor
       - activeTab = (session[:usuarioTypeTab].eql? 'profesor') ? 'active' : ''  
-      .tab-pane#profesor{class: activeTab}
+      .tab-pane#profesor.border.p-3.border-top-0{class: activeTab}
         = render partial: '/admin/profesores/show'
 
     - if current_admin.mas_altos? and @administrador
       - activeTab = (session[:usuarioTypeTab].eql? 'administrador') ? 'active' : ''  
-      .tab-pane#administrador{class: activeTab}
-
-        .border.mt-3.p-3
-          %h6.alert.alert-info.pb-ms-3
-            = @administrador.descripcion
-            - if current_admin.maestros?
-              = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'setAdmin'
-              = render '/admin/usuarios/set_administrador'
+      .tab-pane#administrador.border.p-3.border-top-0{class: activeTab}
+        %h6.alert.alert-info.pb-ms-3
+          = @administrador.descripcion
+          - if current_admin.maestros?
+            = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'setAdmin'
+            = render '/admin/usuarios/set_administrador'
 
 
 
     - if current_admin and current_admin.maestros?
       - activeTab = (session[:usuarioTypeTab].eql? 'bitacora') ? 'active' : ''  
-      .tab-pane#bitacora{class: activeTab}
+      .tab-pane#bitacora.border.p-3.border-top-0{class: activeTab}
         %br
-        .text-center.titulo Acciones del usuario:
+        %h6.text-center.titulo Acciones del usuario:
         - @bitacoras = @usuario.bitacoras.limit(50).order(created_at: :desc)
         = render '/admin/bitacoras/index'
         %br
-        .text-center.titulo Actividades aplicadas al usuario:
+        %h6.text-center.titulo Actividades aplicadas al usuario:
         - @bitacoras = Bitacora.search(@usuario.id).limit(50).order(created_at: :desc)
         = render '/admin/bitacoras/index'
 

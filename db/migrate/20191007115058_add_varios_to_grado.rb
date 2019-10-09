@@ -1,7 +1,7 @@
 class AddVariosToGrado < ActiveRecord::Migration[5.2]
   def change
   	add_column :grados, :tipo_ingreso, :integer, null: false
-  	add_column :grados, :inscrito_ucv, :boolean, default: true
+  	add_column :grados, :inscrito_ucv, :boolean, default: false
   	add_column :grados, :estado_inscripcion, :integer, null: false, default: 0
 
 	add_reference :grados, :plan, index: true, type: :string

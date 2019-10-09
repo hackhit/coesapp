@@ -4,7 +4,7 @@ module Admin
 		before_action :filtro_logueado
 		before_action :filtro_admin_profe, only: [:listado_seccion, :notas_seccion, :listado_seccion_excel]
 		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria]
-		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :constancia_estudio, :listado_seccion, :notas_seccion, :listado_seccion_excel]
+		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :constancia_preinscripcion, :constancia_estudio, :listado_seccion, :notas_seccion, :listado_seccion_excel]
 
 		def exportar_lista_csv
 			if params[:periodo_id]
@@ -63,6 +63,18 @@ module Admin
 			end
 			
 		end
+
+		def constancia_preinscripcion
+			info_bitacora 'Descarga de constancia de Preinscripción', Bitacora::DESCARGA
+			pdf = ExportarPdf.hacer_constancia_preinscripcion params[:id], params[:escuela_id]
+			unless send_data pdf.render, filename: "constancia_inscripcion_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
+				flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+			end
+			return
+			
+		end
+
+
 
 		def constancia_inscripcion
 

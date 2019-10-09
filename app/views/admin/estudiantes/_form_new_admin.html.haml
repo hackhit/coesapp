@@ -3,7 +3,7 @@
   = f.label :ci, class: 'col-form-label col-md-2 text-right', value: 'Cédula de Identidad:'
   .col-md-10
     =# f.text_field :ci, required: true, class: 'text-field form-control ci form-control-plaintext', placeholder: 'Cédula de Identidad'
-    = f.text_field :ci, required: true, class: 'text-field form-control ci'
+    = f.text_field :ci, required: true, class: 'text-field form-control ci', autofocus: true
 =# DATOS DE ESCUELA
 .form-group.row
   %label.col-form-label.col-md-2.text-right Escuela:
@@ -24,10 +24,6 @@
         = "#{k.upcase}"
 
 .form-group.row
-  %label.col-form.label.col-md-2.text-right Inscrito en la UCV:
-  .col-md-10= check_box_tag '[grado]inscrito_ucv', 1, true
-
-.form-group.row
   %label.col-form.label.col-md-2.text-right Reincorporado:
-  .col-md-10= check_box_tag '[grado]estado_inscripcion', 2, false
+  .col-md-10= check_box_tag '[grado]estado_inscripcion', :reincorporado, false
 

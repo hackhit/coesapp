@@ -10,7 +10,8 @@
 			%th Opciones
 	%tbody
 		- grados.each do |grado|
-			%td= link_to grado.estudiante.descripcion, usuario_path(grado.estudiante_id)
-			%td= grado.escuela.descripcion
-			%td= grado.ultimo_plan.id
-			%td
+			%tr
+				%td= link_to grado.estudiante.descripcion, usuario_path(grado.estudiante_id)
+				%td= grado.escuela.descripcion
+				%td= grado.ultimo_plan ? grado.ultimo_plan.id : grado.plan_id
+				%td

@@ -34,7 +34,7 @@
   .col-md-9
     - Usuario.sexos.map do |k,v| 
       %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-        = radio_button_tag '[usuario]sexo', k, false, required: true
+        = radio_button_tag '[usuario]sexo', k, (@usuario.sexo.eql? k), required: true
         = k[0].upcase
 .form-group.row
   = f.label 'estado_civil', class: 'col-form-label col-md-3 text-right', value: 'Estado Civil:'
@@ -63,7 +63,7 @@
 .form-group.row
   = f.label 'pais_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'País de Nacimiento:'
   .col-md-9
-    = f.text_field 'pais_nacimiento', class: 'text-field form-control'#, id: 'select-remote-data'
+    = f.text_field 'pais_nacimiento', class: 'text-field form-control', required: true#, id: 'select-remote-data'
 
     =# f.select 'pais_nacimiento', [], id: 'select-remote-data'
     =# f.select(:pais_nacimiento, ['venezuela', 'otro'].map, { include_blank: 'Selecciona Plan de Estudio...'}, {class: "form-control text_field", required: true, id: 'select-remote-data'})
@@ -71,11 +71,11 @@
 .form-group.row
   = f.label 'ciudad_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Ciudad de Nacimiento:'
   .col-md-9
-    = f.text_field 'ciudad_nacimiento', class: 'text-field form-control'
+    = f.text_field 'ciudad_nacimiento', class: 'text-field form-control', required: true
 .form-group.row
   = f.label 'fecha_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Fecha de Nacimiento:'
   .col-md-9
-    = f.date_field 'fecha_nacimiento', class: 'text-field form-control'
+    = f.date_field 'fecha_nacimiento', class: 'text-field form-control', required: true
 
 %h6.titulo Dirección:
 
@@ -85,22 +85,26 @@
 
   .col-md-3
   .col-md-3
-    = text_field_tag '[direccion]estado', nil, class: 'text-field form-control', placeholder: 'Estado'
+    = text_field_tag '[direccion]estado', nil, class: 'text-field form-control', placeholder: 'Estado', required: true
   .col-md-3
-    = text_field_tag '[direccion]municipio', nil, class: 'text-field form-control', placeholder: 'Municipio'
+    = text_field_tag '[direccion]municipio', nil, class: 'text-field form-control', placeholder: 'Municipio', required: true
   .col-md-3
-    = text_field_tag '[direccion]ciudad', nil, class: 'text-field form-control', placeholder: 'Ciudad/Parroquia'
+    = text_field_tag '[direccion]ciudad', nil, class: 'text-field form-control', placeholder: 'Ciudad/Parroquia', required: true
 
 .form-group.row
   %label.col-form-label.col-md-3.text-right Urbanización/Sector:
   .col-md-9
-    = text_field_tag '[direccion]sector', nil, class: 'text-field form-control'
+    = text_field_tag '[direccion]sector', nil, class: 'text-field form-control', required: true
 
 .form-group.row
   %label.col-form-label.col-md-3.text-right Calle/Avenida:
   .col-md-9
-    = text_field_tag '[direccion]calle', nil, class: 'text-field form-control'
+    = text_field_tag '[direccion]calle', nil, class: 'text-field form-control', required: true
 
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Nombre de la Vivienda:
+  .col-md-9
+    = text_field_tag '[direccion]nombre_vivienda', nil, class: 'text-field form-control', required: true
 .form-group.row
   %label.col-form-label.col-md-3.text-right Tipo de Vivienda:
   .col-md-9
@@ -118,10 +122,6 @@
   .col-md-9
     = text_field_tag '[direccion]numero_vivienda', nil, class: 'text-field form-control', required: true
 
-.form-group.row
-  %label.col-form-label.col-md-3.text-right Nombre:
-  .col-md-9
-    = text_field_tag '[direccion]nombre_vivienda', nil, class: 'text-field form-control', required: true
 
 %h6.titulo Discapacidad:
 
@@ -143,7 +143,7 @@
 %h6.titulo Otro título universitario:
 #universitario
   .form-group.row
-    %label.col-form-label.col-md-3.text-right ¿Es egresado universitario? indique:
+    %label.col-form-label.col-md-3.text-right ¿Es egresado universitario? indique título optenido:
     .col-md-9
       = text_field_tag '[estudiante]titulo_universitario', nil, class: 'text-field form-control'
   .form-group.row

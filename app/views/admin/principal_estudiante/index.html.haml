@@ -8,33 +8,30 @@
 .tab-content
 	- @estudiante.escuelas.each do |escuela|
 		- @escuela = escuela
-		.tab-pane{id: "pane_#{escuela.id}"}
-			.border.mt-3.p-3
-				- if @estudiante.planes.count > 0
-					.border.p-md-3
-						%h5 Planes:
-						- @estudiante.historialplanes.por_escuela(escuela.id).order('periodo_id DESC').each do |pl| 
-							%p= pl.descripcion
-				- if @escuela.id.eql? 'IDIO' and @estudiante.combinaciones.any?
-					.border.p-md-3
-						%h5 Combinación de Idiomas:
-						- @estudiante.combinaciones.each do |c| 
-							%p= c.descripcion
+		.tab-pane.border.border-top-0.p-3{id: "pane_#{escuela.id}"}
+			- if @estudiante.planes.count > 0
+				.border.p-md-3
+					%h5 Planes:
+					- @estudiante.historialplanes.por_escuela(escuela.id).order('periodo_id DESC').each do |pl| 
+						%p= pl.descripcion
+			- if @escuela.id.eql? 'IDIO' and @estudiante.combinaciones.any?
+				.border.p-md-3
+					%h5 Combinación de Idiomas:
+					- @estudiante.combinaciones.each do |c| 
+						%p= c.descripcion
 
-				- @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
-				- periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
-				- @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
+			- @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
+			- periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
+			- @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
 
+			= render partial: '/admin/estudiantes/historial_academico'
 
-
-				= render partial: '/admin/estudiantes/historial_academico'
-
-		- if @escuela.id.eql? 'IDIO' and !@estudiante.combinaciones.any?
+		- if false #@escuela.id.eql? 'IDIO' and !@estudiante.combinaciones.any?
 			- @idiomas = escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
 			= render '/admin/estudiantes/actualizar_idiomas'
 						
-	.tab-pane#general
-
+	.tab-pane#general.border.px-3.border-top-0
+		= render partial: '/admin/usuarios/personales_contacto'
 		-if @estudiante.citahoraria
 			.border.m-md-3.p-md-3
 				%h5 Cita Horaria:

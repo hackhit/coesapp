@@ -11,7 +11,7 @@ class Grado < ApplicationRecord
 
 	validates :tipo_ingreso, presence: true 
 	validates :estado_inscripcion, presence: true 
-	validates :inscrito_ucv, presence: true 
+	# validates :inscrito_ucv, presence: true 
 	# has_many :inscripcionsecciones, foreign_key: [:escuela_id, :estudiante_id]
 
 	scope :no_retirados, -> {where "estado != 3"}

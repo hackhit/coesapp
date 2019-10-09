@@ -138,6 +138,34 @@ class ExportarPdf
 		return pdf
 	end
 
+
+
+	def self.hacer_constancia_preinscripcion estudiante_id, escuela_id
+
+		grado = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
+
+		pdf = Prawn::Document.new(top_margin: 30)
+
+		insertar_contenido_constancia_preinscripcion pdf, grado
+		pdf.move_down 40
+
+		data = [["------------ COPIA DEL ESTUDIANTE ------------"]]
+		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
+		t.draw
+		pdf.move_down 40
+		pdf.text "---------------------------------------------------------------------------------------------------------------------------------------", size: 12, inline_format: true, align: :justify
+		pdf.move_down 30
+
+		insertar_contenido_constancia_preinscripcion pdf, grado
+		pdf.move_down 40
+		data = [["------------ COPIA DEL ADMINISTRACIÓN ------------"]]
+		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
+		t.draw
+
+		return pdf
+	end
+
+
 	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id, escuela_id
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
@@ -285,6 +313,30 @@ class ExportarPdf
 
 	private
 
+	def self.insertar_contenido_constancia_preinscripcion pdf, grado
+		estudiante = grado.estudiante
+		usuario = estudiante.usuario
+		escuela = grado.escuela
+		
+		encabezado_central_con_logo pdf, "CONSTANCIA DE PREINSCRIPCIÓN", nil, 8
+
+		pdf.move_down 20
+
+		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de <b>#{grado.escuela.descripcion.upcase}</b> de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está preinscrit#{usuario.genero} en la Escuela de #{escuela.descripcion.titleize}.", size: 10, inline_format: true, align: :justify
+
+		pdf.move_down 5
+
+		pdf.text "El estudiante debe consignar esta planilla ante el Dpto de Control de Estudios para su firma y sello.", size: 10, inline_format: true, align: :justify
+		
+
+		pdf.move_down 70
+
+
+		pdf.text "Control de Estudio                                                                                         Estudiante", size: 10, align: :center
+		pdf.text "Firma                                                                                                             Firma", size: 10, align: :center
+	end
+
+
 
 	def self.resumen pdf, inscripcion
 
@@ -394,24 +446,24 @@ class ExportarPdf
 	end
 
 
-  def self.acta_firmas pdf, seccion
+	def self.acta_firmas pdf, seccion
 
-    data = [["<b>JURADO EXAMINADOR</b>", "<b>SECRETARÍA</b>"]]
-    t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'}, :column_widths => {0 => 360})
-    t.draw
+		data = [["<b>JURADO EXAMINADOR</b>", "<b>SECRETARÍA</b>"]]
+		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'}, :column_widths => {0 => 360})
+		t.draw
 
-    pdf.move_down 5
+		pdf.move_down 5
 
-    prof_aux = seccion.profesor ? seccion.profesor.usuario.apellido_nombre.upcase : "___________________________" 
-    data = [["APELLIDOS Y NOMBRES", "FIRMAS", ""]]
-    data << ["#{prof_aux}", "___________________________", "NOMBRE: _______________________"]
-    data << ["___________________________", "___________________________", "FIRMA:     _______________________"]
-    data << ["___________________________", "___________________________", "FECHA:    _______________________"]
+		prof_aux = seccion.profesor ? seccion.profesor.usuario.apellido_nombre.upcase : "___________________________" 
+		data = [["APELLIDOS Y NOMBRES", "FIRMAS", ""]]
+		data << ["#{prof_aux}", "___________________________", "NOMBRE: _______________________"]
+		data << ["___________________________", "___________________________", "FIRMA:     _______________________"]
+		data << ["___________________________", "___________________________", "FECHA:    _______________________"]
 
-    t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
-    t.draw
+		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
+		t.draw
 
-  end
+	end
 
 
 	def self.tabla_descripcion_seccion pdf, seccion
@@ -428,22 +480,24 @@ class ExportarPdf
 		pdf.move_down 10		
 	end
 
-	def self.encabezado_central_con_logo pdf, titulo, escuela = nil
+	def self.encabezado_central_con_logo pdf, titulo, escuela = nil, size = nil
 
-		pdf.image "app/assets/images/logo_ucv.png", position: :center, height: 50, valign: :top
+		size_logo = size ? size*4 : 50 
+		size ||= 12
+		pdf.image "app/assets/images/logo_ucv.png", position: :center, height: size_logo, valign: :top
 		pdf.move_down 5
-		pdf.text "UNIVERSIDAD CENTRAL DE VENEZUELA", align: :center, size: 12
+		pdf.text "UNIVERSIDAD CENTRAL DE VENEZUELA", align: :center, size: size 
 		pdf.move_down 5
-		pdf.text "FACULTAD DE HUMANIDADES Y EDUCACIÓN", align: :center, size: 12
+		pdf.text "FACULTAD DE HUMANIDADES Y EDUCACIÓN", align: :center, size: size
 		pdf.move_down 5
-		pdf.text "CONTROL DE ESTUDIOS DE PREGRADO", align: :center, size: 12
+		pdf.text "CONTROL DE ESTUDIOS DE PREGRADO", align: :center, size: size
 		if escuela
 			pdf.move_down 5
-			pdf.text escuela.descripcion.upcase, align: :center, size: 12
+			pdf.text escuela.descripcion.upcase, align: :center, size: size
 		end
 
 		pdf.move_down 5
-		pdf.text titulo, align: :center, size: 12, style: :bold
+		pdf.text titulo, align: :center, size: size, style: :bold
 
 		pdf.move_down 5
 

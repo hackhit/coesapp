@@ -1,18 +1,18 @@
-%br
-- if current_admin.maestros?
+- if current_admin and current_admin.maestros?
 	= btn_edit_primary edit_usuario_path(@usuario), "Actualizar datos personales y de contacto", 'Actualizar'
+	%br
+%br
 
-%br
-%br
 %b.mt-5 Datos Personales: 
-= render '/admin/usuarios/cambiar_cedula'
+
 %ul.border.list-unstyled.p-3
 	%li
 		%b Cédula de Identidad:
 		= @usuario.id
-		- if current_admin.maestros?
+		- if current_admin and current_admin.maestros?
 			= simple_icon_toggle_modal_edit "Editar cédula de identidad de #{@nickname}", 'cambiar_cedula'
-	- if current_admin.ninja?
+			= render '/admin/usuarios/cambiar_cedula'
+	- if current_admin and current_admin.ninja?
 		%li
 			%b Contraseña:
 			= @usuario.password
@@ -33,7 +33,7 @@
 	-if @usuario.estudiante
 		%li 
 			%b Edad:
-			= @usuario.edad
+			= "#{@usuario.edad} años"
 
 %b Datos de origen:
 %ul.border.list-unstyled.p-3
@@ -69,8 +69,9 @@
 	%ul.border.list-unstyled.p-3
 		%li 
 			%b Discapacidad:
-			= @usuario.estudiante.discapacidad
+			= @usuario.estudiante.discapacidad ? @usuario.estudiante.discapacidad : 'Ninguna'
+
 		%li 
 			%b Otro Título Universitario:
-			= @usuario.estudiante.descripcion_otro_titulo
+			= @usuario.estudiante.titulo_universitario ? @usuario.estudiante.descripcion_otro_titulo : 'Ninguno'
 

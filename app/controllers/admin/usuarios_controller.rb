@@ -217,9 +217,15 @@ module Admin
             if e = Estudiante.create(usuario_id: @usuario.id) #, escuela_id: params[:estudiante][:escuela_id])
               params[:grado]['escuela_id'] = params[:escuela_id]
               params[:grado]['estudiante_id'] = e.id
+
+              if params[:grado]['estado_inscripcion']
+                params[:grado]['inscrito_ucv'] = 1
+              else
+                params[:grado]['inscrito_ucv'] = 0
+              end
               grado = Grado.new(grado_params)
               grado.plan_id = params[:plan][:id]
-              if grado.save
+              if grado.save!
                 info_bitacora_crud Bitacora::CREACION, e
                 historialplan = Historialplan.new
                 historialplan.estudiante_id = e.id

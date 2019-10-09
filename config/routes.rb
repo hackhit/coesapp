@@ -95,6 +95,7 @@ Rails.application.routes.draw do
         get 'acta_examen_excel'
         get 'acta_examen'
         get 'constancia_inscripcion'
+        get 'constancia_preinscripcion'
         get 'constancia_estudio'
         get 'listado_seccion'
         get 'listado_seccion_excel'
