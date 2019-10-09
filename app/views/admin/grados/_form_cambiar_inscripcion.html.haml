@@ -1,0 +1,16 @@
+
+= hidden_field_tag 'estudiante_id', grade.estudiante_id
+= hidden_field_tag 'escuela_id', grade.escuela_id
+.text-center
+  .form-group.row
+    %label.col-form-label.col-md-12= title
+  .form-group.row
+    .col-md-12
+      - group.map do |k,v| 
+        %label.btn.btn-secondary.btn-sm
+          - if field_name.eql? 'estado_inscripcion'
+            - setValue = (grade and grade.estado_inscripcion.eql? k)
+          - else
+            - setValue = (grade and grade.tipo_ingreso.eql? k)
+          = radio_button_tag "[grado]#{field_name}", k, setValue, required: true
+          = k.upcase

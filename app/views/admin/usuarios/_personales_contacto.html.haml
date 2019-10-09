@@ -12,10 +12,6 @@
 		= @usuario.id
 		- if current_admin.maestros?
 			= simple_icon_toggle_modal_edit "Editar cédula de identidad de #{@nickname}", 'cambiar_cedula'
-		
-	%li
-		%b Nombre:	
-		= @usuario.nombre_completo
 	- if current_admin.ninja?
 		%li
 			%b Contraseña:
@@ -25,6 +21,32 @@
 				= link_to( resetear_contrasena_usuario_path(@usuario), {'data-confirm' => 'Esta acción asignará la cédula de identidad como contraseña, ¿está de acuerdo?'}) do
 					= glyph 'repeat'
 					= glyph 'lock'
+	%li
+		%b Nombre Completo:	
+		= @usuario.nombre_completo	
+	%li 
+		%b Sexo:
+		= @usuario.sexo
+	%li 
+		%b Estado Civil:
+		= @usuario.estado_civil
+	-if @usuario.estudiante
+		%li 
+			%b Edad:
+			= @usuario.edad
+
+%b Datos de origen:
+%ul.border.list-unstyled.p-3
+	%li 
+		%b Nacionalidad:
+		= @usuario.nacionalidad
+	%li 
+		%b Ciudad origen:
+		= @usuario.descripcion_nacimiento 
+	%li 
+		%b Fecha de Nacimiento:
+		= l(@usuario.fecha_nacimiento, format: "%d de %B de %Y") if @usuario.fecha_nacimiento
+
 
 %b Datos de contacto:
 %ul.border.list-unstyled.p-3
@@ -35,5 +57,20 @@
 		%b Teléfono Móvil:
 		= "#{@usuario.telefono_movil}"
 	%li 
-		%b Teléfono Habitación:
+		%b Teléfono de Habitación:
 		= "#{@usuario.telefono_habitacion}"
+	-if @usuario.estudiante and @usuario.estudiante.direccion
+		%li 
+			%b Dirección de Haitación:
+			= @usuario.estudiante.direccion.descripcion_completa
+
+- if @usuario.estudiante
+	%b Otros Datos:
+	%ul.border.list-unstyled.p-3
+		%li 
+			%b Discapacidad:
+			= @usuario.estudiante.discapacidad
+		%li 
+			%b Otro Título Universitario:
+			= @usuario.estudiante.descripcion_otro_titulo
+

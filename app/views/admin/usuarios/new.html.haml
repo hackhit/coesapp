@@ -1,2 +1,6 @@
+.border.m-3.p-3
+	- if params[:estudiante] and action_name.eql? 'new'
+		= render '/admin/estudiantes/form'
+	- else
+		= render partial: "form"
 
-.border.m-3.p-3= render partial: "form"

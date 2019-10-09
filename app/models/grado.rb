@@ -1,8 +1,17 @@
 class Grado < ApplicationRecord
+	#CONSTANTES:
+
+	TIPO_INGRESOS = ['OPSU', 'OPSU/COLA', 'SIMADI', 'ACTA CONVENIO (DOCENTE)', 'ACTA CONVENIO (ADMIN)', 'ACTA CONVENIO (OBREO)', 'DISCAPACIDAD', 'DIPLOMATICO', 'COMPONENTE DOCENTE', 'EQUIVALENCIA', 'ART. 25 (CULTURA)', 'ART. 25 (DEPORTE)', 'CAMBIO: 158', 'ART. 6', 'EGRESADO', 'SAMUEL', 'ROBINSON', 'DELTA AMACURO', 'AMAZONAS', 'PRODES' 'CREDENCIALES']
+
 	# ASOCIACIONES:
 	belongs_to :escuela
 	belongs_to :estudiante
+	belongs_to :plan, optional: true 
+	# VALIDACIONES
 
+	validates :tipo_ingreso, presence: true 
+	validates :estado_inscripcion, presence: true 
+	validates :inscrito_ucv, presence: true 
 	# has_many :inscripcionsecciones, foreign_key: [:escuela_id, :estudiante_id]
 
 	scope :no_retirados, -> {where "estado != 3"}
@@ -15,10 +24,16 @@ class Grado < ApplicationRecord
 	scope :total_creditos_inscritos, -> {joins(:asignatura).sum('asignaturas.creditos')}
 
 	scope :culminado_en_periodo, lambda { |periodo_id| where "culminacion_periodo_id = ?", periodo_id}
+	scope :iniciados_en_periodo, lambda { |periodo_id| where "iniciado_periodo_id = ?", periodo_id}
 
 	scope :de_las_escuelas, lambda {|escuelas_ids| where("escuela_id IN (?)", escuelas_ids)}
+	scope :con_inscripciones, lambda { joins(:inscripcionsecciones) }
 
 	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado]
+
+	enum estado_inscripcion: [:preinscrito, :confirmado, :reincorporado]
+
+	enum tipo_ingreso: TIPO_INGRESOS
 
 	def inscripciones
 		Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)

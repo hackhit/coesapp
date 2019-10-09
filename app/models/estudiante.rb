@@ -5,6 +5,8 @@ class Estudiante < ApplicationRecord
 
 	belongs_to :citahoraria, optional: true
 
+	has_one :direccion#, foreign_key: :estudiante_id
+
 	has_many :grados#, dependent: :destroy
 	has_many :escuelas, through: :grados
 
@@ -25,6 +27,7 @@ class Estudiante < ApplicationRecord
 
 	# TRIGGERS
 	after_initialize :set_default, :if => :new_record?
+
 	# VALIDACIONES:
 	validates :usuario_id, presence: true, uniqueness: true
 
@@ -79,6 +82,13 @@ class Estudiante < ApplicationRecord
 		end
 	end
 
+	def descripcion_otro_titulo
+		if titulo_universitario
+			return "#{titulo_universitario} - #{titulo_universidad} (#{titulo_anno})" 
+		else
+			return ''
+		end
+	end
 	# def inscrito? periodo_id, escuela_id = nil
 	# 	if escuela_id
 	# 		(inscripcionsecciones.del_periodo(periodo_id)).reject{|is| !is.escuela.id.eql? escuela_id}.count > 0

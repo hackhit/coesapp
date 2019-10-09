@@ -1,19 +1,16 @@
 - if (current_usuario.email.blank? or current_usuario.telefono_movil.blank? or current_usuario.telefono_habitacion.blank? or (current_usuario.ci.eql? current_usuario.password))
 	.modal.fade#actualizar_datos{'aria-labelledby': "myModalLabel", 'aria-hidden': false}
-		.modal-dialog
+		.modal-dialog.modal-lg
 			.modal-content
-				.alert.alert-info
-					%h4 IMPORTANTE:
-					Le recomendamos actualice sus datos para una mejor experiencia.
-				- if current_usuario.ci.eql? current_usuario.password
-					.alert.alert-warning
-						%b Atención:
-						Cambie su contraseña a un valor distinto a la cédula de identidad
-				%h2#myModalLabel.text-center
+				.alert.alert-info.text-center
+					%h5 Atención:
+					actualice sus datos para una mejor experiencia
+				= render 'layouts/messages'
+				%h5#myModalLabel.text-center
 					Actualizar Datos
 				.modal-body
-
-					= render partial: '/admin/usuarios/form'
+					.border.m-1.p-3
+						= render partial: '/admin/estudiantes/form'
 		:javascript
 			$(document).ready(function() {
 				$("#actualizar_datos").modal({keyboard: false, backdrop: 'static'});

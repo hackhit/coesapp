@@ -63,6 +63,15 @@ module Admin
 
     end
 
+    def index_nuevos
+      escuelas_ids = current_admin.escuelas.ids
+      grados = Grado.iniciados_en_periodo(current_periodo.id)#.limit(50)
+      @preinscritos = grados.preinscrito
+      @confirmados = grados.confirmado
+      @reincorporados = grados.reincorporado
+      @nuevos = grados.reject{|g| !g.inscripciones.any?}
+    end
+
     def index
       escuelas_ids = current_admin.escuelas.ids
 
@@ -74,6 +83,33 @@ module Admin
 
     end
     # Fin Index
+
+    def cambiar_inscripcion
+      grado = Grado.where(estudiante_id: params[:estudiante_id], escuela_id: params[:escuela_id])
+      # new_grado = Grado.new
+
+      # new_grado = grados.first
+
+      # new_grado.escuela_id = grados.first.escuela_id
+      # new_grado.estudiante_id = grados.first.estudiante_id
+      # new_grado.estado = grados.first.estado
+      # new_grado.created_at = grados.first.created_at
+      # new_grado.culminacion_periodo_id = grados.first.culminacion_periodo_id
+      # new_grado.plan_id = grados.first.plan_id
+
+
+      # if params['estado_inscripcion']
+      # new_grado.estado_inscripcion = params['estado_inscripcion'] 
+      # new_grado.tipo_ingreso = params['tipo_ingreso'] if params['tipo_ingreso']
+      # new_grado.inscrito_ucv = params['inscrito_ucv'] if params['inscrito_ucv']
+
+      if grado.update_all(grado_params.to_hash)
+        flash[:success] = 'Actualización exitosa' 
+      else
+        flash[:success] = 'No se pudo completar la actualización. Por favor verifique e inténtelo nuevamente.'
+      end
+      redirect_back fallback_location: usuario_path(params[:estudiante_id])
+    end
 
     def eliminar
       escuela_id, estudiante_id = params[:id].split("-")
@@ -101,6 +137,11 @@ module Admin
 
     end
     # Fin Eliminar
+    private
+
+      def grado_params
+        params.require(:grado).permit(:escuela_id, :estudiante_id, :estado, :culminacion_periodo_id, :tipo_ingreso, :inscrito_ucv, :estado_inscripcion, :iniciado_periodo_id)
+      end
 
   end
 end

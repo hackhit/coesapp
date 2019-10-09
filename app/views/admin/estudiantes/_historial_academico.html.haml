@@ -10,7 +10,7 @@
 
 				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección de esta escuela en periodo #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", "estudiante_seccion_#{@escuela.id}"
 				= render partial: '/admin/inscripcionsecciones/form'
-	%h5.titulo.text-center Registro de Historial Académico:
+	%h6.titulo.text-center Registro de Historial Académico:
 	.row
 		.col-2
 		.col-8= render partial: '/admin/estudiantes/resumen_academico', locals: {ins: @inscripciones}

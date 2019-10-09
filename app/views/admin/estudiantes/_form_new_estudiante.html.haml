@@ -1,0 +1,183 @@
+%h6.titulo Datos Personales:
+.form-group.row
+  = f.label :ci, class: 'col-form-label col-md-3 text-right', value: 'Cédula de Identidad:'
+  .col-md-9
+    %input.form-control-plaintext.form-control.text-muted.form-control-plaintext{ value: @usuario.ci, readonly: true, disabled: true}
+  = f.hidden_field :ci
+
+- if @usuario and @usuario.eql? current_usuario and current_usuario.ci.eql? current_usuario.password
+  .form-group.row
+    = f.label :password, class: 'col-form-label col-md-3 text-right', value: 'Contraseña:'
+    .col-md-9
+      = f.password_field :password, required: true, class: 'text-field form-control'
+  .form-group.row
+    = f.label :password_confirmation, class: 'col-form-label col-md-3 text-right', value: 'Confirme Contraseña:'
+    .col-md-9
+      = f.password_field :password_confirmation, required: true, class: 'text-field form-control'
+.form-group.row
+  = f.label 'nacionalidad', class: 'col-form-label col-md-3 text-right', value: 'Nacionalidad:'
+  .col-md-9
+    - Usuario.nacionalidades.map do |k,v| 
+      %label.btn.btn-secondary.btn-sm
+        = radio_button_tag '[usuario]nacionalidad', k, (@usuario.nacionalidad.eql? k), required: true
+        = k.upcase
+.form-group.row
+  = f.label :nombres, class: 'col-form-label col-md-3 text-right float-right', value: 'Nombres:'
+  .col-md-9
+    = f.text_field :nombres, required: true, class: 'text-field form-control upcase'
+.form-group.row
+  = f.label :apellidos, class: 'col-form-label col-md-3 text-right', value: 'Apellidos:'
+  .col-md-9
+    = f.text_field :apellidos, required: true, class: 'text-field form-control upcase'
+.form-group.row
+  = f.label :sexo, class: 'col-form-label col-md-3 text-right', value: 'Sexo:'
+  .col-md-9
+    - Usuario.sexos.map do |k,v| 
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+        = radio_button_tag '[usuario]sexo', k, false, required: true
+        = k[0].upcase
+.form-group.row
+  = f.label 'estado_civil', class: 'col-form-label col-md-3 text-right', value: 'Estado Civil:'
+  .col-md-9
+    - Usuario.estado_civiles.map do |k,v| 
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k}
+        = radio_button_tag '[usuario]estado_civil', k, (@usuario.estado_civil.eql? k), required: true
+        = k[0..4].upcase
+
+%h6.titulo Datos de Contacto:
+.form-group.row
+  = f.label :email, class: 'col-form-label col-md-3 text-right', value: 'Correo Electrónico: '
+  .col-md-9
+    = f.email_field :email, class: 'text-field form-control'
+.form-group.row
+  = f.label :telefono_habitacion, class: 'col-form-label col-md-3 text-right', value: 'Número telefónico de habitación:'
+  .col-md-9
+    = f.phone_field :telefono_habitacion, class: 'text-field form-control'
+.form-group.row
+  = f.label :telefono_movil, class: 'col-form-label col-md-3 text-right', value: 'Número telefónico móvil:'
+  .col-md-9
+    = f.phone_field :telefono_movil, class: 'text-field form-control'
+
+%h6.titulo Datos de Origen:
+
+.form-group.row
+  = f.label 'pais_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'País de Nacimiento:'
+  .col-md-9
+    = f.text_field 'pais_nacimiento', class: 'text-field form-control'#, id: 'select-remote-data'
+
+    =# f.select 'pais_nacimiento', [], id: 'select-remote-data'
+    =# f.select(:pais_nacimiento, ['venezuela', 'otro'].map, { include_blank: 'Selecciona Plan de Estudio...'}, {class: "form-control text_field", required: true, id: 'select-remote-data'})
+
+.form-group.row
+  = f.label 'ciudad_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Ciudad de Nacimiento:'
+  .col-md-9
+    = f.text_field 'ciudad_nacimiento', class: 'text-field form-control'
+.form-group.row
+  = f.label 'fecha_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Fecha de Nacimiento:'
+  .col-md-9
+    = f.date_field 'fecha_nacimiento', class: 'text-field form-control'
+
+%h6.titulo Dirección:
+
+= hidden_field_tag '[direccion]estudiante_id', @usuario.ci
+
+.form-group.row
+
+  .col-md-3
+  .col-md-3
+    = text_field_tag '[direccion]estado', nil, class: 'text-field form-control', placeholder: 'Estado'
+  .col-md-3
+    = text_field_tag '[direccion]municipio', nil, class: 'text-field form-control', placeholder: 'Municipio'
+  .col-md-3
+    = text_field_tag '[direccion]ciudad', nil, class: 'text-field form-control', placeholder: 'Ciudad/Parroquia'
+
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Urbanización/Sector:
+  .col-md-9
+    = text_field_tag '[direccion]sector', nil, class: 'text-field form-control'
+
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Calle/Avenida:
+  .col-md-9
+    = text_field_tag '[direccion]calle', nil, class: 'text-field form-control'
+
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Tipo de Vivienda:
+  .col-md-9
+    %label.btn.btn-secondary.btn-sm
+      = radio_button_tag '[direccion]tipo_vivienda', 'Casa', false, required: true
+      Casa
+    %label.btn.btn-secondary.btn-sm
+      = radio_button_tag '[direccion]tipo_vivienda', 'Quinta', false, required: true
+      Quinta
+    %label.btn.btn-secondary.btn-sm
+      = radio_button_tag '[direccion]tipo_vivienda', 'Apartamento', false, required: true
+      Apartamento
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Número:
+  .col-md-9
+    = text_field_tag '[direccion]numero_vivienda', nil, class: 'text-field form-control', required: true
+
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Nombre:
+  .col-md-9
+    = text_field_tag '[direccion]nombre_vivienda', nil, class: 'text-field form-control', required: true
+
+%h6.titulo Discapacidad:
+
+.form-group.row
+  %label.col-form-label.col-md-3.text-right 
+#discapacidad
+
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right ¿Posee usted alguna discapacidad? Indique:
+    .col-md-9
+      - Usuario::DISCAPACIDADES.each do |d| 
+        %label.btn.btn-secondary.btn-sm
+          = radio_button_tag "[estudiante]discapacidad", d, false
+          = d.upcase
+      %label.btn.btn-secondary.btn-sm
+        = radio_button_tag "[estudiante]discapacidad", 'Otro', false
+        Otro
+
+%h6.titulo Otro título universitario:
+#universitario
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right ¿Es egresado universitario? indique:
+    .col-md-9
+      = text_field_tag '[estudiante]titulo_universitario', nil, class: 'text-field form-control'
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right Universidad:
+    .col-md-9
+      = text_field_tag '[estudiante]universidad_universitario', nil, class: 'text-field form-control'
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right Año:
+    .col-md-9
+      = text_field_tag '[estudiante]anno_universitario', nil, class: 'text-field form-control'
+
+
+:javascript
+  $(document).ready(function() {
+
+    
+    $('#select-remote-data').select2({
+      ajax: {
+        url: 'countriesToCities.json',
+        delay: 250,
+        dataType: 'json',
+        type: "GET",
+        processResults: function (data) {
+          var datos = data
+          console.log(data)
+          return {
+            results: data.items
+          };
+        }
+      },
+      placeholder: "--Escriba datos de la ciudad para buscarlo--",
+      theme: "bootstrap",
+      cache: true,
+      width: '100%'
+
+    });
+  });

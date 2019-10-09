@@ -1,0 +1,97 @@
+.alert#message{role: :alert, style: 'position:absolute;left:100px;top:180px;padding:7px'} 
+
+%nav
+  .nav.nav-tabs
+    = link_to 'Preinscritos', "#tab1", "data-toggle": "tab", class: 'nav-item nav-link active show'
+    = link_to 'Confirmados', "#tab2", "data-toggle": "tab", class: 'nav-item nav-link'
+    = link_to 'Nuevos', "#tab3", "data-toggle": "tab", class: 'nav-item nav-link'
+    = link_to 'Reincorporados', "#tab4", "data-toggle": "tab", class: 'nav-item nav-link'
+      
+.tab-content
+  .tab-pane.active.show#tab1
+    .border.mt-3.p-3
+      =# render partial: '/admin/grados/lista', locals: {registros: @tesistas, estado: 1, tipo: 'Tesistas'}
+  .tab-pane#tab2
+    .border.mt-3.p-3
+      =# render partial: '/admin/grados/lista', locals: {registros: @posibles_graduandos, estado: 2, tipo: 'Posibles Graduandos'}
+  .tab-pane#tab3
+    .border.mt-3.p-3
+      =# render partial: '/admin/grados/lista', locals: {registros: @graduandos, estado: 3, tipo: 'Graduandos'}
+  .tab-pane#tab4
+    .border.mt-3.p-3
+      =# render partial: '/admin/grados/lista', locals: {registros: @graduados, estado: 4, tipo: 'Graduados'}
+
+:javascript
+
+  $(document).ready(function() {
+      $('table.table').DataTable( {
+          // scrollY: 410, #da error
+          fixedHeader: {
+              header: true,
+              footer: true,
+          },
+          paging: false,
+          language: 
+            {
+              "sZeroRecords":    "No se encontraron resultados",
+              "sEmptyTable":     "Ningún dato disponible en esta tabla",
+              "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+              "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+              "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+              "sSearch":         "Buscar:",
+              "sInfoThousands":  ",",
+              "sLoadingRecords": "Cargando...",
+              "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+              },
+              "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+              }
+            }
+
+
+      } );
+  } );
+  
+  function moveRow(url, estado, boton) {
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      data: {estado: estado},
+      success: function (html) {
+        if (url.includes("grado") || estado == 1 || (url.includes("inscripcionseccion") && estado == 0)) {
+          console.log(`Tr: ${html.tr}`)
+          if (url.includes("inscripcionseccion") && estado == 1) estado = 2
+          if (url.includes("inscripcionseccion") && estado == 0) estado = 1
+          let = tableID = `table${estado}`
+          let trResponse = document.createElement('tr')
+          trResponse.innerHTML = html.tr
+          let tableRef = document.getElementById(tableID);
+          tableRef.insertBefore(trResponse, tableRef.firstChild);
+        }
+        $('#message').html(``)
+        $('#message').removeClass('alert-danger')
+        $('#message').addClass('alert-success')
+
+        $('#message').html(html.msg)
+        boton.parent().parent()[0].remove();
+      },
+      error: function(html){
+        $('#message').html(``)
+        $('#message').removeClass('alert-success')
+        $('#message').addClass('alert-danger')
+        $('#message').html(`Error al intentar cambiar el estado. Por favor inténtelo de nuevo`)
+
+      }
+
+    })
+    $('#message').fadeIn()
+    $('#message').fadeOut(4000)
+
+
+  }

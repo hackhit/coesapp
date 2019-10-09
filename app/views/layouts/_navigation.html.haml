@@ -45,6 +45,7 @@
               .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
                 = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
                 = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
+                = link_to 'Estudiantes Nuevos', index_nuevos_grados_path, class: 'dropdown-item'
                 - if current_admin.maestros?
                   = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
         - if current_admin

@@ -23,8 +23,10 @@ Rails.application.routes.draw do
         post 'agregar'
         post 'eliminar'
         get 'cambiar_estado'
+        post 'cambiar_inscripcion'
       end
       collection do
+        get 'index_nuevos'
         get 'citas_horarias'
         post 'citas_horarias'
       end

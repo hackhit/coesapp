@@ -1,7 +1,15 @@
 class Usuario < ApplicationRecord
+	#CONSTANTES:
+
+	ESTADOS_CIVILES = ['Soltero/a.', 'Casado/a.', 'Concubinato', 'Divorciado/a.', 'Viudo/a.']
+	NACIONALIDAD = ['Venezolano/a', 'Venezolano/a. Nacionalizado/a', 'Extrangero/a']
+
+	DISCAPACIDADES = ['SENSORIAL VISUAL', 'SENSORIAL AUDITIVA', 'MOTORA MIEMBROS INFERIORES', 'MOTORA MIEMBROS SUPERIORES', 'MOTORA AMBOS MIEMBROS']
 	# VARIABLES:
 	self.primary_key = :ci
 	enum sexo: [:Femenino, :Masculino]
+	enum estado_civil: ESTADOS_CIVILES
+	enum nacionalidad: NACIONALIDAD
 	attr_accessor :password_confirmation
 
 	# ASOCIACIONES:
@@ -13,14 +21,15 @@ class Usuario < ApplicationRecord
 	accepts_nested_attributes_for :bitacoras
 
 	# TRIGGERS:
-	after_initialize :set_default_sexo, :if => :new_record?
-	before_save :upcase_nombres
-
+	after_initialize :set_default_sexo, if: :new_record?
+	# before_save :set_default, if: :new_record?
+	# before_save :upcase_nombres
+	before_validation :set_default, on: :create
 	# VALIDACIONES:
 	validates :ci, presence: true, uniqueness: true
-	validates :nombres, presence: true
-	validates :apellidos, presence: true
-	validates :sexo, presence: true
+	validates :nombres, presence: true, unless: :new_record?
+	validates :apellidos, presence: true, unless: :new_record?
+	validates :sexo, presence: true, unless: :new_record?
 	validates :password, presence: true
 	validates :password, confirmation: true
 
@@ -34,6 +43,24 @@ class Usuario < ApplicationRecord
 	# }
 
 	# FUNCIONES:
+
+	def edad
+		if fecha_nacimiento
+			hoy = Date.today
+			a = hoy.year - fecha_nacimiento.year
+			a = a - 1 if (fecha_nacimiento.month >  hoy.month or (fecha_nacimiento.month >= hoy.month and fecha_nacimiento.day > hoy.day))
+			return a
+		else
+			return nil
+		end
+	end
+
+	def descripcion_nacimiento
+		aux = ciudad_nacimiento
+		aux += " - #{pais_nacimiento}" if pais_nacimiento
+		return aux
+	end
+
 
 	def ultimo_plan
 		estudiante ? estudiante.ultimo_plan : '--'
@@ -88,9 +115,13 @@ class Usuario < ApplicationRecord
 	end
 
 	def nickname
-		aux = nombres.split[0]
-		return (aux.size < 6) ? nombres : aux 
-		
+		aux = nombres ? nombres.split[0] : ci
+		if nombres 
+			aux = (nombres.split[0].length < 6) ? nombres : nombres.split[0]
+		else
+			aux = ci
+		end
+		return aux
 	end
 
 	def nombre_completo
@@ -137,8 +168,13 @@ class Usuario < ApplicationRecord
 
 	def upcase_nombres
 		self.ci.strip!
-		self.nombres.strip.upcase!
-		self.apellidos.strip.upcase!
+		self.nombres.strip.upcase! if self.nombres
+		self.apellidos.strip.upcase! if self.apellidos
+	end
+
+	def set_default
+		upcase_nombres
+		set_default_password
 	end
 
 	def set_default_password

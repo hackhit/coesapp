@@ -213,10 +213,25 @@ module Admin
         if @usuario.save
           flash[:success] = 'Usuario creado con éxito.'
           if params[:estudiante_set]
+
             if e = Estudiante.create(usuario_id: @usuario.id) #, escuela_id: params[:estudiante][:escuela_id])
-              e.grados.create(escuela_id: params[:escuela_id])
-              info_bitacora_crud Bitacora::CREACION, e
-              flash[:success] = 'Estudiante creado con éxito.' 
+              params[:grado]['escuela_id'] = params[:escuela_id]
+              params[:grado]['estudiante_id'] = e.id
+              grado = Grado.new(grado_params)
+              grado.plan_id = params[:plan][:id]
+              if grado.save
+                info_bitacora_crud Bitacora::CREACION, e
+                historialplan = Historialplan.new
+                historialplan.estudiante_id = e.id
+                historialplan.periodo_id = current_periodo.id
+                historialplan.plan_id = params[:plan][:id]
+
+                if historialplan.save
+                  info_bitacora_crud Bitacora::CREACION, historialplan
+                  flash[:success] = 'Estudiante creado con éxito.' 
+                end
+              end
+
             else
               flash[:danger] = "Error: #{e.errors.full_messages.to_sentence}"
             end
@@ -279,7 +294,16 @@ module Admin
           url_back = principal_profesor_index_path
         end
         if @usuario.update(usuario_params)
+          # @usuario.estudiante.direccion.create(direccion_params)
           info_bitacora_crud Bitacora::ACTUALIZACION, @usuario
+          
+          Direccion.create(direccion_params)
+
+          @usuario.estudiante.discapacidad = params[:estudiante][:discapacidad]
+          @usuario.estudiante.titulo_universitario = params[:estudiante][:titulo_universitario]
+          @usuario.estudiante.titulo_universidad = params[:estudiante][:universidad_universitario]
+          @usuario.estudiante.titulo_anno = params[:estudiante][:anno_universitario]
+
           flash[:success] = "Usuario actualizado con éxito"
           format.html { redirect_back fallback_location: url_back}
           format.json { render :show, status: :ok, location: @usuario }
@@ -311,10 +335,20 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def usuario_params
-        params.require(:usuario).permit(:ci, :nombres, :apellidos, :email, :telefono_habitacion, :telefono_movil, :password, :sexo, :password_confirmation)
+        params.require(:usuario).permit(:ci, :nombres, :apellidos, :email, :telefono_habitacion, :telefono_movil, :password, :sexo, :password_confirmation, :nacionalidad, :estado_civil, :fecha_nacimiento, :pais_nacimiento, :ciudad_nacimiento)
       end
+
       def administrador_params
         params.require(:administrador).permit(:rol, :departamento_id, :escuela_id)
       end
+
+      def grado_params
+        params.require(:grado).permit(:escuela_id, :estudiante_id, :estado, :culminacion_periodo_id, :tipo_ingreso, :inscrito_ucv, :estado_inscripcion, :iniciado_periodo_id)
+      end
+
+      def direccion_params
+        params.require(:direccion).permit(:estudiante_id, :estado, :municipio, :ciudad, :sector, :calle, :tipo_vivienda, :numero_vivienda, :nombre_vivienda)
+      end
+
   end
 end

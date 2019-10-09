@@ -1,0 +1,50 @@
+- required = ! current_admin.nil?
+
+= form_for @usuario, html: { class: 'form-horizontal' } do |f|
+  = hidden_field_tag 'estudiante_set', true
+  - if action_name.eql? 'new' and current_admin
+    = render partial: '/admin/estudiantes/form_new_admin', locals: {f: f}
+  - elsif (current_usuario.ci.eql? @usuario.ci) & (@usuario.ci.eql? @usuario.password)
+    = render partial: '/admin/estudiantes/form_new_estudiante', locals: {f: f}
+
+
+  .form-group.row
+    .col-md-3 
+    .col-md-9= f.submit nil, class: 'btn btn-primary'
+      
+
+:javascript
+  $('#roles_admin').on('change',function(evt){ 
+    if ($(this).val() == 'admin_departamento') {
+      $('#jefeDepartamento').show();
+      $("#administrador_departamento_id").prop('required',true);
+
+    }else{
+      $('#jefeDepartamento').hide();
+      $("#administrador_departamento_id").prop('required',false);
+
+    };
+
+    if ($(this).val() == 'admin_escuela') {
+      $('#jefeEscuela').show();
+      $("#administrador_escuela_id").prop('required',true);
+
+    }else{
+      $('#jefeEscuela').hide();
+      $("#administrador_escuela_id").prop('required',false);
+
+    };
+
+  });
+
+  $('.upcase').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().replace(/[^A-Za-zÑÁÉÍÓÚÄËÏÖÜáéíóúäëïöü¨´ ]/g,'') );
+    node.val(node.val().toUpperCase());
+  });
+
+
+  $('.ci').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().replace(/[^0-9]/g,'') );
+    });

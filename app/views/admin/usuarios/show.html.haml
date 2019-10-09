@@ -64,19 +64,58 @@
                 - @foraneas = true
                 = render partial: '/admin/estudiantes/table_contenido_historial', locals: {inscripciones: @secciones_pci_pendientes}
           - @foraneas = false
+          -# @escuelas_del_estudiante = @estudiante.grados
           - @escuelas_del_estudiante = @estudiante.escuelas
-          - @escuelas_del_estudiante.each do |escuela|
+          - @estudiante.grados.each do |grado|
+            - escuela = grado.escuela
             - activeTab = (session[:tabEscuela].eql? escuela.id) ? 'active' : ''
             - @escuela = escuela
             .tab-pane{id: "pane_#{escuela.id}", class: activeTab}
               .border.mt-3.p-3
                 - @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
+                -# @inscripciones = grado.inscripcionsecciones # ¡¡¡ Probar !!!
                 - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
                 %h6.alert.alert-info.pb-ms-3
                   = "Escuela: #{@escuela.descripcion.titleize}"
                   - if current_admin.maestros?
                     = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'minus', "eliminar#{escuela.id}"
                     = render partial: '/admin/estudiantes/eliminar_escuela'
+                .border.p-1
+                  %h6.titulo.text-center Información de la inscripción
+                  %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+                    %tbody
+                      %tr
+                        %th Periodo de la Inscripción: 
+                        %td= grado.iniciado_periodo_id
+                        %td                      
+                      %tr
+                        %th Estado de la Inscripción: 
+                        %td= grado.estado_inscripcion.upcase
+                        %td
+                          = link_to 'javascript:void(0)', onclick: "$('#cambiarEstadoInscripcion#{grado.id}').modal()" do
+                            = glyph 'pencil'
+                      %tr
+                        %th Tipo de Ingreso:
+                        %td= grado.tipo_ingreso
+                        %td
+                          = link_to 'javascript:void(0)', onclick: "$('#cambiarTipoIngreso#{grado.id}').modal()" do
+                            = glyph 'pencil'
+                      %tr
+                        %th Inscrito en la UCV:
+                        %td
+                          - if grado.inscrito_ucv
+                            .text-success= glyph 'ok'
+                          - else
+                            .text-danger= glyph 'remove'
+                        %td
+                          = link_to "#{cambiar_inscripcion_grado_path}?estudiante_id=#{@estudiante.id}&escuela_id=#{@escuela.id}&[grado]inscrito_ucv=#{!grado.inscrito_ucv}", method: 'post'  do
+                            = glyph 'pencil'
+                %br
+                - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Estado de Inscripción:', group: Grado.estado_inscripciones, field_name: 'estado_inscripcion', grade: grado}
+                - url = cambiar_inscripcion_grado_path
+                = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarEstadoInscripcion#{grado.id}", title: 'Cambiar Inscripción', content: content}
+                - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Tipo Inscripción:', group: Grado.tipos_ingreso, field_name: 'tipo_ingreso', grade: grado}
+                = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarTipoIngreso#{grado.id}", title: 'Cambiar Tipo Ingreso', content: content}                
 
                 = render '/admin/historialplanes/index'
                 = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
@@ -120,6 +159,7 @@
 - content = render partial: 'admin/inscripcionsecciones/form_cambio_seccion', locals: {secciones: Seccion.where(id: nil)}
 - url = cambiar_seccion_inscripcionsecciones_path
 = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: 'cambiarSeccion', title: 'Cambiar Sección', content: content}
+
 
 :javascript
 
