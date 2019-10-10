@@ -353,7 +353,7 @@ module Admin
       end
 
       def direccion_params
-        params.require(:direccion).permit(:estudiante_id, :estado, :municipio, :ciudad, :sector, :calle, :tipo_vivienda, :numero_vivienda, :nombre_vivienda)
+        params.require(:direccion).permit(:estudiante_id, :estado, :municipio, :ciudad, :sector, :calle, :tipo_vivienda, :nombre_vivienda)
       end
 
   end
