@@ -322,18 +322,15 @@ class ExportarPdf
 
 		pdf.move_down 20
 
-		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de <b>#{grado.escuela.descripcion.upcase}</b> de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está preinscrit#{usuario.genero} en la Escuela de #{escuela.descripcion.titleize}.", size: 10, inline_format: true, align: :justify
+		pdf.text "El departamento de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está <b>preinscrit#{usuario.genero}</b> en la Escuela de <b>#{escuela.descripcion.titleize}</b> de la Universidad Central de Venezuela.", size: 10, inline_format: true, align: :justify
 
 		pdf.move_down 5
 
 		pdf.text "El estudiante debe consignar esta planilla ante el Dpto de Control de Estudios para su firma y sello.", size: 10, inline_format: true, align: :justify
 		
-
 		pdf.move_down 70
 
-
-		pdf.text "Control de Estudio                                                                                         Estudiante", size: 10, align: :center
-		pdf.text "Firma                                                                                                             Firma", size: 10, align: :center
+		pdf.text "Nombre y Firma del funcionario receptor                                                                  Firma del Estudiante", size: 10, align: :center
 	end
 
 
