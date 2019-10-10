@@ -59,9 +59,19 @@
 									%span.badge.badge-secondary.float-right Inscripción Cerrada
 									= colocar_total_secciones_badge total_secciones
 							- else
-								= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
-									= desc.upcase
-									= colocar_total_secciones_badge total_secciones
+								- grado = @estudiante.grados.where(escuela_id: obj.id).first
+								- if grado.nil? or grado.preinscrito?
+
+									- @dptosTabs = @catTabs = @asigTabs = nil
+									.text-muted.alert.alert-danger.p-1
+										= desc.upcase
+										%span.badge.badge-secondary.float-right Estudiante No confirmado
+										= colocar_total_secciones_badge total_secciones
+
+								- else
+									= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
+										= desc.upcase
+										= colocar_total_secciones_badge total_secciones
 
 						- else
 							= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
