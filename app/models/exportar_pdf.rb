@@ -157,7 +157,7 @@ class ExportarPdf
 		pdf.move_down 30
 
 		insertar_contenido_constancia_preinscripcion pdf, grado
-		pdf.move_down 40
+		pdf.move_down 30
 		data = [["------------ COPIA DEL ADMINISTRACIÓN ------------"]]
 		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
 		t.draw
