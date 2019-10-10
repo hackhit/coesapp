@@ -147,7 +147,7 @@ class ExportarPdf
 		pdf = Prawn::Document.new(top_margin: 30)
 
 		insertar_contenido_constancia_preinscripcion pdf, grado
-		pdf.move_down 40
+		pdf.move_down 30
 
 		data = [["------------ COPIA DEL ESTUDIANTE ------------"]]
 		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
@@ -157,7 +157,7 @@ class ExportarPdf
 		pdf.move_down 30
 
 		insertar_contenido_constancia_preinscripcion pdf, grado
-		pdf.move_down 40
+		pdf.move_down 30
 		data = [["------------ COPIA DEL ADMINISTRACIÓN ------------"]]
 		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
 		t.draw
@@ -320,6 +320,19 @@ class ExportarPdf
 		
 		encabezado_central_con_logo pdf, "CONSTANCIA DE PREINSCRIPCIÓN", nil, 8
 
+		# data = [["       FOTO       "]]
+		# t = pdf.make_table(data, header: false, width: 40, position: :right, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: '000000'})
+		# t.draw
+
+		# pdf.bounding_box([0, 500], :width => 40, :height => 50) do
+		# 	# self.encabezado_central_con_logo pdf, "PLANILLA DE EXÁMENES"
+		# 	# self.tabla_descripcion_convocatoria pdf, seccion
+		# 	# self.tabla_descripcion_seccion pdf, seccion
+		# 	# 	pdf.transparent(0) { pdf.stroke_bounds }
+		# 	pdf.text 'FOTO', size: 10
+		# end
+
+
 		pdf.move_down 20
 
 		pdf.text "El departamento de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está <b>preinscrit#{usuario.genero}</b> en la Escuela de <b>#{escuela.descripcion.titleize}</b> de la Universidad Central de Venezuela.", size: 10, inline_format: true, align: :justify
@@ -328,9 +341,12 @@ class ExportarPdf
 
 		pdf.text "El estudiante debe consignar esta planilla ante el Dpto de Control de Estudios para su firma y sello.", size: 10, inline_format: true, align: :justify
 		
-		pdf.move_down 70
+		pdf.move_down 60
 
 		pdf.text "Nombre y Firma del funcionario receptor                                                                  Firma del Estudiante", size: 10, align: :center
+
+		pdf.move_down 20
+		pdf.text "<b>Fecha de Emisión:</b> #{I18n.l(Date.today, format: '%A, %d de %B de %Y')}.", size: 10, inline_format: true
 	end
 
 
