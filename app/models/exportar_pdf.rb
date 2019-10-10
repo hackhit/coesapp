@@ -144,22 +144,29 @@ class ExportarPdf
 
 		grado = Grado.where(escuela_id: escuela_id, estudiante_id: estudiante_id).first
 
-		pdf = Prawn::Document.new(top_margin: 30)
-
+		pdf = Prawn::Document.new(top_margin: 20)
 		insertar_contenido_constancia_preinscripcion pdf, grado
-		pdf.move_down 20
+		pdf.move_down 10
 
 		data = [["------------ COPIA DEL ESTUDIANTE ------------"]]
 		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
 		t.draw
-		pdf.move_down 30
+		pdf.move_down 10
 		pdf.text "---------------------------------------------------------------------------------------------------------------------------------------", size: 12, inline_format: true, align: :justify
-		pdf.move_down 30
+		pdf.move_down 20
 
 		insertar_contenido_constancia_preinscripcion pdf, grado
-		pdf.move_down 20
+		pdf.move_down 10
 		data = [["------------ COPIA DEL ADMINISTRACIÓN ------------"]]
 		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
+		t.draw
+		pdf.move_down 10
+		pdf.text "---------------------------------------------------------------------------------------------------------------------------------------", size: 12, inline_format: true, align: :justify
+		pdf.move_down 10
+
+		data = [["<b>#{grado.estudiante.usuario.apellido_nombre}</b><br><b>#{grado.estudiante_id}</b><br><b>#{grado.escuela.descripcion}</b>"]]
+
+		t = pdf.make_table(data, header: false, width: 500, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: '555555'})
 		t.draw
 
 		return pdf
@@ -320,9 +327,11 @@ class ExportarPdf
 		
 		encabezado_central_con_logo pdf, "CONSTANCIA DE PREINSCRIPCIÓN", nil, 8
 
-		# data = [["       FOTO       "]]
-		# t = pdf.make_table(data, header: false, width: 40, position: :right, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: '000000'})
-		# t.draw
+		# Opcion 1:
+		pdf.image "app/assets/images/foto-perfil.png", at: [430, 395], height: 100
+
+		# pdf.image "app/assets/images/logo_ucv.png", position: :center, height: size_logo, valign: :top
+
 
 		# pdf.bounding_box([0, 500], :width => 40, :height => 50) do
 		# 	# self.encabezado_central_con_logo pdf, "PLANILLA DE EXÁMENES"
@@ -339,11 +348,11 @@ class ExportarPdf
 
 		pdf.move_down 5
 
-		pdf.text "El estudiante debe consignar esta planilla ante el Dpto de Control de Estudios para su firma y sello.", size: 10, inline_format: true, align: :justify
+		pdf.text "El estudiante debe consignar esta planilla ante el Dpto de Control de Estudios para su firma y sello en una carpeta marrón tamaño oficio.", size: 10, inline_format: true, align: :justify
 		pdf.move_down 10
 		pdf.text "<b>Fecha de Emisión:</b> #{I18n.l(Date.today, format: '%A, %d de %B de %Y')}.", size: 10, inline_format: true
 		
-		pdf.move_down 90
+		pdf.move_down 60
 
 		pdf.text "Nombre y Firma del funcionario receptor                                                                  Firma del Estudiante", size: 10, align: :center
 

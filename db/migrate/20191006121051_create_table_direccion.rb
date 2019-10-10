@@ -9,7 +9,6 @@ class CreateTableDireccion < ActiveRecord::Migration[5.2]
     	t.string :calle
     	t.string :tipo_vivienda
     	t.string :nombre_vivienda
-    	t.string :numero_vivienda
     end
     add_foreign_key :direcciones, :estudiantes, column: :estudiante_id, primary_key: :usuario_id, on_delete: :cascade,  on_update: :cascade
   end

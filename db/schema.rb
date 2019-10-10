@@ -127,7 +127,6 @@ ActiveRecord::Schema.define(version: 2019_10_07_115058) do
     t.string "calle"
     t.string "tipo_vivienda"
     t.string "nombre_vivienda"
-    t.string "numero_vivienda"
     t.index ["estudiante_id"], name: "index_direcciones_on_estudiante_id"
   end
 
@@ -173,7 +172,7 @@ ActiveRecord::Schema.define(version: 2019_10_07_115058) do
     t.integer "estado", default: 0, null: false
     t.string "culminacion_periodo_id"
     t.integer "tipo_ingreso", null: false
-    t.boolean "inscrito_ucv", default: true
+    t.boolean "inscrito_ucv", default: false
     t.integer "estado_inscripcion", default: 0, null: false
     t.string "plan_id"
     t.string "iniciado_periodo_id"

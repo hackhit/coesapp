@@ -10,7 +10,6 @@ class Direccion < ApplicationRecord
 	validates :calle, presence: true
 	validates :tipo_vivienda, presence: true
 	validates :nombre_vivienda, presence: true
-	validates :numero_vivienda, presence: true
 
 	def descripcion_completa
 		"#{estado} - #{municipio} - #{ciudad} - #{sector} - #{calle}, #{tipo_vivienda}: #{nombre_vivienda} (#{numero_vivienda})"
