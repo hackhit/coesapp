@@ -151,22 +151,22 @@ class ExportarPdf
 		data = [["------------ COPIA DEL ESTUDIANTE ------------"]]
 		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
 		t.draw
-		pdf.move_down 10
+		pdf.move_down 20
 		pdf.text "---------------------------------------------------------------------------------------------------------------------------------------", size: 12, inline_format: true, align: :justify
 		pdf.move_down 20
 
 		insertar_contenido_constancia_preinscripcion pdf, grado
 		pdf.move_down 10
 		data = [["------------ COPIA DEL ADMINISTRACIÓN ------------"]]
-		t = pdf.make_table(data, header: false, width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
+		t = pdf.make_table(data, header: false, width: 270, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
 		t.draw
-		pdf.move_down 10
+		pdf.move_down 20
 		pdf.text "---------------------------------------------------------------------------------------------------------------------------------------", size: 12, inline_format: true, align: :justify
 		pdf.move_down 10
 
-		data = [["<b>#{grado.estudiante.usuario.apellido_nombre}</b><br><b>#{grado.estudiante_id}</b><br><b>#{grado.escuela.descripcion}</b>"]]
+		data = [["<b>#{grado.estudiante.usuario.apellido_nombre} - #{grado.estudiante_id} - #{grado.escuela.descripcion}</b>"]]
 
-		t = pdf.make_table(data, header: false, width: 500, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: '555555'})
+		t = pdf.make_table(data, header: false, width: 500, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 1, border_color: 'FFFFFF'})
 		t.draw
 
 		return pdf
@@ -330,25 +330,13 @@ class ExportarPdf
 		# Opcion 1:
 		pdf.image "app/assets/images/foto-perfil.png", at: [430, 395], height: 100
 
-		# pdf.image "app/assets/images/logo_ucv.png", position: :center, height: size_logo, valign: :top
-
-
-		# pdf.bounding_box([0, 500], :width => 40, :height => 50) do
-		# 	# self.encabezado_central_con_logo pdf, "PLANILLA DE EXÁMENES"
-		# 	# self.tabla_descripcion_convocatoria pdf, seccion
-		# 	# self.tabla_descripcion_seccion pdf, seccion
-		# 	# 	pdf.transparent(0) { pdf.stroke_bounds }
-		# 	pdf.text 'FOTO', size: 10
-		# end
-
-
 		pdf.move_down 20
 
 		pdf.text "El departamento de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está <b>preinscrit#{usuario.genero}</b> en la Escuela de <b>#{escuela.descripcion.titleize}</b> de la Universidad Central de Venezuela.", size: 10, inline_format: true, align: :justify
 
 		pdf.move_down 5
 
-		pdf.text "El estudiante debe consignar esta planilla ante el Dpto de Control de Estudios para su firma y sello en una carpeta marrón tamaño oficio.", size: 10, inline_format: true, align: :justify
+		pdf.text "El estudiante debe consignar esta planilla ante el Dpto de Control de Estudios para su firma y sello en una carpeta marrón tamaño oficio con sus respectivos ganchos.", size: 10, inline_format: true, align: :justify
 		pdf.move_down 10
 		pdf.text "<b>Fecha de Emisión:</b> #{I18n.l(Date.today, format: '%A, %d de %B de %Y')}.", size: 10, inline_format: true
 		
