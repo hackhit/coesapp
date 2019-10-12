@@ -17,9 +17,25 @@
 
 = render 'admin/secciones/modal_form'
 
-=# render 'admin/escuelas/clonar_periodo'
+= render 'admin/escuelas/clonar_periodo'
 
 :javascript
+
+  $('.clonar').on('click', function(e){
+    let escuela_id = $(this).attr('escuela_id')
+    $('#form_clonar #id').val(escuela_id)
+
+    $("#periodo_id optgroup").hide();
+    
+    $("#periodo_id optgroup[label='" + escuela_id + "']").show();
+
+    $("#periodo_id").val('');
+
+    $("#periodo_id").show();
+
+    $('#clonar_programacion').modal()
+
+  });
 
   function filtrar() {
     var filtro = $('#filtro').val().toLowerCase() 

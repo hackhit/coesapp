@@ -15,8 +15,8 @@ module Admin
 
 
     def clonar_programacion
-      
-      periodo_anterior = @escuela.periodo_anterior current_periodo.id
+
+      periodo_anterior = Periodo.find params[:periodo_id]
       errores_programaciones = []
       errores_secciones = []
       total_secciones = periodo_anterior.secciones.count

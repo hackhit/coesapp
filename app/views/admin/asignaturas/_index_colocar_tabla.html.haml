@@ -2,7 +2,7 @@
 .tab-content
   .border.p-3
     - if periodo_anterior = @asignaturas.first.escuela.periodo_anterior(current_periodo.id)
-      = link_to clonar_programacion_escuela_path(@asignaturas.first.escuela.id), class: 'btn btn-outline-info btn-sm tooltip-btn', 'data_toggle': :tooltip, title: "Clonar Programación del Periodo anterior #{periodo_anterior.id}", 'data-confirm': "¿Seguro que desea clonar la planificación del periodo anterior #{periodo_anterior.id}. Se conservarán las secciones ya existentes."  do
+      = link_to 'javascript:void(0)', class: 'clonar btn btn-outline-info btn-sm tooltip-btn', 'data_toggle': :tooltip, title: "Clonar Programación de Periodos anteriores", escuela_id: @asignaturas.first.escuela.id do
         = glyph 'file'
         = glyph 'chevron-right'
         = glyph 'duplicate'

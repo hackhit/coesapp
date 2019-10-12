@@ -7,8 +7,8 @@
         %h4.text-center Clonar Periodo
       .modal-body
 
-        = form_tag({controller: 'escuela', action: 'clonar_programacion'}, class: 'form-horizontal', method: :get) do
-          = hidden_field :escuela_id
+        = form_tag(clonar_programacion_escuelas_path, class: 'form-horizontal', id: 'form_clonar') do
+          = hidden_field_tag :id, @escuelas.first.id
           .modal-body
             .control-group
               %span.control-label
@@ -20,8 +20,9 @@
               %span.control-label
                 Clonar Períodos:
               .controls
-                = collection_select nil, :nuevo, Periodos.all.order(inicia: :desc), :id, :id, {:prompt => 'Seleccione Período'}, { class: 'form-control', required: true }
+                =# collection_select nil, :nuevo, Periodos.all.order(inicia: :desc), :id, :id, {:prompt => 'Seleccione Período'}, { class: 'form-control', required: true }
+                = grouped_collection_select nil, :periodo_id, Escuela.all, :periodos, :id, :id, :id, {:prompt => "--- Selecciona el período que desea clonar ---"}, { class: 'form-control hideble mt-md-3', required: true}
 
           .modal-footer
             %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
-            = submit_tag 'Guardar', class: 'btn btn-sm btn-outline-primary'
+            = submit_tag 'Guardar', class: 'btn btn-sm btn-outline-primary', 'data-confirm': "¿Seguro que desea clonar la planificación del periodo anterior. Se conservarán las secciones ya existentes."
