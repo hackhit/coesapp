@@ -37,7 +37,7 @@
 
         %td= u.ultimo_plan
         %td= link_to u.nombre_completo, u
-        %td= u.ci
+        %td= link_to u.ci, u 
         - if current_admin.ninja?  
           %td= u.password
         %td= u.email
