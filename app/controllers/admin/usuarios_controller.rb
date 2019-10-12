@@ -6,10 +6,44 @@ module Admin
     before_action :filtro_super_admin!, only: [:set_administrador, :set_estudiante, :set_profesor]
     before_action :filtro_ninja!, only: [:destroy, :delete_rol]
 
-    before_action :set_usuario, except: [:index, :new, :create, :busquedas]
+    before_action :set_usuario, except: [:index, :new, :create, :busquedas, :countries, :estados, :getParroquias]
 
     # GET /usuarios
     # GET /usuarios.json
+
+    def getParroquias
+
+      estado = params[:estado]
+
+      estados = Usuario.venezuela.map{|a| a["estado"]}
+      indice = estados.index(estado)
+
+      indiceMunicipio = Usuario.venezuela[indice]["municipios"].map{|a| a["municipio"]}.index(params[:term])
+
+      parroquias = Usuario.venezuela[indice]["municipios"][indiceMunicipio]
+
+
+      render json: parroquias['parroquias'].map.sort, status: :ok
+
+    end
+
+    def estados
+      estado = params[:term]
+
+      estados = Usuario.venezuela.map{|a| a["estado"]}
+      indice = estados.index(estado)
+
+      objeto = Usuario.venezuela[indice]
+      render json: objeto['municipios'].map{|a| a["municipio"]}.sort, status: :ok
+      
+    end
+
+    def countries
+
+      country = params[:term]
+      data_hash = Usuario.naciones
+      render json: data_hash[country].sort{|a,b| a <=> b}, status: :ok
+    end
 
     def busquedas
       # @usuarios = Usuario.search(params[:term])
@@ -162,6 +196,7 @@ module Admin
     # GET /usuarios/1
     # GET /usuarios/1.json
     def show
+
       @estudiante = @usuario.estudiante
       @profesor = @usuario.profesor
       @administrador = @usuario.administrador
@@ -307,14 +342,18 @@ module Admin
 
           @usuario.estudiante.discapacidad = params[:estudiante][:discapacidad]
           @usuario.estudiante.titulo_universitario = params[:estudiante][:titulo_universitario]
-          @usuario.estudiante.titulo_universidad = params[:estudiante][:universidad_universitario]
-          @usuario.estudiante.titulo_anno = params[:estudiante][:anno_universitario]
+          @usuario.estudiante.titulo_universidad = params[:estudiante][:titulo_universidad]
+          @usuario.estudiante.titulo_anno = params[:date][:year]
 
-          flash[:success] = "Usuario actualizado con éxito"
+          if @usuario.estudiante.save
+            flash[:success] = "Usuario actualizado con éxito"
+          else
+            flash[:error] = "No se pudo completar la actualización. Por favor revise e inténtelo nuevamente: #{@usuario.estudiante.errors.full_messages.to_sentence}}."
+          end
           format.html { redirect_back fallback_location: url_back}
           format.json { render :show, status: :ok, location: @usuario }
         else
-          flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}"
+          flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}."
 
           format.html { redirect_to url_back }
           format.json { render json: @usuario.errors, status: :unprocessable_entity }
@@ -355,6 +394,10 @@ module Admin
       def direccion_params
         params.require(:direccion).permit(:estudiante_id, :estado, :municipio, :ciudad, :sector, :calle, :tipo_vivienda, :nombre_vivienda)
       end
+
+      # def date_params
+      #   params.require(:date).permit(:year)
+      # end
 
   end
 end

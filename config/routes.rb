@@ -157,6 +157,9 @@ Rails.application.routes.draw do
       collection do
         # post :index
         get :busquedas
+        get :countries
+        get :estados
+        get :getParroquias
       end
       member do
         get 'delete_rol'

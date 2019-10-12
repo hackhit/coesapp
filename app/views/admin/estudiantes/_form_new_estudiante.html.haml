@@ -63,15 +63,12 @@
 .form-group.row
   = f.label 'pais_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'País de Nacimiento:'
   .col-md-9
-    = f.text_field 'pais_nacimiento', class: 'text-field form-control', required: true#, id: 'select-remote-data'
-
-    =# f.select 'pais_nacimiento', [], id: 'select-remote-data'
-    =# f.select(:pais_nacimiento, ['venezuela', 'otro'].map, { include_blank: 'Selecciona Plan de Estudio...'}, {class: "form-control text_field", required: true, id: 'select-remote-data'})
+    = f.select(:ciudad_nacimiento, Usuario.naciones.keys.sort, { include_blank: 'Selecciona País de Nacimiento...'}, {class: "dynamic form-control text_field", required: true, id: 'selectCountry', children: 'selectCity', url: '/usuarios/countries'})
 
 .form-group.row
   = f.label 'ciudad_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Ciudad de Nacimiento:'
   .col-md-9
-    = f.text_field 'ciudad_nacimiento', class: 'text-field form-control', required: true
+    = f.select(:ciudad_nacimiento, [], { include_blank: 'Selecciona Ciudad de Nacimiento...'}, {class: "form-control text_field", required: true, id: 'selectCity'})
 .form-group.row
   = f.label 'fecha_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Fecha de Nacimiento:'
   .col-md-9
@@ -81,42 +78,48 @@
 
 = hidden_field_tag '[direccion]estudiante_id', @usuario.ci
 
-.form-group.row
+- @sector = @usuario.estudiante.direccion.sector if @usuario and @usuario.estudiante and @usuario.estudiante
+- @calle = @usuario.estudiante.direccion.calle if @usuario and @usuario.estudiante and @usuario.estudiante
+- @tipo_vivienda = @usuario.estudiante.direccion.tipo_vivienda if @usuario and @usuario.estudiante and @usuario.estudiante
+- @nombre = @usuario.estudiante.direccion.nombre_vivienda if @usuario and @usuario.estudiante and @usuario.estudiante
 
+  
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Ubicación:
   .col-md-3
+    = select_tag '[direccion]estado', options_for_select(Usuario.venezuela.map{|a| a["estado"]}), class: 'dynamic form-control text-field', required: true, include_blank: '--- Seleccione Estado ---', id: 'selectEstado', children: 'selectMunicipio', url: '/usuarios/estados'
   .col-md-3
-    = text_field_tag '[direccion]estado', nil, class: 'text-field form-control', placeholder: 'Estado', required: true
+    = select_tag '[direccion]municipio', options_for_select([]), class: 'form-control text-field', required: true, include_blank: '--- Seleccione Municipio ---', id: 'selectMunicipio', childer: 'selectParroquia', url: '/usuarios/estados'
   .col-md-3
-    = text_field_tag '[direccion]municipio', nil, class: 'text-field form-control', placeholder: 'Municipio', required: true
-  .col-md-3
-    = text_field_tag '[direccion]ciudad', nil, class: 'text-field form-control', placeholder: 'Ciudad/Parroquia', required: true
+    = select_tag '[direccion]ciudad', options_for_select([]), class: 'form-control text-field', required: true, include_blank: '--- Seleccione Parroquia ---', id: 'selectParroquia', url: '/usuarios/estados'
+    =# text_field_tag '[direccion]ciudad', nil, class: 'text-field form-control', placeholder: 'Ciudad/Parroquia', required: true
 
 .form-group.row
   %label.col-form-label.col-md-3.text-right Urbanización/Sector:
   .col-md-9
-    = text_field_tag '[direccion]sector', nil, class: 'text-field form-control', required: true
+    = text_field_tag '[direccion]sector', @sector, class: 'text-field form-control', required: true
 
 .form-group.row
   %label.col-form-label.col-md-3.text-right Calle/Avenida:
   .col-md-9
-    = text_field_tag '[direccion]calle', nil, class: 'text-field form-control', required: true
+    = text_field_tag '[direccion]calle', @calle, class: 'text-field form-control', required: true
 
 .form-group.row
   %label.col-form-label.col-md-3.text-right Tipo de Vivienda:
   .col-md-9
     %label.btn.btn-secondary.btn-sm
-      = radio_button_tag '[direccion]tipo_vivienda', 'Casa', false, required: true
+      = radio_button_tag '[direccion]tipo_vivienda', 'Casa', ('Casa'.eql? @tipo_vivienda), required: true
       Casa
     %label.btn.btn-secondary.btn-sm
-      = radio_button_tag '[direccion]tipo_vivienda', 'Quinta', false, required: true
+      = radio_button_tag '[direccion]tipo_vivienda', 'Quinta', ('Quinta'.eql? @tipo_vivienda), required: true
       Quinta
     %label.btn.btn-secondary.btn-sm
-      = radio_button_tag '[direccion]tipo_vivienda', 'Apartamento', false, required: true
+      = radio_button_tag '[direccion]tipo_vivienda', 'Apartamento', ('Apartamento'.eql? @tipo_vivienda), required: true
       Apartamento
 .form-group.row
   %label.col-form-label.col-md-3.text-right Nombre/Número:
   .col-md-9
-    = text_field_tag '[direccion]nombre_vivienda', nil, class: 'text-field form-control', required: true
+    = text_field_tag '[direccion]nombre_vivienda', @nombre, class: 'text-field form-control', required: true
 
 
 %h6.titulo Discapacidad:
@@ -124,13 +127,13 @@
 .form-group.row
   %label.col-form-label.col-md-3.text-right 
 #discapacidad
-
+  - @disca = @usuario.estudiante.discapacidad if @usuario and @usuario.estudiante
   .form-group.row
     %label.col-form-label.col-md-3.text-right ¿Posee usted alguna discapacidad? Indique:
     .col-md-9
       - Usuario::DISCAPACIDADES.each do |d| 
         %label.btn.btn-secondary.btn-sm
-          = radio_button_tag "[estudiante]discapacidad", d, false
+          = radio_button_tag "[estudiante]discapacidad", d, (@disca.eql? d)
           = d.upcase
       %label.btn.btn-secondary.btn-sm
         = radio_button_tag "[estudiante]discapacidad", 'Otro', false
@@ -138,42 +141,72 @@
 
 %h6.titulo Otro título universitario:
 #universitario
+  - @titulo_universitario = @usuario.estudiante.titulo_universitario if @usuario and @usuario.estudiante
+  - @titulo_universidad = @usuario.estudiante.titulo_universidad if @usuario and @usuario.estudiante
+  - @titulo_anno = @usuario.estudiante.titulo_anno if @usuario and @usuario.estudiante
   .form-group.row
     %label.col-form-label.col-md-3.text-right ¿Es egresado universitario? indique título optenido:
     .col-md-9
-      = text_field_tag '[estudiante]titulo_universitario', nil, class: 'text-field form-control'
+      = text_field_tag '[estudiante]titulo_universitario', @titulo_universitario, class: 'text-field form-control'
   .form-group.row
     %label.col-form-label.col-md-3.text-right Universidad:
     .col-md-9
-      = text_field_tag '[estudiante]universidad_universitario', nil, class: 'text-field form-control'
+      = text_field_tag '[estudiante]titulo_universidad', @titulo_universidad, class: 'text-field form-control' 
   .form-group.row
     %label.col-form-label.col-md-3.text-right Año:
     .col-md-9
-      = text_field_tag '[estudiante]anno_universitario', nil, class: 'text-field form-control'
+      =# text_field_tag '[estudiante]titulo_anno', nil, class: 'text-field form-control', value: titulo_anno
+      = select_year @titulo_anno.to_i, {start_year: Time.now.year, prompt: '--- N/A ---', end_year: Time.now.year - 30},{class: 'text-field form-control'}
+      =# select_year(14{prompt: '--- Ninguno ---', field_name: '[estudiante]titulo_anno'}, {class: 'text-field form-control'})
 
+= render 'layouts/cargando'
 
 :javascript
   $(document).ready(function() {
 
-    
-    $('#select-remote-data').select2({
-      ajax: {
-        url: 'countriesToCities.json',
-        delay: 250,
-        dataType: 'json',
-        type: "GET",
-        processResults: function (data) {
-          var datos = data
-          console.log(data)
-          return {
-            results: data.items
-          };
+    $('#selectMunicipio').on('change', function(e){
+      let estado = $('#selectEstado').val();
+
+      console.log(estado)
+      sendData('/usuarios/getParroquias', 'selectParroquia', {term: $(this).val(), estado: estado})
+
+    })
+
+
+    function sendData(url, children, data){
+      $.ajax({
+        url: url,
+        dataType: 'json', 
+        type: 'GET',
+        data: data,
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+          $('#cargando a').html(`Cangando... `)
+          $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
+        },
+        success: function (data) {
+
+          $('#'+children).empty();
+          $('#'+children).append($("<option></option>").attr("value",'').text('--- Seleccione ---'));
+
+          for (let e of data){
+            $('#'+children)
+              .append($("<option></option>")
+                .attr("value",e)
+                .text(e));             
+          }
+        },
+        complete: function(){
+          $('.modal').modal('hide');
         }
-      },
-      placeholder: "--Escriba datos de la ciudad para buscarlo--",
-      theme: "bootstrap",
-      cache: true,
-      width: '100%'
+      });
+    };
+
+    $('.dynamic').on('change', function(e){
+      let children = $(this).attr('children');
+      let url = $(this).attr('url');
+
+      sendData(url, children, {term: $(this).val()})
 
     });
   });

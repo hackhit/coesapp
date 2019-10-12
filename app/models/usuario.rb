@@ -44,6 +44,23 @@ class Usuario < ApplicationRecord
 
 	# FUNCIONES:
 
+    def self.venezuela
+      require 'json'
+
+      file = File.read("#{Rails.root}/public/venezuela.json")
+
+      JSON.parse(file)
+    end
+
+
+    def self.naciones
+      require 'json'
+
+      file = File.read("#{Rails.root}/public/countriesToCities.json")
+
+      JSON.parse(file)
+    end
+
 	def edad
 		if fecha_nacimiento
 			hoy = Date.today
