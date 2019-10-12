@@ -1,9 +1,30 @@
 = hidden_field_tag '[grado]iniciado_periodo_id', current_periodo.id
 .form-group.row
-  = f.label :ci, class: 'col-form-label col-md-2 text-right', value: 'Cédula de Identidad:'
+  = f.label :ci, class: 'col-form-label col-md-2 text-right ', value: 'Cédula de Identidad:'
   .col-md-10
     =# f.text_field :ci, required: true, class: 'text-field form-control ci form-control-plaintext', placeholder: 'Cédula de Identidad'
     = f.text_field :ci, required: true, class: 'text-field form-control ci', autofocus: true
+.form-group.row
+  = f.label :nombres, class: 'col-form-label col-md-2 text-right', value: 'Nombres:'
+  .col-md-10
+    = f.text_field :nombres, class: 'text-field form-control upcase'
+.form-group.row
+  = f.label :apellidos, class: 'col-form-label col-md-2 text-right', value: 'Apellidos:'
+  .col-md-10
+    = f.text_field :apellidos, class: 'text-field form-control upcase'
+.form-group.row
+  = f.label :email, class: 'col-form-label col-md-2 text-right', value: 'Email:'
+  .col-md-10
+    = f.email_field :email, class: 'text-field form-control'
+.form-group.row
+  = f.label :telefono_habitacion, class: 'col-form-label col-md-2 text-right', value: 'Teléfono de Habitación:'
+  .col-md-10
+    = f.phone_field :telefono_habitacion, class: 'text-field form-control'
+.form-group.row
+  = f.label :telefono_movil, class: 'col-form-label col-md-2 text-right', value: 'Teléfono Móvil:'
+  .col-md-10
+    = f.phone_field :telefono_movil, class: 'text-field form-control'
+
 =# DATOS DE ESCUELA
 .form-group.row
   %label.col-form-label.col-md-2.text-right Escuela:
@@ -34,7 +55,7 @@
   .col-md-10
     - Grado.tipos_ingreso.map do |k,v| 
       %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-        = radio_button_tag '[grado]tipo_ingreso', k, false, required: true
+        = radio_button_tag '[grado]tipo_ingreso', k, false, required: true, class: ''
         = "#{k.upcase}"
 
 .form-group.row

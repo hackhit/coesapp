@@ -132,8 +132,8 @@ class Usuario < ApplicationRecord
 	end
 
 	def nickname
-		aux = nombres ? nombres.split[0] : ci
-		if nombres 
+		# aux = nombres ? nombres.split[0] : ci
+		unless nombres.blank? 
 			aux = (nombres.split[0].length < 6) ? nombres : nombres.split[0]
 		else
 			aux = ci
