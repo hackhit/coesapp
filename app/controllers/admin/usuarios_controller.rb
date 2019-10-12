@@ -339,7 +339,7 @@ module Admin
         info_bitacora_crud Bitacora::ACTUALIZACION, @usuario
         flash[:success] = "Usuario actualizado con éxito"
         if @usuario.estudiante
-          if direccion = Direccion.where(estudiante_id: @usuario.estudiante.id)
+          if direccion = Direccion.where(estudiante_id: @usuario.estudiante.id).first
             
             flash[:info] = 'Dirección actualizada' if direccion.update(direccion_params)
           else

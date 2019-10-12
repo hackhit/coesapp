@@ -62,6 +62,7 @@
   - data_hash = Usuario.naciones
   - @cities = data_hash[@usuario.pais_nacimiento].sort{|a,b| a <=> b}
   
+- @cities ||= []
 %h6.titulo Datos de Origen:
 
 .form-group.row
