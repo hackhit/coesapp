@@ -6,11 +6,14 @@
     %label.col-form-label.col-md-12= title
   .form-group.row
     .col-md-12
-      - group.map do |k,v| 
-        %label.btn.btn-secondary.btn-sm
-          - if field_name.eql? 'estado_inscripcion'
-            - setValue = (grade and grade.estado_inscripcion.eql? k)
-          - else
-            - setValue = (grade and grade.tipo_ingreso.eql? k)
-          = radio_button_tag "[grado]#{field_name}", k, setValue, required: true
-          = k.upcase
+      - if group.eql? 'periodos'
+        = select(:grado, :iniciado_periodo_id, Periodo.all.order(inicia: :desc).collect{|o| [ o.id, o.id ] }, { include_blank: '--- Seleccione Periodo ---'}, {class: "form-control", required: true})
+      - else
+        - group.map do |k,v| 
+          %label.btn.btn-secondary.btn-sm
+            - if field_name.eql? 'estado_inscripcion'
+              - setValue = (grade and grade.estado_inscripcion.eql? k)
+            - else
+              - setValue = (grade and grade.tipo_ingreso.eql? k)
+            = radio_button_tag "[grado]#{field_name}", k, setValue, required: true
+            = k.upcase
