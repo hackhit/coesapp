@@ -68,7 +68,7 @@
 .form-group.row
   = f.label 'pais_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'País de Nacimiento:'
   .col-md-9
-    = f.select(:pais_nacimiento, Usuario.naciones.keys.sort, { include_blank: 'Selecciona País de Nacimiento...'}, {class: "dynamic form-control text_field", required: true, id: 'selectCountry', children: 'selectCity', url: '/usuarios/countries'})
+    = f.select(:pais_nacimiento, Usuario.naciones.keys.sort, { include_blank: 'Selecciona País de Nacimiento...'}, {class: "dynamic form-control text_field", required: true, id: 'selectCountry', children: 'selectCity', url: countries_usuarios_path})
 
 .form-group.row
   = f.label 'ciudad_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Ciudad de Nacimiento:'
@@ -92,11 +92,11 @@
 .form-group.row
   %label.col-form-label.col-md-3.text-right Ubicación:
   .col-md-3
-    = select_tag '[direccion]estado', options_for_select(Usuario.venezuela.map{|a| a["estado"]}), class: 'dynamic form-control text-field', required: true, include_blank: '--- Seleccione Estado ---', id: 'selectEstado', children: 'selectMunicipio', url: '/usuarios/estados'
+    = select_tag '[direccion]estado', options_for_select(Usuario.venezuela.map{|a| a["estado"]}), class: 'dynamic form-control text-field', required: true, include_blank: '--- Seleccione Estado ---', id: 'selectEstado', children: 'selectMunicipio', url: estados_usuarios_path
   .col-md-3
-    = select_tag '[direccion]municipio', options_for_select([]), class: 'form-control text-field', required: true, include_blank: '--- Seleccione Municipio ---', id: 'selectMunicipio', childer: 'selectParroquia', url: '/usuarios/estados'
+    = select_tag '[direccion]municipio', options_for_select([]), class: 'form-control text-field', required: true, include_blank: '--- Seleccione Municipio ---', id: 'selectMunicipio', childer: 'selectParroquia', url: estados_usuarios_path
   .col-md-3
-    = select_tag '[direccion]ciudad', options_for_select([]), class: 'form-control text-field', required: true, include_blank: '--- Seleccione Parroquia ---', id: 'selectParroquia', url: '/usuarios/estados'
+    = select_tag '[direccion]ciudad', options_for_select([]), class: 'form-control text-field', required: true, include_blank: '--- Seleccione Parroquia ---', id: 'selectParroquia', url: estados_usuarios_path
     =# text_field_tag '[direccion]ciudad', nil, class: 'text-field form-control', placeholder: 'Ciudad/Parroquia', required: true
   = render 'layouts/cargando'
 .form-group.row
@@ -173,7 +173,7 @@
       let estado = $('#selectEstado').val();
 
       console.log(estado)
-      sendData('/usuarios/getParroquias', 'selectParroquia', {term: $(this).val(), estado: estado})
+      sendData(`#{getParroquias_usuarios_path}`, 'selectParroquia', {term: $(this).val(), estado: estado})
 
     })
 
