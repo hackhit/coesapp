@@ -1,8 +1,8 @@
 module Admin
   class UsuariosController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_administrador, except: [:edit, :update]
-    before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :edit, :update]
+    before_action :filtro_administrador, except: [:edit, :update, :countries, :estados, :getParroquias]
+    before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :edit, :update, :countries, :estados, :getParroquias]
     before_action :filtro_super_admin!, only: [:set_administrador, :set_estudiante, :set_profesor]
     before_action :filtro_ninja!, only: [:destroy, :delete_rol]
 
@@ -264,7 +264,7 @@ module Admin
                 info_bitacora_crud Bitacora::CREACION, e
                 historialplan = Historialplan.new
                 historialplan.estudiante_id = e.id
-                historialplan.periodo_id = current_periodo.id
+                historialplan.periodo_id = params[:periodo][:id]
                 historialplan.plan_id = params[:plan][:id]
 
                 if historialplan.save
@@ -322,23 +322,29 @@ module Admin
     # PATCH/PUT /usuarios/1
     # PATCH/PUT /usuarios/1.json
     def update
-      respond_to do |format|
-        if current_admin
-          if current_admin.maestros?
-            url_back = @usuario
-          else
-            url_back = principal_admin_index_path
-          end
-        elsif current_usuario.estudiante
-          url_back = principal_estudiante_index_path
-        elsif current_usuario.profesor
-          url_back = principal_profesor_index_path
+
+      if current_admin
+        if current_admin.maestros?
+          url_back = @usuario
+        else
+          url_back = principal_admin_index_path
         end
-        if @usuario.update(usuario_params)
-          # @usuario.estudiante.direccion.create(direccion_params)
-          info_bitacora_crud Bitacora::ACTUALIZACION, @usuario
-          
-          Direccion.create(direccion_params)
+      elsif current_usuario.estudiante
+        url_back = principal_estudiante_index_path
+      elsif current_usuario.profesor
+        url_back = principal_profesor_index_path
+      end
+      if @usuario.update(usuario_params)
+        # @usuario.estudiante.direccion.create(direccion_params)
+        info_bitacora_crud Bitacora::ACTUALIZACION, @usuario
+        flash[:success] = "Usuario actualizado con éxito"
+        if @usuario.estudiante
+          if direccion = Direccion.where(estudiante_id: @usuario.estudiante.id)
+            
+            flash[:info] = 'Dirección actualizada' if direccion.update(direccion_params)
+          else
+            flash[:info] = 'Nueva dirección agregada a los registros del sistema.' if Direccion.create(direccion_params)
+          end
 
           @usuario.estudiante.discapacidad = params[:estudiante][:discapacidad]
           @usuario.estudiante.titulo_universitario = params[:estudiante][:titulo_universitario]
@@ -346,19 +352,16 @@ module Admin
           @usuario.estudiante.titulo_anno = params[:date][:year]
 
           if @usuario.estudiante.save
-            flash[:success] = "Usuario actualizado con éxito"
+            flash[:success] = "Estudiante actualizado con éxito"
           else
             flash[:error] = "No se pudo completar la actualización. Por favor revise e inténtelo nuevamente: #{@usuario.estudiante.errors.full_messages.to_sentence}}."
           end
-          format.html { redirect_back fallback_location: url_back}
-          format.json { render :show, status: :ok, location: @usuario }
-        else
-          flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}."
-
-          format.html { redirect_to url_back }
-          format.json { render json: @usuario.errors, status: :unprocessable_entity }
-        end
+        end  
+        
+      else
+        flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}."
       end
+      redirect_to url_back
     end
 
     # DELETE /usuarios/1
