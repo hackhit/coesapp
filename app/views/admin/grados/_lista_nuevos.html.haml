@@ -56,9 +56,10 @@
 
           initComplete: function () {
 
-              this.api().columns(1).every( function () {
+
+              this.api().columns(3).every( function () {
                   var column = this;
-                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos las Escuelas</option></select>')
+                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Tipo de Ingreso</option></select>')
                       .insertAfter( $(`#table#{estado}_info`) )
                       .on( 'change', function () {
                           var val = $.fn.dataTable.util.escapeRegex(
@@ -74,7 +75,6 @@
                       select.append( '<option value="'+d+'">'+d+'</option>' )
                   } );
               } );
-
 
               this.api().columns(2).every( function () {
                   var column = this;
@@ -95,9 +95,10 @@
                   } );
               } );
 
-              this.api().columns(3).every( function () {
+
+              this.api().columns(1).every( function () {
                   var column = this;
-                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Tipo de Ingreso</option></select>')
+                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos las Escuelas</option></select>')
                       .insertAfter( $(`#table#{estado}_info`) )
                       .on( 'change', function () {
                           var val = $.fn.dataTable.util.escapeRegex(
@@ -113,6 +114,8 @@
                       select.append( '<option value="'+d+'">'+d+'</option>' )
                   } );
               } );
+
+              
           }
 
 
