@@ -31,7 +31,7 @@
   .col-md-10
     =# collection_select(nil, :escuela_id , Escuela.all, :id, :descripcion, {prompt: "--- Seleccione Escuela ---"}, {class: 'text-field form-control', required: true})
 
-    = select(nil, :escuela_id, Escuela.all.collect{|o| [ o.descripcion, o.id ] }, { include_blank: '--- Selecciona Escuela ---'}, {class: "form-control", required: true, onchange: 'set_escuela()'})
+    = select(nil, :escuela_id, current_admin.escuelas.collect{|o| [ o.descripcion, o.id ] }, { include_blank: '--- Selecciona Escuela ---'}, {class: "form-control", required: true, onchange: 'set_escuela()'})
 
 
 
