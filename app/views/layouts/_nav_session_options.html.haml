@@ -3,8 +3,9 @@
     %a.nav-link.dropdown-toggle.btn-link#SesionDropdown{"aria-expanded" => :false, "aria-haspopup" => :true, "data-toggle" => :dropdown, href: "#", role: :button}
       = current_usuario.nombres
     .dropdown-menu.dropdown-menu-right.float-right{"aria-labelledby" => "SessionDropdown", style: "position:absolute;"}
-      = link_to 'Datos Personales', edit_usuario_path(session[:usuario_ci]), class: 'dropdown-item'
-      .dropdown-divider
+      - unless current_estudiante
+        = link_to 'Datos Personales', edit_usuario_path(session[:usuario_ci]), class: 'dropdown-item'
+        .dropdown-divider
       = link_to 'Cerrar Sesión', cerrar_sesion_visitors_path, class: 'dropdown-item'
 
 - else

@@ -1,5 +1,5 @@
 = form_for @usuario, html: { class: 'form-horizontal' } do |f|
-  - if @usuario.estudiante
+  - if current_estudiante and @usuario.estudiante
     = render partial: '/admin/estudiantes/form_new_estudiante', locals: {f: f}
   - else
 
@@ -82,10 +82,9 @@
       = f.label :sexo, class: 'col-form-label col-md-2'
       .col-md-10
         =# f.select(:sexo, Usuario.sexos.keys.map {|sexo| [sexo.titleize,sexo]},{}, {class: 'text-field form-control', required: true})
-
         - Usuario.sexos.map do |k,v| 
           %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-            = radio_button_tag '[usuario]sexo', k, false, required: true
+            = radio_button_tag '[usuario]sexo', k, (@usuario and @usuario.sexo.eql? k), required: true
             = k[0].upcase
   .form-group.row
     .col-md-offset-2.col-md-10
