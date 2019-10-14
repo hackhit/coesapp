@@ -2,16 +2,120 @@
 =# btn_toggle_download 'btn btn-sm btn-outline-secondary',href , 'Descargar listado de graduandos (CSV)', "#{glyph 'file'}"
 %br
 %table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table{id: "table#{estado}"}
-	%thead
-		%tr
-			%th Estudiante
-			%th Escuela
-			%th Plan
-			%th Opciones
-	%tbody
-		- grados.each do |grado|
-			%tr
-				%td= link_to grado.estudiante.descripcion, usuario_path(grado.estudiante_id)
-				%td= grado.escuela.descripcion
-				%td= grado.ultimo_plan ? grado.ultimo_plan.id : grado.plan_id
-				%td
+  %thead
+    %tr
+      %th Estudiante
+      %th Escuela
+      %th Plan
+      %th Ingreso
+  %tbody
+    - grados.each do |grado|
+      %tr
+        %td= link_to grado.estudiante.descripcion, usuario_path(grado.estudiante_id)
+        %td= grado.escuela.descripcion
+        %td= grado.ultimo_plan ? grado.ultimo_plan.id : grado.plan_id
+        %td= grado.tipo_ingreso
+
+
+:javascript
+
+  $(document).ready(function() {
+      $(`#table#{estado}`).DataTable( {
+          // scrollY: 410, #da error
+          fixedHeader: {
+              header: true,
+              footer: true
+          },
+          dom: '<"html5buttons"B>lTfgitp',
+          buttons: [
+            {extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `estudiantes_nuevos_#{current_periodo.id}`, className: 'btn btn-sm btn-outline-info'}
+          ], 
+          paging: false,
+          language: 
+            {
+              "sZeroRecords":    "No se encontraron resultados",
+              "sEmptyTable":     "Ningún dato disponible en esta tabla",
+              "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+              "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+              "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+              "sSearch":         "Buscar:",
+              "sInfoThousands":  ",",
+              "sLoadingRecords": "Cargando...",
+              "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+              },
+              "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+              }
+            },
+
+
+          initComplete: function () {
+
+              this.api().columns(1).every( function () {
+                  var column = this;
+                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos las Escuelas</option></select>')
+                      .insertAfter( $(`#table#{estado}_info`) )
+                      .on( 'change', function () {
+                          var val = $.fn.dataTable.util.escapeRegex(
+                              $(this).val()
+                          );
+   
+                          column
+                              .search( val ? '^'+val+'$' : '', true, false )
+                              .draw();
+                      } );
+   
+                  column.data().unique().sort().each( function ( d, j ) {
+                      select.append( '<option value="'+d+'">'+d+'</option>' )
+                  } );
+              } );
+
+
+              this.api().columns(2).every( function () {
+                  var column = this;
+                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Planes</option></select>')
+                      .insertAfter( $(`#table#{estado}_info`) )
+                      .on( 'change', function () {
+                          var val = $.fn.dataTable.util.escapeRegex(
+                              $(this).val()
+                          );
+   
+                          column
+                              .search( val ? '^'+val+'$' : '', true, false )
+                              .draw();
+                      } );
+   
+                  column.data().unique().sort().each( function ( d, j ) {
+                      select.append( '<option value="'+d+'">'+d+'</option>' )
+                  } );
+              } );
+
+              this.api().columns(3).every( function () {
+                  var column = this;
+                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Tipo de Ingreso</option></select>')
+                      .insertAfter( $(`#table#{estado}_info`) )
+                      .on( 'change', function () {
+                          var val = $.fn.dataTable.util.escapeRegex(
+                              $(this).val()
+                          );
+   
+                          column
+                              .search( val ? '^'+val+'$' : '', true, false )
+                              .draw();
+                      } );
+   
+                  column.data().unique().sort().each( function ( d, j ) {
+                      select.append( '<option value="'+d+'">'+d+'</option>' )
+                  } );
+              } );
+          }
+
+
+
+      } );
+  } );

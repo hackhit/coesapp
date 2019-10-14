@@ -48,7 +48,7 @@
   %label.col-form-label.col-md-2.text-right Periodo:
   .col-md-10
 
-    = grouped_collection_select :periodo, :id, Escuela.all, :periodos, :descripcion, :id, :id, {:prompt => "--- Selecciona el periodod a partir de cúal inicia el estudiante ---"}, { class: 'form-control hideble', required: true}
+    = grouped_collection_select :periodo, :id, Escuela.all, :periodos, :descripcion, :id, :id, {:prompt => "--- Selecciona el periodo a partir de cúal inicia el estudiante ---"}, { class: 'form-control hideble', required: true}
 
 .form-group.row
   %label.col-form-label.col-md-2.text-right Tipo de Ingreso:
