@@ -50,15 +50,38 @@ module Admin
     end
 
     def agregar
-      @estudiante = Estudiante.find params[:id]
-      @escuela = Escuela.find params[:escuela_id]
+      # unless @estudiante = Estudiante.where(params[:id]).first
+      #   @estudiante = Estudiante.create!(usuario_id: params[:id])
+      #   # params[:grado]['estudiante_id'] = params[:id]
+      # end
 
-      if @estudiante.grados.create(escuela_id: params[:escuela_id])
-        info_bitacora "Registrado en Escuela #{@escuela.descripcion}", Bitacora::CREACION, @estudiante
-        flash[:success] = '¡Registro exitoso en escuela!'
+      @estudiante = Estudiante.find_or_create_by(usuario_id: params[:id]) 
+      params[:grado]
+      if params[:grado]['estado_inscripcion']
+        params[:grado]['inscrito_ucv'] = 1
       else
-        flash[:danger] = 'Error al intentar registrar en Escuela. Por favor verifique e inténtelo de nuevo.'
+        params[:grado]['inscrito_ucv'] = 0
       end
+      p params[:grado]['estado_inscripcion']
+      p params[:grado]
+      grado = Grado.new(grado_params)
+
+              
+      if grado.save!
+        info_bitacora "Registrado en Escuela #{grado.escuela.descripcion}", Bitacora::CREACION, @estudiante
+        info_bitacora_crud Bitacora::CREACION, grado
+        historialplan = Historialplan.new
+        historialplan.estudiante_id = @estudiante.id
+        historialplan.periodo_id = grado.iniciado_periodo_id
+        historialplan.plan_id = grado.plan_id
+        flash[:success] = '¡Registro exitoso en escuela!'
+
+        if historialplan.save!
+          info_bitacora_crud Bitacora::CREACION, historialplan
+          flash[:success] = 'Estudiante creado con éxito.' 
+        end
+      end
+
       redirect_to usuario_path(@estudiante.id)
 
     end
@@ -125,7 +148,7 @@ module Admin
     private
 
       def grado_params
-        params.require(:grado).permit(:escuela_id, :estudiante_id, :estado, :culminacion_periodo_id, :tipo_ingreso, :inscrito_ucv, :estado_inscripcion, :iniciado_periodo_id)
+        params.require(:grado).permit(:escuela_id, :estudiante_id, :estado, :culminacion_periodo_id, :tipo_ingreso, :inscrito_ucv, :estado_inscripcion, :iniciado_periodo_id, :plan_id)
       end
 
   end

@@ -1,4 +1,3 @@
-= hidden_field_tag '[grado]iniciado_periodo_id', current_periodo.id
 .form-group.row
   = f.label :ci, class: 'col-form-label col-md-2 text-right ', value: 'Cédula de Identidad:'
   .col-md-10
@@ -25,53 +24,5 @@
   .col-md-10
     = f.phone_field :telefono_movil, class: 'text-field form-control'
 
-=# DATOS DE ESCUELA
-.form-group.row
-  %label.col-form-label.col-md-2.text-right Escuela:
-  .col-md-10
-    =# collection_select(nil, :escuela_id , Escuela.all, :id, :descripcion, {prompt: "--- Seleccione Escuela ---"}, {class: 'text-field form-control', required: true})
 
-    = select(nil, :escuela_id, current_admin.escuelas.collect{|o| [ o.descripcion, o.id ] }, { include_blank: '--- Selecciona Escuela ---'}, {class: "form-control", required: true, onchange: 'set_escuela()'})
-
-
-
-=# DATOS DE PLAN
-.form-group.row
-  %label.col-form-label.col-md-2.text-right Plan:
-  .col-md-10
-    =# collection_select(nil, 'plan[id]' , Plan.all, :id, :descripcion_completa_con_escuela, {prompt: "-- Seleccione Plan --"}, {class: 'text-field form-control', required: true})
-
-    = grouped_collection_select :plan, :id, Escuela.all, :planes, :descripcion, :id, :descripcion_completa, {:prompt => "--- Selecciona plan ---"}, { class: 'form-control hideble', required: true}
-
-=# DATOS DE PERIODO
-.form-group.row
-  %label.col-form-label.col-md-2.text-right Periodo:
-  .col-md-10
-
-    = grouped_collection_select :periodo, :id, Escuela.all, :periodos, :descripcion, :id, :id, {:prompt => "--- Selecciona el periodo a partir de cúal inicia el estudiante ---"}, { class: 'form-control hideble', required: true}
-
-.form-group.row
-  %label.col-form-label.col-md-2.text-right Tipo de Ingreso:
-  .col-md-10
-    - Grado.tipos_ingreso.map do |k,v| 
-      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-        = radio_button_tag '[grado]tipo_ingreso', k, false, required: true, class: ''
-        = "#{k.upcase}"
-
-.form-group.row
-  %label.col-form.label.col-md-2.text-right Reincorporado:
-  .col-md-10= check_box_tag '[grado]estado_inscripcion', :reincorporado, false
-
-:javascript
-  function set_escuela(){
-
-    $("#plan_id optgroup").hide();
-    $("#periodo_id optgroup").hide();
-    var escuela = $("#escuela_id option:selected").text();
-    $("#plan_id optgroup[label='" + escuela + "']").show();
-    $("#periodo_id optgroup[label='" + escuela + "']").show();
-    $("#plan_id").val('');
-    $("#periodo_id").val('');
-    $("#plan_id").show();
-    $("#periodo_id").show();
-  }
+= render '/admin/grados/form'

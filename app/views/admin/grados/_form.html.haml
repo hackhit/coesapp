@@ -1,0 +1,51 @@
+- unless action_name.eql? 'new' and @usuario
+  = hidden_field_tag '[grado]estudiante_id', @usuario.id
+
+=# DATOS DE ESCUELA
+.form-group.row
+  %label.col-form-label.col-md-2.text-right Escuela:
+  .col-md-10
+    =# collection_select(nil, :escuela_id , Escuela.all, :id, :descripcion, {prompt: "--- Seleccione Escuela ---"}, {class: 'text-field form-control', required: true})
+
+    = select(:grado, :escuela_id, @escuelas_disponibles.collect{|o| [ o.descripcion, o.id ] }, { include_blank: '--- Selecciona Escuela ---'}, {class: "form-control", required: true, onchange: 'set_escuela()'})
+
+=# DATOS DE PLAN
+.form-group.row
+  %label.col-form-label.col-md-2.text-right Plan:
+  .col-md-10
+    =# collection_select(nil, 'plan[id]' , Plan.all, :id, :descripcion_completa_con_escuela, {prompt: "-- Seleccione Plan --"}, {class: 'text-field form-control', required: true})
+
+    = grouped_collection_select :grado, :plan_id, @escuelas_disponibles, :planes, :descripcion, :id, :descripcion_completa, {:prompt => "--- Selecciona plan ---"}, { class: 'form-control hideble', required: true}
+
+=# DATOS DE PERIODO
+.form-group.row
+  %label.col-form-label.col-md-2.text-right Periodo:
+  .col-md-10
+
+    = grouped_collection_select :grado, :iniciado_periodo_id, @escuelas_disponibles, :periodos, :descripcion, :id, :id, {:prompt => "--- Selecciona el periodo a partir de cúal inicia el estudiante ---"}, { class: 'form-control hideble', required: true}
+
+.form-group.row
+  %label.col-form-label.col-md-2.text-right Tipo de Ingreso:
+  .col-md-10
+    - Grado.tipos_ingreso.map do |k,v| 
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+        = radio_button_tag '[grado]tipo_ingreso', k, false, required: true, class: ''
+        = "#{k.upcase}"
+
+.form-group.row
+  %label.col-form.label.col-md-2.text-right Reincorporado:
+  .col-md-10= check_box_tag '[grado]estado_inscripcion', :reincorporado, false
+
+:javascript
+  function set_escuela(){
+
+    $("#grado_plan_id optgroup").hide();
+    $("#grado_iniciado_periodo_id optgroup").hide();
+    var escuela = $("#grado_escuela_id option:selected").text();
+    $("#grado_plan_id optgroup[label='" + escuela + "']").show();
+    $("#grado_iniciado_periodo_id optgroup[label='" + escuela + "']").show();
+    $("#grado_plan_id").val('');
+    $("#grado_iniciado_periodo_id").val('');
+    $("#grado_plan_id").show();
+    $("#grado_iniciado_periodo_id").show();
+  }

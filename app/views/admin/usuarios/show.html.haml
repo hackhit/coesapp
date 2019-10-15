@@ -11,9 +11,9 @@
 - if current_admin.altos?
   %h6.alert.alert-success.p-2
     Agregar Rol:
+    = render '/admin/usuarios/set_estudiante'
     - unless @estudiante
-      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'setEstudiante'
-      = render '/admin/usuarios/set_estudiante'
+      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'agregarGrado'
     - if !@administrador and current_admin.maestros?
       = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'setAdmin'
       = render '/admin/usuarios/set_administrador'
@@ -50,8 +50,9 @@
               - activeTab = (session[:tabEscuela].eql? escuela.id) ? 'active' : ''  
               = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: "nav-item nav-link #{activeTab}", onclick: "setTab('tabEscuela', '#{escuela.id}')"
             .nav-item.nav-link
-              = simple_icon_toggle_modal 'Registrar en Escuela', 'success', 'plus', 'agregar_escuela'
-              = render '/admin/estudiantes/agregar_escuela'
+              - if @escuelas_disponibles.any?
+                = simple_icon_toggle_modal "Registrar a #{@nickname} en escuela", 'success', 'plus', 'agregarGrado'
+                
             - if @estudiante #and @estudiante.valido_para_inscribir? current_periodo.id
               .nav-item= btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
         .tab-content

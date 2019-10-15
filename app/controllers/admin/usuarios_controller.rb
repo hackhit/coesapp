@@ -77,8 +77,13 @@ module Admin
       e = Estudiante.new
       e.usuario_id = @usuario.id
       if e.save
-        e.grados.create(escuela_id: params[:estudiante][:escuela_id])
         flash[:success] = 'Estudiante registrado con éxito'
+        if e.grados.create(escuela_id: params[:estudiante][:escuela_id])
+          flash[:success] = 'Estudiante inscrito en la escuela con éxito' 
+        else
+          flash[:error] = "El estudiante no se pudo inscribir en la escula seleccionada. Error: # #{e.errors.full_messages.to_sentence}"
+        end
+
         # OJO: No se puede implementar esto ya que no se tiene información sobre a partir de cuando (PERIODO_ID) es el plan
         # Debería incorporarse al form de set estudiante y al form de create usuario el plan y apartir de cuando
 
@@ -208,8 +213,8 @@ module Admin
         @inactivo = "<span class='label label-warning'>Inactivo</span>" if @estudiante.inactivo? current_periodo.id
         ids = @estudiante.inscripcionsecciones.select{|ins| ins.pci_pendiente_por_asociar?}.collect{|i| i.id}
         @secciones_pci_pendientes = Inscripcionseccion.where(id: ids)#select{|ins| ins.pci_pendiente_por_asociar?}.ids
-
       end  
+      @escuelas_disponibles = @estudiante ? current_admin.escuelas.reject{|es| @estudiante.escuelas.include? es} : current_admin.escuelas
 
       if @profesor
         @secciones_pendientes = @profesor.secciones.sin_calificar.order('periodo_id DESC, numero ASC')
@@ -233,6 +238,7 @@ module Admin
         @titulo = "Nuevo Usuario"
       end
       @usuario = Usuario.new
+      @escuelas_disponibles = @estudiante ? current_admin.escuelas.reject{|es| @estudiante.escuelas.include? es} : current_admin.escuelas
     end
 
     # GET /usuarios/1/edit
@@ -250,8 +256,9 @@ module Admin
           if params[:estudiante_set]
 
             if e = Estudiante.create(usuario_id: @usuario.id) #, escuela_id: params[:estudiante][:escuela_id])
-              params[:grado]['escuela_id'] = params[:escuela_id]
+              # params[:grado]['escuela_id'] = params[:escuela_id]
               params[:grado]['estudiante_id'] = e.id
+              # params[:grado]['iniciado_periodo_id'] = params[:periodo_id]
 
               if params[:grado]['estado_inscripcion']
                 params[:grado]['inscrito_ucv'] = 1
@@ -259,13 +266,13 @@ module Admin
                 params[:grado]['inscrito_ucv'] = 0
               end
               grado = Grado.new(grado_params)
-              grado.plan_id = params[:plan][:id]
+              # grado.plan_id = params[:plan][:id]
               if grado.save!
                 info_bitacora_crud Bitacora::CREACION, e
                 historialplan = Historialplan.new
                 historialplan.estudiante_id = e.id
-                historialplan.periodo_id = params[:periodo][:id]
-                historialplan.plan_id = params[:plan][:id]
+                historialplan.periodo_id = params[:grado][:iniciado_periodo_id]
+                historialplan.plan_id = params[:grado][:plan_id]
 
                 if historialplan.save
                   info_bitacora_crud Bitacora::CREACION, historialplan
@@ -391,7 +398,7 @@ module Admin
       end
 
       def grado_params
-        params.require(:grado).permit(:escuela_id, :estudiante_id, :estado, :culminacion_periodo_id, :tipo_ingreso, :inscrito_ucv, :estado_inscripcion, :iniciado_periodo_id)
+        params.require(:grado).permit(:escuela_id, :estudiante_id, :estado, :culminacion_periodo_id, :tipo_ingreso, :inscrito_ucv, :estado_inscripcion, :iniciado_periodo_id, :plan_id)
       end
 
       def direccion_params
