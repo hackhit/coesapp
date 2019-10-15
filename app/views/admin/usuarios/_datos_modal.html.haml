@@ -6,6 +6,11 @@
 					%h5 Atención:
 					actualice sus datos para una mejor experiencia
 				= render 'layouts/messages'
+				- if current_usuario.ci.eql? current_usuario.password
+					.alert.alert-warning
+						%b Atención:
+						Cambie su contraseña a un valor distinto a la cédula de identidad
+
 				%h5#myModalLabel.text-center
 					Actualizar Datos
 				.modal-body
