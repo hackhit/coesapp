@@ -1,12 +1,17 @@
 class Grado < ApplicationRecord
 	#CONSTANTES:
 
+	self.primary_keys = :estudiante_id, :escuela_id
+
 	TIPO_INGRESOS = ['OPSU', 'OPSU/COLA', 'SIMADI', 'ACTA CONVENIO (DOCENTE)', 'ACTA CONVENIO (ADMIN)', 'ACTA CONVENIO (OBREO)', 'DISCAPACIDAD', 'DIPLOMATICO', 'COMPONENTE DOCENTE', 'EQUIVALENCIA', 'ART. 25 (CULTURA)', 'ART. 25 (DEPORTE)', 'CAMBIO: 158', 'ART. 6', 'EGRESADO', 'SAMUEL ROBINSON', 'DELTA AMACURO', 'AMAZONAS', 'PRODES', 'CREDENCIALES']
 
 	# ASOCIACIONES:
 	belongs_to :escuela
 	belongs_to :estudiante
 	belongs_to :plan, optional: true 
+	
+	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
+
 	# VALIDACIONES
 
 	validates :tipo_ingreso, presence: true 
@@ -29,20 +34,33 @@ class Grado < ApplicationRecord
 	scope :de_las_escuelas, lambda {|escuelas_ids| where("escuela_id IN (?)", escuelas_ids)}
 	scope :con_inscripciones, lambda { joins(:inscripcionsecciones) }
 
+	scope :sin_plan, -> {where(plan_id: nil)}
+
 	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado]
 
 	enum estado_inscripcion: [:preinscrito, :confirmado, :reincorporado]
 
 	enum tipo_ingreso: TIPO_INGRESOS
 
-	def inscripciones
-		Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)
-	end
+	# def inscripciones
+	# 	Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)
+	# end
 
 	# Así debe ser inscripciones
 	# def inscripciones
 	# 	Inscripcionseccion.where("estudiante_id = ? and escuelas_id = ?", estudiante_id, escuela_id)
 	# end
+
+	def self.update_plan_id_to_last_grade
+
+		Grado.sin_plan.each do |g|
+			if ultimo_plan = g.estudiante.ultimo_plan_de_escuela(g.escuela_id)
+				g.plan_id = ultimo_plan.plan_id
+				print g.save ? '.' : 'X'
+			end
+		end
+		
+	end
 
 
 	def total_creditos_cursados periodos_ids = nil

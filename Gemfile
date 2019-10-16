@@ -14,6 +14,7 @@ gem 'haml-rails'
 gem 'jquery-rails'
 gem 'mysql2', '~> 0.4.10'
 gem 'bootstrap-sass-extras'
+gem 'composite_primary_keys', '=11.2'
 
 # gem 'pdf-writer', :git => 'https://github.com/metaskills/pdf-writer.git'
 # gem 'iconv'
