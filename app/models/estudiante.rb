@@ -124,7 +124,7 @@ class Estudiante < ApplicationRecord
 	end
 
 	def ultimo_plan_de_escuela escuela_id
-		grados.where(escuela_id: escuela_id).ultimo_plan
+		grados.where(escuela_id: escuela_id).first.ultimo_plan
 	end
 
 	def ultimo_plan
