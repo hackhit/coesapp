@@ -55,25 +55,6 @@ class Grado < ApplicationRecord
 		plan ? plan.descripcion_completa : 'Sin plan asociado'
 	end
 
-	def self.update_plan_id_to_last_grade
-		print 'Iniciando'
-		total_grados = Grado.sin_plan.count
-		total_cambiados = 0
-		Grado.sin_plan.each do |g|
-			print '.'
-			if ultimo_plan = g.estudiante.ultimo_plan_de_escuela(g.escuela_id)
-				p 'Estoy dentro'
-				g.plan_id = ultimo_plan.plan_id
-				if g.save
-					total_cambiados += 1
-				end
-			end
-		end
-		p "       Total Grados: #{total_grados}      ".center(200, '#')
-		p "    Total Cambiados: #{total_cambiados}   ".center(200, '#')
-	end
-
-
 	def total_creditos_cursados periodos_ids = nil
 		if periodos_ids
 			inscripciones.total_creditos_cursados_en_periodos periodos_ids
