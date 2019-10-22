@@ -8,7 +8,7 @@ class Grado < ApplicationRecord
 	# ASOCIACIONES:
 	belongs_to :escuela
 	belongs_to :estudiante
-	belongs_to :plan, optional: true 
+	belongs_to :plan#, optional: true 
 	
 	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
 
@@ -51,15 +51,26 @@ class Grado < ApplicationRecord
 	# 	Inscripcionseccion.where("estudiante_id = ? and escuelas_id = ?", estudiante_id, escuela_id)
 	# end
 
-	def self.update_plan_id_to_last_grade
+	def plan_descripcion
+		plan ? plan.descripcion_completa : 'Sin plan asociado'
+	end
 
+	def self.update_plan_id_to_last_grade
+		print 'Iniciando'
+		total_grados = Grado.sin_plan.count
+		total_cambiados = 0
 		Grado.sin_plan.each do |g|
+			print '.'
 			if ultimo_plan = g.estudiante.ultimo_plan_de_escuela(g.escuela_id)
+				p 'Estoy dentro'
 				g.plan_id = ultimo_plan.plan_id
-				print g.save ? '.' : 'X'
+				if g.save
+					total_cambiados += 1
+				end
 			end
 		end
-		
+		p "       Total Grados: #{total_grados}      ".center(200, '#')
+		p "    Total Cambiados: #{total_cambiados}   ".center(200, '#')
 	end
 
 
@@ -113,13 +124,21 @@ class Grado < ApplicationRecord
 	end
 
 
-	def id
-		"#{escuela_id}-#{estudiante_id}"
+	def id_flat
+		id.join("-") #{}"#{escuela_id}-#{estudiante_id}"
 	end
 
 	def ultimo_plan
-		hp = estudiante.historialplanes.por_escuela(escuela_id).order('periodo_id DESC').first
-		hp ? hp.plan : nil
+		aux = plan
+		if plan.nil?
+			hp = estudiante.historialplanes.por_escuela(escuela_id).order('periodo_id DESC').first	
+			aux = hp ? hp.plan : nil
+		else
+			aux = plan
+		end
+		return aux 
+		# hp = estudiante.historialplanes.por_escuela(escuela_id).order('periodo_id DESC').first
+		# hp ? hp.plan : nil
 	end
 
 	def descripcion_ultimo_plan

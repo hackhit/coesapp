@@ -5,6 +5,9 @@ class Historialplan < ApplicationRecord
 	belongs_to :periodo
 	belongs_to :plan
 
+	belongs_to :grado, foreign_key: [:estudiante_id, :escuela_id]
+
+
 	# OJO: Esta debe ser la validación: Que un estudiante no tenga más de un plan para un mismo periodo
 	validates_uniqueness_of :estudiante_id, scope: [:periodo_id], message: 'El estudiante ya tiene un plan para el periodo', field_name: false
 

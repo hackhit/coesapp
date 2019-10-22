@@ -246,22 +246,23 @@ class ExportarPdf
 
 		pdf = Prawn::Document.new(top_margin: 20)
 
-		estudiante = Estudiante.find id
+		grado = Grado.find [id,escuela_id]
+		estudiante = grado.estudiante #Estudiante.find id
 		# periodos = estudiante.escuela.periodos.order("inicia DESC")
-		escuela = Escuela.find escuela_id
+		escuela = grado.escuela #Escuela.find escuela_id
 
-		inscripcionsecciones = estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: escuela_id)
+		inscripciones = grado.inscripciones#estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: escuela_id)
 
-		periodo_ids = inscripcionsecciones.joins(:seccion).group("secciones.periodo_id").count.keys
+		periodo_ids = inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
 		periodos = Periodo.where(id: periodo_ids)
 
 		encabezado_central_con_logo pdf, "Historia Académica", escuela
 		#titulo
 		pdf.text "<b>Fecha de Emisión:</b> #{I18n.l(Time.now, format: '%a, %d / %B / %Y (%I:%M%p)')}", size: 9, inline_format: true
 		pdf.text "<b>Cédula:</b> #{estudiante.usuario_id}", size: 9, inline_format: true
-		hplan = estudiante.ultimo_plan_de_escuela(escuela_id)
-		hplan = hplan ? hplan.plan.descripcion_completa : "--"
-		pdf.text "<b>Plan:</b> #{hplan}", size: 9, inline_format: true
+		#hplan = grado.ultimo_plan #estudiante.ultimo_plan_de_escuela(escuela_id)
+		#hplan = hplan ? hplan.plan.descripcion_completa : "--"
+		pdf.text "<b>Plan:</b> #{grado.ultimo_plan}", size: 9, inline_format: true
 		pdf.text "<b>Alumno:</b> #{estudiante.usuario.apellido_nombre.upcase}", size: 9, inline_format: true
 
 		periodos.each do |periodo|
@@ -269,14 +270,14 @@ class ExportarPdf
 			pdf.text "<b>Periodo:</b> #{periodo.id}", size: 10, inline_format: true
 			pdf.move_down 5	
 
-			# inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).order("secciones.asignatura_id")
-			inscripcionsecciones_periodos = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
-			# inscripcionsecciones_periodos = inscripcionsecciones.del_periodo periodo.id
+			# inscripciones_del_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).order("secciones.asignatura_id")
+			inscripciones_del_periodo = inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			# inscripciones_del_periodo = inscripcionsecciones.del_periodo periodo.id
 
-			if inscripcionsecciones_periodos.count > 0
+			if inscripciones_del_periodo.count > 0
 				data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Créditos</b>", "<b>Sección</b>", "<b>Convocatoria</b>", "<b>Calif. Num.</b>", "<b>Calif. alfa</b>"]]
 
-				inscripcionsecciones_periodos.each do |h|
+				inscripciones_del_periodo.each do |h|
 
 					sec = h.seccion
 					asig = sec.asignatura
@@ -406,7 +407,7 @@ class ExportarPdf
 			data << [i, 
 			h.estudiante_id,
 			h.estudiante.usuario.apellido_nombre,
-			h.estudiante.ultimo_plan,
+			h.grado.ultimo_plan,
 			estado_a_letras,
 			tipo_calificacion_id,
 			h.colocar_nota_final,
@@ -418,7 +419,7 @@ class ExportarPdf
 				data << [i, 
 				h.estudiante_id,
 				h.estudiante.usuario.apellido_nombre,
-				h.estudiante.ultimo_plan,
+				h.grado.ultimo_plan,
 				h.estado_a_letras,
 				h.tipo_calificacion_id,
 				h.colocar_nota_posterior,

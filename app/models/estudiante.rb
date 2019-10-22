@@ -124,8 +124,7 @@ class Estudiante < ApplicationRecord
 	end
 
 	def ultimo_plan_de_escuela escuela_id
-		historialplanes.joins(:plan).where("planes.escuela_id = ?", escuela_id).order('periodo_id DESC').first
-		
+		grados.where(escuela_id: escuela_id).ultimo_plan
 	end
 
 	def ultimo_plan
