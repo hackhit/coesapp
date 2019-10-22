@@ -8,7 +8,9 @@ class Grado < ApplicationRecord
 	# ASOCIACIONES:
 	belongs_to :escuela
 	belongs_to :estudiante
-	belongs_to :plan#, optional: true 
+	belongs_to :plan, optional: true
+
+	has_many :historialplanes, foreign_key: [:estudiante_id, :escuela_id]
 	
 	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
 
@@ -125,7 +127,7 @@ class Grado < ApplicationRecord
 	def descripcion_ultimo_plan
 		plan = ultimo_plan
 		if plan
-			plan.descripcion_filtro
+			plan.descripcion_completa_con_escuela
 		else
 			'Sin Plan Asignado'
 		end

@@ -89,9 +89,15 @@ module Admin
     # DELETE /historialplan/1.json
     def destroy
       usuario = @historialplan.estudiante.usuario
-      @historialplan.destroy
-      info_bitacora "Estudiante Desvinculado al plan #{@historialplan.plan_id}", Bitacora::ELIMINACION, @historialplan.estudiante
+      grado = @historialplan.grado
 
+      if @historialplan.destroy
+        aux = grado.estudiante.historialplanes.por_escuela(grado.escuela_id).order('periodo_id DESC').first
+        grado.plan_id = aux ? aux.plan_id : nil
+        if grado.save
+          info_bitacora "Estudiante desvinculado del plan #{@historialplan.plan_id}", Bitacora::ELIMINACION, @historialplan.estudiante
+        end
+      end
       respond_to do |format|
         format.html { redirect_to @historialplan.estudiante.usuario, notice: 'Historial de Plan de Estudio eliminado satisfactoriamente.'}
         format.json { head :ok }

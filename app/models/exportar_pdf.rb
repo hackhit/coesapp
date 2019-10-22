@@ -260,9 +260,9 @@ class ExportarPdf
 		#titulo
 		pdf.text "<b>Fecha de Emisión:</b> #{I18n.l(Time.now, format: '%a, %d / %B / %Y (%I:%M%p)')}", size: 9, inline_format: true
 		pdf.text "<b>Cédula:</b> #{estudiante.usuario_id}", size: 9, inline_format: true
-		#hplan = grado.ultimo_plan #estudiante.ultimo_plan_de_escuela(escuela_id)
-		#hplan = hplan ? hplan.plan.descripcion_completa : "--"
-		pdf.text "<b>Plan:</b> #{grado.ultimo_plan}", size: 9, inline_format: true
+		# hplan = grado.ultimo_plan #estudiante.ultimo_plan_de_escuela(escuela_id)
+		# hplan = grado.ultimo_plan ? grado.ultimo_plan.descripcion_completa : "--"
+		pdf.text "<b>Plan:</b> #{grado.plan_descripcion}", size: 9, inline_format: true
 		pdf.text "<b>Alumno:</b> #{estudiante.usuario.apellido_nombre.upcase}", size: 9, inline_format: true
 
 		periodos.each do |periodo|
@@ -303,7 +303,7 @@ class ExportarPdf
 
 		pdf.move_down 10
 
-		resumen pdf, inscripcionsecciones
+		resumen pdf, inscripciones
 		# pdf.start_page_numbering(250, 15, 7, nil, to_utf16("#{t.day} / #{t.month} / #{t.year}       Página: <PAGENUM> de <TOTALPAGENUM>"), 1)
 
 		pdf.move_down 20
