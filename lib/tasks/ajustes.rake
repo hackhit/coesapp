@@ -9,7 +9,7 @@ task :update_grado_to_last_plain => :environment do
 			print '.  '
 			if aux = g.estudiante.ultimo_plan_de_escuela(g.escuela_id)
 				p 'Estoy dentro'
-				g.plan_id = aux.plan_id
+				g.plan_id = aux.id
 				if g.save
 					total_cambiados += 1
 				end
