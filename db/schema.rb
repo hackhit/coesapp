@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_07_115058) do
+ActiveRecord::Schema.define(version: 2019_10_21_235145) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -191,6 +191,9 @@ ActiveRecord::Schema.define(version: 2019_10_07_115058) do
     t.string "plan_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "escuela_id"
+    t.index ["escuela_id"], name: "index_historialplanes_on_escuela_id"
+    t.index ["estudiante_id", "escuela_id", "periodo_id", "plan_id"], name: "unique_historial", unique: true
     t.index ["estudiante_id", "periodo_id"], name: "index_unique", unique: true
     t.index ["estudiante_id"], name: "index_historialplanes_on_estudiante_id"
     t.index ["periodo_id"], name: "index_historialplanes_on_periodo_id"
@@ -439,6 +442,7 @@ ActiveRecord::Schema.define(version: 2019_10_07_115058) do
   add_foreign_key "grados", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "grados", "periodos", column: "culminacion_periodo_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "grados", "periodos", column: "iniciado_periodo_id", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "historialplanes", "escuelas"
   add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", name: "historialplanes_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade

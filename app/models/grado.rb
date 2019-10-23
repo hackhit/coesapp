@@ -1,12 +1,19 @@
 class Grado < ApplicationRecord
 	#CONSTANTES:
 
+	self.primary_keys = :estudiante_id, :escuela_id
+
 	TIPO_INGRESOS = ['OPSU', 'OPSU/COLA', 'SIMADI', 'ACTA CONVENIO (DOCENTE)', 'ACTA CONVENIO (ADMIN)', 'ACTA CONVENIO (OBREO)', 'DISCAPACIDAD', 'DIPLOMATICO', 'COMPONENTE DOCENTE', 'EQUIVALENCIA', 'ART. 25 (CULTURA)', 'ART. 25 (DEPORTE)', 'CAMBIO: 158', 'ART. 6', 'EGRESADO', 'SAMUEL ROBINSON', 'DELTA AMACURO', 'AMAZONAS', 'PRODES', 'CREDENCIALES']
 
 	# ASOCIACIONES:
 	belongs_to :escuela
 	belongs_to :estudiante
-	belongs_to :plan, optional: true 
+	belongs_to :plan, optional: true
+
+	has_many :historialplanes, foreign_key: [:estudiante_id, :escuela_id]
+	
+	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
+
 	# VALIDACIONES
 
 	validates :tipo_ingreso, presence: true 
@@ -29,21 +36,26 @@ class Grado < ApplicationRecord
 	scope :de_las_escuelas, lambda {|escuelas_ids| where("escuela_id IN (?)", escuelas_ids)}
 	scope :con_inscripciones, lambda { joins(:inscripcionsecciones) }
 
+	scope :sin_plan, -> {where(plan_id: nil)}
+
 	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado]
 
 	enum estado_inscripcion: [:preinscrito, :confirmado, :reincorporado]
 
 	enum tipo_ingreso: TIPO_INGRESOS
 
-	def inscripciones
-		Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)
-	end
+	# def inscripciones
+	# 	Inscripcionseccion.joins(:escuela).where("estudiante_id = ? and escuelas.id = ?", estudiante_id, escuela_id)
+	# end
 
 	# Así debe ser inscripciones
 	# def inscripciones
 	# 	Inscripcionseccion.where("estudiante_id = ? and escuelas_id = ?", estudiante_id, escuela_id)
 	# end
 
+	def plan_descripcion
+		plan ? plan.descripcion_completa : 'Sin plan asociado'
+	end
 
 	def total_creditos_cursados periodos_ids = nil
 		if periodos_ids
@@ -95,19 +107,27 @@ class Grado < ApplicationRecord
 	end
 
 
-	def id
-		"#{escuela_id}-#{estudiante_id}"
+	def id_flat
+		id.join("-") #{}"#{escuela_id}-#{estudiante_id}"
 	end
 
 	def ultimo_plan
-		hp = estudiante.historialplanes.por_escuela(escuela_id).order('periodo_id DESC').first
-		hp ? hp.plan : nil
+		aux = plan
+		if plan.nil?
+			hp = estudiante.historialplanes.por_escuela(escuela_id).order('periodo_id DESC').first	
+			aux = hp ? hp.plan : nil
+		else
+			aux = plan
+		end
+		return aux 
+		# hp = estudiante.historialplanes.por_escuela(escuela_id).order('periodo_id DESC').first
+		# hp ? hp.plan : nil
 	end
 
 	def descripcion_ultimo_plan
 		plan = ultimo_plan
 		if plan
-			plan.descripcion_filtro
+			plan.descripcion_completa_con_escuela
 		else
 			'Sin Plan Asignado'
 		end

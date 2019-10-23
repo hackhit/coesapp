@@ -34,8 +34,15 @@ module Admin
       @historialplan = Historialplan.new(historialplan_params)
       begin
         if @historialplan.save
-          info_bitacora "Estudiante Vinculado al plan #{@historialplan.plan_id}", Bitacora::ACTUALIZACION, @historialplan.estudiante
+          grado = @historialplan.grado
+          grado.plan_id = @historialplan.plan_id
           flash[:success] = 'Plan de Estudio Agregado.'
+          if grado.save
+            flash[:success] = 'Plan de estudio agregado a la carrera del estudiante'
+            info_bitacora "Estudiante Vinculado al plan #{@historialplan.plan_id}", Bitacora::ACTUALIZACION, @historialplan.estudiante
+          else
+            flash[:danger] = 'No se puedo actualizar el plan con la carrera'
+          end
         else
           flash[:danger] = "#{@historialplan.errors.full_messages.join' | '}"
         end
@@ -50,8 +57,15 @@ module Admin
     def update
       anterior = @historialplan.plan_id
       if @historialplan.update(historialplan_params)
-        info_bitacora "Cambio de plan de #{anterior} a #{@historialplan.plan_id}", Bitacora::ACTUALIZACION, @historialplan.estudiante
         flash[:success] = 'Historial de Planes de Estudios actualizado con éxito.'
+        grado = @historialplan.grado
+        grado.plan_id = @historialplan.plan_id
+        if grado.save
+          info_bitacora "Cambio de plan de #{anterior} a #{@historialplan.plan_id}", Bitacora::ACTUALIZACION, @historialplan.estudiante
+          flash[:success] = 'Historial de Planes de Estudios actualizado con éxito. Se actualizó el plan de la carrera'
+        else
+          flash[:danger] = 'Error al intentar actualizar el plan de la carrera. Por favor revise e intente nuevamente.'
+        end
       else
         flash[:danger] = "Error al intentar actualizar la sección: #{@seccion.errors.full_messages.to_sentence}."
       end
@@ -75,9 +89,15 @@ module Admin
     # DELETE /historialplan/1.json
     def destroy
       usuario = @historialplan.estudiante.usuario
-      @historialplan.destroy
-      info_bitacora "Estudiante Desvinculado al plan #{@historialplan.plan_id}", Bitacora::ELIMINACION, @historialplan.estudiante
+      grado = @historialplan.grado
 
+      if @historialplan.destroy
+        aux = grado.estudiante.historialplanes.por_escuela(grado.escuela_id).order('periodo_id DESC').first
+        grado.plan_id = aux ? aux.plan_id : nil
+        if grado.save
+          info_bitacora "Estudiante desvinculado del plan #{@historialplan.plan_id}", Bitacora::ELIMINACION, @historialplan.estudiante
+        end
+      end
       respond_to do |format|
         format.html { redirect_to @historialplan.estudiante.usuario, notice: 'Historial de Plan de Estudio eliminado satisfactoriamente.'}
         format.json { head :ok }
@@ -92,7 +112,7 @@ module Admin
     end    
 
     def historialplan_params
-      params.require(:historialplan).permit(:estudiante_id, :plan_id, :periodo_id)
+      params.require(:historialplan).permit(:estudiante_id, :plan_id, :periodo_id, :escuela_id)
     end
 
 

@@ -86,19 +86,19 @@
                       %th Periodo de la Inscripción: 
                       %td= grado.iniciado_periodo_id
                       %td
-                        = link_to 'javascript:void(0)', onclick: "$('#cambiarPeriodoInscripcion#{grado.id}').modal()" do
+                        = link_to 'javascript:void(0)', onclick: "$('#cambiarPeriodoInscripcion#{grado.id_flat}').modal()" do
                           = glyph 'pencil'
                     %tr
                       %th Estado de la Inscripción: 
                       %td= grado.estado_inscripcion.upcase
                       %td
-                        = link_to 'javascript:void(0)', onclick: "$('#cambiarEstadoInscripcion#{grado.id}').modal()" do
+                        = link_to 'javascript:void(0)', onclick: "$('#cambiarEstadoInscripcion#{grado.id_flat}').modal()" do
                           = glyph 'pencil'
                     %tr
                       %th Tipo de Ingreso:
                       %td= grado.tipo_ingreso
                       %td
-                        = link_to 'javascript:void(0)', onclick: "$('#cambiarTipoIngreso#{grado.id}').modal()" do
+                        = link_to 'javascript:void(0)', onclick: "$('#cambiarTipoIngreso#{grado.id_flat}').modal()" do
                           = glyph 'pencil'
                     %tr
                       %th Inscrito en la UCV:
@@ -113,13 +113,13 @@
               %br
               - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Estado de Inscripción:', group: Grado.estado_inscripciones, field_name: 'estado_inscripcion', grade: grado}
               - url = cambiar_inscripcion_grado_path
-              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarEstadoInscripcion#{grado.id}", title: 'Cambiar Inscripción', content: content}
+              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarEstadoInscripcion#{grado.id_flat}", title: 'Cambiar Inscripción', content: content}
               - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Tipo Inscripción:', group: Grado.tipos_ingreso, field_name: 'tipo_ingreso', grade: grado}
-              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarTipoIngreso#{grado.id}", title: 'Cambiar Tipo Ingreso', content: content}
+              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarTipoIngreso#{grado.id_flat}", title: 'Cambiar Tipo Ingreso', content: content}
               - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Período de Inicio:', group: 'periodos', field_name: '', grade: grado}
-              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarPeriodoInscripcion#{grado.id}", title: 'Cambiar Tipo Ingreso', content: content}
+              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarPeriodoInscripcion#{grado.id_flat}", title: 'Cambiar Periodo', content: content}
 
-              = render '/admin/historialplanes/index'
+              = render partial: '/admin/historialplanes/index', locals: {grado: grado}
               = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
 
               -# @curso = @estudiante.grados.where(escuela_id: escuela.id).first

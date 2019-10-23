@@ -1,3 +1,28 @@
+desc 'Actualizacion de grados, se asocia al plan del estudiante-escuela'
+task :update_grado_to_last_plain => :environment do
+
+	begin
+		print 'Iniciando'
+		total_grados = Grado.sin_plan.count
+		total_cambiados = 0
+		Grado.sin_plan.each do |g|
+			print '.  '
+			if aux = g.estudiante.ultimo_plan_de_escuela(g.escuela_id)
+				print 'x'
+				g.plan_id = aux.id
+				if g.save
+					total_cambiados += 1
+				end
+			end
+		end
+		p "       Total Grados: #{total_grados}      ".center(200, '#')
+		p "    Total Cambiados: #{total_cambiados}   ".center(200, '#')		
+	rescue Exception => e
+		print e
+	end
+end
+
+
 desc 'Actualizacion para asignar a Inscripcionseccion una grado'
 
 task :actualizar_estado_grado_a_posible_graduando => :environment do
