@@ -28,6 +28,10 @@ module Admin
 			inscripcion = Inscripcionseccion.find params[:id]
 			inscripcion.pci_escuela_id = params[:pci_escuela_id]
 
+			inscripcion.escuela_id = params[:pci_escuela_id]
+
+			inscripcion.pci = true
+
 			# respond_to do |format|
 			# 	if inscripcion.save
 			# 		format.json {render json: {html: '¡Asociación exitosa!'}, status: :ok}
@@ -36,6 +40,8 @@ module Admin
 
 			if inscripcion.save
 				flash[:success] = '¡Escuela asignada a Pci!'
+			else
+				flash[:error] = "Error: #{inscripcion.errors.full_messages.to_sentence}"
 			end
 			redirect_back fallback_location: inscripcion.estudiante.usuario 
 		end

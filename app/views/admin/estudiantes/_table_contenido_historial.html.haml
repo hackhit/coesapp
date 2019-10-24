@@ -51,9 +51,10 @@
 				- if current_admin and controller_name.eql? 'usuarios'
 
 					- if inscripcion.foranea? 
-						= form_tag(set_escuela_pci_inscripcionsecciones_path, id: "form_#{inscripcion.id}") do
-							= hidden_field_tag :id, inscripcion.id
-							%td.align-middle= collection_select nil, :pci_escuela_id, @estudiante.escuelas, :id, :descripcion, {selected: inscripcion.pci_escuela_id, prompt: 'Asignar Escuela'}, { class: '', style: 'width:150px', onChange: "$(this).parent().submit()"}
+						%td.align-middle
+							= form_tag(set_escuela_pci_inscripcionsecciones_path, id: "form_#{inscripcion.id}") do
+								= hidden_field_tag :id, inscripcion.id
+								= collection_select nil, :pci_escuela_id, @estudiante.escuelas, :id, :descripcion, {selected: inscripcion.pci_escuela_id, prompt: 'Asignar Escuela'}, { class: '', style: 'width:150px', onChange: "$(this).parent().submit()"}
 					%td.align-middle
 						= link_to(inscripcion, class: 'tooltip-btn', method: :delete, data: {toggle: :tooltip, confirm: "Se perderan los datos de las notas, ¿Está seguro de esta acción?" }, title: 'Eliminar Inscripción') do
 							.text-danger= glyph 'trash'
