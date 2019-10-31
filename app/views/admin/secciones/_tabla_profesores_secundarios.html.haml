@@ -8,7 +8,7 @@
 						= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data-confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
 							%i.glyphicon.glyphicon-minus.text-danger
 
-	- if current_admin.maestros?
+	- if current_admin.mas_altos?
 		%tr
 			%td
 				= simple_toggle 'javascript:void(0)', '', 'Agregar Profesor Secundario', 'success', 'plus', "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Agregar Profesor secunadrio a #{seccion.descripcion}');$('#profesor > #secundario').val(true);$('#editar_profesor').modal();"
