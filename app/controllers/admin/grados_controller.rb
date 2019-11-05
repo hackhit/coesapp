@@ -67,19 +67,25 @@ module Admin
       grado = Grado.new(grado_params)
 
               
-      if grado.save!
+      if grado.save
         info_bitacora "Registrado en Escuela #{grado.escuela.descripcion}", Bitacora::CREACION, @estudiante
         info_bitacora_crud Bitacora::CREACION, grado
         historialplan = Historialplan.new
-        historialplan.estudiante_id = @estudiante.id
         historialplan.periodo_id = grado.iniciado_periodo_id
         historialplan.plan_id = grado.plan_id
+        historialplan.grado = grado
+        # historialplan.estudiante_id = @estudiante.id
+        # historialplan.escuela_id = grado.escuela_id
         flash[:success] = '¡Registro exitoso en escuela!'
 
-        if historialplan.save!
+        if historialplan.save
           info_bitacora_crud Bitacora::CREACION, historialplan
-          flash[:success] = 'Estudiante creado con éxito.' 
+          flash[:success] = 'Carrera creada con éxito.' 
+        else
+          flash[:error] = "Error al intentar guardar el historial del plan: #{historialplan.errors.full_messages.to_sentence}"
         end
+      else
+        flash[:error] = "Error al intentar guardar la Carrera: #{grado.errors.full_messages.to_sentence}"
       end
 
       redirect_to usuario_path(@estudiante.id)
