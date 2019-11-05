@@ -242,7 +242,7 @@ class ExportarPdf
 		return pdf
 	end
 
-	def self.hacer_kardex id, escuela_id
+	def self.hacer_kardex id, escuela_id, alfabetico=false
 
 		pdf = Prawn::Document.new(top_margin: 20)
 
@@ -271,7 +271,11 @@ class ExportarPdf
 			pdf.move_down 5	
 
 			# inscripciones_del_periodo = inscripcionsecciones.joins(:seccion).where("secciones.periodo_id": periodo.id).order("secciones.asignatura_id")
-			inscripciones_del_periodo = inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			if alfabetico
+				inscripciones_del_periodo = inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.descripcion(periodo.id) <=> b.descripcion(periodo.id)}
+			else
+				inscripciones_del_periodo = inscripciones.joins(:seccion).where("secciones.periodo_id": periodo.id).sort {|a,b| a.asignatura.id <=> b.asignatura.id}
+			end
 			# inscripciones_del_periodo = inscripcionsecciones.del_periodo periodo.id
 
 			if inscripciones_del_periodo.count > 0
