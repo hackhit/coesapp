@@ -1,0 +1,21 @@
+%h6= @horario.id
+%h6= @horario.titulo
+%h6= @horario.seccion.descripcion
+
+= link_to 'Editar', edit_horario_path(@horario), class: 'btn btn-secondary'
+
+%table.table
+	%thead
+		%tr
+			%th Día
+			%th Entrada
+			%th Salida
+			%th Profe Responsable
+	%tbody
+		- @horario.bloquehorarios.each do |bh| 
+			%tr
+				%td= bh.dia
+				%td= bh.entrada
+				%td= bh.salida
+				%td= bh.profesor.descripcion if bh.profesor
+	

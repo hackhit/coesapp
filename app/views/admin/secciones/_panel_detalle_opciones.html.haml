@@ -1,3 +1,13 @@
+- if seccion.horario
+	= link_to edit_horario_path(seccion.horario), class: 'badge badge-primary btn-sm ml-md-1 p-md-1', role: :button do
+		= content_tag(:i, "", class: " icon-white")
+		= glyph 'time'
+		= glyph 'pencil'
+- else
+	= link_to "#{new_horario_path}?seccion_id=#{seccion.id}", class: 'badge badge-success btn-sm ml-md-1 p-md-1', role: :button do
+		= content_tag(:i, "", class: " icon-white")
+		= glyph 'time'
+		= glyph 'plus'
 
 - if current_admin
 	%b.tooltip-btn{'data_toggle': 'tooltip', title: 'Descargar Acta PDF'}

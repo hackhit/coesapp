@@ -7,6 +7,10 @@ class Seccion < ApplicationRecord
 	belongs_to :profesor, optional: true 
 	has_one :escuela, through: :asignatura
 
+	has_one :horario
+	
+
+
 	has_many :inscripcionsecciones, dependent: :delete_all
 	accepts_nested_attributes_for :inscripcionsecciones
 	has_many :estudiantes, through: :inscripcionsecciones, source: :estudiante
@@ -94,6 +98,28 @@ class Seccion < ApplicationRecord
 		total_periodos = Periodo.where("id like '%C%' || id like '%E%'").count
 		p " Total Periodos restantes: #{total_periodos} ".center(200, "^")
 
+	end
+
+
+
+	def todos_profes
+		ids = profesores.ids
+		ids.push profesor_id
+
+		Profesor.where(usuario_id: ids)
+	end
+
+	def unico_profesor?
+		(not profesor.nil? and profesores.count.eql? 0)
+	end
+
+	def mas_de_uno?
+		profesores_totales > 1
+	end
+
+	def profesores_totales
+		aux = profesor_id ? 1 : 0
+		aux += profesores.count
 	end
 
 	def total_calificados

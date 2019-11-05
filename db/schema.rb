@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_21_235145) do
+ActiveRecord::Schema.define(version: 2019_10_30_165230) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -52,6 +52,20 @@ ActiveRecord::Schema.define(version: 2019_10_21_235145) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["usuario_id"], name: "index_bitacoras_on_usuario_id"
+  end
+
+  create_table "bloquehorarios", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "dia"
+    t.time "entrada"
+    t.time "salida"
+    t.string "profesor_id"
+    t.bigint "horario_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["horario_id", "dia", "entrada"], name: "index_bloquehorarios_on_horario_id_and_dia_and_entrada", unique: true
+    t.index ["horario_id", "dia", "salida"], name: "index_bloquehorarios_on_horario_id_and_dia_and_salida", unique: true
+    t.index ["horario_id"], name: "index_bloquehorarios_on_horario_id"
+    t.index ["profesor_id"], name: "fk_rails_26c329a0d2"
   end
 
   create_table "carteleras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -198,6 +212,13 @@ ActiveRecord::Schema.define(version: 2019_10_21_235145) do
     t.index ["estudiante_id"], name: "index_historialplanes_on_estudiante_id"
     t.index ["periodo_id"], name: "index_historialplanes_on_periodo_id"
     t.index ["plan_id"], name: "index_historialplanes_on_plan_id"
+  end
+
+  create_table "horarios", primary_key: "seccion_id", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "titulo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["seccion_id"], name: "index_horarios_on_seccion_id"
   end
 
   create_table "inscripcionperiodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -426,6 +447,8 @@ ActiveRecord::Schema.define(version: 2019_10_21_235145) do
   add_foreign_key "asignaturas", "catedras", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "departamentos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "asignaturas", "tipoasignaturas", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bloquehorarios", "horarios", primary_key: "seccion_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bloquehorarios", "profesores", primary_key: "usuario_id", on_update: :cascade, on_delete: :nullify
   add_foreign_key "catedradepartamentos", "catedras", on_update: :cascade, on_delete: :cascade
   add_foreign_key "catedradepartamentos", "departamentos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "combinaciones", "departamentos", column: "idioma1_id", on_update: :cascade, on_delete: :cascade
@@ -446,6 +469,7 @@ ActiveRecord::Schema.define(version: 2019_10_21_235145) do
   add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", name: "historialplanes_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "horarios", "secciones"
   add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "periodos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", on_update: :cascade, on_delete: :cascade

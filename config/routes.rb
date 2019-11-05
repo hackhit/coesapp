@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  
-
   resources :visitors, only: [:index] do
     collection do
       post :validar
@@ -17,7 +15,7 @@ Rails.application.routes.draw do
   end
 
   scope module: :admin do
-
+    resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones, :bloquehorarios, :horarios
     resources :grados, only: :index do
       member do
         post 'agregar'
@@ -68,7 +66,6 @@ Rails.application.routes.draw do
       post 'actualizar_idiomas'
     end
 
-    resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones
 
     resources :periodos, :planes, :departamentos, :catedras, :escuelas
     resources :escuelas do 
@@ -82,7 +79,7 @@ Rails.application.routes.draw do
 
     end
     
-    resources :inscripcionperiodos, :historialplanes
+    resources :inscripcionperiodos, :historialplanes, :dias
 
     resources :catedradepartamentos, only: [:create, :destroy]
 

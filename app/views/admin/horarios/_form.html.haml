@@ -1,0 +1,71 @@
+
+
+=# select_tag :profesor_id, options_from_collection_for_select(@profesores, :id, :descripcion_apellido, nil), class: 'form-control form-control-sm', required: true, include_blank: '--- Ninguna Selección ---'
+
+= form_for @horario, html: { class: 'form-horizontal', id: 'formHorarios' } do |f|
+  #BloquesHorarios
+  = f.hidden_field :seccion_id
+  .form-group
+    .col-md-offset-2.col-md-10
+      = link_to t('.cancel', default: t("helpers.links.cancel")), bloquehorarios_path, class: 'btn btn-secondary'
+      = f.submit 'Guardar y Volver a COES-FHE', class: 'btn btn-primary'
+      = f.submit 'Guardar e ir a la siquiente sección', class: 'btn btn-primary'
+
+:javascript
+
+  $("#BloquesHorarios").jqs({
+
+    daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+    hour: 12,
+    days: 5,
+    periodDuration: 15,
+    periodOptions: false, 
+
+    onAddPeriod: function(e){
+      
+      console.log(`#{@profesores.any?}`)
+      let aux;
+      if(`#{@profesores.any?}` == 'true'){
+        aux = `#{collection_select nil, 'bloquehorario[profesores][]', @profesores, :id, :descripcion, {selected: ((@profesores.count.eql?(1)) ? @profesores.first.id : ''), include_blank: 'Ningún Profe'}, { class: ' form-control form-control-sm'}}`
+
+      }else{
+        aux = `<b> Sin profesor asignado a la sección </b>`
+      }
+      e.find('.jqs-period-container').append(aux);
+
+    }
+
+  });
+
+  $('#formHorarios').submit(function() {
+    $('.jqs-period-time').each(function(){
+      let e = $(this)[0]
+      let dia = e.closest('td').cellIndex;
+      let horas = e.innerText;
+
+      $('<input>').attr({
+        name: 'bloquehorario[dias][]',
+        value: dia
+      }).appendTo('#formHorarios');
+
+      $('<input>').attr({
+        name: 'bloquehorario[horas][]',
+        value: horas
+      }).appendTo('#formHorarios');
+
+    })
+  });
+
+  function getValue(e){
+    let day = e.closest('td').cellIndex;
+    let hours = e.innerText;
+    return `${day}/${hours}`
+  }
+
+  function setValue(value){
+    $('<input>').attr({
+        id: 'bloques_ids_',
+        name: 'bloques_ids[]',
+        value: value
+    }).appendTo('#formHorarios');
+  }

@@ -1,0 +1,49 @@
+#horarios
+
+= form_for @bloquehorario, html: { class: 'form-horizontal', id: 'bloqueshorarios' } do |f|
+  = f.hidden_field :seccion_id
+  .form-group
+    = f.label :profesor_id, class: 'control-label col-md-2'
+    .col-md-10
+      = f.text_field :profesor_id, class: 'text_field form-control'
+  .form-group
+    = f.label :plantillahorario_id, class: 'control-label col-md-2'
+    .col-md-10
+      = f.text_field :plantillahorario_id, class: 'text_field form-control'
+  .form-group
+    .col-md-offset-2.col-md-10
+      = f.submit nil, class: 'btn btn-primary'
+      = link_to t('.cancel', default: t("helpers.links.cancel")), bloquehorarios_path, class: 'btn btn-default'
+
+:javascript
+
+  $("#horarios").jqs({
+
+    daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+    hour: 12,
+    days: 5,
+    periodDuration: 15,
+    periodOptions: false
+
+  });
+
+  $('#bloqueshorarios').submit(function() {
+    $('.jqs-period-time').each(function(){
+      let aux = getValue($(this)[0]);
+      setValue(aux);
+    })
+  });
+
+  function getValue(e){
+    let day = e.closest('td').cellIndex;
+    let hours = e.innerText;
+    return `${day}/${hours}`
+  }
+
+  function setValue(value){
+    $('<input>').attr({
+        id: 'bloques_ids_',
+        name: 'bloques_ids[]',
+        value: value
+    }).appendTo('#bloqueshorarios');
+  }
