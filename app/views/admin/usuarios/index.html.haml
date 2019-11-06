@@ -20,7 +20,7 @@
                 - u.estudiante.grados.each do |grado|
                   %tr
                     %td
-                      = "Estudiante (#{u.estudiante.descripcion})"
+                      Estudiante
                       - if u.estudiante.inscrito? current_periodo.id, grado.escuela_id
 
                         = simple_toggle_rounded "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{grado.escuela_id}", 'I', 'Descargar Constancia de Inscripción' , 'success', 'download'
