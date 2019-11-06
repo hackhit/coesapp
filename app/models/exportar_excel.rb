@@ -10,24 +10,34 @@ class ExportarExcel
 		return ic_ignore.iconv(valor).to_s
 	end
 
-	def self.listado_estudiantes periodo_id, estado='completo' 
+	def self.listado_estudiantes periodo_id, estado='completo', escuela_id=nil, plan_id=nil, ingreso=nil
 
 		require 'spreadsheet'
 
 		@book = Spreadsheet::Workbook.new
 		@sheet = @book.create_worksheet :name => "estudiantes_#{estado}_#{periodo_id}"
 
-		@sheet.row(0).concat ['#', 'CEDULA', 'NAC.', 'EDO. CIVIL', 'GÉNERO', 'TLF. FIJO', 'TLF. MÓVIL', 'CORREO-E', 'NAC. AÑO', 'NAC. MES', 'NAC. DÍA', 'ESTADO', 'MUNICIPIO', 'CIUDAD', 'URBANIZACIÓN/SECTOR', 'CALLE/AVENIDA', 'TIPO VIVIENDA']
+		@sheet.row(0).concat ['#', 'ESCUELA', 'PLAN', 'INGRESO','CEDULA', 'NAC.', 'EDO. CIVIL', 'GÉNERO', 'TLF. FIJO', 'TLF. MÓVIL', 'CORREO-E', 'NAC. AÑO', 'NAC. MES', 'NAC. DÍA', 'ESTADO', 'MUNICIPIO', 'CIUDAD', 'URBANIZACIÓN/SECTOR', 'CALLE/AVENIDA', 'TIPO VIVIENDA']
 
 		grados = Grado.iniciados_en_periodo(periodo_id)#.limit(50)
 		estado = estado.singularize
 		if estado != 'completo'
-			if estado.eql? 'nuevo'
-				grados = grados.reject{|g| !g.inscripciones.any?}
-			else
+			unless estado.eql? 'nuevo'
 				indice = Grado.estado_inscripciones[estado]
 				grados = grados.where(estado_inscripcion: indice)
 			end
+			grados = grados.where(escuela_id: escuela_id) if escuela_id
+			grados = grados.joins(:plan).where("planes.id = '#{plan_id}'") if plan_id
+
+			unless ingreso.blank?
+				indice = Grado.tipos_ingreso[ingreso]
+				grados = grados.where(tipo_ingreso: indice)
+			end
+
+			if estado.eql? 'nuevo'
+				grados = grados.reject{|g| !g.inscripciones.any?}
+			end
+
 		end 
 
 		grados.each_with_index do |grado,i|
@@ -36,7 +46,10 @@ class ExportarExcel
 			usuario = estudiante.usuario
 			obj = []
 
-			obj.push i
+			obj.push i+1
+			obj.push grado.escuela.descripcion
+			obj.push grado.plan_descripcion_corta
+			obj.push grado.tipo_ingreso
 			obj.push grado.estudiante_id
 			obj.push usuario.nacionalidad ? usuario.nacionalidad[0..2] : ''
 			obj.push usuario.estado_civil

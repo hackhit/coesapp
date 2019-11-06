@@ -1,5 +1,7 @@
 - href = "#{listado_completo_estudiante_descargar_path(1)}?estado=#{estado.downcase}"
-= btn_toggle_download 'btn btn-sm btn-outline-success float-left mr-2', href, "listado detallado de #{estado}", "#{glyph 'file'} Listado Completo"
+= btn_toggle_download 'btn btn-sm btn-outline-success float-left mr-2', href, "listado detallado de #{estado}", "#{glyph 'file'} Listado Completo", "reviewParams($(this), '#{estado.downcase}')"
+
+
 %table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table{id: "table#{estado}"}
   %thead
     %tr
@@ -17,6 +19,14 @@
 
 
 :javascript
+  function reviewParams(e, edo){
+    let escuela = $(`#escuela_${edo}`).val()
+    let plan = $(`#plan_${edo}`).val()
+    let ingreso = $(`#ingreso_${edo}`).val()
+
+    e.attr({href: `${e.attr("href")}&escuela=${escuela}&plan=${plan}&ingreso=${ingreso}`})
+  }
+
 
   $(document).ready(function() {
       $('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
@@ -63,7 +73,7 @@
 
               this.api().columns(3).every( function () {
                   var column = this;
-                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Tipo de Ingreso</option></select>')
+                  var select = $('<select id="ingreso_#{estado.downcase}" style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Tipo de Ingreso</option></select>')
                       .insertAfter( $(`#table#{estado}_info`) )
                       .on( 'change', function () {
                           var val = $.fn.dataTable.util.escapeRegex(
@@ -82,7 +92,7 @@
 
               this.api().columns(2).every( function () {
                   var column = this;
-                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Planes</option></select>')
+                  var select = $('<select id="plan_#{estado.downcase}" style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos los Planes</option></select>')
                       .insertAfter( $(`#table#{estado}_info`) )
                       .on( 'change', function () {
                           var val = $.fn.dataTable.util.escapeRegex(
@@ -102,7 +112,7 @@
 
               this.api().columns(1).every( function () {
                   var column = this;
-                  var select = $('<select style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos las Escuelas</option></select>')
+                  var select = $(`<select id="escuela_#{estado.downcase}" style="width: 300px;" class="form-control form-control-sm my-3"><option value="">Todos las Escuelas</option></select>`)
                       .insertAfter( $(`#table#{estado}_info`) )
                       .on( 'change', function () {
                           var val = $.fn.dataTable.util.escapeRegex(

@@ -158,8 +158,8 @@ module ApplicationHelper
 		btn_toggle 'btn-outline-success', icon, href, title_tooltip, value
 	end
 
-	def btn_toggle_download classes, href, title_tooltip, value
-		btn_toggle classes, 'download-alt', href, "Descargar #{title_tooltip}", value
+	def btn_toggle_download classes, href, title_tooltip, value, onclick_action=nil
+		btn_toggle classes, 'download-alt', href, "Descargar #{title_tooltip}", value, onclick_action
 	end
 
 	def btn_toggle type, icon, href, title_tooltip, value, onclick_action=nil

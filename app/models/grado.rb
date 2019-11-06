@@ -53,6 +53,10 @@ class Grado < ApplicationRecord
 	# 	Inscripcionseccion.where("estudiante_id = ? and escuelas_id = ?", estudiante_id, escuela_id)
 	# end
 
+	def plan_descripcion_corta
+		plan ? plan.descripcion_completa : '--'
+	end
+
 	def plan_descripcion
 		plan ? plan.descripcion_completa : 'Sin plan asociado'
 	end
