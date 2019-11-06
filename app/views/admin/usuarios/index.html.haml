@@ -3,7 +3,6 @@
   %thead
     %tr
       %th.span3 Roles
-      %th Plan
       %th.span4 Nombre y Apellido
       %th Cédula
       - if current_admin.ninja? 
@@ -18,24 +17,24 @@
           %table.table        
             - u.roles.each do |rol| 
               - if rol.eql? 'Estudiante'
-                - u.estudiante.escuelas.each do |es| 
+                - u.estudiante.grados.each do |grado|
                   %tr
                     %td
-                      -# planes = u.estudiante.planes.where(escuela_id: es.id).collect{|pa| pa.id}.to_sentence
-                      = "Estudiante (#{es.descripcion})"
-                      - if u.estudiante.inscrito? current_periodo.id, es.id
+                      = "Estudiante (#{u.estudiante.descripcion})"
+                      - if u.estudiante.inscrito? current_periodo.id, grado.escuela_id
 
-                        = simple_toggle_rounded "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{es.id}", 'I', 'Descargar Constancia de Inscripción' , 'success', 'download'
+                        = simple_toggle_rounded "#{constancia_inscripcion_descargar_path(u)}?escuela_id=#{grado.escuela_id}", 'I', 'Descargar Constancia de Inscripción' , 'success', 'download'
 
-                        = simple_toggle_rounded "#{kardex_descargar_path(u)}?escuela_id=#{es.id}", 'K', 'Descargar Kardex' , 'success', 'download'
+                        = simple_toggle_rounded "#{kardex_descargar_path(u)}?escuela_id=#{grado.escuela_id}", 'K', 'Descargar Kardex' , 'success', 'download'
 
                         = btn_inscribir seleccionar_inscripcionseccion_path(u), 'Inscripción del periodo actual', 'Inscribir'
+                    %td= grado.escuela.descripcion
+                    %td= grado.plan_id
 
               - else
                 %tr
                   %td= rol
 
-        %td= u.ultimo_plan
         %td= link_to u.nombre_completo, u
         %td= link_to u.ci, u 
         - if current_admin.ninja?  
