@@ -1,6 +1,5 @@
--# href = "#{exportar_lista_csv_descargar_path(1)}?grado=#{estado}"
-=# btn_toggle_download 'btn btn-sm btn-outline-secondary',href , 'Descargar listado de graduandos (CSV)', "#{glyph 'file'}"
-%br
+- href = "#{listado_completo_estudiante_descargar_path(1)}?estado=#{estado.downcase}"
+= btn_toggle_download 'btn btn-sm btn-outline-success float-left mr-2', href, "listado detallado de #{estado}", "#{glyph 'file'} Listado Completo"
 %table.table.table-striped.table-sm.table-hover.table-bordered.responsive-table{id: "table#{estado}"}
   %thead
     %tr
