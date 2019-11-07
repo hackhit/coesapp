@@ -13,7 +13,7 @@
           .form-group
             %h5.control-label.col-md-2 Profesor:
             .col-md-10
-            = select_tag :profesor_id, options_from_collection_for_select(@profesores, :id, :descripcion_apellido, nil), class: 'selects2 form-control text-field', required: true, include_blank: '--- Ninguna Selección ---'
+            = select_tag :profesor_id, options_from_collection_for_select(@profesores, :id, :descripcion_apellido, nil), class: 'selects2Profesores form-control text-field', required: true, include_blank: '--- Ninguna Selección ---'
           .modal-footer 
             %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
             = submit_tag "Guardar", id: "submit", class: "btn btn-sm btn-outline-success"
@@ -22,8 +22,8 @@
 
   $(document).ready(function() {
 
-    $( ".selects2" ).select2({
-      placeholder: "--Escriba datos del profesor para buscarlo--",
+    $( ".selects2Profesores" ).select2({
+      placeholder: "--Escriba datos del profesor a buscar--",
       theme: "bootstrap",
       cache: true
 
