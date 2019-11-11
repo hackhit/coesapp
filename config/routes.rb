@@ -102,6 +102,7 @@ Rails.application.routes.draw do
         get 'notas_seccion'
         get 'notas_seccion_online'
         get 'inscritos_escuela_periodo'
+        get 'listado_completo_estudiante'
       end
     end
 

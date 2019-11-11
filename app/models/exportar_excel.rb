@@ -10,6 +10,71 @@ class ExportarExcel
 		return ic_ignore.iconv(valor).to_s
 	end
 
+	def self.listado_estudiantes periodo_id, estado='completo', escuela_id=nil, plan_id=nil, ingreso=nil
+
+		require 'spreadsheet'
+
+		@book = Spreadsheet::Workbook.new
+		@sheet = @book.create_worksheet :name => "estudiantes_#{estado}_#{periodo_id}"
+
+		@sheet.row(0).concat ['#', 'ESCUELA', 'PLAN', 'INGRESO','CEDULA', 'NAC.', 'EDO. CIVIL', 'GÉNERO', 'TLF. FIJO', 'TLF. MÓVIL', 'CORREO-E', 'NAC. AÑO', 'NAC. MES', 'NAC. DÍA', 'ESTADO', 'MUNICIPIO', 'CIUDAD', 'URBANIZACIÓN/SECTOR', 'CALLE/AVENIDA', 'TIPO VIVIENDA']
+
+		grados = Grado.iniciados_en_periodo(periodo_id)#.limit(50)
+		estado = estado.singularize
+		if estado != 'completo'
+			unless estado.eql? 'nuevo'
+				indice = Grado.estado_inscripciones[estado]
+				grados = grados.where(estado_inscripcion: indice)
+			end
+			grados = grados.where(escuela_id: escuela_id) if escuela_id
+			grados = grados.joins(:plan).where("planes.id = '#{plan_id}'") if plan_id
+
+			unless ingreso.blank?
+				indice = Grado.tipos_ingreso[ingreso]
+				grados = grados.where(tipo_ingreso: indice)
+			end
+
+			if estado.eql? 'nuevo'
+				grados = grados.reject{|g| !g.inscripciones.any?}
+			end
+
+		end 
+
+		grados.each_with_index do |grado,i|
+
+			estudiante = grado.estudiante
+			usuario = estudiante.usuario
+			obj = []
+
+			obj.push i+1
+			obj.push grado.escuela.descripcion
+			obj.push grado.plan_descripcion_corta
+			obj.push grado.tipo_ingreso
+			obj.push grado.estudiante_id
+			obj.push usuario.nacionalidad ? usuario.nacionalidad[0..2] : ''
+			obj.push usuario.estado_civil
+			obj.push usuario.sexo
+			obj.push usuario.telefono_habitacion
+			obj.push usuario.telefono_movil
+			obj.push usuario.email
+			obj.push usuario.fecha_nacimiento ? usuario.fecha_nacimiento.year : ''
+			obj.push usuario.fecha_nacimiento ? usuario.fecha_nacimiento.month : ''
+			obj.push usuario.fecha_nacimiento ? usuario.fecha_nacimiento.day : ''
+			obj.push estudiante.direccion ? estudiante.direccion.estado : ''
+			obj.push estudiante.direccion ? estudiante.direccion.municipio : ''
+			obj.push estudiante.direccion ? estudiante.direccion.ciudad : ''
+			obj.push estudiante.direccion ? estudiante.direccion.sector : ''
+			obj.push estudiante.direccion ? estudiante.direccion.calle : ''
+			obj.push estudiante.direccion ? estudiante.direccion.nombre_vivienda : ''
+
+			@sheet.row(i+1).concat obj
+		end
+		file_name = "listado_estudiantes.xls"
+		return file_name if @book.write file_name
+		
+	end
+
+
 	def self.estudiantes_csv plan_id, periodo_id, seccion_id = nil, grado = false, escuelas_ids = false
 		require 'csv'
 

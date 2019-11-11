@@ -27,8 +27,8 @@
 				%td= ins.apellidos
 				%td= ins.nombres
 				%td= est.escuelas.ids.to_sentence
-				-#est.historialplanes.joins(:plan).where("planes.escuela_id = ?", @escuela.id).order('periodo_id DESC').first.plan_id
-				- hplan = est.ultimo_plan_de_escuela@escuela.id
+				- hplan = est.historialplanes.joins(:plan).where("planes.escuela_id = ?", @escuela.id).order('periodo_id DESC').first#.plan_id
+				-# hplan = est.ultimo_plan_de_escuela(@escuela.id)
 				%td= hplan ? hplan.plan_id : "--"
 				%td= ins.asignaturas
 				%td= ins.total_creditos

@@ -1,6 +1,6 @@
 class Periodo < ApplicationRecord
 	# ENUMERADAS CONSTANTES
-	enum tipo: [:semestral, :anual, :unico]
+	enum tipo: [:semestral, :anual, :unico, :intensivo]
 
 	# ASOCIACIONES:
 	has_many :programaciones, dependent: :destroy

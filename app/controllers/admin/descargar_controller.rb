@@ -6,6 +6,29 @@ module Admin
 		before_action :filtro_estudiante, only: [:programaciones, :cita_horaria]
 		before_action :filtro_administrador, except: [:programaciones, :cita_horaria, :kardex, :constancia_inscripcion, :constancia_preinscripcion, :constancia_estudio, :listado_seccion, :notas_seccion, :listado_seccion_excel]
 
+		def listado_completo_estudiante
+			# file = ExportarExcel.listado_estudiantes current_periodo.id, params[:estado]
+			# send_data file, filename: "listado_completo_#{params[:estado]}_#{current_periodo.id}.xls"
+
+			if !(params[:escuela].blank?) && escuela = Escuela.find_by(descripcion: params[:escuela])
+				@escuela_id = escuela.id
+			end
+
+			if !(params[:plan].blank?) && plan = Plan.find(params[:plan])
+				@plan_id = plan.id
+			end
+			p @escuela_id
+
+			file = ExportarExcel.listado_estudiantes current_periodo.id, params[:estado], @escuela_id, @plan_id, params[:ingreso]
+			# send_file file, type: "application/vnd.ms-excel", x_sendfile: true, stream: false, filename: "listado_completo_#{params[:estado]}_#{current_periodo.id}.xls", disposition: "attachment"
+
+			File.open(file, 'r') do |f|
+				send_data f.read, type: "text/excel", filename: "listado_completo_#{params[:estado]}_#{current_periodo.id}.xls"
+			end
+
+			File.delete(file) if File.exist?(file)
+		end
+
 		def exportar_lista_csv
 			if params[:periodo_id]
 				data = ExportarExcel.estudiantes_csv params[:id], params[:periodo_id]
