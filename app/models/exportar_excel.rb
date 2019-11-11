@@ -17,7 +17,7 @@ class ExportarExcel
 		@book = Spreadsheet::Workbook.new
 		@sheet = @book.create_worksheet :name => "estudiantes_#{estado}_#{periodo_id}"
 
-		@sheet.row(0).concat ['#', 'ESCUELA', 'PLAN', 'INGRESO','CEDULA', 'NAC.', 'EDO. CIVIL', 'GÉNERO', 'TLF. FIJO', 'TLF. MÓVIL', 'CORREO-E', 'NAC. AÑO', 'NAC. MES', 'NAC. DÍA', 'ESTADO', 'MUNICIPIO', 'CIUDAD', 'URBANIZACIÓN/SECTOR', 'CALLE/AVENIDA', 'TIPO VIVIENDA']
+		@sheet.row(0).concat ['#', 'ESCUELA', 'PLAN', 'INGRESO','CEDULA', 'APELLIDOS', 'NOMBRES', 'NAC.', 'EDO. CIVIL', 'GÉNERO', 'TLF. FIJO', 'TLF. MÓVIL', 'CORREO-E', 'NAC. AÑO', 'NAC. MES', 'NAC. DÍA', 'ESTADO', 'MUNICIPIO', 'CIUDAD', 'URBANIZACIÓN/SECTOR', 'CALLE/AVENIDA', 'TIPO VIVIENDA']
 
 		grados = Grado.iniciados_en_periodo(periodo_id)#.limit(50)
 		estado = estado.singularize
@@ -51,6 +51,8 @@ class ExportarExcel
 			obj.push grado.plan_descripcion_corta
 			obj.push grado.tipo_ingreso
 			obj.push grado.estudiante_id
+			obj.push usuario.apellidos
+			obj.push usuario.nombres
 			obj.push usuario.nacionalidad ? usuario.nacionalidad[0..2] : ''
 			obj.push usuario.estado_civil
 			obj.push usuario.sexo
