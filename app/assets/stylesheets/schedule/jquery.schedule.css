@@ -126,7 +126,7 @@
   bottom: 4px;
   right: 2px;
 }
-.jqs-period {
+.jqs-period, .jqs-period-info {
   position: absolute;
   width: 100%;
   min-height: 10px;
@@ -152,7 +152,8 @@
   font-weight: 700;
   line-height: 16px;
 }
-.jqs-period-container {
+
+.jqs-period-container, .jqs-period-container-info {
   position: absolute;
   top: 2px;
   bottom: 2px;

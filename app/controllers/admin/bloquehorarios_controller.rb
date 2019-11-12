@@ -73,7 +73,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def bloquehorario_params
-        params.require(:bloquehorario).permit(:dia, :entreda, :salida, :seccion_id, :profesor_id, :plantillahorario_id)
+        params.require(:bloquehorario).permit(:dia, :entrada, :salida, :horario_id, :profesor_id)
       end
   end
 end

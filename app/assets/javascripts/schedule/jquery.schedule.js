@@ -312,7 +312,7 @@
               height = $this.periodHeight;
             }
 
-            $this.add(parent, position, height - position, options);
+            $this.addInitial(parent, position, height - position, options);
           });
         });
       }
@@ -325,6 +325,41 @@
      * @param {int} height
      * @param options
      */
+    addInitial: function (parent, position, height, options) {
+
+      // if (height <= 0 || position >= this.periodHeight) {
+      //   console.error('Invalid period');
+
+      //   return false;
+      // }
+
+      options = $.extend({}, this.periodOptions, options); // Merge de opciones
+
+      // new period
+
+      var periodTitle = '<div class="jqs-period-title-info">' + options.title + '</div>';
+      var periodTime = '<div class="jqs-period-time text-muted">' + this.periodInit(position, position + height) + '</div>';
+      var period = $('<div class="jqs-period-info">' +
+        '<div class="tooltip-btn jqs-period-container-info" target="" data_toggle="tooltip" data-placement="right" data-original-title= "Profesor Ocupado" >' + periodTime + periodTitle + '</div>').css({
+        'top': position * this.periodPosition,
+        'height': height * this.periodPosition
+      }).attr('id', this.uniqId()).attr('title', options.title).appendTo(parent);
+
+      $('.jqs-period-container-info', period).css({
+        'background-color': 'rgba(235, 116, 52, 0.20)',
+        'border-color': options.borderColor,
+        'color': options.textColor
+      });
+
+      // text format
+      this.periodText(period);
+
+      // this.settings.onAddPeriod.call(this, period, this.element);
+
+      return true;
+    },
+
+
     add: function (parent, position, height, options) {
 
       if (height <= 0 || position >= this.periodHeight) {

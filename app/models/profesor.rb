@@ -19,6 +19,8 @@ class Profesor < ApplicationRecord
 
     has_many :secciones_secundarias, through: :profesor_secciones_secundarias, source: :seccion
 
+    has_many :bloquehorarios
+
     # VALIDACIONES:
     validates :usuario_id, presence: true, uniqueness: true
 

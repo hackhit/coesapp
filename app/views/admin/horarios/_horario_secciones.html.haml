@@ -1,0 +1,32 @@
+%h6.titulo= "Horario:"
+
+#BloquesHorarios
+
+:javascript
+  
+  let text = '{ "day":0, "periods":[["00:15", "02:00"]]}, { "day":0, "periods":[["02:15", "04:00"]]}'
+  $("#BloquesHorarios").jqs({
+    mode: "read",
+    daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+    hour: 12,
+    days: 5,
+    periodDuration: 15,
+    periodOptions: false,
+
+    data: [
+        {
+            day: 0,
+            periods: [
+                ["20:00", "00:00"],
+                ["00:00", "02:00"]
+            ]
+        }, {
+            day: 3,
+            periods: [
+                ["00:00", "08:30"],
+                ["09:00", "12:00"]
+            ]
+        }
+    ]
+
+  });

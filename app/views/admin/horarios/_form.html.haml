@@ -1,6 +1,8 @@
 
-
+%h4= @seccion.descripcion_escuela 
 =# select_tag :profesor_id, options_from_collection_for_select(@profesores, :id, :descripcion_apellido, nil), class: 'form-control form-control-sm', required: true, include_blank: '--- Ninguna Selección ---'
+
+=# simple_toggle '#', 'Boton', 'Titulo', '', 'star', onclick_action = nil
 
 = form_for @horario, html: { class: 'form-horizontal', id: 'formHorarios' } do |f|
   #BloquesHorarios
@@ -11,8 +13,11 @@
       = f.submit 'Guardar y Volver a COES-FHE', class: 'btn btn-primary'
       = f.submit 'Guardar e ir a la siquiente sección', class: 'btn btn-primary'
 
-:javascript
 
+
+:javascript
+  
+  let text = '{ "name":"John", "birth":"1986-12-14", "city":"New York"}'
   $("#BloquesHorarios").jqs({
 
     daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
@@ -21,12 +26,14 @@
     periodDuration: 15,
     periodOptions: false, 
 
+    data: JSON.parse(text),
+
     onAddPeriod: function(e){
       
       console.log(`#{@profesores.any?}`)
       let aux;
       if(`#{@profesores.any?}` == 'true'){
-        aux = `#{collection_select nil, 'bloquehorario[profesores][]', @profesores, :id, :descripcion, {selected: ((@profesores.count.eql?(1)) ? @profesores.first.id : ''), include_blank: 'Ningún Profe'}, { class: ' form-control form-control-sm'}}`
+        aux = `#{collection_select nil, 'bloquehorarios[profesores][]', @profesores, :id, :descripcion, {selected: ((@profesores.count.eql?(1)) ? @profesores.first.id : ''), include_blank: 'Ningún Profe'}, { class: ' form-control form-control-sm'}}`
 
       }else{
         aux = `<b> Sin profesor asignado a la sección </b>`
@@ -44,12 +51,12 @@
       let horas = e.innerText;
 
       $('<input>').attr({
-        name: 'bloquehorario[dias][]',
+        name: 'bloquehorarios[dias][]',
         value: dia
       }).appendTo('#formHorarios');
 
       $('<input>').attr({
-        name: 'bloquehorario[horas][]',
+        name: 'bloquehorarios[horas][]',
         value: horas
       }).appendTo('#formHorarios');
 

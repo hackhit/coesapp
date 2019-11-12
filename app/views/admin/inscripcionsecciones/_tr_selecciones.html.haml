@@ -7,6 +7,7 @@
 
 - a = sec.asignatura
 %tr.table-info.text-muted{id: "sel_#{sec.asignatura_id}_#{sec.numero}", class: "sel_#{sec.asignatura_id} inscritas tooltip-btn",'data_toggle': :tooltip, title: 'Previamente inscrita' } 
+	%td= sec.id
 	%td= sec.periodo_id
 	%td= sec.asignatura_id
 	%td= ins.escuela.descripcion

@@ -6,7 +6,4 @@
 	= raw (@titulo ? @titulo : action_name.titleize)
 
 	- if current_admin and current_admin.mas_altos?
-		= content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Inscribir Estudiante Existente', 'data-placement': :rigth do
-			= link_to buscar_estudiante_inscripcionsecciones_path, class: 'btn-success btn-sm float-left ml-md-1' do
-				= glyph 'education'
-
+		= simple_toggle buscar_estudiante_inscripcionsecciones_path, '', 'Inscribir Estudiante', 'success float-left ml-md-1', 'education'

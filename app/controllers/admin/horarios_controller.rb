@@ -23,6 +23,29 @@ module Admin
       @titulo = 'Nuevo Horario'
       @profesores = @seccion.todos_profes
 
+      profes_ids = @profesores.ids
+
+      @bloques = Bloquehorario.where(profesor_id: profes_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]} }
+
+      
+      # bloques.each do |bh|
+      #   if bh.dia and bh.entrada and bh.salida
+      #     aux = {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]}
+      #   end
+        # aux = {day: 0, periods: [["00:00", "02:00"]]}
+        # @aux = []
+
+        # @aux = [{day: 0, periodos:[["01:00", "03:00"]]},
+              # {day: 1, periodos:[["05:00", "07:00"]]}]
+        # @aux = {"day": 0, periods: [["01:00", "03:00"]]}
+        # @aux << {day: 1, periods: [["05:00", "07:00"]]}
+
+        # @aux = [{day: 0, periods: [["01:00", "03:00"]]}, {day: 1, periods: [["02:00", "04:00"]]}
+
+        # p aux.as_json
+      # end
+
+
     end
 
     # GET /horarios/1/edit
@@ -50,30 +73,34 @@ module Admin
         flash[:error] = ""
         bloques = params[:bloques_ids]
 
-        total = params[:bloquehorario][:dias].length-1
+        total = params[:bloquehorarios][:dias].length-1
 
         for i in(0..total) 
-          profesor_id = params[:bloquehorario][:profesores][i]
+          profesor_id = params[:bloquehorarios][:profesores][i]
           
-          dia = params[:bloquehorario][:dias][i]
+          dia = params[:bloquehorarios][:dias][i]
           dia = Bloquehorario::DIAS[dia.to_i]
 
-          horas = params[:bloquehorario][:horas][i]
+          horas = params[:bloquehorarios][:horas][i]
           entrada, salida = horas.split(' - ')
 
-          params[:bloquehorario][:horario_id] = @horario.id
-          params[:bloquehorario][:dia] = dia
-          params[:bloquehorario][:entrada] = entrada
-          params[:bloquehorario][:salida] = salida
-          params[:bloquehorario][:profesor_id] = profesor_id unless profesor_id.blank?
+          @bloque = Bloquehorario.new
+          @bloque.horario_id = @horario.id
+          @bloque.dia = dia
+          @bloque.entrada = Bloquehorario.format_time(entrada)
+          @bloque.salida = Bloquehorario.format_time(salida)
+
+
+          @bloque.profesor_id = profesor_id unless profesor_id.blank?
 
           # redirect_to bloquehorarios_path
-          
-          @bloque = Bloquehorario.new(params[:bloquehorario])
+
           unless @bloque.save
             flash[:error] += @bloque.errors.full_messages.to_sentence
           end
         end
+        flash[:error] = nil if flash[:error].blank?
+
         redirect_to @horario
       end
 

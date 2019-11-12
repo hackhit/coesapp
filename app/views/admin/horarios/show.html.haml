@@ -15,7 +15,7 @@
 		- @horario.bloquehorarios.each do |bh| 
 			%tr
 				%td= bh.dia
-				%td= bh.entrada
-				%td= bh.salida
+				%td= bh.entrada.strftime('%I:%M%p')
+				%td= bh.salida.strftime('%I:%M%p')
 				%td= bh.profesor.descripcion if bh.profesor
 	
