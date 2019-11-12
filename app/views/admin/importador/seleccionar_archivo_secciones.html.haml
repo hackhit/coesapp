@@ -27,7 +27,12 @@
         = check_box_tag :periodo_en_archivo, nil, false, onChange: "togglePeriodo($(this))" 
         El periodo está incluido en una columna del archivo
       .col-md-12
-        = select(nil, :periodo_id, Periodo.all.order("id DESC").collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Periodo...'}, {class: "form-control text_field", required: true})
+        = select(nil, :periodo_id, Periodo.all.order("id DESC").collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Periodo...'}, {class: "form-control", required: true})
+    .form-group
+
+      .col-md-12
+        = select(nil, :escuela_id, current_admin.escuelas.order("id DESC").collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Escuela...'}, {class: "form-control", required: true})
+      %b.col-md-12.text-muted Las inscripciones del archivo serán cargadas en la escuela seleccionada
 
     .form-group
       .col-md-offset-2.col-md-10

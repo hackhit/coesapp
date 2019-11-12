@@ -32,7 +32,7 @@ module Admin
 			@titulo = "Importador de Archivos de Secciones"
 		end
 		def importar_seccion
-			flash[:info] = ImportCsv.importar_secciones params[:datafile].tempfile, params[:periodo_id]
+			flash[:info] = ImportCsv.importar_secciones params[:datafile].tempfile, params[:escuela_id], params[:periodo_id]
 			redirect_to action: 'seleccionar_archivo_secciones'
 		end
 

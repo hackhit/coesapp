@@ -47,11 +47,7 @@ class ExportarPdf
 		pdf = Prawn::Document.new(top_margin: 275, bottom_margin: 100)
 
 
-		if seccion.periodo_id.eql? '2016-02A'
-			inscripciones = seccion.inscripcionsecciones.confirmados.sort_by{|h| h.estudiante.usuario.apellidos}
-		else
-			inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
-		end
+		inscripciones = seccion.inscripcionsecciones.sort_by{|h| h.estudiante.usuario.apellidos}
 		
 		pdf.repeat(:all, dynamic: true) do
 			pdf.bounding_box([0, 660], :width => 540, :height => 265) do

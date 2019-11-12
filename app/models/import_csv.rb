@@ -189,7 +189,7 @@ class ImportCsv
 
 	end
 
-	def self.importar_secciones file, periodo_id
+	def self.importar_secciones file, escuela_id, periodo_id
 		require 'csv'
 
 		csv_text = File.read(file)
@@ -214,16 +214,14 @@ class ImportCsv
 					row.field(1).strip!
 					row.field(2).strip! if row.field(2)
 					if a = Asignatura.where(id_uxxi: row.field(1)).first
-						
 						if periodo_id.nil?
-
 							if row.field(4)
-								periodo_id = row.field(4)
-								periodo_id.strip!
-								periodo_id.upcase!
+ 
+								row.field(4).strip!
+								row.field(4).upcase!
 								
-								unless Periodo.where(id: periodo_id).any?
-									return "Error: Periodo '#{periodo_id}' es inválida. fila: [#{row}]. Revise el archivo e inténtelo nuevamente."
+								unless Periodo.where(id: row.field(4)).any?
+									return "Error: Periodo '#{row.field(4)}' es inválida. fila: [#{row}]. Revise el archivo e inténtelo nuevamente."
 								end
 
 							else
@@ -231,22 +229,27 @@ class ImportCsv
 							end
 						end
 
-						unless s = Seccion.where(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id).limit(1).first
-							total_nuevas_secciones += 1 if s = Seccion.create!(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id, tipo_seccion_id: 'NF')
+						unless s = Seccion.where(numero: row.field(2), periodo_id: row.field(4), asignatura_id: a.id).limit(1).first
+							total_nuevas_secciones += 1 if s = Seccion.create!(numero: row.field(2), periodo_id: row.field(4), asignatura_id: a.id, tipo_seccion_id: 'NF')
 						end
 
 						if s
-							if Estudiante.where(usuario_id: row.field(0)).count <= 0
+							estu = Estudiante.where(usuario_id: row.field(0)).first
+							unless estu
 								estudiantes_inexistentes << row.field(0)
 							else
 								inscrip = s.inscripcionsecciones.where(estudiante_id: row.field(0)).first
 								
 								unless inscrip
-										inscrip = Inscripcionseccion.new
-										inscrip.seccion_id = s.id
-										inscrip.estudiante_id = row.field(0)
+									inscrip = Inscripcionseccion.new
+									inscrip.seccion_id = s.id
+									inscrip.estudiante_id = row.field(0)
+
+									inscrip.escuela_id = escuela_id
+
+									inscrip.pci = true unless estu.grados.where(escuela_id: escuela_id).any?
 										
-									if inscrip.save
+									if inscrip.save!
 										total_inscritos += 1
 									else
 										estudiantes_no_inscritos << row.field(0)
@@ -283,7 +286,7 @@ class ImportCsv
 										end
 									end
 
-									if inscrip.save
+									if inscrip.save!
 										total_calificados += 1
 										if inscrip.retirado?
 											total_retirados += 1
