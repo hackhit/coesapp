@@ -31,7 +31,7 @@
     .form-group
 
       .col-md-12
-        = select(nil, :escuela_id, current_admin.escuelas.order("id DESC").collect{|o| [ o.id, o.id ] }, { include_blank: 'Selecciona Escuela...'}, {class: "form-control", required: true})
+        = select(nil, :escuela_id, current_admin.escuelas.order("id DESC").collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Escuela...'}, {class: "form-control", required: true})
       %b.col-md-12.text-muted Las inscripciones del archivo serán cargadas en la escuela seleccionada
 
     .form-group
