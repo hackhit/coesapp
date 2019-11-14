@@ -4,13 +4,9 @@
 = form_tag(inscribir_inscripcionsecciones_path) do
 	= render '/admin/secciones/facultad/estructura_nav'
 	=hidden_field_tag :id, @estudiante.usuario_id
-	%br
-	.border.p-3#seleccion
-		= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {escuelas: @escuelas}
+	= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {escuelas: @escuelas}
 
-		= render partial: '/admin/horarios/horario_secciones'#, locals: {escuelas: @escuelas}		
-
-		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-success', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
+	=# render partial: '/admin/horarios/horario_secciones'#, locals: {escuelas: @escuelas}
 
 :javascript
 

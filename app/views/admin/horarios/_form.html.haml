@@ -1,48 +1,65 @@
 
-%h4= @seccion.descripcion_escuela 
-=# select_tag :profesor_id, options_from_collection_for_select(@profesores, :id, :descripcion_apellido, nil), class: 'form-control form-control-sm', required: true, include_blank: '--- Ninguna Selección ---'
+- @url = "#{get_bloques_horario_path(@seccion.id.to_param)}?profesor=true"
+-# @url += '&edit=true' if action_name.eql? 'edit'
 
-=# simple_toggle '#', 'Boton', 'Titulo', '', 'star', onclick_action = nil
-
-= form_for @horario, html: { class: 'form-horizontal', id: 'formHorarios' } do |f|
-  #BloquesHorarios
-  = f.hidden_field :seccion_id
-  .form-group
-    .col-md-offset-2.col-md-10
-      = link_to t('.cancel', default: t("helpers.links.cancel")), bloquehorarios_path, class: 'btn btn-secondary'
-      = f.submit 'Guardar y Volver a COES-FHE', class: 'btn btn-primary'
-      = f.submit 'Guardar e ir a la siquiente sección', class: 'btn btn-primary'
+%h4.titulo.text-center= @seccion.descripcion_escuela 
+.border.p-3
+  .text-center
+    .alert.alert-info
+      %b Atención:
+      Seleccione el o los bloques de horario más conveniente para la sección. Adicionalmente puede asociar el profesor correspondiente a dicho bloque
+  = form_for @horario, html: { class: 'form-horizontal', id: 'formHorarios' } do |f|
+    #BloquesHorarios
+    = f.hidden_field :seccion_id
+    .form-group
+      .col-md-offset-2.col-md-10
+        = btn_atras asignatura_path(@seccion.asignatura.id)
+        = f.submit 'Guardar', class: 'btn btn-primary btn-sm ml-3'
+      =# f.submit 'Guardar e ir a la siquiente sección', class: 'btn btn-primary'
 
 
 
 :javascript
-  
-  let text = '{ "name":"John", "birth":"1986-12-14", "city":"New York"}'
-  $("#BloquesHorarios").jqs({
 
-    daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
-    hour: 12,
-    days: 5,
-    periodDuration: 15,
-    periodOptions: false, 
+  $(document).ready(function(){
+    $.ajax({
+      url: `#{@url}`,
+      type: 'GET',
+      dataType: 'json', 
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      success: function (data) {
+        // console.log(data)
+        $("#BloquesHorarios").jqs({
+          daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+          hour: 12,
+          days: 5,
+          periodDuration: 15,
+          periodOptions: false,
 
-    data: JSON.parse(text),
+          data: data.bloques,
+          dataEditable: data.bloquesEditables,
 
-    onAddPeriod: function(e){
-      
-      console.log(`#{@profesores.any?}`)
-      let aux;
-      if(`#{@profesores.any?}` == 'true'){
-        aux = `#{collection_select nil, 'bloquehorarios[profesores][]', @profesores, :id, :descripcion, {selected: ((@profesores.count.eql?(1)) ? @profesores.first.id : ''), include_blank: 'Ningún Profe'}, { class: ' form-control form-control-sm'}}`
+          onAddPeriod: function(e){
+            
+            console.log(`#{@profesores.any?}`)
+            let aux;
+            if(`#{@profesores.any?}` == 'true'){
+              aux = `#{collection_select nil, 'bloquehorarios[profesores][]', @profesores, :id, :descripcion, {selected: ((@profesores.count.eql?(1)) ? @profesores.first.id : ''), include_blank: 'Ningún Profesor'}, { class: ' form-control form-control-sm'}}`
 
-      }else{
-        aux = `<b> Sin profesor asignado a la sección </b>`
+            }else{
+              aux = `<b> Sin profesor asignado a la sección </b>`
+            }
+            e.find('.jqs-period-container').append(aux);
+
+          }
+
+
+        });
       }
-      e.find('.jqs-period-container').append(aux);
+    });
+  })
 
-    }
 
-  });
 
   $('#formHorarios').submit(function() {
     $('.jqs-period-time').each(function(){
@@ -52,12 +69,14 @@
 
       $('<input>').attr({
         name: 'bloquehorarios[dias][]',
-        value: dia
+        value: dia,
+        type: 'hidden',
       }).appendTo('#formHorarios');
 
       $('<input>').attr({
         name: 'bloquehorarios[horas][]',
-        value: horas
+        value: horas,
+        type: 'hidden',
       }).appendTo('#formHorarios');
 
     })

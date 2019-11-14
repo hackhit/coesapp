@@ -1,14 +1,14 @@
 
-%table.table.table-sm.table-responsive-md.mt-3
+%table.table.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
 	%thead
 		%tr.text-center
-			%th Cód. UXXI
+			%th Código
 			%th Descripción
 			%th Departamento
 			%th Cátedra
 			%th Tipo
 			%th U. Créditos
-			%th T. Secciones
+			%th Opciones
 
 	%tbody
 		%tr.text-center
@@ -19,4 +19,11 @@
 			%td= @asignatura.catedra.descripcion
 			%td= @asignatura.tipoasignatura.descripcion
 			%td= @asignatura.creditos
-			%td= @asignatura.secciones.count
+			%td
+				- if current_admin.maestros?
+
+					= btn_toggle 'text-success', 'pencil', edit_asignatura_path(@asignatura), 'Editar Asignatura', nil
+
+				- if current_admin.ninja?
+					= link_to asignatura_path(@asignatura), method: "delete", data: { confirm: 'Se eliminarán en cascada de las seccciones asociadas a la asignatura ¿Está seguro de ésta acción?' }, class: 'btn btn-sm text-danger ml-2' do
+						= glyph 'trash'

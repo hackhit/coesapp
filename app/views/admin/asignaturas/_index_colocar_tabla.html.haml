@@ -29,7 +29,7 @@
         %tbody
           -# success_class = (asignatura.activa? current_periodo.id) ? 'table-success' : ''
           %tr.filtrables
-            %td= asignatura.id_uxxi
+            %td= link_to asignatura.id_uxxi, asignatura_path(asignatura.id)
             %td= asignatura.descripcion
             %td= asignatura.departamento.descripcion
             %td= asignatura.catedra.descripcion

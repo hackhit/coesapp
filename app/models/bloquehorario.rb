@@ -17,6 +17,28 @@ class Bloquehorario < ApplicationRecord
 
   enum dia: DIAS
 
+  def descripcion_corta_para_asignaturas
+    aux = "#{horario.seccion.numero}"
+    aux += ": #{profesor.usuario.nombres}" if profesor
+    return aux
+  end
+
+  def entrada_descripcion
+    if entrada
+      return (entrada).strftime '%H:%M'
+    else
+      return ""
+    end    
+  end
+
+  def salida_descripcion
+    if salida
+      return (salida).strftime '%H:%M'
+    else
+      return ""
+    end
+  end
+
   def entrada_to_schedule
     if entrada
       return (entrada-(7.hours)).strftime '%H:%M'

@@ -312,10 +312,39 @@
               height = $this.periodHeight;
             }
 
-            $this.addInitial(parent, position, height - position, options);
+            $this.addInitial(parent, position, height - position, options, data.title, data.color);
           });
         });
       }
+
+      if (this.settings.dataEditable.length > 0) {
+        var $this = this;
+
+        $.each(this.settings.dataEditable, function (index, data) {
+          $.each(data.periods, function (index, period) {
+
+            var parent = $('.jqs-day', $this.element).eq(data.day);
+            var options = {};
+            var height, position;
+            if ($.isArray(period)) {
+              position = $this.positionFormat(period[0]);
+              height = $this.positionFormat(period[1]);
+            } else {
+              position = $this.positionFormat(period.start);
+              height = $this.positionFormat(period.end);
+              options = period;
+            }
+
+            if (height === 0) {
+              height = $this.periodHeight;
+            }
+
+            $this.add(parent, position, height - position, options, data.title, data.color);
+          });
+        });
+      }
+
+
     },
 
     /**
@@ -325,7 +354,7 @@
      * @param {int} height
      * @param options
      */
-    addInitial: function (parent, position, height, options) {
+    addInitial: function (parent, position, height, options, title, color) {
 
       // if (height <= 0 || position >= this.periodHeight) {
       //   console.error('Invalid period');
@@ -337,16 +366,16 @@
 
       // new period
 
-      var periodTitle = '<div class="jqs-period-title-info">' + options.title + '</div>';
-      var periodTime = '<div class="jqs-period-time text-muted">' + this.periodInit(position, position + height) + '</div>';
+      var periodTitle = '<div class="jqs-period-title-info">' + title + '</div>';
+      var periodTime = '<div class="jqs-period-time-info text-muted">' + this.periodInit(position, position + height) + '</div>';
       var period = $('<div class="jqs-period-info">' +
-        '<div class="tooltip-btn jqs-period-container-info" target="" data_toggle="tooltip" data-placement="right" data-original-title= "Profesor Ocupado" >' + periodTime + periodTitle + '</div>').css({
+        '<div class="tooltip-btn jqs-period-container-info" target="" data_toggle="tooltip" data-placement="right" data-original-title= "Profesor Ocupado" >' + periodTime + '<small>' + periodTitle + '</small>' + '</div>').css({
         'top': position * this.periodPosition,
         'height': height * this.periodPosition
       }).attr('id', this.uniqId()).attr('title', options.title).appendTo(parent);
 
       $('.jqs-period-container-info', period).css({
-        'background-color': 'rgba(235, 116, 52, 0.20)',
+        'background-color': color,
         'border-color': options.borderColor,
         'color': options.textColor
       });
@@ -358,6 +387,20 @@
 
       return true;
     },
+
+
+    // hexToRgbA: function (hex){
+    //     var c;
+    //     if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+    //         c= hex.substring(1).split('');
+    //         if(c.length== 3){
+    //             c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+    //         }
+    //         c= '0x'+c.join('');
+    //         return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',0.5)';
+    //     }
+    //     throw new Error('Bad Hex');
+    // },
 
 
     add: function (parent, position, height, options) {

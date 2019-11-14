@@ -1,32 +1,42 @@
-%h6.titulo= "Horario:"
+%h6.titulo.m-2= "Horario:"
+
+-# if current_admin 
+-# if controller_name.eql? 'inscripcionsecciones'
+-# @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
+- if @asignatura
+  - @url = "#{get_bloques_horario_path(@asignatura.id)}?asignatura=true"
 
 #BloquesHorarios
 
 :javascript
-  
-  let text = '{ "day":0, "periods":[["00:15", "02:00"]]}, { "day":0, "periods":[["02:15", "04:00"]]}'
-  $("#BloquesHorarios").jqs({
-    mode: "read",
-    daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
-    hour: 12,
-    days: 5,
-    periodDuration: 15,
-    periodOptions: false,
+  $(document).ready(function(){
+    $.ajax({
+      url: `#{@url}`,
+      type: 'GET',
+      dataType: 'json', 
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      success: function (data) {
+        // console.log(data)
+        $("#BloquesHorarios").jqs({
+          mode: "read",
+          daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+          hour: 12,
+          days: 5,
+          periodDuration: 15,
+          periodOptions: false,
 
-    data: [
-        {
-            day: 0,
-            periods: [
-                ["20:00", "00:00"],
-                ["00:00", "02:00"]
-            ]
-        }, {
-            day: 3,
-            periods: [
-                ["00:00", "08:30"],
-                ["09:00", "12:00"]
-            ]
-        }
-    ]
+          data: data.bloques,
+          dataEditable: data.bloquesEditables
+        });
+      }
+    });
+  })
 
-  });
+  function addHorario(bloques){
+    console.log(bloques);
+    $("#BloquesHorarios").jqs({
+      mode: "read",
+      data: bloques
+    });
+
+  }

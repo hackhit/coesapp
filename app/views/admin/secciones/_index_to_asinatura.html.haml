@@ -2,19 +2,41 @@
   %table.table.table-striped.table-sm.table-hover.table-bordered
     %thead
       %tr
-        %th Período
-        %th Seccion
+        - if historico
+          %th Período
         %th Tipo
+        %th Seccion
+        %th Horario
         %th Profesor Principal
+        %th Profesores Secundarios
         %th Estado
-        %th Opciones
 
     %tbody
-      - @asignatura.secciones.each do |seccion| 
+      - secciones.each do |seccion| 
+        - bgHorario = (seccion.horario and !historico) ? seccion.horario.color : ''
         %tr.align-middle
-          %td.text-center= seccion.periodo_id
-          %td= link_to seccion.numero, seccion_path(seccion.id)
+          - if historico
+            %td.text-center= seccion.periodo_id
           %td= seccion.tipo_seccion_id
-          %td= seccion.profesor.descripcion if seccion.profesor
+          %td= link_to seccion.numero, seccion_path(seccion.id)
+          %td{style: "background-color:#{bgHorario}"}
+            - if seccion.horario
+              = seccion.horario.descripcion
+              - unless historico
+                = link_to edit_horario_path(seccion.horario), class: 'btn btn-sm text-success', role: :button do
+                  = content_tag(:i, "", class: " icon-white")
+                  = glyph 'pencil'
+
+                = link_to horario_path(seccion.horario.id), method: "delete", data: { confirm: 'Esta acción es irreversible, ¿Está seguro?' }, class: 'btn btn-sm text-danger' do
+                  = glyph 'trash'
+
+            - else
+              - unless historico
+                = link_to "#{new_horario_path}?seccion_id=#{seccion.id}", class: 'badge badge-success btn-sm ml-md-1 p-md-1', role: :button do
+                  = content_tag(:i, "", class: " icon-white")
+                  = glyph 'time'
+                  = glyph 'plus'
+
+          %td= seccion.profesor.descripcion_usuario if seccion.profesor
+          %td= render partial: '/admin/secciones/tabla_profesores_secundarios', locals: {seccion: seccion}
           %td= render partial: '/admin/secciones/estado', locals: {seccion: seccion}
-          %td.text-center= render partial: '/admin/secciones/panel_detalle_opciones', locals: {seccion: seccion}

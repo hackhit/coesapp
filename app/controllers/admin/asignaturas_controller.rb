@@ -53,9 +53,15 @@ module Admin
     # GET /asignaturas/1
     # GET /asignaturas/1.json
     def show
-      @titulo = @asignatura.descripcion.titleize
-
+      @titulo = "Asignatura: #{@asignatura.descripcion.upcase}"
       @bitacoras = Bitacora.search @asignatura.id
+
+      if escuela = current_admin.pertenece_a_escuela
+        @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
+      else
+        @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos')
+      end
+
     end
 
     # GET /asignaturas/new

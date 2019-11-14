@@ -1,3 +1,15 @@
+    function hexToRgbA (hex){
+        var c;
+        if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+            c= hex.substring(1).split('');
+            if(c.length== 3){
+                c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+            }
+            c= '0x'+c.join('');
+            return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+',0.5)';
+        }
+        throw new Error('Bad Hex');
+    }
 
 
 	function loadData(type, id, callback) {
@@ -33,6 +45,8 @@
 		$('#tableResponse').html("")
 		$('#noEncontrado').hide()
 		$("#resultado tbody").html("")
+		$("#horarioResponse").html("")
+		
 		$("#descAsignatura").html("") 
 		$('#btnNewSeccion').hide()
 	}
@@ -54,7 +68,7 @@
 
 	function getSecciones(type, id, controller) {
 		$.ajax({
-			url: `/coesapp/secciones/get_secciones`,
+			url: `/coes_dev/secciones/get_secciones`,
 			data: {id: id, type: type, controlador: controller},
 			dataType: 'json', 
 			beforeSend: function() {$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'});},
@@ -84,7 +98,10 @@
 					let desc = document.getElementById("asignatura_"+id).firstChild.textContent
 					let cred = document.getElementById("bagCreditos"+id).firstChild.textContent
 					desc += " ("+cred+" Unidades de Créditos)"
-					$('#descAsignatura').html(`${desc}`)
+					
+					asig = $('#descAsignatura')
+					asig.html(`${desc}`)
+					asig.attr('href', `/coes_dev/asignaturas/${id}`)
 					if (controller == 'secciones') showNewAsig(id)
 				}
 				$('#responseTotal').show()
@@ -102,7 +119,7 @@
 
 		$.ajax({
 
-			url: `/coesapp/secciones/get_tab_objects`,
+			url: `/coes_dev/secciones/get_tab_objects`,
 			data: {type: type, value: id, controlador: controller},
 			dataType: 'json', 
 			success: function(data){
@@ -124,7 +141,7 @@
 
 function setTab(type, id){
 	$.ajax({
-		url: `/coesapp/principal_admin/set_tab`, 
+		url: `/coes_dev/principal_admin/set_tab`, 
 		data: {type: type, value: id}, 
 		dataType: 'json'
 		});

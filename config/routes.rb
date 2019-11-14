@@ -15,7 +15,13 @@ Rails.application.routes.draw do
   end
 
   scope module: :admin do
-    resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones, :bloquehorarios, :horarios
+    resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones, :bloquehorarios
+
+    resources :horarios do
+      member do
+        get 'get_bloques'
+      end
+    end
     resources :grados, only: :index do
       member do
         post 'agregar'

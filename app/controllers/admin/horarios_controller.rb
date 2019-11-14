@@ -10,6 +10,36 @@ module Admin
       @horarios = Horario.all
     end
 
+    def get_bloques
+      @bloquesEditables = []
+      if params[:asignatura]
+        asig = Asignatura.find params[:id]
+
+        secciones_ids = asig.secciones.where(periodo_id: current_periodo.id).ids
+        @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.descripcion_corta_para_asignaturas, color: bh.horario.color}}
+
+      elsif params[:profesor]
+        seccion = Seccion.find params[:id]
+        profes_ids = seccion.todos_profes.ids
+        if seccion.horario
+          @bloquesEditables = Bloquehorario.where(horario_id: seccion.id).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color}} 
+          @bloques = Bloquehorario.where(profesor_id: profes_ids).where("horario_id != #{seccion.id}").collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color}}
+        else
+          @bloques = Bloquehorario.where(profesor_id: profes_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color}}
+        end
+
+
+      elsif params[:estudiante]
+        estu = Estudiante.find params[:id]
+        secciones_ids = estu.secciones.where(periodo_id: current_periodo.id).ids 
+        @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]} }
+      else
+        @bloques = Bloquehorario.where(horario_id: params[:id]).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]} }
+      end
+      render json: {bloques: @bloques, bloquesEditables: @bloquesEditables}, status: :ok
+
+    end
+
     # GET /horarios/1
     # GET /horarios/1.json
     def show
@@ -25,7 +55,7 @@ module Admin
 
       profes_ids = @profesores.ids
 
-      @bloques = Bloquehorario.where(profesor_id: profes_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]} }
+      # @bloques = Bloquehorario.where(profesor_id: profes_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]}}.to_json
 
       
       # bloques.each do |bh|
@@ -61,6 +91,9 @@ module Admin
     def create
 
       @horario = Horario.new(horario_params)
+      @seccion = Seccion.find params[:horario][:seccion_id]
+      # @horario.color = "##{Random.new.bytes(3).unpack("H*")[0]}" # Colorizer.colorize_similarly(@horario.id.to_s, 0.35, 0.7)
+      @horario.color = "rgba(#{rand(0..240)},#{rand(0..240)},#{rand(0..240)},0.3)"
       unless @horario.save
         flash[:error] = "No fue posible guardar el horario: #{@horario.errors.full_messages.to_sentence}"
         @seccion = @horario.seccion
@@ -71,6 +104,39 @@ module Admin
       else
         flash[:success] = 'Horario generado con éxito'
         flash[:error] = ""
+        create_bloquehorarios
+        redirect_to asignatura_path(@seccion.asignatura.id)
+      end
+
+    end
+
+    # PATCH/PUT /horarios/1
+    # PATCH/PUT /horarios/1.json
+    def update
+      @horario.bloquehorarios.delete_all
+
+      create_bloquehorarios
+
+      redirect_to asignatura_path(@horario.seccion.asignatura.id)
+    end
+
+    # DELETE /horarios/1
+    # DELETE /horarios/1.json
+    def destroy
+      asig_id = @horario.seccion.asignatura.id
+      if @horario.destroy
+        flash[:info] = 'Horario eliminado ccon éxito'
+      else
+        flash[:danger] = "Error al intentar eliminar el horario: #{@horario.errors.full_messages.to_sentence}"
+      end
+      redirect_to asignatura_path(asig_id)
+    end
+
+    private
+
+
+      def create_bloquehorarios
+
         bloques = params[:bloques_ids]
 
         total = params[:bloquehorarios][:dias].length-1
@@ -101,41 +167,8 @@ module Admin
         end
         flash[:error] = nil if flash[:error].blank?
 
-        redirect_to @horario
+
       end
-
-    end
-
-    # PATCH/PUT /horarios/1
-    # PATCH/PUT /horarios/1.json
-    def update
-      respond_to do |format|
-        if @horario.update(horario_params)
-          format.html { redirect_to @horario, notice: 'Horario actualizado con éxito.' }
-          format.json { render :show, status: :ok, location: @horario }
-        else
-          format.html { render :edit }
-          format.json { render json: @horario.errors, status: :unprocessable_entity }
-        end
-      end
-    end
-
-    # DELETE /horarios/1
-    # DELETE /horarios/1.json
-    def destroy
-      @horario.destroy
-      respond_to do |format|
-        format.html { redirect_to horarios_url, notice: 'Horario ha sido eliminado.' }
-        format.json { head :no_content }
-      end
-    end
-
-    private
-
-      # def create_bloquehorario
-      #   @bloque = Bloquehorario.new(params[:bloquehorario])
-      #   @bloque.save
-      # end
       # Use callbacks to share common setup or constraints between actions.
       def set_horario
         @horario = Horario.find(params[:id])

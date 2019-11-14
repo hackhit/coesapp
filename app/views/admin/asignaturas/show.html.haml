@@ -1,29 +1,34 @@
-= render '/admin/asignaturas/descripcion_general'
+.row.mb-2
+  .col-md-1.pt-3= btn_toggle 'btn-outline-success', 'chevron-left', asignaturas_path, 'Ir a la vista general de las asignaturas', 'Asignaturas'      
 
+  .col-md-11
+    = render '/admin/asignaturas/descripcion_general'
+
+- secciones = @asignatura.secciones.del_periodo(current_periodo.id)
 %nav
   .nav.nav-tabs
+    - if secciones.any?
+      = link_to 'Periodo Actual', "#seccionesActual", "data-toggle"=> "tab", class: "nav-item nav-link active show"
     - if @asignatura.secciones.any?
       = link_to 'Histórico de secciones', "#secciones", "data-toggle"=> "tab", class: "nav-item nav-link"
     - if @bitacoras.any?
       = link_to 'Bitácora', "#bitacora", "data-toggle"=> "tab", class: "nav-item nav-link"
   .tab-content
+    - if secciones.any?
+      .tab-pane#seccionesActual.active.show
+        .row
+          .col-md-8
+            %h6.titulo.m-2 Secciones:
+            = render partial: '/admin/secciones/index_to_asinatura', locals: {secciones: secciones, historico: false} if secciones.any?
+
+          .col-md-4
+            = render '/admin/horarios/horario_secciones'
+
     - if @asignatura.secciones.any?
       .tab-pane#secciones
-        = render '/admin/secciones/index_to_asinatura'
+        = render partial: '/admin/secciones/index_to_asinatura', locals: {secciones: @asignatura.secciones.where("periodo_id != '#{current_periodo.id}'"), historico: true}
     - if @bitacoras.any?
       .tab-pane#bitacora
         = render '/admin/bitacoras/index'
 
-.form-group.mt-3
-  = link_to asignaturas_path, class: 'btn btn-outline-secondary ml-2' do
-    = glyph 'chevron-left'
-    = t('.back', default: t("helpers.links.back"))
-  - if current_admin.maestros?
-    = link_to edit_asignatura_path(@asignatura), class: 'btn btn-outline-info ml-2' do
-      = glyph 'edit'
-      = t('.edit', default: t("helpers.links.edit"))
-
-  - if current_admin.ninja?
-    = link_to asignatura_path(@asignatura), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-outline-danger ml-2' do
-      = glyph 'trash'
-      = t('.destroy', default: t("helpers.links.destroy"))
+= render '/admin/secciones/modal_seleccionar_profesor'

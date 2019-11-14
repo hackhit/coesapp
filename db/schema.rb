@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 2019_10_30_165230) do
 
   create_table "horarios", primary_key: "seccion_id", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "titulo"
+    t.string "color"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["seccion_id"], name: "index_horarios_on_seccion_id"

@@ -4,9 +4,7 @@
 	.text-center
 		- if controller_name.eql? 'secciones' or (@controller and @controller.eql? 'secciones')
 			#btnNewSeccion{class: hidden}= btn_plus_seccion_modal @asignatura
-		%b#descAsignatura= @asignatura.descripcion_id_con_creditos if @asignatura
-	- if controller_name.eql? 'inscripcionsecciones'
-		%h6.titulo= "Secciones disponibles:" 
+		%a#descAsignatura{href: "#{asignatura_path(@asignatura.id) if @asignatura}"}= @asignatura.descripcion_id_con_creditos if @asignatura
 	#tableResponse
 		- if @secciones and @secciones.any?
 			- if controller_name.eql? 'inscripcionsecciones'
