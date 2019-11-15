@@ -1,12 +1,19 @@
-%h6.titulo.m-2= "Horario:"
+
 
 -# if current_admin 
 -# if controller_name.eql? 'inscripcionsecciones'
 -# @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
-- if @asignatura
+- if @asignatura and controller_name.eql? 'asignaturas'
+  %h6.titulo.m-2= "Horarios de las secciones de Asignatura:"
   - @url = "#{get_bloques_horario_path(@asignatura.id)}?asignatura=true"
+- elsif @estudiante and controller_name.eql? 'inscripcionsecciones'
+  - @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
+  %h6.titulo.m-2= "Horarios de las asignaturas del estudiante:"
+- maxHeight = controller_name.eql? 'inscripcionsecciones' ? 320 : 600
 
-#BloquesHorarios
+.p-1{style: "max-height: #{maxHeight}px;overflow: scroll;"}
+
+  #BloquesHorarios
 
 :javascript
   $(document).ready(function(){
@@ -19,7 +26,7 @@
         // console.log(data)
         $("#BloquesHorarios").jqs({
           mode: "read",
-          daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
+          daysList: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
           hour: 12,
           days: 5,
           periodDuration: 15,
@@ -32,11 +39,30 @@
     });
   })
 
-  function addHorario(bloques){
-    console.log(bloques);
-    $("#BloquesHorarios").jqs({
-      mode: "read",
-      data: bloques
-    });
+  function limpiarHorarioASignatura(asignatura_id){
+    $('.jqs-period').each(function(){
+      let valor = this.innerText
+      if (valor.includes(asignatura_id)){
+        this.remove();
+      }
+    })
+  }
+
+  function addHorario(bloques, asignatura_id){
+    limpiarHorarioASignatura(asignatura_id)
+
+    let result = $("#BloquesHorarios").jqs('import', bloques)
+    result = JSON.parse(result)
+
+    for (i = 0; i < result.length; i++){
+
+      if (result[i].status == false){
+        // limpiarHorarioASignatura(asignatura_id);
+        borrarSeleccion(asignatura_id);
+        return false
+      }
+    }
+
+
 
   }

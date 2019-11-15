@@ -1,11 +1,11 @@
 %table.table.mb-0
-	- seccion.profesores.joins(:usuario).order('usuarios.nombres ASC').each do |p|
+	- seccion.profesores.joins(:usuario).order('usuarios.nombres ASC').each do |profe|
 		%tr
 			%td
-				= p.descripcion
-				- if true #@editar_asignaturas
-					%b.tooltip-btn{'data_toggle': :tooltip, 'title'=>'Desasignar Este Profesor'}
-						= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{p.usuario_id}", {'data-confirm' => "¿Está seguro de esta acción?"},{role: 'button'} do
+				.tooltip-btn{'data_toggle': :tooltip, title: profe.descripcion}
+					= profe.usuario.descripcion
+					- if true #@editar_asignaturas
+						= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{profe.usuario_id}", {'data-confirm' => "¿Está seguro de esta acción?", class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'Desasignar Este Profesor'},{role: 'button'} do
 							%i.glyphicon.glyphicon-minus.text-danger
 
 	- if current_admin.mas_altos?

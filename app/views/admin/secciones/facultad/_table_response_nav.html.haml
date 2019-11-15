@@ -1,16 +1,31 @@
 - hidden = @asignatura ? '' : 'hideble'
-.border.p-md-2.mt-md-3#responseTotal{class: hidden}
-	
-	.text-center
-		- if controller_name.eql? 'secciones' or (@controller and @controller.eql? 'secciones')
-			#btnNewSeccion{class: hidden}= btn_plus_seccion_modal @asignatura
-		%a#descAsignatura{href: "#{asignatura_path(@asignatura.id) if @asignatura}"}= @asignatura.descripcion_id_con_creditos if @asignatura
-	#tableResponse
-		- if @secciones and @secciones.any?
-			- if controller_name.eql? 'inscripcionsecciones'
-				= render partial: '/admin/inscripcionsecciones/secciones_inscripcion', locals: {object: @asignatura, secciones: @secciones} if @asignatura
-			- else
+
+- if controller_name.eql? 'inscripcionsecciones'
+
+	.row
+		.col-md-8
+			.mt-md-2#responseTotal{class: hidden}
+				#tableResponse
+					- if @secciones and @secciones.any?
+						= render partial: '/admin/inscripcionsecciones/secciones_inscripcion', locals: {object: @asignatura, secciones: @secciones} if @asignatura
+
+				#noEncontrado.pagination-centered.text-center.hideble.p-0
+					.alert.alert-danger No se encontraron secciones
+			= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {escuelas: @escuelas}
+		.col-md-4
+			= render partial: '/admin/horarios/horario_secciones'
+
+- else
+
+	.border.p-md-2.mt-md-3#responseTotal{class: hidden}		
+		.text-center
+			- if controller_name.eql? 'secciones' or (@controller and @controller.eql? 'secciones')
+				#btnNewSeccion{class: hidden}= btn_plus_seccion_modal @asignatura
+			%a#descAsignatura{href: "#{asignatura_path(@asignatura.id) if @asignatura}"}= @asignatura.descripcion_id_con_creditos if @asignatura
+		#tableResponse
+			- if @secciones and @secciones.any?
 				= render partial: '/admin/secciones/index2/th_resultado', locals: {object: @asignatura, secciones: @secciones}
 
-	#noEncontrado.pagination-centered.text-center.hideble.p-0
-		.alert.alert-danger No se encontraron secciones
+		#noEncontrado.pagination-centered.text-center.hideble.p-0
+			.alert.alert-danger No se encontraron secciones
+

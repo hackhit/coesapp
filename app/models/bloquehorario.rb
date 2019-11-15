@@ -23,36 +23,41 @@ class Bloquehorario < ApplicationRecord
     return aux
   end
 
-  def entrada_descripcion
-    if entrada
-      return (entrada).strftime '%H:%M'
+  def hora_descripcion hora
+    if hora
+      if (hora.strftime '%M').eql? '00'
+        return (hora).strftime '%I%P'
+      else
+        return (hora).strftime '%I:%M%P'
+      end
     else
       return ""
-    end    
+    end
+  end
+
+  def entrada_descripcion
+    hora_descripcion entrada
   end
 
   def salida_descripcion
-    if salida
-      return (salida).strftime '%H:%M'
+    hora_descripcion salida
+  end
+
+  def hora_to_schedule hora
+    if hora
+      return (hora-(7.hours)).strftime '%H:%M'
     else
       return ""
     end
+    
   end
 
   def entrada_to_schedule
-    if entrada
-      return (entrada-(7.hours)).strftime '%H:%M'
-    else
-      return ""
-    end
+    hora_to_schedule entrada
   end
 
   def salida_to_schedule
-    if salida
-      return (salida-(7.hours)).strftime '%H:%M'
-    else
-      return ""
-    end
+    hora_to_schedule salida
   end
 
   def self.format_time(hora)

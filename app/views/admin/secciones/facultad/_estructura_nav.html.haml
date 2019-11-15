@@ -31,6 +31,6 @@
 			- @secciones = Catedra.find(session[:catedra]).secciones.del_periodo(current_periodo.id).del_departamento(session[:departamento])
 
 = render '/admin/secciones/facultad/all_tabs_nav'
-= render '/admin/secciones/facultad/table_response_nav'
+.border.p-3= render '/admin/secciones/facultad/table_response_nav'
 = render 'layouts/cargando'
 

@@ -4,9 +4,8 @@
 = form_tag(inscribir_inscripcionsecciones_path) do
 	= render '/admin/secciones/facultad/estructura_nav'
 	=hidden_field_tag :id, @estudiante.usuario_id
-	= render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {escuelas: @escuelas}
-
-	=# render partial: '/admin/horarios/horario_secciones'#, locals: {escuelas: @escuelas}
+	=# render partial: '/admin/horarios/horario_secciones'
+	=# render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {escuelas: @escuelas}
 
 :javascript
 
@@ -29,6 +28,7 @@
 	function borrarSeleccion(asig_id) {
 		$('.'+asig_id).prop('checked', false)
 		$('.tr'+asig_id).remove()
+		limpiarHorarioASignatura(asig_id);
 		comprobarInscripcion()
 	};
 

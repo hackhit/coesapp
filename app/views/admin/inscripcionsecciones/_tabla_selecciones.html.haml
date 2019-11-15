@@ -1,24 +1,25 @@
 #seleccion
-	%h6.titulo= "Selección:"
-	%table.table.table-bordered.table-striped.table-sm.table-hover#seleccionadas
-		%thead
-			%tr
-				%th Período
-				%th Código
-				%th Escuela
-				%th Departamento
-				%th Cátedra
-				%th Asignatura
-				%th Sección
-				%th U. Créditos 
+	%h6.titulo.mt-3= "Asignaturas seleccionadas:"
+	.p-3
+		%table.table.table-bordered.table-striped.table-sm.table-hover#seleccionadas
+			%thead
+				%tr
+					%th Período
+					%th Código
+					%th Escuela
+					%th Departamento
+					%th Cátedra
+					%th Asignatura
+					%th Sección
+					%th U. Créditos 
 
-				%th
-		%tbody
-			- if @inscripciones and @inscripciones.any?
-				- @inscripciones.each do |ins| 
-					= render partial: '/admin/inscripcionsecciones/tr_selecciones', locals: {ins: ins, escuelas: @escuelas}
-				%tr.font-weight-bold#trTotalCreditos{style: 'text-align: right;font-weight: bold;'} 
-					%td{colspan: 7} Total U. Créditos
-					%td.text-right#totalCreditosNumero= @inscripciones.total_creditos 
+					%th
+			%tbody
+				- if @inscripciones and @inscripciones.any?
+					- @inscripciones.each do |ins| 
+						= render partial: '/admin/inscripcionsecciones/tr_selecciones', locals: {ins: ins, escuelas: @escuelas}
+					%tr.font-weight-bold#trTotalCreditos{style: 'text-align: right;font-weight: bold;'} 
+						%td{colspan: 7} Total U. Créditos
+						%td.text-right#totalCreditosNumero= @inscripciones.total_creditos 
 
-	%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-success', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'
+		%div{style: 'max-width: 400px; margin: 0 auto 10px;'}= submit_tag 'Confirmar', class: 'btn btn-large btn-block btn-success', 'data-confirm' => '¿Confirma que desea completar la inscripción?', disabled: true, id: 'btn-confirmacion'

@@ -438,13 +438,24 @@
       });
 
       // period validation
-      if (!this.isValid(period)) {
-        console.error('Invalid period', this.periodInit(position, position + height));
 
+      if ((options.import == true) & (!this.isVali2(period))) {
+        let asignatura_id = options.title.split(" - ")[1]
+        // limpiarHorarioASignatura(asignatura_id)
+        alert(`No se puede agregar la sección de la asignatura ${asignatura_id} porque hay un solapamiento de horarios ${period[0].innerText}. Por favor inténtelo con otra sección o realice los cambios pertinentes.`)
         $(period).remove();
 
         return false;
+
       }
+
+      // if (!this.isValid(period)) {
+      //   console.error('Invalid period', this.periodInit(position, position + height));
+
+      //   $(period).remove();
+
+      //   return false;
+      // }
 
       // text format
       this.periodText(period);
@@ -904,6 +915,74 @@
       return check;
     },
 
+
+    isVali2: function (current) {
+      var currentStart = Math.round(current.position().top);
+      var currentEnd = Math.round(current.position().top + current.height());
+
+      var start = 0;
+      var end = 0;
+      var check = true;
+
+      // console.log(currentStart)
+      // console.log(currentEnd)
+
+      if (currentEnd - currentStart < 30) {
+          check = false
+      }else{      
+        $('.jqs-period', $(current).parent()).each(function (index, period) {
+          if (current.attr('id') !== $(period).attr('id')) {
+            start = Math.round($(period).position().top);
+            end = Math.round($(period).position().top + $(period).height());
+
+            if (start > currentStart && start < currentEnd) {
+              check = false;
+            }
+
+            if (end > currentStart && end < currentEnd) {
+              check = false;
+            }
+
+            if (start < currentStart && end > currentEnd) {
+              check = false;
+            }
+
+            if (start === currentStart || end === currentEnd) {
+              check = false;
+            }
+          }
+        });
+
+        $('.jqs-period-info', $(current).parent()).each(function (index, period) {
+          if (current.attr('id') !== $(period).attr('id')) {
+            start = Math.round($(period).position().top);
+            end = Math.round($(period).position().top + $(period).height());
+
+            if (start > currentStart && start < currentEnd) {
+              check = false;
+            }
+
+            if (end > currentStart && end < currentEnd) {
+              check = false;
+            }
+
+            if (start < currentStart && end > currentEnd) {
+              check = false;
+            }
+
+            if (start === currentStart || end === currentEnd) {
+              check = false;
+            }
+          }
+        });
+
+      }
+
+
+      return check;
+    },
+
+
     /**
      * Export data to JSON string
      * @returns {string}
@@ -947,7 +1026,7 @@
           } else {
             position = $this.positionFormat(period.start);
             height = $this.positionFormat(period.end);
-            options = period;
+            options = period//{title: 'data.title', backgroundColor: 'rgba(255, 155, 255, 0.5)'};
           }
 
           if (height === 0) {
@@ -955,7 +1034,7 @@
           }
 
           var status = true;
-          if (!$this.add(parent, position, height - position, options)) {
+          if (!$this.add(parent, position, height - position, {title: data.title, backgroundColor: data.color, import: true})) {
             status = false;
           }
 
