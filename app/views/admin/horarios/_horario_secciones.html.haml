@@ -6,9 +6,12 @@
 - if @asignatura and controller_name.eql? 'asignaturas'
   %h6.titulo.m-2= "Horarios de las secciones de Asignatura:"
   - @url = "#{get_bloques_horario_path(@asignatura.id)}?asignatura=true"
-- elsif @estudiante and controller_name.eql? 'inscripcionsecciones'
+- elsif @seccion
+  - @url = "#{get_bloques_horario_path(@seccion.id)}"
+- elsif @estudiante #and (controller_name.eql? 'inscripcionsecciones' or controller_name.eql? 'principal_estudiante')
   - @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
   %h6.titulo.m-2= "Horarios de las asignaturas del estudiante:"
+
 - maxHeight = controller_name.eql? 'inscripcionsecciones' ? 320 : 600
 
 .p-1{style: "max-height: #{maxHeight}px;overflow: scroll;"}

@@ -9,8 +9,8 @@
 	- if current_admin and current_admin.maestros?
 		%nav
 			.nav.nav-tabs
-				= link_to 'Datalle Sección', "#seccion", "data-toggle"=> "tab", class: "nav-item nav-link active show"
-				= link_to 'Bitácora', "#bitacora", "data-toggle"=> "tab", class: "nav-item nav-link"
+				= link_to 'Datalle Sección', "#seccion", "data-toggle": :tab, class: "nav-item nav-link active show"
+				= link_to 'Bitácora', "#bitacora", "data-toggle": :tab, class: "nav-item nav-link"
 			.tab-content
 				.tab-pane#seccion.active.show
 					.border.mt-3.p-3= render '/admin/secciones/detalle_seccion'

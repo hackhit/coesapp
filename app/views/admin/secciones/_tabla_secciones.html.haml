@@ -9,6 +9,7 @@
 				%th Departamento
 				%th Cátedra
 				%th Escuela
+				%th Horario
 				%th{style: 'width:20%'} Estado
 
 		%tbody
@@ -24,4 +25,7 @@
 					%td= seccion.asignatura.departamento.descripcion.upcase
 					%td= seccion.asignatura.catedra.descripcion.upcase
 					%td= seccion.escuela.descripcion.upcase
+					%td
+						- if seccion.horario
+							= seccion.horario.descripcion
 					%td= colocar_estado_seccion seccion

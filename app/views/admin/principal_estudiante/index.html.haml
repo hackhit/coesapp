@@ -5,6 +5,7 @@
 		= link_to "General", "#general", "data-toggle": :tab, class: 'nav-item nav-link'
 		- @estudiante.escuelas.each do |escuela|
 			= link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
+		= link_to "Horario", "#horario", "data-toggle": :tab, class: 'nav-item nav-link'
 .tab-content
 	- @estudiante.escuelas.each do |escuela|
 		- @escuela = escuela
@@ -29,7 +30,9 @@
 		- if false #@escuela.id.eql? 'IDIO' and !@estudiante.combinaciones.any?
 			- @idiomas = escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
 			= render '/admin/estudiantes/actualizar_idiomas'
-						
+	
+	.tab-pane#horario.border.px-3.border-top-0
+		= render '/admin/horarios/horario_secciones'
 	.tab-pane#general.border.px-3.border-top-0
 		= render partial: '/admin/usuarios/personales_contacto'
 		-if @estudiante.citahoraria

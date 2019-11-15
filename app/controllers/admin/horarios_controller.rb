@@ -34,7 +34,7 @@ module Admin
         secciones_ids = estu.secciones.where(periodo_id: current_periodo.id).ids 
         @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color}}
       else
-        @bloques = Bloquehorario.where(horario_id: params[:id]).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]} }
+        @bloques = Bloquehorario.where(horario_id: params[:id]).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color} }
       end
       render json: {bloques: @bloques, bloquesEditables: @bloquesEditables}, status: :ok
 
@@ -142,7 +142,7 @@ module Admin
         total = params[:bloquehorarios][:dias].length-1
 
         for i in(0..total) 
-          profesor_id = params[:bloquehorarios][:profesores][i]
+          profesor_id = params[:bloquehorarios][:profesores][i] if params[:bloquehorarios][:profesores]
           
           dia = params[:bloquehorarios][:dias][i]
           dia = Bloquehorario::DIAS[dia.to_i]

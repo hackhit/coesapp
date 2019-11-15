@@ -9,6 +9,8 @@
 			%th Id
 			%th U. Créditos
 			%th ¿PCI?
+			- if @seccion.horario
+				%th Horario
 			%th Estado
 	%tbody
 		%tr.text-center
@@ -27,4 +29,7 @@
 					.text-success= glyph 'ok'
 				- else
 					NO
+			- if @seccion.horario
+				%td= @seccion.horario.descripcion
+
 			%td= colocar_estado_seccion @seccion
