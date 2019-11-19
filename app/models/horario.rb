@@ -10,6 +10,7 @@ class Horario < ApplicationRecord
 		"#{seccion.numero} - #{seccion.asignatura.id}"
 	end
 
+
 	def descripcion
 		bloquehorarios.collect{|bh| "#{bh.dia[0..2]} de #{bh.entrada_descripcion} a #{bh.salida_descripcion} "}.to_sentence
 	end

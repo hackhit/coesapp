@@ -6,6 +6,7 @@ class Bitacora < ApplicationRecord
   ELIMINACION = 3
   DESCARGA = 4
   ESPECIAL = 5
+  CLONACION = 5
 
   #SCOPE
   scope :search, lambda {|value| where("descripcion LIKE ? OR comentario LIKE ? OR id_objeto LIKE ?", "%#{value}%", "%#{value}%", "%#{value}%")}

@@ -10,7 +10,7 @@
   - @url = "#{get_bloques_horario_path(@seccion.id)}"
 - elsif @estudiante #and (controller_name.eql? 'inscripcionsecciones' or controller_name.eql? 'principal_estudiante')
   - @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
-  %h6.titulo.m-2= "Horarios de las asignaturas del estudiante:"
+  %h6.titulo.m-2= "Horario:"
 
 - maxHeight = controller_name.eql? 'inscripcionsecciones' ? 320 : 600
 

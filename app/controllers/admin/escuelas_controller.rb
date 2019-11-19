@@ -24,7 +24,15 @@ module Admin
 
       @escuela.secciones.del_periodo(periodo_anterior.id).each do |se|
         begin
-          Seccion.create(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id, profesor_id: se.profesor_id, capacidad: se.capacidad, tipo_seccion_id: se.tipo_seccion_id)
+          # Seccion.create(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id, profesor_id: se.profesor_id, capacidad: se.capacidad, tipo_seccion_id: se.tipo_seccion_id)
+
+          seccion = Seccion.new(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id, profesor_id: se.profesor_id, capacidad: se.capacidad, tipo_seccion_id: se.tipo_seccion_id)
+
+          seccion.save!
+
+          Horario.create(seccion_id: seccion.id, color: seccion.horario.color) if seccion.horario
+
+          info_bitacora("Clonación de secciones de la escuela: #{@escuela.descripcion}. Del período #{periodo_anterior.id} al periodo #{current_periodo.id}", 5)
         rescue Exception => e
           errores_secciones << "#{se.asignatura_id} - #{se.numero}"
         end
@@ -40,7 +48,7 @@ module Admin
 
       flash[:success] = "Migración con éxito de un total de #{total_secciones - errores_secciones.count} secciones."
       
-      flash[:danger] = "Las siguientes #{errores_secciones.count} seccines ya existen en el periodo actual: #{errores_secciones.to_sencence}" if errores_secciones.any?
+      flash[:danger] = "Las siguientes #{errores_secciones.count} seccines ya existen en el periodo actual: #{errores_secciones.to_sentence}" if errores_secciones.any?
       
       flash[:info] = "Las siguientes #{errores_programaciones.count} asignaturas ya estaban activas en el periodo actual" if errores_programaciones.any?
 

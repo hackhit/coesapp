@@ -17,6 +17,12 @@ class Bloquehorario < ApplicationRecord
 
   enum dia: DIAS
 
+  def descripcion_seccion_para_profesores
+    aux =  profesor ? "#{profesor.descripcion_usuario} <br>" : ""
+    aux += " #{horario.descripcion_seccion} : #{horario.seccion.asignatura.descripcion}"
+    return aux
+  end
+
   def descripcion_corta_para_asignaturas
     aux = "#{horario.seccion.numero}"
     aux += ": #{profesor.usuario.nombres}" if profesor

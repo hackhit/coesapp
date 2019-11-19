@@ -7,7 +7,7 @@
   .text-center
     .alert.alert-info
       %b Atención:
-      Seleccione el o los bloques de horario más conveniente para la sección. Adicionalmente puede asociar el profesor correspondiente a dicho bloque
+      Seleccione el o los bloques de horario más conveniente para la sección. Adicionalmente puede asociar el profesor correspondiente a dicho bloque. Los bloques de horarios ya ocupados son de caracter informativo.
   = form_for @horario, html: { class: 'form-horizontal', id: 'formHorarios' } do |f|
     #BloquesHorarios
     = f.hidden_field :seccion_id
