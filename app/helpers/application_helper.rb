@@ -119,6 +119,22 @@ module ApplicationHelper
 		end
 	end
 
+	def badge_icon_tooltip url, classes, title_tooltip, icon1, icon2 = nil, title = nil
+
+		if url.include? 'descargar'
+			target = '_blank'
+			icon2 = 'download-alt'
+		else
+			target = ''
+		end
+
+		link_to url, class: "tooltip-btn badge #{classes}", role: :button, 'data_toggle': :tooltip, title: title_tooltip, target: target do
+			capture_haml{"#{glyph icon1} #{glyph icon2 if icon2} #{title}"}
+		end
+
+	end
+
+
 	def btn_tooltip_link_to title_tooltip, title, icon_name, btn_type, path
 		content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: title_tooltip do
 			link_to path, class: "btn #{btn_type}" do

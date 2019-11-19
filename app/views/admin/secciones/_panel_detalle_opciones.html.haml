@@ -1,54 +1,23 @@
 - if seccion.horario
-	= link_to edit_horario_path(seccion.horario), class: 'badge badge-primary btn-sm ml-md-1 p-md-1', role: :button do
-		= content_tag(:i, "", class: " icon-white")
-		= glyph 'time'
-		= glyph 'pencil'
+	= badge_icon_tooltip edit_horario_path(seccion.horario), 'badge-primary btn-sm ml-md-1 p-md-1', 'Editar Horario','time', 'pencil'
 - else
-	= link_to "#{new_horario_path}?seccion_id=#{seccion.id}", class: 'badge badge-success btn-sm ml-md-1 p-md-1', role: :button do
-		= content_tag(:i, "", class: " icon-white")
-		= glyph 'time'
-		= glyph 'plus'
+	= badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario','time', 'plus'
 
 - if current_admin
-	%b.tooltip-btn{'data_toggle': 'tooltip', title: 'Descargar Acta PDF'}
-		=# link_to notas_seccion_online_descargar_path(seccion.id, :pdf), class: 'badge badge-info btn-sm p-md-1', role: :button, target: "_blank" do
-		= link_to notas_seccion_descargar_path(seccion.id, :pdf), class: 'badge badge-info btn-sm p-md-1', role: :button, target: "_blank" do
-			= glyph 'download-alt'
-			= glyph 'file'
-	= link_to listado_seccion_descargar_path(seccion.id), class: "badge badge-info btn-sm p-md-1 tooltip-btn", 'data_toggle': 'tooltip', title: 'Descargar Listado', target: "_blank" do
-		= glyph 'download-alt'
-		= glyph 'list'
-	%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Descargar Listado en Excel'}
-		= link_to listado_seccion_excel_descargar_path(seccion.id), class: "badge badge-success btn-success btn-sm p-md-1", target: "_blank" do
-			= glyph 'download-alt'
-			= glyph 'list'
-			X
+	= badge_icon_tooltip notas_seccion_descargar_path(seccion.id, :pdf), 'badge-info btn-sm p-md-1', 'Descargar Acta PDF', 'file'
+	= badge_icon_tooltip listado_seccion_descargar_path(seccion.id), 'badge-info btn-sm p-md-1', 'Descargar Listado', 'list'
+	= badge_icon_tooltip listado_seccion_excel_descargar_path(seccion.id), 'badge-success btn-sm p-md-1', 'Descargar Listado en Excel', 'list', nil, 'X'
 
 	-if seccion.calificada
-		%b.tooltip-btn{'data_toggle': 'tooltip', title: 'Descargar Acta en Excel'}
-			= link_to acta_examen_excel_descargar_path(seccion.id), class: 'badge badge-success btn-sm p-md-1', role: :button, target: "_blank" do
-				= glyph 'download-alt'
-				= glyph 'file'
-				X
+		= badge_icon_tooltip acta_examen_excel_descargar_path(seccion.id), 'badge-success btn-sm p-md-1', 'Descargar Acta en Excel', 'file', nil, 'X'
 
-%b.tooltip-btn{'data_toggle': :tooltip, title: 'Ver Detalle / Calificar'}
-	= link_to seccion_path(seccion), class: 'badge badge-info btn-sm ml-md-1 p-md-1', role: :button do
-		= content_tag(:i, "", class: " icon-white")
-		= glyph 'search'
-		= glyph 'check'
-- if seccion.estudiantes.count < 1
+= badge_icon_tooltip seccion_path(seccion), 'badge-info btn-sm p-md-1', 'Ver Detalle / Calificar', 'search', 'check'
+
+- unless seccion.estudiantes.any?
 
 	%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
-		= link_to "", {href: seccion_path(seccion), class: 'btn-outline-danger btn-sm ml-md-1 p-md-1', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
+		= link_to "", {href: seccion_path(seccion), class: 'badge badge-danger p-md-1', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
 			= glyph 'trash'
-- if current_admin.maestros? 
-
-	- if seccion.calificada
-		%b.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar para Calificar Nuevamente'}
-			= link_to habilitar_calificar_seccion_path(seccion.id), {class: 'badge badge-info btn-sm ml-md-1 p-md-1'}, {role: 'button'} do
-				= glyph 'off'
-				= glyph 'list'
-	-# elsif seccion.tiene_trimestres1? or seccion.tiene_trimestres2?
-	/%b.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar para Calificar Trimestre1 Nuevamente'}
-	=# link_to habilitar_calificar_trim_seccion_path(seccion.id), {class: 'badge badge-info btn-sm ml-md-1 p-md-1'}, {role: 'button'} do
-	=# glyph 'off'
+			
+- if current_admin.maestros? and seccion.calificada
+	= badge_icon_tooltip habilitar_calificar_seccion_path(seccion.id), 'badge-info btn-sm p-md-1', 'Habilitar para Calificar Nuevamente', 'off', 'list'

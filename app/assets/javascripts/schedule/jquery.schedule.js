@@ -145,6 +145,7 @@
         throw new Error('Invalid periodDuration');
       }
 
+      this.loco = 5
       this.periodInterval = 60 / this.settings.periodDuration;
       this.periodHeight = 24 * this.periodInterval;
       this.periodPosition = 40 / this.periodInterval;
@@ -405,8 +406,10 @@
 
     add: function (parent, position, height, options) {
 
-      if (height <= 0 || position >= this.periodHeight) {
-        console.error('Invalid period');
+      if (height <= 0 || position >= this.periodHeight || height < 6) {
+        // console.error('Invalid period');
+
+        alert('Los períodos de tiempo deben ser mayores a 90 minutos')
 
         return false;
       }
@@ -469,7 +472,6 @@
           containment: 'parent',
           drag: function (event, ui) {
             $('.jqs-period-time', ui.helper).text($this.periodDrag(ui));
-            console.log($this.periodDrag);
             $this.closeOptions();
           },
           stop: function (event, ui) {
