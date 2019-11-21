@@ -23,9 +23,9 @@ class Bloquehorario < ApplicationRecord
     return aux
   end
 
-  def descripcion_corta_para_asignaturas
-    aux = "#{horario.seccion.numero}"
-    aux += ": #{profesor.usuario.nombres}" if profesor
+  def desc_to_asig
+    aux = ""
+    aux += "#{profesor.usuario.nombres}" if profesor
     return aux
   end
 

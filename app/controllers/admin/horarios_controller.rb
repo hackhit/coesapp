@@ -16,7 +16,19 @@ module Admin
         asig = Asignatura.find params[:id]
 
         secciones_ids = asig.secciones.where(periodo_id: current_periodo.id).ids
-        @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.descripcion_corta_para_asignaturas, color: bh.horario.color}}
+        bloques_hoarios = Bloquehorario.where(horario_id: secciones_ids).order(:horario_id)
+        aux = 0
+        @bloques = []
+        h_id = bloques_hoarios.first.horario_id
+
+        bloques_hoarios.each do |bh|
+          # p h_id.to_s.center(200, "·")
+          # p aux.to_s.center(200, "-")
+          aux += 1 unless (h_id.eql? bh.horario_id)
+          @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*aux}#{bh.horario.seccion.numero} <div class='profDesc d-none'>#{bh.desc_to_asig}</div>", color: bh.horario.color}
+          h_id = bh.horario_id
+        end
+        # @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{''*aux}#{bh.horario.seccion.numero}", color: bh.horario.color}; aux = bh.horario.seccion.numero.length}
 
       elsif params[:profesor]
         seccion = Seccion.find params[:id]

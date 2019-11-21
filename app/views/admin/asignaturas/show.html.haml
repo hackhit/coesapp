@@ -17,11 +17,11 @@
     - if secciones.any?
       .tab-pane#seccionesActual.active.show
         .row
-          .col-md-8
+          .col-md-7
             %h6.titulo.m-2 Secciones:
             = render partial: '/admin/secciones/index_to_asinatura', locals: {secciones: secciones, historico: false} if secciones.any?
 
-          .col-md-4
+          .col-md-5
             = render '/admin/horarios/horario_secciones'
 
     - if @asignatura.secciones.any?
@@ -32,3 +32,23 @@
         = render '/admin/bitacoras/index'
 
 = render '/admin/secciones/modal_seleccionar_profesor'
+
+
+:javascript
+
+  $( ".conHorario" ).hover(
+    function() {
+      let id = $( this ).attr('id')
+      $('.jqs-period-info').fadeOut( 1 );
+      // $('.jqs-period-info').filter(function(){return this.innerText.includes(id)}).fadeIn( 1 );
+      $('.jqs-period-info').each(function(){
+        if(this.innerText.includes(id)){
+          $(this).find('.profDesc').removeClass('d-none');
+          $(this).fadeIn( 1 );
+        }
+      })
+    }, function() {
+      $('.profDesc').addClass('d-none');
+      $('.jqs-period-info').fadeIn( 1 );
+    }
+  );

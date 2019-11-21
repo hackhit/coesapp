@@ -14,7 +14,8 @@
     %tbody
       - secciones.each do |seccion| 
         - bgHorario = (seccion.horario and !historico) ? seccion.horario.color : ''
-        %tr.align-middle
+        - conHorario = seccion.horario ? 'conHorario' : ''
+        %tr.align-middle{id: seccion.numero, class: conHorario}
           - if historico
             %td.text-center= seccion.periodo_id
           %td= seccion.tipo_seccion_id
@@ -23,19 +24,15 @@
             - if seccion.horario
               = seccion.horario.descripcion
               - unless historico
-                = link_to edit_horario_path(seccion.horario), class: 'btn btn-sm text-success', role: :button do
-                  = content_tag(:i, "", class: " icon-white")
-                  = glyph 'pencil'
+                =# badge_icon_tooltip horario_path(seccion.horario), 'badge-info btn-sm ml-md-1 p-md-1', 'Ver detalle horario', 'search'
 
-                = link_to horario_path(seccion.horario.id), method: "delete", data: { confirm: 'Esta acción es irreversible, ¿Está seguro?' }, class: 'btn btn-sm text-danger' do
+                = badge_icon_tooltip edit_horario_path(seccion.horario), 'badge-success btn-sm ml-md-1 p-md-1', 'Editar horario', 'pencil'
+
+                = link_to horario_path(seccion.horario.id), method: "delete", data: { confirm: 'Esta acción es irreversible, ¿Está seguro?' }, class: 'badge badge-danger tooltip-btn ml-md-1 p-md-1', 'data_toggle': :tooltip, title: 'Eliminar horario'  do
                   = glyph 'trash'
 
-            - else
-              - unless historico
-                = link_to "#{new_horario_path}?seccion_id=#{seccion.id}", class: 'badge badge-success btn-sm ml-md-1 p-md-1', role: :button do
-                  = content_tag(:i, "", class: " icon-white")
-                  = glyph 'time'
-                  = glyph 'plus'
+            - elsif !historico
+              = badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario', 'time', 'plus'
 
           %td= seccion.profesor.descripcion_usuario if seccion.profesor
           %td= render partial: '/admin/secciones/tabla_profesores_secundarios', locals: {seccion: seccion}
