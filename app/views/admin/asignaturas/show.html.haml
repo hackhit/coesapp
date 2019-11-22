@@ -35,19 +35,26 @@
 
 
 :javascript
+  
+  //function paintTimeSlots()
 
+  let aux;
   $( ".conHorario" ).hover(
     function() {
       let id = $( this ).attr('id')
       $('.jqs-period-info').fadeOut( 1 );
+
+      aux = $('#bloquesHorarios')[0].innerHTML
       // $('.jqs-period-info').filter(function(){return this.innerText.includes(id)}).fadeIn( 1 );
       $('.jqs-period-info').each(function(){
         if(this.innerText.includes(id)){
+          $(this).find('br').remove()
           $(this).find('.profDesc').removeClass('d-none');
           $(this).fadeIn( 1 );
         }
       })
     }, function() {
+      $('#bloquesHorarios')[0].innerHTML = aux
       $('.profDesc').addClass('d-none');
       $('.jqs-period-info').fadeIn( 1 );
     }

@@ -5,7 +5,7 @@
 		= link_to "General", "#general", "data-toggle": :tab, class: 'nav-item nav-link'
 		- @estudiante.escuelas.each do |escuela|
 			= link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
-		= link_to "Periodo Actual (#{current_periodo.id})", "#actualPeriodo", "data-toggle": :tab, class: 'nav-item nav-link active'
+		= link_to "Horario (#{current_periodo.id})", "#actualPeriodo", "data-toggle": :tab, class: 'nav-item nav-link active'
 .tab-content
 	- @estudiante.escuelas.each do |escuela|
 		- @escuela = escuela

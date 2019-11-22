@@ -367,10 +367,10 @@
 
       // new period
 
-      var periodTitle = '<div class="jqs-period-title-info">' + title + '</div>';
-      var periodTime = '<div class="jqs-period-time-info text-muted">' + this.periodInit(position, position + height) + '</div>';
+      var periodTitle = '<div class="jqs-period-title-info text-muted">' + title + '</div>';
+      var periodTime = '<small><div class="jqs-period-time-info text-muted"></small>' + this.periodInit(position, position + height) + '</div>';
       var period = $('<div class="jqs-period-info">' +
-        '<div class="tooltip-btn jqs-period-container-info" target="" data_toggle="tooltip" data-placement="right" data-original-title= "Profesor Ocupado" >' + periodTime + '<small>' + periodTitle + '</small>' + '</div>').css({
+        '<div class="jqs-period-container-info">' + periodTime + periodTitle + '</div>').css({
         'top': position * this.periodPosition,
         'height': height * this.periodPosition
       }).attr('id', this.uniqId()).attr('title', options.title).appendTo(parent);
@@ -452,13 +452,13 @@
 
       }
 
-      // if (!this.isValid(period)) {
-      //   console.error('Invalid period', this.periodInit(position, position + height));
+      if (!this.isValid(period)) {
+        // console.error('Invalid period', this.periodInit(position, position + height));
 
-      //   $(period).remove();
+        $(period).remove();
 
-      //   return false;
-      // }
+        return false;
+      }
 
       // text format
       this.periodText(period);

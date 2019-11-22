@@ -10,13 +10,12 @@
   - @url = "#{get_bloques_horario_path(@seccion.id)}"
 - elsif @estudiante #and (controller_name.eql? 'inscripcionsecciones' or controller_name.eql? 'principal_estudiante')
   - @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
-  %h6.titulo.m-2= "Horario:"
 
 - maxHeight = controller_name.eql? 'inscripcionsecciones' ? 320 : 600
 
 .p-1{style: "max-height: #{maxHeight}px;overflow: scroll;"}
 
-  #BloquesHorarios
+  #bloquesHorarios
 
 :javascript
   $(document).ready(function(){
@@ -27,7 +26,7 @@
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       success: function (data) {
         // console.log(data)
-        $("#BloquesHorarios").jqs({
+        $("#bloquesHorarios").jqs({
           mode: "read",
           daysList: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
           hour: 12,
@@ -54,7 +53,7 @@
   function addHorario(bloques, asignatura_id){
     limpiarHorarioASignatura(asignatura_id)
 
-    let result = $("#BloquesHorarios").jqs('import', bloques)
+    let result = $("#bloquesHorarios").jqs('import', bloques)
     result = JSON.parse(result)
 
     for (i = 0; i < result.length; i++){

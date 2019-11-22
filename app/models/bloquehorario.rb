@@ -23,6 +23,14 @@ class Bloquehorario < ApplicationRecord
     return aux
   end
 
+  def desc_profe_ocupado
+    unless profesor
+      ""
+    else
+      "#{profesor.usuario.nombres} está ocupado con #{horario.seccion.numero} de #{horario.seccion.asignatura.descripcion[0..10]}" 
+    end
+  end
+
   def desc_to_asig
     aux = ""
     aux += "#{profesor.usuario.nombres}" if profesor
@@ -39,6 +47,18 @@ class Bloquehorario < ApplicationRecord
     else
       return ""
     end
+  end
+
+  def mismo_bloque? horario_id
+    aux = Horario.find horario_id
+
+    bloquesOrigen = aux.bloquehorarios.map{|bh| bh.dia_con_entrada}
+
+    bloquesOrigen.include? dia_con_entrada
+  end
+
+  def dia_con_entrada
+    "#{dia} #{entrada_descripcion}"    
   end
 
   def entrada_descripcion

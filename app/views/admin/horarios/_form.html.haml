@@ -9,7 +9,7 @@
       %b Atención:
       Seleccione el o los bloques de horario más conveniente para la sección. Adicionalmente puede asociar el profesor correspondiente a dicho bloque. Los bloques de horarios ya ocupados son de caracter informativo.
   = form_for @horario, html: { class: 'form-horizontal', id: 'formHorarios' } do |f|
-    #BloquesHorarios
+    #bloquesHorarios
     = f.hidden_field :seccion_id
     .form-group
       .col-md-offset-2.col-md-10
@@ -29,7 +29,7 @@
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       success: function (data) {
         // console.log(data)
-        $("#BloquesHorarios").jqs({
+        $("#bloquesHorarios").jqs({
           daysList: ['Lunes ', 'Martes', 'Miércoles', 'Jueves', 'Viernes'],
           hour: 12,
           days: 5,
