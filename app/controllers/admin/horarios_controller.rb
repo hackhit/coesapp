@@ -22,20 +22,12 @@ module Admin
         h_id = bloques_hoarios.first.horario_id
 
         bloques_hoarios.each do |bh|
-          # p h_id.to_s.center(200, "·")
-          # p aux.to_s.center(200, "-")
-
-          # if !(h_id.eql? bh.horario_id) and bh.mismo_bloque? h_id
-          #   aux += 1
-          # end
           aux += 1 unless (h_id.eql? bh.horario_id)
           primero = (!(h_id.eql? bh.horario_id) and bh.mismo_bloque? h_id) ? aux : 0
 
-          @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*primero}#{bh.horario.seccion.numero} <div class='profDesc d-none'>#{bh.desc_to_asig}</div>", color: bh.horario.color}
+          @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*aux}#{bh.horario.seccion.numero} <div class='profDesc d-none'>#{bh.desc_to_asig}</div>", color: bh.horario.color}
           h_id = bh.horario_id
         end
-        # @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{''*aux}#{bh.horario.seccion.numero}", color: bh.horario.color}; aux = bh.horario.seccion.numero.length}
-
       elsif params[:profesor]
         seccion = Seccion.find params[:id]
         profes_ids = seccion.todos_profes.ids
@@ -45,12 +37,9 @@ module Admin
 
         if seccion.horario
           @bloquesEditables = Bloquehorario.where(horario_id: seccion.id).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color}} 
-          bloques_horarios = Bloquehorario.where(profesor_id: profes_ids).where("horario_id != #{seccion.id}").order(:horario_id)
-
-          # @bloques = Bloquehorario.where(profesor_id: profes_ids).where("horario_id != #{seccion.id}").collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{bh.descripcion_seccion_para_profesores}", color: bh.horario.color}}
+          bloques_horarios = Bloquehorario.joins(:periodo).where(profesor_id: profes_ids).where("horario_id != #{seccion.id}").where("periodos.id = ?", current_periodo.id).order(:horario_id)
         else
-          # @bloques = Bloquehorario.where(profesor_id: profes_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{bh.descripcion_seccion_para_profesores}", color: bh.horario.color}}
-          bloques_horarios = Bloquehorario.where(profesor_id: profes_ids).order(:horario_id)
+          bloques_horarios = Bloquehorario.joins(:periodo).where(profesor_id: profes_ids).where("periodos.id = ?", current_periodo.id).order(:horario_id)
         end
         h_id = bloques_horarios.first.horario_id if bloques_horarios.first
 
@@ -61,7 +50,7 @@ module Admin
 
           color = bh.horario.transparencia_color "0.04"
 
-          @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*2*primero}#{bh.desc_profe_ocupado}", color: color}
+          @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*2*aux}#{bh.desc_profe_ocupado}", color: color}
 
           h_id = bh.horario_id
         end

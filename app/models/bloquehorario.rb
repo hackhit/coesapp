@@ -7,6 +7,9 @@ class Bloquehorario < ApplicationRecord
 
   belongs_to :profesor, optional: true
   belongs_to :horario
+  has_one :seccion, through: :horario
+  has_one :periodo, through: :seccion
+
 
   validates_uniqueness_of :horario_id, scope: [:dia, :entrada], message: 'Ya existe un horario con una hora de entrada igual para la sección.', field_name: false
   validates_uniqueness_of :horario_id, scope: [:dia, :salida], message: 'Ya existe un horario con una hora de salida igual para la sección.', field_name: false
@@ -27,7 +30,8 @@ class Bloquehorario < ApplicationRecord
     unless profesor
       ""
     else
-      "#{profesor.usuario.nombres} está ocupado con #{horario.seccion.numero} de #{horario.seccion.asignatura.descripcion[0..10]}" 
+
+      "#{profesor.usuario.nombres} está ocupad#{profesor.usuario.genero} con #{horario.seccion.numero} de #{horario.seccion.asignatura.descripcion[0..10]}" 
     end
   end
 
