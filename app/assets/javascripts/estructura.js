@@ -1,10 +1,8 @@
 function getHost(){
 	if (window.location.pathname.includes("coesapp") || window.location.pathname.includes("coes_dev")){
 		let aux = window.location.pathname.split("/")[1]
-		console.log(aux)
 		return `/${aux}`
 	}else {
-		console.log('localhost')
 		return ""
 	}
 
