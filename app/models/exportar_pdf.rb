@@ -90,7 +90,7 @@ class ExportarPdf
 
 		# pdf.start_page_numbering(50, 800, 500, nil, "<b><PAGENUM>/<TOTALPAGENUM></b>", 1)
 
-		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de #{escuela.descripcion.upcase} de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> es estudiante regular de esta escuela (#{escuela.descripcion.titleize}) y está cursando en el periodo <b>#{periodo_id}</b>; las siguientes asignatura:", size: 10, inline_format: true, align: :justify
+		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> es estudiante regular de la Escuela de <b>#{escuela.descripcion.titleize}</b> y está cursando en el periodo <b>#{periodo_id}</b> las siguientes asignatura:", size: 10, inline_format: true, align: :justify
 
 		pdf.move_down 20
 
@@ -168,6 +168,10 @@ class ExportarPdf
 		return pdf
 	end
 
+	def paint_2_tables pdf, t1, t2
+		pdf.table([[t1,u2]], width: 540)
+	end
+
 
 	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id, escuela_id
 		# Variable Locales
@@ -194,7 +198,7 @@ class ExportarPdf
 
 		# pdf.start_page_numbering(50, 800, 500, nil, "<b><PAGENUM>/<TOTALPAGENUM></b>", 1)
 
-		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Escuela de <b>#{escuela.descripcion.upcase}</b> de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está inscrit#{usuario.genero} en esta Escuela (#{escuela.descripcion.titleize}) para el período <b>#{periodo_id}</b>; con las siguientes asignatura:", size: 10, inline_format: true, align: :justify
+		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está inscrit#{usuario.genero} en la Escuela de <b>#{escuela.descripcion.upcase}</b> para el período <b>#{periodo_id}</b> con las siguientes asignatura:", size: 10, inline_format: true, align: :justify
 
 		pdf.move_down 20
 
@@ -213,18 +217,20 @@ class ExportarPdf
 				inscripcion.estado_inscripcion]
 		end
 		
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
-		t.draw
 
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 400, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
+		t.draw
+		
 		pdf.move_down 20
 
 		data = [["<b>Clave</b>", "<b>Créditos</b>", "<b>Estado</b>"]]
 
 		data << ["<i>Número total de créditos matriculados:</i>", total_creditos, ""]
 
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
-		t.draw
-
+		u = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 540, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 160})
+		
+		u.draw
+		# pdf.table([[t,u]], width: 540)
 		pdf.move_down 20
 
 		pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
@@ -333,7 +339,7 @@ class ExportarPdf
 
 		pdf.move_down 20
 
-		pdf.text "El departamento de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está <b>preinscrit#{usuario.genero}</b> en la Escuela de <b>#{escuela.descripcion.titleize}</b> de la Universidad Central de Venezuela.", size: 10, inline_format: true, align: :justify
+		pdf.text "El departamento de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está <b>preinscrit#{usuario.genero}</b> en la Escuela de <b>#{escuela.descripcion.upcase}</b> de la Universidad Central de Venezuela.", size: 10, inline_format: true, align: :justify
 
 		pdf.move_down 5
 
