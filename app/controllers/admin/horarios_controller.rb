@@ -60,7 +60,7 @@ module Admin
       elsif params[:estudiante]
         estu = Estudiante.find params[:id]
         secciones_ids = estu.secciones.where(periodo_id: current_periodo.id).ids 
-        @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.descripcion_seccion_para_profesores, color: bh.horario.color}}
+        @bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "<small>#{bh.horario.descripcion_seccion}</small>", color: bh.horario.color}}
       else
         @bloques = Bloquehorario.where(horario_id: params[:id]).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color} }
       end

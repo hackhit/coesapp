@@ -97,9 +97,7 @@ module Admin
 			
 		end
 
-
-
-		def constancia_inscripcion
+		def constancia_inscripcion_sin_horario_old
 
 			if current_estudiante
 				periodo_id = current_estudiante.ultimo_periodo_inscrito_en params[:escuela_id]
@@ -110,26 +108,50 @@ module Admin
 				flash[:error] = "Usted no posse inscripciones en la escuela solicidata"
 				redirect_back fallback_location: root_path
 			else
-				pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
-
-				# unless send_data pdf.render, filename: "constancia_inscripcion_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
-				# 	flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
-				# end
-
-			end
-			respond_to do |format|
-				format.pdf do
-					send_data pdf.render,
-					filename: "export.pdf",
-					type: 'application/pdf',
-					disposition: 'inline'
+				pdf = ExportarPdf.hacer_constancia_inscripcion_primera params[:id], periodo_id, params[:escuela_id]
+				respond_to do |format|
+					format.pdf do
+						send_data pdf.render,
+						filename: "export.pdf",
+						type: 'application/pdf',
+						disposition: 'inline'
+					end
 				end
 			end
 			
 		end
 
-		def constancia_estudio
+		def constancia_inscripcion
 
+			if current_estudiante
+				periodo_id = current_estudiante.ultimo_periodo_inscrito_en params[:escuela_id]
+			else
+				periodo_id = current_periodo.id
+			end
+			@estudiante = Estudiante.find params[:id]
+			horario = view_context.render '/admin/horarios/horario_secciones'
+
+			if periodo_id.nil?
+				flash[:error] = "Usted no posse inscripciones en la escuela solicidata"
+				redirect_back fallback_location: root_path
+			else
+				pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id], horario
+
+				send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
+					flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+
+				# respond_to do |format|
+				# 	format.pdf do
+				# 		send_data pdf.render,
+				# 		filename: "export.pdf",
+				# 		type: 'application/pdf',
+				# 		disposition: 'inline'
+				# 	end
+				# end
+			end
+		end
+
+		def constancia_estudio
 			if current_estudiante
 				periodo_id = current_estudiante.ultimo_periodo_inscrito_en params[:escuela_id]
 			else

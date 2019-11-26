@@ -51,7 +51,7 @@
               = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: "nav-item nav-link #{activeTab}", onclick: "setTab('tabEscuela', '#{escuela.id}')"
             .nav-item.nav-link
               - if @escuelas_disponibles.any?
-                = simple_icon_toggle_modal "Registrar a #{@nickname} en escuela", 'success', 'plus', 'agregarGrado'
+                = simple_icon_toggle_modal "Registrar a #{@nickname} en una Escuela", 'success', 'plus', 'agregarGrado'
                 
             - if @estudiante #and @estudiante.valido_para_inscribir? current_periodo.id
               .nav-item= btn_inscribir seleccionar_inscripcionseccion_path(@estudiante), 'Inscripción del periodo actual', 'Inscribir'
@@ -78,54 +78,16 @@
                 - if current_admin.maestros?
                   = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'minus', "eliminar#{escuela.id}"
                   = render partial: '/admin/estudiantes/eliminar_escuela'
-              .border.p-1
-                %h6.titulo.text-center Información de la inscripción
-                %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-                  %tbody
-                    %tr
-                      %th Periodo de la Inscripción: 
-                      %td= grado.iniciado_periodo_id
-                      %td
-                        = link_to 'javascript:void(0)', onclick: "$('#cambiarPeriodoInscripcion#{grado.id_flat}').modal()" do
-                          = glyph 'pencil'
-                    %tr
-                      %th Estado de la Inscripción: 
-                      %td= grado.estado_inscripcion.upcase
-                      %td
-                        = link_to 'javascript:void(0)', onclick: "$('#cambiarEstadoInscripcion#{grado.id_flat}').modal()" do
-                          = glyph 'pencil'
-                    %tr
-                      %th Tipo de Ingreso:
-                      %td= grado.tipo_ingreso
-                      %td
-                        = link_to 'javascript:void(0)', onclick: "$('#cambiarTipoIngreso#{grado.id_flat}').modal()" do
-                          = glyph 'pencil'
-                    %tr
-                      %th Inscrito en la UCV:
-                      %td
-                        - if grado.inscrito_ucv
-                          .text-success= glyph 'ok'
-                        - else
-                          .text-danger= glyph 'remove'
-                      %td
-                        = link_to "#{cambiar_inscripcion_grado_path}?estudiante_id=#{@estudiante.id}&escuela_id=#{@escuela.id}&[grado]inscrito_ucv=#{!grado.inscrito_ucv}", method: 'post'  do
-                          = glyph 'pencil'
-              %br
-              - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Estado de Inscripción:', group: Grado.estado_inscripciones, field_name: 'estado_inscripcion', grade: grado}
-              - url = cambiar_inscripcion_grado_path
-              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarEstadoInscripcion#{grado.id_flat}", title: 'Cambiar Inscripción', content: content}
-              - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Tipo Inscripción:', group: Grado.tipos_ingreso, field_name: 'tipo_ingreso', grade: grado}
-              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarTipoIngreso#{grado.id_flat}", title: 'Cambiar Tipo Ingreso', content: content}
-              - content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Período de Inicio:', group: 'periodos', field_name: '', grade: grado}
-              = render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarPeriodoInscripcion#{grado.id_flat}", title: 'Cambiar Periodo', content: content}
-
-              = render partial: '/admin/historialplanes/index', locals: {grado: grado}
-              = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
+              .row
+                .col-md-6
+                  = render partial: '/admin/grados/info_inscripcion', locals: {grado: grado}
+                .col-md-6
+                  = render partial: '/admin/historialplanes/index', locals: {grado: grado}
+                  = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
 
               -# @curso = @estudiante.grados.where(escuela_id: escuela.id).first
               -# @inscripciones = @curso.inscripciones
               - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
-
               = render partial: '/admin/estudiantes/historial_academico'
 
     - if @profesor

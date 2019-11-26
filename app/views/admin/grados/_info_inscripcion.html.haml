@@ -1,0 +1,46 @@
+.border.p-1
+  %h6.titulo.text-center Información de la inscripción
+  %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+    %tbody
+      %tr
+        %th Periodo de la Inscripción: 
+        %td= grado.iniciado_periodo_id
+        %td
+          = link_to 'javascript:void(0)', onclick: "$('#cambiarPeriodoInscripcion#{grado.id_flat}').modal()" do
+            = glyph 'pencil'
+      %tr
+        %th Estado de la Inscripción: 
+        %td
+          .badge.badge-info= grado.estado_inscripcion.upcase
+        %td
+          = link_to 'javascript:void(0)', onclick: "$('#cambiarEstadoInscripcion#{grado.id_flat}').modal()" do
+            = glyph 'pencil'
+      %tr
+        %th Tipo de Ingreso:
+        %td
+          .badge.badge-info= grado.tipo_ingreso
+        %td
+          = link_to 'javascript:void(0)', onclick: "$('#cambiarTipoIngreso#{grado.id_flat}').modal()" do
+            = glyph 'pencil'
+      %tr
+        %th Inscrito en la UCV:
+        %td
+          - if grado.inscrito_ucv
+            .badge.badge-success Sí
+          - else
+            .badge.badge-danger No
+        %td
+          = link_to "#{cambiar_inscripcion_grado_path}?estudiante_id=#{@estudiante.id}&escuela_id=#{@escuela.id}&[grado]inscrito_ucv=#{!grado.inscrito_ucv}", method: 'post'  do
+            - if grado.inscrito_ucv
+              .text-danger.tooltip-btn{'data_toggle': :tooltip, title: 'Retirar inscripción en UCV'}= glyph 'remove'
+            - else
+              .text-success.tooltip-btn{'data_toggle': :tooltip, title: 'Inscribir en UCV'}= glyph 'ok'
+%br
+- content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Estado de Inscripción:', group: Grado.estado_inscripciones, field_name: 'estado_inscripcion', grade: grado}
+- url = cambiar_inscripcion_grado_path
+= render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarEstadoInscripcion#{grado.id_flat}", title: 'Cambiar Inscripción', content: content}
+- content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Tipo Inscripción:', group: Grado.tipos_ingreso, field_name: 'tipo_ingreso', grade: grado}
+= render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarTipoIngreso#{grado.id_flat}", title: 'Cambiar Tipo Ingreso', content: content}
+- content = render partial: '/admin/grados/form_cambiar_inscripcion', locals: {title: 'Período de Inicio:', group: 'periodos', field_name: '', grade: grado}
+= render partial: '/layouts/modal_layout', locals: {url: url, id_modal: "cambiarPeriodoInscripcion#{grado.id_flat}", title: 'Cambiar Periodo', content: content}
+

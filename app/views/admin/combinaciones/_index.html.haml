@@ -1,15 +1,19 @@
-- if current_admin and current_admin.altos? and @estudiante.combinaciones.count < 3
-  %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Combinación de Idiomas'}
-    = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nueva_combinacion').modal();", 'data_toggle' => 'modal' }) do
-      = glyph 'plus'
+- @planes = @escuela.planes
+- @periodos = @escuela.periodos.order('inicia DESC')
+%h6.titulo.mb-md-2
+  - if current_admin and current_admin.altos? and @estudiante.combinaciones.count < 3
+    .float-left.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Combinación de Idiomas'}
+      = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nueva_combinacion').modal();", 'data_toggle' => 'modal' }) do
+        = glyph 'plus'
 
-  .modal.hideble.fade#nueva_combinacion{'aria-hidden'=> false}
-    - @combinacion = Combinacion.new
-    - @combinacion.estudiante_id = @estudiante.id
-    - @idiomas2 = @idiomas1 = @escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
-    = render '/admin/combinaciones/form'
+    .modal.hideble.fade#nueva_combinacion{'aria-hidden'=> false}
+      - @combinacion = Combinacion.new
+      - @combinacion.estudiante_id = @estudiante.id
+      - @idiomas2 = @idiomas1 = @escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
+      = render '/admin/combinaciones/form'
 
-%b Combinaciones de Idiomas:
+  .text-center Combinaciones de Idiomas:
+
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   - @estudiante.combinaciones.order("periodo_id DESC").each do |combinacion|
     %tr

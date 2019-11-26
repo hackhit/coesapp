@@ -32,7 +32,8 @@
 			= render '/admin/estudiantes/actualizar_idiomas'
 	
 	.tab-pane#actualPeriodo.border.px-3.border-top-0.active.show
-		= render '/admin/horarios/horario_secciones'
+		=# render '/admin/horarios/horario_secciones'
+		= render '/admin/principal_estudiante/horarios'
 	.tab-pane#general.border.px-3.border-top-0
 		= render partial: '/admin/usuarios/personales_contacto'
 		-if @estudiante.citahoraria

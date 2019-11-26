@@ -7,7 +7,7 @@ class Horario < ApplicationRecord
 	validates :seccion_id, presence: true, uniqueness: true
 
 	def descripcion_seccion
-		"#{seccion.numero} - #{seccion.asignatura.id}"
+		"#{seccion.asignatura.id} (#{seccion.numero})"
 	end
 
 

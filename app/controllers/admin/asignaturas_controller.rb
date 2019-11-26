@@ -56,11 +56,7 @@ module Admin
       @titulo = "Asignatura: #{@asignatura.descripcion.upcase}"
       @bitacoras = Bitacora.search @asignatura.id
 
-      if escuela = current_admin.pertenece_a_escuela
-        @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
-      else
-        @profesores = Profesor.joins(:usuario).all.order('usuarios.apellidos')
-      end
+      @profesores = @asignatura.escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
 
     end
 

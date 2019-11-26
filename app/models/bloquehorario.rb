@@ -31,7 +31,7 @@ class Bloquehorario < ApplicationRecord
       ""
     else
 
-      "#{profesor.usuario.nombres} está ocupad#{profesor.usuario.genero} con #{horario.seccion.numero} de #{horario.seccion.asignatura.descripcion[0..10]}" 
+      "#{profesor.usuario.nombres} está ocupad#{profesor.usuario.genero} en éste horario con #{horario.seccion.numero} de #{horario.seccion.asignatura_id}" 
     end
   end
 

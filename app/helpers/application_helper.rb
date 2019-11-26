@@ -205,7 +205,6 @@ module ApplicationHelper
 	end
 
 	def simple_tooltip_plan plan
-
 		if plan
 			id = plan.id
 			desc = plan.descripcion_filtro
