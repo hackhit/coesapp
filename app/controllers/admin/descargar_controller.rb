@@ -129,25 +129,24 @@ module Admin
 				periodo_id = current_periodo.id
 			end
 			@estudiante = Estudiante.find params[:id]
-			horario = view_context.render '/admin/horarios/horario_secciones'
 
 			if periodo_id.nil?
 				flash[:error] = "Usted no posse inscripciones en la escuela solicidata"
 				redirect_back fallback_location: root_path
 			else
-				pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id], horario
+				pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
 
-				send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
-					flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
+				# send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "inline"
+				# 	flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 
-				# respond_to do |format|
-				# 	format.pdf do
-				# 		send_data pdf.render,
-				# 		filename: "export.pdf",
-				# 		type: 'application/pdf',
-				# 		disposition: 'inline'
-				# 	end
-				# end
+				respond_to do |format|
+					format.pdf do
+						send_data pdf.render,
+						filename: "export.pdf",
+						type: 'application/pdf',
+						disposition: 'inline'
+					end
+				end
 			end
 		end
 

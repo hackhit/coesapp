@@ -20,6 +20,31 @@ class Bloquehorario < ApplicationRecord
 
   enum dia: DIAS
 
+
+  # def self.printHorario
+  #   data = Bloquehorario::DIAS
+  #   data.unshift("")
+  #   data.map!{|a| "<b>"+a[0..2]+"</b>"}
+  #   data = [data]
+
+  #   for i in 7..14 do
+  #     p "valor de i: #{i}"
+  #     for j in 0..3 do
+
+  #       aux = ["#{i.to_s}:#{sprintf("%02i", (j*15))}"]
+
+  #       Bloquehorario::DIAS.each do |dia|
+  #         aux << 
+  #       end        
+  #       # data << ["#{i.to_s}:#{sprintf("%02i", (j*15))}","","","","",""] # En blanco
+
+
+  #     end
+  #   end
+  #   return data
+  # end
+
+
   def descripcion_seccion_para_profesores
     aux =  profesor ? "#{profesor.descripcion_usuario} <br>" : ""
     aux += " #{horario.descripcion_seccion} : #{horario.seccion.asignatura.descripcion}"
@@ -41,18 +66,6 @@ class Bloquehorario < ApplicationRecord
     return aux
   end
 
-  def hora_descripcion hora
-    if hora
-      if (hora.strftime '%M').eql? '00'
-        return (hora).strftime '%I%P'
-      else
-        return (hora).strftime '%I:%M%P'
-      end
-    else
-      return ""
-    end
-  end
-
   def mismo_bloque? horario_id
     aux = Horario.find horario_id
 
@@ -66,11 +79,23 @@ class Bloquehorario < ApplicationRecord
   end
 
   def entrada_descripcion
-    hora_descripcion entrada
+    Bloquehorario.hora_descripcion entrada
   end
 
   def salida_descripcion
-    hora_descripcion salida
+    Bloquehorario.hora_descripcion salida
+  end
+
+  def self.hora_descripcion hora
+    if hora
+      if (hora.strftime '%M').eql? '00'
+        return (hora).strftime '%I%P'
+      else
+        return (hora).strftime '%I:%M%P'
+      end
+    else
+      return ""
+    end
   end
 
   def hora_to_schedule hora

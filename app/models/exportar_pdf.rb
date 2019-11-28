@@ -246,14 +246,17 @@ class ExportarPdf
 	end
 
 
-	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id, escuela_id, horario
+	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id, escuela_id
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 		usuario = estudiante.usuario
 
 		escuela = Escuela.find escuela_id
 
-		inscripciones = estudiante.inscripcionsecciones.del_periodo(periodo_id).de_la_escuela(escuela.id)
+		grado = Grado.find [estudiante_ci,escuela_id] #estudiante.grados.where(escuela_id: escuela.id).first
+
+		# inscripciones = estudiante.inscripcionsecciones.del_periodo(periodo_id).de_la_escuela(escuela.id)
+		inscripciones = grado.inscripciones.del_periodo(periodo_id)
 
 		total = inscripciones.count
 
@@ -266,9 +269,9 @@ class ExportarPdf
 
 		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está inscrit#{usuario.genero} en la Escuela de <b>#{escuela.descripcion.upcase}</b> para el período <b>#{periodo_id}</b> con #{'la'.pluralize(total)} #{'siguiente'.pluralize(total)} #{'asignatura'.pluralize(total)} y en el siguiente horario:", size: 10, inline_format: true, align: :justify
 
-		pdf.move_down 20
+		# pdf.move_down 10
 
-		data = [["<b>Código</b>", "<b>Asignatura</b>", "<b>Sección</b>", "<b>Créditos</b>", "<b>Estado</b>"]]
+		data = [["", "<b>Código</b>", "<b>Asignatura</b>", "<b>Sec</b>", "<b>Créd</b>", "<b>Estado</b>"]]
 
 		total_creditos = 0
 
@@ -276,42 +279,111 @@ class ExportarPdf
 			seccion = inscripcion.seccion
 			asignatura = seccion.asignatura
 			total_creditos += asignatura.creditos
-			data << [asignatura.id_uxxi,
+			data << ["", asignatura.id_uxxi,
 				asignatura.descripcion_pci(seccion.periodo_id).upcase,
 				seccion.numero,
 				asignatura.creditos,
 				inscripcion.estado_inscripcion]
 		end
-		
 
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 250, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 60})
-		# t.draw
-		
-		pdf.move_down 20
+		data << [{:content => "<b>Número Total de Créditos Matriculados: </b>", :colspan => 4} ,total_creditos,""]
+
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {0 => 5, 2 => 120})
+
+		inscripciones.each_with_index do |inscripcion, i|
+			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex
+		end
+		# t.row(0).width = 3
+		# t.row(-1).width = 30
+
+		secciones_ids = grado.secciones.where(periodo_id: periodo_id).ids 
+		bloques = Bloquehorario.where(horario_id: secciones_ids)
+		v = paintHorario secciones_ids, pdf
+
+		pdf.move_down 10
+		pdf.table([[t,v]], width: 560, cell_style: {border_width: 0})
 
 		data = [["<b>Clave</b>", "<b>Créditos</b>", "<b>Estado</b>"]]
-
 		data << ["<i>Número total de créditos matriculados:</i>", total_creditos, ""]
 
-		u = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 250, position: :left, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 60})
+		# u = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 320, position: :left, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 60})
 		
-		pdf.table([[t,"#{horario}"]], width: 540)
-		
+		# u.draw
+
 		pdf.move_down 10
 
-		u.draw
-
-		pdf.move_down 20
-
 		pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
-		pdf.move_down 30
+		pdf.move_down 10
 		pdf.text "<b> --Válida para el período actual--</b>", size: 11, inline_format: true, align: :center
-		pdf.move_down 50
+		pdf.move_down 40
 
 		pdf.text "Prof. Pedro Coronado", size: 11, align: :center
 		pdf.text "Jef(a) de Control de Estudio", size: 11, align: :center
 
 		return pdf
+	end
+
+	def self.paintHorario secciones_ids, pdf
+		bloques = Bloquehorario.where(horario_id: secciones_ids)
+		
+		v = pdf.make_table(printHorarioVacio(pdf), header: true, width: 200, cell_style: {inline_format: true, size: 9, overflow: :expand }, column_widths: {0 => 35}) do
+			cells.border_width = 0.5
+			cells.border_color = "cfcfcf"
+			# cells.overflow = "expand"
+			cells.padding = 2
+			cells.style(overflow: :visible)
+			row(0).height = 20
+
+			row(0).border_top_color = "000000"
+			row(1).border_top_color = "000000"
+			row(-1).border_bottom_color = "000000"
+			row([5,9,13,17,21, 25, 29, 33, 37, 41, 45, 49]).border_top_color = "9c9b98"
+			column([0,1]).border_left_color = "000000"
+			column([2,3,4,5]).border_left_color = "9c9b98"
+			column(-1).border_right_color = "000000"
+
+			bloques.each do |bh|
+				dia_index = Bloquehorario.dias[bh.dia]+1
+				horaEntrada, minutoEntrada = bh.entrada_to_schedule.split(":")
+				horaSalida, minutoSalida = bh.salida_to_schedule.split(":")
+				
+				inicio = (horaEntrada.to_i*4)+(minutoEntrada.to_i/15)+1
+				final = (horaSalida.to_i*4)+(minutoSalida.to_i/15)+1
+
+				rows(inicio..final).columns(dia_index).background_color = bh.horario.color_rgb_to_hex
+				# rows(inicio..final).columns(dia_index).content = "x"
+
+				# columns(dia_index).rowspan = 3
+				rows(final).columns(dia_index).size = 7
+				rows(final).columns(dia_index).height = 10
+				rows(final).columns(dia_index).rotate = 90 
+				rows(final).columns(dia_index).content = "#{bh.horario.seccion.asignatura_id}"
+
+				# v.rows(inicio).columns(dia_index).borders = [:top]
+				# v.rows(inicio).columns(dia_index).border_widths = [0,1,1,0]
+			end
+		end
+		return v
+
+	end
+
+	def self.printHorarioVacio pdf
+
+		data = Bloquehorario::DIAS
+		data.unshift("")
+		data.map!{|a| "<b>"+a[0..2]+"</b>"}
+		data = [data]
+
+		for i in 7..19 do
+			aux = i < 12 ? "#{i} am" : "#{i - 12} pm"
+			aux = "12 m" if i.eql? 12
+			data << [{:content => "<b>#{aux}</b>", :rowspan => 4} ,"","","","",""] # En blanco
+			data.push [""]*5
+			data << [""]*5
+			data << [""]*5
+
+		end
+		data
 	end
 
 	def self.hacer_kardex id, escuela_id, alfabetico=false

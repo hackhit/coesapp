@@ -14,6 +14,8 @@ class Grado < ApplicationRecord
 	
 	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
 
+	has_many :secciones, through: :inscripciones, source: :seccion
+
 	# VALIDACIONES
 
 	validates :tipo_ingreso, presence: true 
@@ -52,6 +54,42 @@ class Grado < ApplicationRecord
 	# def inscripciones
 	# 	Inscripcionseccion.where("estudiante_id = ? and escuelas_id = ?", estudiante_id, escuela_id)
 	# end
+
+
+	def printHorario periodo_id
+	data = Bloquehorario::DIAS
+	data.unshift("")
+	data.map!{|a| "<b>"+a[0..2]+"</b>"}
+	data = [data]
+
+	secciones_ids = secciones.where(periodo_id: periodo_id).ids 
+	# bloques = Bloquehorario.where(horario_id: secciones_ids).group(entrada).having('HOUR(entrada)')# intento con Group
+
+	# bloques = Bloquehorario.where(horario_id: secciones_ids).select("HOUR(entrada) AS hora", "bloquehorarios.id AS id").group('hora')# intento con Group
+	bloques = Bloquehorario.where(horario_id: secciones_ids).collect{|bh| {horario: bh.dia_con_entrada, id: bh.id}}.uniq{|e| e[:horario] }
+	p bloques	
+
+	for i in 7..14 do
+		for j in 0..3 do
+			# aux = ["#{i.to_s}:#{sprintf("%02i", (j*15))}"]
+
+			# Bloquehorario::DIAS.each do |dia|
+			# 	aciertos = bloques.map{|b| b[:id] if b[:horario] == "#{dia} #{Bloquehorario.hora_descripcion "07:00".to_time}"}.compact
+				
+			# 	aciertos.each do |acierto|
+
+			# 	end
+			# 	aux << ""
+
+			# end
+			data << ["#{i.to_s}:#{sprintf("%02i", (j*15))}","","","","",""] # En blanco
+		end
+	end
+	return data #bloques
+	end
+
+
+
 
 	def plan_descripcion_corta
 		plan ? plan.descripcion_completa : '--'

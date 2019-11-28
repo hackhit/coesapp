@@ -173,6 +173,9 @@ module Admin
           profesor_id = params[:bloquehorarios][:profesores][i] if params[:bloquehorarios][:profesores]
           
           dia = params[:bloquehorarios][:dias][i]
+          p "#".center(200, "#")
+          p "      #{dia}      ".center(190, "=")
+          p "#".center(200, "#")
           dia = Bloquehorario::DIAS[dia.to_i]
 
           horas = params[:bloquehorarios][:horas][i]
