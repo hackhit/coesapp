@@ -31,6 +31,7 @@ class Grado < ApplicationRecord
 	scope :por_equivalencia_interna, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EI'"}
 	scope :por_equivalencia_externa, -> {joins(:seccion).where "secciones.tipo_seccion_id = 'EE'"}
 	scope :total_creditos_inscritos, -> {joins(:asignatura).sum('asignaturas.creditos')}
+	scope :inscritos_ucv, -> {where(inscrito_ucv: true)}
 
 	scope :culminado_en_periodo, lambda { |periodo_id| where "culminacion_periodo_id = ?", periodo_id}
 	scope :iniciados_en_periodo, lambda { |periodo_id| where "iniciado_periodo_id = ?", periodo_id}

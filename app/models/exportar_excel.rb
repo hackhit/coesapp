@@ -23,8 +23,12 @@ class ExportarExcel
 		estado = estado.singularize
 		if estado != 'completo'
 			unless estado.eql? 'nuevo'
-				indice = Grado.estado_inscripciones[estado]
-				grados = grados.where(estado_inscripcion: indice)
+				if estado.eql? 'ucv'
+					grados = grados.inscritos_ucv
+				else
+					indice = Grado.estado_inscripciones[estado]
+					grados = grados.where(estado_inscripcion: indice)
+				end
 			end
 			grados = grados.where(escuela_id: escuela_id) if escuela_id
 			grados = grados.joins(:plan).where("planes.id = '#{plan_id}'") if plan_id
