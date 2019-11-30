@@ -29,7 +29,7 @@ module Admin
       end
       info_bitacora("Eliminada programación de escuela: #{@escuela.descripcion}. Del período #{current_periodo.id}", 3)
       flash[:info] = "¡Programaciones eliminadas correctamente!"
-      redirect_back fallback_location: asignaturas_path
+      redirect_back fallback_location: "#{asignaturas_path}?escuela_id=#{@escuela.id}"
     end
 
     def clonar_programacion
@@ -121,7 +121,7 @@ module Admin
       end
 
 
-      redirect_back fallback_location: asignaturas_path
+      redirect_back fallback_location: "#{asignaturas_path}?escuela_id=#{@escuela.id}"
 
     end
 

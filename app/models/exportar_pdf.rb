@@ -286,7 +286,7 @@ class ExportarPdf
 		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {0 => 5, 2 => 120})
 
 		inscripciones.each_with_index do |inscripcion, i|
-			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex 4
+			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex
 		end
 		# t.row(0).width = 3
 		# t.row(-1).width = 30
@@ -323,7 +323,7 @@ class ExportarPdf
 		
 		v = pdf.make_table(printHorarioVacio(pdf), header: true, width: 200, cell_style: {inline_format: true, size: 9, overflow: :expand }, column_widths: {0 => 35}) do
 			cells.border_width = 0.5
-			cells.border_color = "cfcfcf"
+			cells.border_color = "faf7f7"
 			# cells.overflow = "expand"
 			cells.padding = 2
 			cells.style(overflow: :visible)
@@ -345,7 +345,17 @@ class ExportarPdf
 				inicio = (horaEntrada.to_i*4)+(minutoEntrada.to_i/15)+1
 				final = (horaSalida.to_i*4)+(minutoSalida.to_i/15)+1
 
-				rows(inicio..final).columns(dia_index).background_color = bh.horario.color_rgb_to_hex 4
+				rows(inicio..final).columns(dia_index).background_color = bh.horario.color_rgb_to_hex 2
+				# rows([inicio,final]).columns(dia_index).border_width = 1
+
+				rows(inicio..final).columns(dia_index).border_left_color = bh.horario.color_rgb_to_hex
+				rows(inicio..final).columns(dia_index).border_left_width = 1.7
+				rows(inicio..final).columns(dia_index).border_right_width = 1.7
+				rows(inicio..final).columns(dia_index).border_right_color = bh.horario.color_rgb_to_hex
+				rows(inicio).columns(dia_index).border_top_color = bh.horario.color_rgb_to_hex
+				rows(inicio).columns(dia_index).border_top_width = 1.7
+				rows(final).columns(dia_index).border_bottom_color = bh.horario.color_rgb_to_hex
+				rows(final).columns(dia_index).border_bottom_width = 1.7
 				# rows(inicio..final).columns(dia_index).content = "x"
 
 				# columns(dia_index).rowspan = 3
