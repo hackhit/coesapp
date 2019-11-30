@@ -121,7 +121,14 @@ module Admin
       @horario = Horario.new(horario_params)
       @seccion = Seccion.find params[:horario][:seccion_id]
       # @horario.color = "##{Random.new.bytes(3).unpack("H*")[0]}" # Colorizer.colorize_similarly(@horario.id.to_s, 0.35, 0.7)
-      @horario.color = "rgba(#{rand(0..240)},#{rand(0..240)},#{rand(0..240)},0.3)"
+
+      
+      # hBase = rand(130..230)
+      # newH = (hBase * 360).floor
+      # newL = ((rand() * 16) + 75).floor
+
+
+      @horario.color = "rgba(#{rand(150..230)},#{rand(150..230)},#{rand(150..230)},0.3)"
       unless @horario.save
         flash[:error] = "No fue posible guardar el horario: #{@horario.errors.full_messages.to_sentence}"
         @seccion = @horario.seccion
@@ -172,11 +179,8 @@ module Admin
         for i in(0..total) 
           profesor_id = params[:bloquehorarios][:profesores][i] if params[:bloquehorarios][:profesores]
           
-          dia = params[:bloquehorarios][:dias][i]
-          p "#".center(200, "#")
-          p "      #{dia}      ".center(190, "=")
-          p "#".center(200, "#")
-          dia = Bloquehorario::DIAS[dia.to_i]
+          diaIndice = params[:bloquehorarios][:dias][i].to_i
+          dia = Bloquehorario::DIAS[diaIndice]
 
           horas = params[:bloquehorarios][:horas][i]
           entrada, salida = horas.split(' - ')
@@ -193,6 +197,7 @@ module Admin
           # redirect_to bloquehorarios_path
 
           unless @bloque.save
+            flash[:error] = "" if flash[:error].nil?
             flash[:error] += @bloque.errors.full_messages.to_sentence
           end
         end

@@ -28,7 +28,16 @@
                 = link_to 'Cátedras', catedras_path, class: 'dropdown-item'
                 = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item'
 
-              = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item'
+              - if current_admin.escuelas.count.eql? 1
+                = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item'
+
+          - if current_admin.escuelas.count > 1
+            %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'asignaturas'}"}  
+              %a.nav-link.dropdown-toggle#Reportes{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
+                Asignaturas
+              .dropdown-menu{"aria-labelledby" => "Asignaturas"}
+                - current_admin.escuelas.joins(:escuelaperiodos).where('escuelaperiodos.periodo_id = ?', current_periodo.id).each do |esc| 
+                  = link_to "Asignaturas de #{esc.descripcion}", "#{asignaturas_path}?escuela_id=#{esc.id}", class: 'dropdown-item'
           %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'secciones'}"}  
             %a.nav-link.dropdown-toggle#Reportes{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
               Reportes

@@ -241,11 +241,6 @@ class ExportarPdf
 	end
 
 
-	def paint_2_tables pdf, t1, t2
-		pdf.table([[t1,u2]], width: 540)
-	end
-
-
 	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id, escuela_id
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
@@ -291,7 +286,7 @@ class ExportarPdf
 		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {0 => 5, 2 => 120})
 
 		inscripciones.each_with_index do |inscripcion, i|
-			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex
+			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex 4
 		end
 		# t.row(0).width = 3
 		# t.row(-1).width = 30
@@ -350,14 +345,15 @@ class ExportarPdf
 				inicio = (horaEntrada.to_i*4)+(minutoEntrada.to_i/15)+1
 				final = (horaSalida.to_i*4)+(minutoSalida.to_i/15)+1
 
-				rows(inicio..final).columns(dia_index).background_color = bh.horario.color_rgb_to_hex
+				rows(inicio..final).columns(dia_index).background_color = bh.horario.color_rgb_to_hex 4
 				# rows(inicio..final).columns(dia_index).content = "x"
 
 				# columns(dia_index).rowspan = 3
 				rows(final).columns(dia_index).size = 7
 				rows(final).columns(dia_index).height = 10
-				rows(final).columns(dia_index).rotate = 90 
-				rows(final).columns(dia_index).content = "#{bh.horario.seccion.asignatura_id}"
+				rows(final).columns(dia_index).rotate = 90
+				tope = bh.horario.seccion.asignatura_id.length
+				rows(final).columns(dia_index).content = "#{bh.horario.seccion.asignatura_id[tope-4..tope]}"
 
 				# v.rows(inicio).columns(dia_index).borders = [:top]
 				# v.rows(inicio).columns(dia_index).border_widths = [0,1,1,0]
@@ -369,7 +365,7 @@ class ExportarPdf
 
 	def self.printHorarioVacio pdf
 
-		data = Bloquehorario::DIAS
+		data = %w(Lunes Martes Miércoles Jueves Viernes)
 		data.unshift("")
 		data.map!{|a| "<b>"+a[0..2]+"</b>"}
 		data = [data]
@@ -378,7 +374,7 @@ class ExportarPdf
 			aux = i < 12 ? "#{i} am" : "#{i - 12} pm"
 			aux = "12 m" if i.eql? 12
 			data << [{:content => "<b>#{aux}</b>", :rowspan => 4} ,"","","","",""] # En blanco
-			data.push [""]*5
+			data << [""]*5
 			data << [""]*5
 			data << [""]*5
 

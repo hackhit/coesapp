@@ -409,7 +409,7 @@
       if (height <= 0 || position >= this.periodHeight || height < 6) {
         // console.error('Invalid period');
 
-        alert('Los períodos de tiempo deben ser mayores a 90 minutos')
+        alert('Los períodos de tiempo deben ser de al menos 90 minutos y no soparse entre sí')
 
         return false;
       }
@@ -442,10 +442,29 @@
 
       // period validation
 
-      if ((options.import == true) & (!this.isVali2(period))) {
-        let asignatura_id = options.title.split(" - ")[1]
+      var periodCurrentId = this.isVali2(period)
+      
+      if ((options.import == true) & (periodCurrentId != true)) {
+        let asignatura_id = options.title.split(" ")[0]
+        let seccion_numero = options.title.split(" ")[1]
+
+        let itemAux = document.getElementById(periodCurrentId)
+        let dayAux = itemAux.parentElement
+        let indice = $( ".jqs-day" ).index( dayAux )
+        console.log(indice)
+
+        let weekday = new Array(7);
+        weekday[0] = "Lunes";
+        weekday[1] = "Martes";
+        weekday[2] = "Miércoles";
+        weekday[3] = "Jueves";
+        weekday[4] = "Viernes";
+
+
+        let dia = weekday[indice];
+        let desc = `${dia} ${itemAux.innerText}`
         // limpiarHorarioASignatura(asignatura_id)
-        alert(`No se puede agregar la sección de la asignatura ${asignatura_id} porque hay un solapamiento de horarios ${period[0].innerText}. Por favor inténtelo con otra sección o realice los cambios pertinentes.`)
+        alert(`No se puede agregar la sección ${seccion_numero} de la asignatura ${asignatura_id}, hay un solapamiento de horarios en ${desc}. \n Por favor inténtelo con otra sección o realice los cambios pertinentes.`)
         $(period).remove();
 
         return false;
@@ -476,7 +495,7 @@
           },
           stop: function (event, ui) {
             if (!$this.isValid($(ui.helper))) {
-              console.error('Invalid position');
+              alert('Los períodos de tiempo deben ser de al menos 90 minutos y no soparse entre sí')
 
               $(ui.helper).css('top', Math.round(ui.originalPosition.top));
             }
@@ -493,7 +512,7 @@
           },
           stop: function (event, ui) {
             if (!$this.isValid($(ui.helper))) {
-              console.error('Invalid position');
+              alert('Los períodos de tiempo deben ser de al menos 90 minutos y no soparse entre sí')
 
               $(ui.helper).css({
                 'height': Math.round(ui.originalSize.height),
@@ -886,7 +905,7 @@
       // console.log(currentStart)
       // console.log(currentEnd)
 
-      if (currentEnd - currentStart < 30) {
+      if (currentEnd - currentStart < 60) {
           check = false
       }else{      
         $('.jqs-period', $(current).parent()).each(function (index, period) {
@@ -961,19 +980,19 @@
             end = Math.round($(period).position().top + $(period).height());
 
             if (start > currentStart && start < currentEnd) {
-              check = false;
+              check = $(period).attr('id');
             }
 
             if (end > currentStart && end < currentEnd) {
-              check = false;
+              check = $(period).attr('id');
             }
 
             if (start < currentStart && end > currentEnd) {
-              check = false;
+              check = $(period).attr('id');
             }
 
             if (start === currentStart || end === currentEnd) {
-              check = false;
+              check = $(period).attr('id');
             }
           }
         });

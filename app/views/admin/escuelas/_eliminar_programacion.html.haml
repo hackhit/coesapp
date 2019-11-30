@@ -1,0 +1,46 @@
+- total_inscripciones = 0 
+- secciones = escuela.secciones.del_periodo(current_periodo.id)
+- secciones.collect{|s| total_inscripciones += s.inscripciones.count}
+
+- total_secciones = secciones.count
+
+.modal.fade{'aria-hidden': true, role: :dialog, tabindex: '-1', id: "BorrarClonacion#{escuela.id}"}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
+          %span{"aria-hidden": true} ×
+        %h4.text-center=  "Eliminar Escuela #{escuela.descripcion}"
+      .modal-body.border.p-2
+        .form-horizontal
+
+          %h5.alert.alert-warning
+            = raw "Se procederá a eliminar: </br> #{total_secciones} #{'seccion'.pluralize(total_secciones)} con sus profesores y horarios asociados </br> #{total_inscripciones} #{'inscripcion'.pluralize(total_inscripciones)} asociadas."
+          .alert.alert-danger
+            = "Recuerde que las acciones que pretende llevar a cabo son irrevesribles. Para continuar por favor escriba: #{escuela.id}"
+            = text_field_tag "confirmacion#{escuela.id}", nil, class: 'form-control form-control-sm'
+
+          .modal-footer 
+            %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar
+            = link_to 'Aceptar', limpiar_programacion_escuela_path(@escuelas.first.id), class: 'btn btn-outline-success btn-sm disabled', id: "submit#{escuela.id}", disabled: true
+
+:javascript
+
+
+  $(`#confirmacion#{escuela.id}`).on('input',function(evt){ 
+    var node = $(this);
+    let sutmitBtn = $(`#submit#{escuela.id}`)
+
+    node.val(node.val().toUpperCase());
+    node.val(node.val().replace(/[^A-Z|a-z]/g,'') );
+    if (node.val() == `#{escuela.id}`) {
+
+      sutmitBtn.removeClass('disabled')
+      sutmitBtn.prop('disabled', '')
+
+    }else{
+      console.log(node.val())
+      sutmitBtn.addClass('disabled')
+      sutmitBtn.prop('disabled', 'disabled')
+    }
+  });

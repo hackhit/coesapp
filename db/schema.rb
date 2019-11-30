@@ -470,7 +470,7 @@ ActiveRecord::Schema.define(version: 2019_10_30_165230) do
   add_foreign_key "historialplanes", "estudiantes", primary_key: "usuario_id", name: "historialplanes_ibfk_3", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "horarios", "secciones"
+  add_foreign_key "horarios", "secciones", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "periodos", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", on_update: :cascade, on_delete: :cascade

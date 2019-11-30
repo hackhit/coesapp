@@ -20,6 +20,8 @@ class Periodo < ApplicationRecord
 	# scope :anuales, ->{where("periodos.id LIKE '%A'")}
 	# scope :semestrales, -> {where("periodos.id LIKE '%S' || periodos.id LIKE '%U'")}
 
+	default_scope { order(id: :desc) }
+
 	# VALIDACIONES:
     validates :id, presence: true, uniqueness: true
     validates :inicia, presence: true#, uniqueness: true

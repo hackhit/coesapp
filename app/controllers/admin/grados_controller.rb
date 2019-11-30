@@ -97,6 +97,7 @@ module Admin
       grados = Grado.iniciados_en_periodo(current_periodo.id)#.limit(50)
       @preinscritos = grados.preinscrito
       @confirmados = grados.confirmado
+      @inscritos_ucv = grados.inscritos_ucv
       @reincorporados = grados.reincorporado
       @nuevos = grados.reject{|g| !g.inscripciones.any?}
     end

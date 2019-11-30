@@ -5,7 +5,7 @@ module Admin
     before_action :filtro_super_admin!, except: [:destroy, :periodos]
     before_action :filtro_ninja!, only: [:destroy]
 
-    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta, :clonar_programacion]
+    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta, :clonar_programacion, :limpiar_programacion]
 
     # GET /escuelas
     # GET /escuelas.json
@@ -13,44 +13,113 @@ module Admin
       render json: {ids: @escuela.periodos.where("periodos.id != ?", params[:periodo_actual_id]).order(inicia: :desc).ids.to_a}
     end
 
+    def limpiar_programacion
+      @escuela.asignaturas.each do |asig|
+        total = true
+        progs = asig.programaciones.del_periodo(current_periodo.id)
+        if progs.count > 0
+          total = false unless progs.delete_all
+        end
+      end
+      # if Seccion.del_periodo(current_periodo.id).de_la_escuela(@escuela.id).delete_all
+      # if Seccion.del_periodo(current_periodo.id).joins(:escuela).where("escuelas.id = ?", 'EDUC').delete_all
+
+      Seccion.del_periodo(current_periodo.id).de_la_escuela(@escuela.id).each do |sec|
+        sec.delete
+      end
+      info_bitacora("Eliminada programación de escuela: #{@escuela.descripcion}. Del período #{current_periodo.id}", 3)
+      flash[:info] = "¡Programaciones eliminadas correctamente!"
+      redirect_back fallback_location: asignaturas_path
+    end
 
     def clonar_programacion
-
       periodo_anterior = Periodo.find params[:periodo_id]
       errores_programaciones = []
       errores_secciones = []
-      total_secciones = periodo_anterior.secciones.count
-      total_programaciones = periodo_anterior.programaciones.count
+      total_secciones = periodo_anterior.secciones.de_la_escuela(@escuela.id).count
+      total_programaciones = 0
+      programaciones_existentes = 0
+      total_profes_secundarios = []
+      total_profes_secundarios_error = []
+      errores_excepcionales = []
 
       @escuela.secciones.del_periodo(periodo_anterior.id).each do |se|
+        principal = params[:profesores] ? se.profesor_id : nil
         begin
-          # Seccion.create(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id, profesor_id: se.profesor_id, capacidad: se.capacidad, tipo_seccion_id: se.tipo_seccion_id)
 
-          seccion = Seccion.new(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id, profesor_id: se.profesor_id, capacidad: se.capacidad, tipo_seccion_id: se.tipo_seccion_id)
+          nueva_seccion = Seccion.find_or_create_by(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id) do |seccion_aux|
+            seccion_aux.profesor_id = principal
+            seccion_aux.capacidad = se.capacidad
+            seccion_aux.tipo_seccion_id = se.tipo_seccion_id
+          end
+        rescue Exception => e
+          errores_excepcionales << "Error al crear o buscar sección: #{nueva_seccion.id} #{e}"
+        end
 
-          seccion.save!
+        begin
+          if params[:profesores]
+            se.secciones_profesores_secundarios.each do |secundario|
+              nuevo_secundario = SeccionProfesorSecundario.new(profesor_id: secundario.profesor_id, seccion_id: nueva_seccion.id)
+              if nuevo_secundario.save
+                total_profes_secundarios << "Agregado profe #{secundario.profesor_id} a sección #{nueva_seccion.descripcion_simple}"
+              else
+                total_profes_secundarios_error << "Profe secundario #{secundario.profesor_id} no se pudo agregar a #{nueva_seccion.descripcion_simple}: #{nuevo_secundario.errors.full_messages.to_sentence}"
+              end
+            end
+          else
+            nueva_seccion.secciones_profesores_secundarios.delete_all
+          end
+        rescue Exception => e
+          errores_excepcionales << "Error al intentar agregar profesores secundarios a #{se.descripcion_simple}: #{e} </br></br>"
+        end
 
-          Horario.create(seccion_id: seccion.id, color: seccion.horario.color) if seccion.horario
+        begin
+          if params[:horarios] and se.horario
+            nueva_seccion.horario.delete if nueva_seccion.horario
+            Horario.create(seccion_id: nueva_seccion.id, color: se.horario.color)
+            se.horario.bloquehorarios.each do |bh|
+              bh_aux = Bloquehorario.new(dia: bh.dia, entrada: bh.entrada, salida: bh.salida, horario_id: nueva_seccion.id)
+              bh_aux.profesor_id = bh.profesor_id if params[:profesores]
+              bh_aux.save
+            end
+          end
+        rescue Exception => e
+          errores_excepcionales << "Error al intentar agregar horario a #{seccion_nueva.descripcion_simple}: #{e} </br></br>"
+        end
 
           info_bitacora("Clonación de secciones de la escuela: #{@escuela.descripcion}. Del período #{periodo_anterior.id} al periodo #{current_periodo.id}", 5)
-        rescue Exception => e
-          errores_secciones << "#{se.asignatura_id} - #{se.numero}"
+      end
+
+      periodo_anterior.programaciones.de_la_escuela(@escuela.id).each do |pr|
+        if progr_aux = Programacion.where(periodo_id: current_periodo.id, asignatura_id: pr.asignatura_id)
+          programaciones_existentes += 1
+        else
+          progr_aux = Programacion.new(periodo_id: current_periodo.id, asignatura_id: pr.asignatura_id)
+          if progr_aux.save
+            total_programaciones += 1 
+          else
+            errores_programaciones << "No se logró activar asignatura #{pr.asignatura_id}: #{progr_aux.errors.full_messages.to_sentence}"   
+          end
         end
       end
 
-      periodo_anterior.programaciones.each do |pr|
-        begin
-          Programacion.create(periodo_id: current_periodo.id, asignatura_id: pr.asignatura_id)
-        rescue Exception => e
-          errores_programaciones << pr.asignatura_id
-        end
+      flash[:success] = "Clonación con éxito de un total de #{total_secciones - errores_secciones.count} secciones."
+      
+      flash[:danger] = "<b> Secciones no agregadas #{errores_secciones.count}:</b></br> #{errores_secciones.to_sentence}" if errores_secciones.any?
+      flash[:info] = "<b>Información Complementaria:</b>  </br>"
+
+      flash[:info] += "<b></br>Programaciones:</b></br>"
+      flash[:info] += "Se activaron #{total_programaciones} asignaturas de un total de #{periodo_anterior.programaciones.de_la_escuela(@escuela.id).count}. "
+      flash[:info] += "Estaban ya activas #{programaciones_existentes} asignaturas de un total de #{periodo_anterior.programaciones.de_la_escuela(@escuela.id).count}. "
+
+      flash[:info] += "<b> #{errores_programaciones.count} Programaciones no activadas:</b></br> #{errores_programaciones.to_sentence}" if errores_programaciones.any?
+      
+      if total_profes_secundarios.any? or total_profes_secundarios_error.any?
+        flash[:info] += "</br><b>Profesores Secundarios: </b></br>"
+        flash[:info] += "Se clonaron #{total_profes_secundarios.count} profesores secundarios" if total_profes_secundarios.any?
+        flash[:info] += total_profes_secundarios_error.to_sentence if total_profes_secundarios_error.any?
       end
 
-      flash[:success] = "Migración con éxito de un total de #{total_secciones - errores_secciones.count} secciones."
-      
-      flash[:danger] = "Las siguientes #{errores_secciones.count} seccines ya existen en el periodo actual: #{errores_secciones.to_sentence}" if errores_secciones.any?
-      
-      flash[:info] = "Las siguientes #{errores_programaciones.count} asignaturas ya estaban activas en el periodo actual" if errores_programaciones.any?
 
       redirect_back fallback_location: asignaturas_path
 

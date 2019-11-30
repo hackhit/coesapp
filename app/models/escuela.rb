@@ -14,6 +14,8 @@ class Escuela < ApplicationRecord
 	has_many :profesores, through: :departamentos
 
 	has_many :secciones, through: :asignaturas
+	
+	has_many :programaciones, through: :asignaturas
 
 	has_many :inscripcionsecciones, through: :secciones
 

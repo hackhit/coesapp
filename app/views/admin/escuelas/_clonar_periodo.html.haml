@@ -17,11 +17,20 @@
                 = text_field_tag :actual, current_periodo.id, readonly: true, disabled: true, class: 'form-control'
             %br
             .control-group
-              %span.control-label
-                Clonar Períodos:
+              %span.control-label Clonar Períodos:
               .controls
                 =# collection_select nil, :nuevo, Periodos.all.order(inicia: :desc), :id, :id, {:prompt => 'Seleccione Período'}, { class: 'form-control', required: true }
-                = grouped_collection_select nil, :periodo_id, Escuela.all, :periodos, :id, :id, :id, {:prompt => "--- Selecciona el período que desea clonar ---"}, { class: 'form-control hideble mt-md-3', required: true}
+                = grouped_collection_select nil, :periodo_id, @escuelas.sort {|a,b| b <=> a}, :periodos, :id, :id, :id, {:prompt => "--- Selecciona el período que desea clonar ---"}, { class: 'form-control hideble mt-md-3', required: true}
+            .control-group.mt-3
+              %span.control-label
+                %label.btn.btn-info.btn-sm
+                  ¿Clonar Profesores?:
+                  = check_box_tag :profesores
+            .control-group.mt-3
+              %span.control-label
+                %label.btn.btn-info.btn-sm
+                  ¿Clonar Horarios?:
+                  = check_box_tag :horarios
 
           .modal-footer
             %a.btn.btn-sm.btn-outline-secondary{data: {dismiss: 'modal'}} Cancelar

@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       member do
         get 'periodos'
         post 'set_inscripcion_abierta'
+        get 'limpiar_programacion'
       end
       collection do
         post 'clonar_programacion'

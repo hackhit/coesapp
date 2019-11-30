@@ -39,7 +39,11 @@ module Admin
       @departamentos = current_admin.departamentos
       @departamentos = Departamento.all unless @departamentos
       @seccion = Seccion.new
-      @escuelas = current_admin.escuelas.joins(:escuelaperiodos).where('escuelaperiodos.periodo_id = ?', current_periodo.id )
+      if params[:escuela_id]
+        @escuelas = Escuela.where(id: params[:escuela_id])
+      else
+        @escuelas = current_admin.escuelas.joins(:escuelaperiodos).where('escuelaperiodos.periodo_id = ?', current_periodo.id )
+      end
 
       @vertical = 'flex-column'
       @orientacion = "vertical"
@@ -66,7 +70,10 @@ module Admin
       @asignatura = Asignatura.new
       @departamentos = current_admin.departamentos
       @departamentos = Departamento.all unless @departamentos
+      
       @escuelas = current_admin.escuelas
+      
+      @escuelas = @escuelas.where(id: params[:escuela_id]) if params[:escuela_id]
     end
 
     # GET /asignaturas/1/edit

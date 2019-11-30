@@ -19,12 +19,22 @@ class Horario < ApplicationRecord
 		bloquehorarios.collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: descripcion_seccion, color: color} }
 	end
 
-	def color_rgb_to_hex
+	def color_rgb_to_hex intensidad = nil
 		if color.blank?
-			"000000"
+			"101010"
 		else
 			r,g,b = color.split(",")
 			r = r.split("(")[1]
+
+			if intensidad
+				r = r.to_i*intensidad
+				g = g.to_i*intensidad
+				b = b.to_i*intensidad
+
+				r = 235 if r > 235
+				g = 235 if g > 235
+				b = 235 if b > 235
+			end
 
 			"#{toHex r}#{toHex g}#{toHex b}"
 		end

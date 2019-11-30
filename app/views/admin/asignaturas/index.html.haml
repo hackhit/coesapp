@@ -1,13 +1,3 @@
-#alert.alert
-.nav.bg-secondary.p-md-1
-  .col-md-1
-    - if current_admin.mas_altos?
-      = btn_add_success new_asignatura_path, 'Agregar Nueva Agirnatura', 'Nueva'
-  
-  .col-md-5
-    = text_field_tag 'filtro', nil ,{onkeyup: "filtrar();", placeholder: "Filtrar Contenido...", class: 'form-control form-control-sm'}
-  .col-md-3
-    %span#text.text-light.align-middle
 
 - if @escuelas.count > 1
   = render '/admin/principal_admin/tabs_estructura/escuelas'
