@@ -97,7 +97,7 @@ module Admin
 			
 		end
 
-		def constancia_inscripcion_sin_horario_old
+		def constancia_inscripcion_sin_horario
 
 			if current_estudiante
 				periodo_id = current_estudiante.ultimo_periodo_inscrito_en params[:escuela_id]
@@ -122,7 +122,6 @@ module Admin
 		end
 
 		def constancia_inscripcion
-
 			if current_estudiante
 				periodo_id = current_estudiante.ultimo_periodo_inscrito_en params[:escuela_id]
 			else
@@ -134,7 +133,12 @@ module Admin
 				flash[:error] = "Usted no posse inscripciones en la escuela solicidata"
 				redirect_back fallback_location: root_path
 			else
-				pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
+
+				if @estudiante.grados.where(escuela_id: 'IDIO').first.secciones.del_periodo('2019-02A').map{|s| s.horario}.compact.any?
+					pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
+				else
+					pdf = ExportarPdf.hacer_constancia_inscripcion_sin_horario params[:id], periodo_id, params[:escuela_id]
+				end
 
 				# send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "inline"
 				# 	flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."

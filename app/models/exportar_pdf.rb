@@ -169,7 +169,7 @@ class ExportarPdf
 		return pdf
 	end
 
-	def self.hacer_constancia_inscripcion_primera estudiante_ci, periodo_id, escuela_id
+	def self.hacer_constancia_inscripcion_sin_horario estudiante_ci, periodo_id, escuela_id
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 		usuario = estudiante.usuario
@@ -286,7 +286,7 @@ class ExportarPdf
 		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {0 => 5, 2 => 120})
 
 		inscripciones.each_with_index do |inscripcion, i|
-			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex
+			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex if inscripcion.seccion and inscripcion.seccion.horario
 		end
 		# t.row(0).width = 3
 		# t.row(-1).width = 30
