@@ -20,6 +20,8 @@ class Bloquehorario < ApplicationRecord
 
   enum dia: DIAS
 
+  # Scope
+  scope :del_periodo, lambda { |periodo_id| joins(:periodo).where "periodos.id = ?", periodo_id}
 
   # def self.printHorario
   #   data = Bloquehorario::DIAS

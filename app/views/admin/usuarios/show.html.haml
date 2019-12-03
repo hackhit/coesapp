@@ -48,7 +48,8 @@
               = link_to '¡Asignaturas sin Escuela asignadas!', "#pane_PCI", "data-toggle": :tab, class: "nav-item nav-link alert alert-danger #{activeTab}", onclick: "setTab('tabEscuela', 'pci')"
             - @estudiante.escuelas.each do |escuela|
               - activeTab = (session[:tabEscuela].eql? escuela.id) ? 'active' : ''  
-              = link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: "nav-item nav-link #{activeTab}", onclick: "setTab('tabEscuela', '#{escuela.id}')"
+              = link_to "#pane_#{escuela.id}", "data-toggle": :tab, class: "nav-item nav-link #{activeTab}", onclick: "setTab('tabEscuela', '#{escuela.id}')" do
+                = "#{escuela.descripcion.titleize}"
             .nav-item.nav-link
               - if @escuelas_disponibles.any?
                 = simple_icon_toggle_modal "Registrar a #{@nickname} en una Escuela", 'success', 'plus', 'agregarGrado'
@@ -76,7 +77,7 @@
               %h6.alert.alert-info.pb-ms-3
                 = "Escuela: #{@escuela.descripcion.titleize}"
                 - if current_admin.maestros?
-                  = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'minus', "eliminar#{escuela.id}"
+                  = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'trash', "eliminar#{escuela.id}"
                   = render partial: '/admin/estudiantes/eliminar_escuela'
               .row
                 .col-md-6

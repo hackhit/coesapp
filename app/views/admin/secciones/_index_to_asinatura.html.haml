@@ -18,9 +18,9 @@
         %tr.align-middle{id: seccion.numero, class: conHorario}
           - if historico
             %td.text-center= seccion.periodo_id
-          %td= seccion.tipo_seccion_id
-          %td= link_to seccion.numero, seccion_path(seccion.id)
-          %td{style: "background-color:#{bgHorario}"}
+          %td.align-middle= seccion.tipo_seccion_id
+          %td.align-middle= link_to seccion.numero, seccion_path(seccion.id)
+          %td.align-middle{style: "background-color:#{bgHorario}; width: 35%"}
             - if seccion.horario
               = seccion.horario.descripcion
               - unless historico
@@ -34,6 +34,6 @@
             - elsif !historico
               = badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario', 'time', 'plus'
 
-          %td= seccion.profesor.descripcion_usuario if seccion.profesor
+          %td= render partial: '/admin/secciones/descripcion_profesor_asignado_edit', locals: {seccion: seccion}
           %td= render partial: '/admin/secciones/tabla_profesores_secundarios', locals: {seccion: seccion}
           %td= render partial: '/admin/secciones/estado', locals: {seccion: seccion}

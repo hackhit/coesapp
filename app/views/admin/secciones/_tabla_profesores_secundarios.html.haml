@@ -3,7 +3,7 @@
 		%tr
 			%td
 				.tooltip-btn{'data_toggle': :tooltip, title: profe.descripcion}
-					= profe.usuario.descripcion
+					= link_to profe.usuario.nombres, usuario_path(profe.id)
 					- if true #@editar_asignaturas
 						= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{profe.usuario_id}", {'data-confirm' => "¿Está seguro de esta acción?", class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'Desasignar Este Profesor'},{role: 'button'} do
 							%i.glyphicon.glyphicon-minus.text-danger

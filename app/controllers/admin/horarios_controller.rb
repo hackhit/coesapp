@@ -18,7 +18,7 @@ module Admin
         secciones_ids = asig.secciones.where(periodo_id: current_periodo.id).ids
         bloques_hoarios = Bloquehorario.where(horario_id: secciones_ids).order(:horario_id)
         aux = 0
-        @bloques = []
+          @bloques = []
         h_id = bloques_hoarios.first.horario_id
 
         bloques_hoarios.each do |bh|
@@ -55,7 +55,25 @@ module Admin
           h_id = bh.horario_id
         end
 
+      elsif params[:usuario]
+        profesor = Profesor.find params[:id]
+        bloques_horarios = profesor.bloquehorarios.del_periodo(current_periodo.id)
+        @bloques = []
+        aux = 0
 
+        h_id = bloques_horarios.first.horario_id if bloques_horarios.first
+
+        bloques_horarios.each do |bh|
+
+          aux += 1 unless (h_id.eql? bh.horario_id)
+          primero = (!(h_id.eql? bh.horario_id) and bh.mismo_bloque? h_id) ? aux : 0
+
+          color = bh.horario.color
+
+          @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*2*aux}#{bh.horario.descripcion_seccion}", color: color}
+
+          h_id = bh.horario_id
+        end
 
       elsif params[:estudiante]
         estu = Estudiante.find params[:id]

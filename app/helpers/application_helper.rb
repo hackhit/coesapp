@@ -1,5 +1,8 @@
 module ApplicationHelper
 
+	def capitalize_all frase
+		frase.split(" ").map{|a| a.length > 2 ? a.capitalize : a}.join(" ")
+	end	
 	def row_filter objetos, tipo
 		haml_tag :b, "#{tipo.titleize}:"
 		capture_haml do

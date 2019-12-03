@@ -1,6 +1,6 @@
-
+- width = url.nil? ? 'modal-lg' : ''
 .modal.fade{'aria-hidden': true, role: :dialog, id: id_modal}
-  .modal-dialog
+  .modal-dialog{class: width}
     .modal-content
       .alert.alert-info
         %button.close{"aria-label": "Cerrar", "data-dismiss": :modal, type: :button}
@@ -11,4 +11,5 @@
           = content
           .modal-footer
             %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar
-            = submit_tag 'Guardar', class: 'btn btn-outline-success btn-sm'
+            - unless url.nil?
+              = submit_tag 'Guardar', class: 'btn btn-outline-success btn-sm'

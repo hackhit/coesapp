@@ -1,5 +1,12 @@
 - @secciones = @profesor.secciones.order('periodo_id DESC')
 - @secciones_secundarias = @profesor.secciones_secundarias.order('periodo_id DESC')
+= btn_toggle_modal 'clock', "Horario del semestre actual (#{current_periodo.id})", 'Horario', 'horarioActualProfe'
+
+=# render partial: '/admin/horarios/horario_secciones'
+- content = render partial: '/admin/horarios/horario_secciones'
+- url = ''
+= render partial: '/layouts/modal_layout', locals: {url: nil, id_modal: "horarioActualProfe", title: "Horario de #{@profesor.usuario.nombres} para el semestre actual (#{current_periodo.id})", content: content}
+
 .border.mt-3.p-3
 	%h6.alert.alert-info.pb-ms-3
 		Departamento:
@@ -8,9 +15,8 @@
 		- if current_admin and current_admin.maestros?
 			= simple_icon_toggle_modal_edit "Cambiar a Profesor #{@nickname} de Escuela", 'setProfesor'
 			= render partial: '/admin/usuarios/set_profesor'
-
 	%hr
-	
+
 	#accordion
 		- if @secciones_pendientes.count > 0
 			- @secciones = @secciones_pendientes

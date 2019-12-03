@@ -1,5 +1,3 @@
-
-
 -# if current_admin 
 -# if controller_name.eql? 'inscripcionsecciones'
 -# @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
@@ -8,8 +6,13 @@
   - @url = "#{get_bloques_horario_path(@asignatura.id)}?asignatura=true"
 - elsif @seccion
   - @url = "#{get_bloques_horario_path(@seccion.id)}"
-- elsif @estudiante #and (controller_name.eql? 'inscripcionsecciones' or controller_name.eql? 'principal_estudiante')
+- elsif @estudiante and @profesor.nil?#(controller_name.eql? 'inscripcionsecciones' or controller_name.eql? 'principal_estudiante')
   - @url = "#{get_bloques_horario_path(@estudiante.id)}?estudiante=true"
+- elsif @profesor
+  - if controller_name.eql? 'horarios'
+    - @url = "#{get_bloques_horario_path(@profesor.id)}?profesor=true"
+  - else
+    - @url = "#{get_bloques_horario_path(@profesor.id)}?usuario=true"
 
 - maxHeight = controller_name.eql? 'inscripcionsecciones' ? 320 : 600
 

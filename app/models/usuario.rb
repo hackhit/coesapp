@@ -167,6 +167,11 @@ class Usuario < ApplicationRecord
 		return aux
 	end
 
+	def descripcion_corta
+		"(#{ci}) #{nombres.upcase}"
+	end
+
+
 	def descripcion
 		"(#{ci}) #{nombre_completo}"
 	end

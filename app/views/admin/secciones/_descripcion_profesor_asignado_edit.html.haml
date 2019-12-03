@@ -1,3 +1,6 @@
-= seccion.descripcion_profesor_asignado
+- if seccion.profesor
+	= link_to seccion.profesor.usuario.descripcion_corta, usuario_path(seccion.profesor_id), {class: 'tooltip-btn', 'data_toggle': :tooltip, title: seccion.profesor.descripcion}
+- else
+	%b.tooltip-btn{'data_toggle': :tooltip, title: 'No Asignado'} N/A
 - if current_admin.altos?
 	= simple_toggle 'javascript:void(0)', '', 'Actualizar Tutor-Calificador', '', 'pencil', "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Cambiar para #{seccion.descripcion}');$('#editar_profesor').modal();"
