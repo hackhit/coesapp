@@ -3,13 +3,16 @@
 %nav
 	.nav.nav-tabs
 		= link_to "General", "#general", "data-toggle": :tab, class: 'nav-item nav-link'
-		- @estudiante.escuelas.each do |escuela|
-			= link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: 'nav-item nav-link'
-		= link_to "Horario (#{current_periodo.id})", "#actualPeriodo", "data-toggle": :tab, class: 'nav-item nav-link active'
+		- @estudiante.escuelas.each_with_index do |escuela,i|
+			- active = (i.eql? 0) ? 'active' : ''
+			= link_to "#{escuela.descripcion.titleize}", "#pane_#{escuela.id}", "data-toggle": :tab, class: "nav-item nav-link #{active}"
+		= link_to "Horario (#{current_periodo.id})", "#actualPeriodo", "data-toggle": :tab, class: 'nav-item nav-link'
 .tab-content
-	- @estudiante.escuelas.each do |escuela|
+	- @estudiante.escuelas.each_with_index do |escuela,i|
+		- active = (i.eql? 0) ? 'active show' : ''
+
 		- @escuela = escuela
-		.tab-pane.border.border-top-0.p-3{id: "pane_#{escuela.id}"}
+		.tab-pane.border.border-top-0.p-3{id: "pane_#{escuela.id}", class: active}
 			- if @estudiante.planes.count > 0
 				.border.p-md-3
 					%h5 Planes:
@@ -31,7 +34,7 @@
 			- @idiomas = escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
 			= render '/admin/estudiantes/actualizar_idiomas'
 	
-	.tab-pane#actualPeriodo.border.px-3.border-top-0.active.show
+	.tab-pane#actualPeriodo.border.px-3.border-top-0
 		=# render '/admin/horarios/horario_secciones'
 		= render '/admin/principal_estudiante/horarios'
 	.tab-pane#general.border.px-3.border-top-0
