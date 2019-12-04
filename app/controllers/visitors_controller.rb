@@ -152,7 +152,7 @@ class VisitorsController < ApplicationController
       # if current_admin.maestros?
       #   redirect_to periodos_path  
       # else
-      #   redirect_to principal_admin_index_path
+      #   redirect_to index2_secciones_path
       # end
     elsif tipo == "Profesor" && usuario.profesor
       session[:rol] = tipo

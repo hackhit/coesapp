@@ -167,7 +167,7 @@ module Admin
       flash[:success] = "#{total} asignatura(s) habilitada(s) para calificar" if total > 0  
       flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
 
-      redirect_to principal_admin_index_path
+      redirect_to index2_secciones_path
 
     end
 
@@ -188,8 +188,8 @@ module Admin
 
         seccion.inscripcionsecciones.each do |es|
 
-          es.tipo_calificacion_id = nil
-          es.calificacion_posterior = nil
+          # es.tipo_calificacion_id = nil
+          # es.calificacion_posterior = nil
           es.estado = 'sin_calificar' unless es.retirado?
           es.save
         end
@@ -204,9 +204,9 @@ module Admin
       flash[:danger] = "#{error} asignatura(s) no pudo(ieron) ser habilitada(s). Favor revise he intentelo nuevamente" if error > 0 
 
       if params[:id] and params[:return].eql? 'back'
-        redirect_to secciones_path(@secciones.first)
+        redirect_to seccion_path(@secciones.first)
       else
-        redirect_to principal_admin_index_path
+        redirect_back fallback_location: index2_secciones_path
       end
     end
 
@@ -266,7 +266,7 @@ module Admin
       end
 
       if current_admin
-        redirect_to principal_admin_index_path
+        redirect_to index2_secciones_path
       elsif current_profesor
         redirect_to principal_profesor_index_path
       end
@@ -294,7 +294,7 @@ module Admin
         render action: 'seleccionar_profesor_secundario'
       end
 
-      redirect_to principal_admin_index_path
+      redirect_to index2_secciones_path
 
     end
 
@@ -324,12 +324,12 @@ module Admin
             format.html {
               info_bitacora msg, Bitacora::ACTUALIZACION, @seccion
               flash[:success] = "Cambio realizado con éxito"
-              redirect_back fallback_location: principal_admin_index_path
+              redirect_back fallback_location: index2_secciones_path
                }
             format.json {render json: true, status: :ok}
           else
             flash[:danger] = "No se pudo guardar el cambio: #{@seccion.errors.full_messages.to_sentence}." 
-            format.html { redirect_back fallback_location: principal_admin_index_path }
+            format.html { redirect_back fallback_location: index2_secciones_path }
             format.json { render json: @seccion.errors, status: :unprocessable_entity }
           end
         end
@@ -344,7 +344,7 @@ module Admin
       else
         flash[:error] = "Profesor No Encontrado, por favor revisar su solicitud."
       end
-      redirect_back fallback_location: principal_admin_index_path
+      redirect_back fallback_location: index2_secciones_path
     end
 
     # GET /secciones/1
@@ -408,7 +408,7 @@ module Admin
           format.json { render :show, status: :created, location: @seccion }
         else
           flash[:danger] = "Error al intentar generar la sección: #{@seccion.errors.full_messages.to_sentence}."
-          format.html { redirect_back fallback_location: principal_admin_index_path }
+          format.html { redirect_back fallback_location: index2_secciones_path }
           format.json { render json: @seccion.errors, status: :unprocessable_entity }
         end
       end
@@ -423,7 +423,7 @@ module Admin
       else
         flash[:danger] = "Error al intentar actualizar la sección: #{@seccion.errors.full_messages.to_sentence}."
       end
-      redirect_back fallback_location: principal_admin_index_path
+      redirect_back fallback_location: index2_secciones_path
     end
 
     # DELETE /secciones/1
@@ -433,7 +433,7 @@ module Admin
       @seccion.destroy
       respond_to do |format|
       
-        format.html { redirect_back fallback_location: principal_admin_index_path, notice: 'Seccion Eliminada.' }
+        format.html { redirect_back fallback_location: index2_secciones_path, notice: 'Seccion Eliminada.' }
         format.json { head :no_content }
       end
     end

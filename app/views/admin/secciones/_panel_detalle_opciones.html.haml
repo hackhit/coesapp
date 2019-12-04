@@ -20,4 +20,4 @@
 			= glyph 'trash'
 			
 - if current_admin.maestros? and seccion.calificada
-	= badge_icon_tooltip habilitar_calificar_seccion_path(seccion.id), 'badge-info btn-sm p-md-1', 'Habilitar para Calificar Nuevamente', 'off', 'list'
+	= badge_icon_tooltip habilitar_calificar_seccion_path(seccion.id), 'badge-warning btn-sm p-md-1', 'Habilitar para Calificar Nuevamente', 'off'

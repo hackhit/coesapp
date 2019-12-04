@@ -141,7 +141,7 @@ module Admin
         flash[:info] = "Rol Eliminado." 
         info_bitacora_crud Bitacora::ELIMINACION, u
       end
-      redirect_back fallback_location: principal_admin_index_path
+      redirect_back fallback_location: index2_secciones_path
         
     end
 
@@ -334,7 +334,7 @@ module Admin
         if current_admin.maestros?
           url_back = @usuario
         else
-          url_back = principal_admin_index_path
+          url_back = index2_secciones_path
         end
       elsif current_usuario.estudiante
         url_back = principal_estudiante_index_path
