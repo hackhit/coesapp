@@ -96,7 +96,7 @@ module Admin
       escuelas_ids = current_admin.escuelas.ids
       grados = Grado.iniciados_en_periodo(current_periodo.id)#.limit(50)
       @preinscritos = grados.preinscrito
-      @confirmados = grados.confirmado
+      @confirmados = grados.confirmado.no_inscritos_ucv
       @inscritos_ucv = grados.inscritos_ucv
       @reincorporados = grados.reincorporado
       @nuevos = grados.reject{|g| !g.inscripciones.any?}
