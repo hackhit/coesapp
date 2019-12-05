@@ -20,7 +20,7 @@
         .row
           .col-md-7
             %h6.titulo.m-2 Secciones:
-            = render partial: '/admin/secciones/index_to_asinatura', locals: {secciones: secciones, historico: false} if secciones.any?
+            = render partial: '/admin/secciones/index_to_asinatura', locals: {secciones: secciones, historico: false}
 
           .col-md-5
             = render '/admin/horarios/horario_secciones'
