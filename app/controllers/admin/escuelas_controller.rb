@@ -39,19 +39,17 @@ module Admin
       total_secciones = periodo_anterior.secciones.de_la_escuela(@escuela.id).count
       total_programaciones = 0
       programaciones_existentes = 0
-      total_profes_secundarios = []
-      total_profes_secundarios_error = []
       errores_excepcionales = []
 
       @escuela.secciones.del_periodo(periodo_anterior.id).each do |se|
         principal = params[:profesores] ? se.profesor_id : nil
         begin
 
-          nueva_seccion = Seccion.find_or_create_by(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id) do |seccion_aux|
-            seccion_aux.profesor_id = principal
-            seccion_aux.capacidad = se.capacidad
-            seccion_aux.tipo_seccion_id = se.tipo_seccion_id
-          end
+          nueva_seccion = Seccion.find_or_initialize_by(numero: se.numero, asignatura_id: se.asignatura_id, periodo_id: current_periodo.id)
+          nueva_seccion.profesor_id = principal
+          nueva_seccion.capacidad = se.capacidad
+          nueva_seccion.tipo_seccion_id = se.tipo_seccion_id
+          nueva_seccion.save
         rescue Exception => e
           errores_excepcionales << "Error al crear o buscar sección: #{nueva_seccion.id} #{e}"
         end
@@ -59,12 +57,7 @@ module Admin
         begin
           if params[:profesores]
             se.secciones_profesores_secundarios.each do |secundario|
-              nuevo_secundario = SeccionProfesorSecundario.new(profesor_id: secundario.profesor_id, seccion_id: nueva_seccion.id)
-              if nuevo_secundario.save
-                total_profes_secundarios << "Agregado profe #{secundario.profesor_id} a sección #{nueva_seccion.descripcion_simple}"
-              else
-                total_profes_secundarios_error << "Profe secundario #{secundario.profesor_id} no se pudo agregar a #{nueva_seccion.descripcion_simple}: #{nuevo_secundario.errors.full_messages.to_sentence}"
-              end
+              SeccionProfesorSecundario.find_or_create_by(profesor_id: secundario.profesor_id, seccion_id: nueva_seccion.id)
             end
           else
             nueva_seccion.secciones_profesores_secundarios.delete_all
@@ -91,7 +84,7 @@ module Admin
       end
 
       periodo_anterior.programaciones.de_la_escuela(@escuela.id).each do |pr|
-        if progr_aux = Programacion.where(periodo_id: current_periodo.id, asignatura_id: pr.asignatura_id)
+        if progr_aux = Programacion.where(periodo_id: current_periodo.id, asignatura_id: pr.asignatura_id).first
           programaciones_existentes += 1
         else
           progr_aux = Programacion.new(periodo_id: current_periodo.id, asignatura_id: pr.asignatura_id)
@@ -113,13 +106,6 @@ module Admin
       flash[:info] += "Estaban ya activas #{programaciones_existentes} asignaturas de un total de #{periodo_anterior.programaciones.de_la_escuela(@escuela.id).count}. "
 
       flash[:info] += "<b> #{errores_programaciones.count} Programaciones no activadas:</b></br> #{errores_programaciones.to_sentence}" if errores_programaciones.any?
-      
-      if total_profes_secundarios.any? or total_profes_secundarios_error.any?
-        flash[:info] += "</br><b>Profesores Secundarios: </b></br>"
-        flash[:info] += "Se clonaron #{total_profes_secundarios.count} profesores secundarios" if total_profes_secundarios.any?
-        flash[:info] += total_profes_secundarios_error.to_sentence if total_profes_secundarios_error.any?
-      end
-
 
       redirect_back fallback_location: "#{asignaturas_path}?escuela_id=#{@escuela.id}"
 
