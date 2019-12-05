@@ -37,23 +37,23 @@ module Admin
 
         if seccion.horario
           @bloquesEditables = Bloquehorario.where(horario_id: seccion.id).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: bh.horario.descripcion_seccion, color: bh.horario.color}} 
-          bloques_horarios = Bloquehorario.joins(:periodo).where(profesor_id: profes_ids).where("horario_id != #{seccion.id}").where("periodos.id = ?", current_periodo.id).order(:horario_id)
+          # bloques_horarios = Bloquehorario.joins(:periodo).where(profesor_id: profes_ids).where("horario_id != #{seccion.id}").where("periodos.id = ?", current_periodo.id).order(:horario_id)
         else
-          bloques_horarios = Bloquehorario.joins(:periodo).where(profesor_id: profes_ids).where("periodos.id = ?", current_periodo.id).order(:horario_id)
+          # bloques_horarios = Bloquehorario.joins(:periodo).where(profesor_id: profes_ids).where("periodos.id = ?", current_periodo.id).order(:horario_id)
         end
-        h_id = bloques_horarios.first.horario_id if bloques_horarios.first
+        # h_id = bloques_horarios.first.horario_id if bloques_horarios.first
 
-        bloques_horarios.each do |bh|
+        # bloques_horarios.each do |bh|
 
-          aux += 1 unless (h_id.eql? bh.horario_id)
-          primero = (!(h_id.eql? bh.horario_id) and bh.mismo_bloque? h_id) ? aux : 0
+        #   aux += 1 unless (h_id.eql? bh.horario_id)
+        #   primero = (!(h_id.eql? bh.horario_id) and bh.mismo_bloque? h_id) ? aux : 0
 
-          color = bh.horario.transparencia_color "0.04"
+        #   color = bh.horario.transparencia_color "0.04"
 
-          @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*2*aux}#{bh.desc_profe_ocupado}", color: color}
+        #   @bloques << {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]], title: "#{'</br>'*2*aux}#{bh.desc_profe_ocupado}", color: color}
 
-          h_id = bh.horario_id
-        end
+        #   h_id = bh.horario_id
+        # end
 
       elsif params[:usuario]
         profesor = Profesor.find params[:id]

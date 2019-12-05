@@ -406,10 +406,10 @@
 
     add: function (parent, position, height, options) {
 
-      if (height <= 0 || position >= this.periodHeight || height < 6) {
+      if (height <= 0 || position >= this.periodHeight || height < 3) {
         // console.error('Invalid period');
 
-        alert('Los períodos de tiempo deben ser de al menos 90 minutos y no soparse entre sí')
+        alert('Los períodos de tiempo deben ser de al menos 45 minutos y no soparse entre sí')
 
         return false;
       }
@@ -905,7 +905,7 @@
       // console.log(currentStart)
       // console.log(currentEnd)
 
-      if (currentEnd - currentStart < 60) {
+      if (currentEnd - currentStart < 30) {
           check = false
       }else{      
         $('.jqs-period', $(current).parent()).each(function (index, period) {
