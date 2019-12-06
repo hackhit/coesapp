@@ -13,6 +13,19 @@
 
 		- @escuela = escuela
 		.tab-pane.border.border-top-0.p-3{id: "pane_#{escuela.id}", class: active}
+
+			-if @estudiante.citahoraria
+				.border.p-md-3
+					%h5 Cita Horaria:
+					%p
+						%b Fecha:
+						=#(I18n.localize(Time.now, :format => "%A, %d de %B de %Y - Hora: %I:%M "))#.capitalize()
+						=(I18n.localize(@estudiante.citahoraria.fecha, :format => "%A, %d de %B de %Y")).capitalize()
+						= "-"
+						%b Hora:
+						=(I18n.localize(@estudiante.citahoraria.fecha, :format => "%I:%M %p")).capitalize()
+						=# @estudiante.cita_horaria.hora
+
 			- if @estudiante.planes.count > 0
 				.border.p-md-3
 					%h5 Planes:
@@ -39,16 +52,6 @@
 		= render '/admin/principal_estudiante/horarios'
 	.tab-pane#general.border.px-3.border-top-0
 		= render partial: '/admin/usuarios/personales_contacto'
-		-if @estudiante.citahoraria
-			.border.m-md-3.p-md-3
-				%h5 Cita Horaria:
-				%p
-					%b Fecha:
-					=#(I18n.localize(Time.now, :format => "%A, %d de %B de %Y - Hora: %I:%M "))#.capitalize()
-					=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%A, %d de %B de %Y")).capitalize()
-					= "-"
-					%b Hora:
-					=(I18n.localize(@estudiante.cita_horaria.fecha, :format => "%I:%M %p")).capitalize()
-					=# @estudiante.cita_horaria.hora
+
 
 

@@ -1,3 +1,39 @@
+desc 'Agrega cita horaria 2019-02A'
+task :add_cita_horaria_201902a => :environment do
+
+	begin
+		print 'Iniciando'
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,8,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,9,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,9,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,10,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,10,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,11,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,13,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,13,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,14,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,14,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,15,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,10,15,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,11,8,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,11,9,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,11,9,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,11,10,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,11,10,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,11,11,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,12,8,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,12,9,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,12,9,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,12,10,0))
+		Citahoraria.create(fecha: DateTime.new(2019,12,12,10,30))
+		Citahoraria.create(fecha: DateTime.new(2019,12,12,11,0))
+
+	rescue Exception => e
+		print e
+	end
+end
+
+
 desc 'Actualizacion de grados, se asocia al plan del estudiante-escuela'
 task :update_grado_to_last_plain => :environment do
 
