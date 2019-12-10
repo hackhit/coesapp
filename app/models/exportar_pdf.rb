@@ -242,6 +242,8 @@ class ExportarPdf
 
 
 	def self.hacer_constancia_inscripcion estudiante_ci, periodo_id, escuela_id
+
+
 		# Variable Locales
 		estudiante = Estudiante.find estudiante_ci
 		usuario = estudiante.usuario
@@ -253,67 +255,13 @@ class ExportarPdf
 		# inscripciones = estudiante.inscripcionsecciones.del_periodo(periodo_id).de_la_escuela(escuela.id)
 		inscripciones = grado.inscripciones.del_periodo(periodo_id)
 
-		total = inscripciones.count
-
 		pdf = Prawn::Document.new(top_margin: 20)
 
-		#titulo
-		encabezado_central_con_logo pdf, "CONSTANCIA DE INSCRIPCIÓN Y HORARIO", escuela
-
-		pdf.move_down 5
-
-		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está inscrit#{usuario.genero} en la Escuela de <b>#{escuela.descripcion.upcase}</b> para el período <b>#{periodo_id}</b> con #{'la'.pluralize(total)} #{'siguiente'.pluralize(total)} #{'asignatura'.pluralize(total)} y en el siguiente horario:", size: 10, inline_format: true, align: :justify
-
-		# pdf.move_down 10
-
-		data = [["", "<b>Código</b>", "<b>Asignatura</b>", "<b>Sec</b>", "<b>Créd</b>", "<b>Estado</b>"]]
-
-		total_creditos = 0
-
-		inscripciones.each do |inscripcion|
-			seccion = inscripcion.seccion
-			asignatura = seccion.asignatura
-			total_creditos += asignatura.creditos
-			data << ["", asignatura.id_uxxi,
-				asignatura.descripcion_pci(seccion.periodo_id).upcase,
-				seccion.numero,
-				asignatura.creditos,
-				inscripcion.estado_inscripcion]
-		end
-
-		data << [{:content => "<b>Número Total de Créditos Matriculados: </b>", :colspan => 4} ,total_creditos,""]
-
-		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {0 => 5, 2 => 120})
-
-		inscripciones.each_with_index do |inscripcion, i|
-			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex if inscripcion.seccion and inscripcion.seccion.horario
-		end
-		# t.row(0).width = 3
-		# t.row(-1).width = 30
-
-		secciones_ids = grado.secciones.where(periodo_id: periodo_id).ids 
-		bloques = Bloquehorario.where(horario_id: secciones_ids)
-		v = paintHorario secciones_ids, pdf
-
-		pdf.move_down 10
-		pdf.table([[t,v]], width: 560, cell_style: {border_width: 0})
-
-		data = [["<b>Clave</b>", "<b>Créditos</b>", "<b>Estado</b>"]]
-		data << ["<i>Número total de créditos matriculados:</i>", total_creditos, ""]
-
-		# u = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 320, position: :left, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 60})
+		contenido_inscripcion_horario pdf, estudiante, usuario, escuela, grado, inscripciones, periodo_id
 		
-		# u.draw
-
-		pdf.move_down 10
-
-		pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
-		pdf.move_down 10
-		pdf.text "<b> --Válida para el período actual--</b>", size: 11, inline_format: true, align: :center
-		pdf.move_down 40
-
-		pdf.text "Prof. Pedro Coronado", size: 11, align: :center
-		pdf.text "Jef(a) de Control de Estudio", size: 11, align: :center
+		pdf.start_new_page
+		
+		contenido_inscripcion_horario pdf, estudiante, usuario, escuela, grado, inscripciones, periodo_id
 
 		return pdf
 	end
@@ -343,7 +291,7 @@ class ExportarPdf
 				horaSalida, minutoSalida = bh.salida_to_schedule.split(":")
 				
 				inicio = (horaEntrada.to_i*4)+(minutoEntrada.to_i/15)+1
-				final = (horaSalida.to_i*4)+(minutoSalida.to_i/15)+1
+				final = (horaSalida.to_i*4)+(minutoSalida.to_i/15)
 
 				rows(inicio..final).columns(dia_index).background_color = bh.horario.color_rgb_to_hex 2
 				# rows([inicio,final]).columns(dia_index).border_width = 1
@@ -474,6 +422,70 @@ class ExportarPdf
 
 
 	private
+
+	def self.contenido_inscripcion_horario pdf, estudiante, usuario, escuela, grado, inscripciones, periodo_id
+		total = inscripciones.count
+
+		#titulo
+		encabezado_central_con_logo pdf, "CONSTANCIA DE INSCRIPCIÓN Y HORARIO", escuela
+
+		pdf.move_down 5
+
+		pdf.text "Quien suscribe, Jefe de Control de Estudios de la Facultad de HUMANIDADES Y EDUCACIÓN, de la Universidad Central de Venezuela, por medio de la presente hace constar que #{usuario.la_el} BR. <b>#{estudiante.usuario.apellido_nombre}</b>, titular de la Cédula de Identidad <b>#{estudiante.id}</b> está inscrit#{usuario.genero} en la Escuela de <b>#{escuela.descripcion.upcase}</b> para el período <b>#{periodo_id}</b> con #{'la'.pluralize(total)} #{'siguiente'.pluralize(total)} #{'asignatura'.pluralize(total)} y en el siguiente horario:", size: 10, inline_format: true, align: :justify
+
+		# pdf.move_down 10
+
+		data = [["", "<b>Código</b>", "<b>Asignatura</b>", "<b>Sec</b>", "<b>Créd</b>", "<b>Estado</b>"]]
+
+		total_creditos = 0
+
+		inscripciones.each do |inscripcion|
+			seccion = inscripcion.seccion
+			asignatura = seccion.asignatura
+			total_creditos += asignatura.creditos
+			data << ["", asignatura.id_uxxi,
+				asignatura.descripcion_pci(seccion.periodo_id).upcase,
+				seccion.numero,
+				asignatura.creditos,
+				inscripcion.estado_inscripcion]
+		end
+
+		data << [{:content => "<b>Número Total de Créditos Matriculados: </b>", :colspan => 4} ,total_creditos,""]
+
+		t = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 300, position: :center, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {0 => 5, 2 => 120})
+
+		inscripciones.each_with_index do |inscripcion, i|
+			t.rows(i+1).columns(0).background_color = inscripcion.seccion.horario.color_rgb_to_hex if inscripcion.seccion and inscripcion.seccion.horario
+		end
+		# t.row(0).width = 3
+		# t.row(-1).width = 30
+
+		secciones_ids = grado.secciones.where(periodo_id: periodo_id).ids 
+		bloques = Bloquehorario.where(horario_id: secciones_ids)
+		v = paintHorario secciones_ids, pdf
+
+		pdf.move_down 10
+		pdf.table([[t,v]], width: 560, cell_style: {border_width: 0})
+
+		data = [["<b>Clave</b>", "<b>Créditos</b>", "<b>Estado</b>"]]
+		data << ["<i>Número total de créditos matriculados:</i>", total_creditos, ""]
+
+		# u = pdf.make_table(data, header: true, row_colors: ["F0F0F0", "FFFFFF"], width: 320, position: :left, cell_style: { inline_format: true, size: 9, align: :center, padding: 3, border_color: '818284'}, :column_widths => {1 => 60})
+		
+		# u.draw
+
+		pdf.move_down 10
+
+		pdf.text "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.new, format: "%d de %B de %Y")}.", size: 10
+		pdf.move_down 10
+		pdf.text "<b> --Válida para el período actual--</b>", size: 11, inline_format: true, align: :center
+		pdf.move_down 40
+
+		pdf.text "Prof. Pedro Coronado", size: 11, align: :center
+		pdf.text "Jef(a) de Control de Estudio", size: 11, align: :center
+
+		
+	end
 
 	def self.insertar_contenido_constancia_preinscripcion pdf, grado
 		estudiante = grado.estudiante

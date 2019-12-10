@@ -83,8 +83,18 @@
                 .col-md-6
                   = render partial: '/admin/grados/info_inscripcion', locals: {grado: grado}
                 .col-md-6
+                  - if @estudiante.citahoraria
+                    %h6.titulo.mb-md-2.text-center Cita Horaria:
+                    %p.pl-2
+                      %b Fecha:
+                      =(I18n.localize(@estudiante.citahoraria.fecha, :format => "%A, %d de %B de %Y")).capitalize()
+                      = "-"
+                      %b Hora:
+                      =(I18n.localize(@estudiante.citahoraria.fecha, :format => "%I:%M %p")).capitalize()
+
                   = render partial: '/admin/historialplanes/index', locals: {grado: grado}
                   = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
+
 
               -# @curso = @estudiante.grados.where(escuela_id: escuela.id).first
               -# @inscripciones = @curso.inscripciones
