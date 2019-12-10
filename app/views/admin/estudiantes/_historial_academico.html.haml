@@ -10,7 +10,7 @@
 				/%td= btn_success 'download-alt', "#", "Horario de #{@nickname} en el periodo actual #{current_periodo.id}", 'Horario'
 			- else
 				%td= btn_success 'download-alt', "#{constancia_preinscripcion_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Preinscripción de #{@nickname}", 'Constancia Preinscripción'
-			- if current_admin
+			- if false #current_admin
 				%td= btn_toggle_modal 'plus', "Inscribir a #{@nickname} en una sección de esta escuela en periodo #{current_periodo.id}", "Inscribir en seccion del #{current_periodo.id}", "estudiante_seccion_#{@escuela.id}"
 				= render partial: '/admin/inscripcionsecciones/form'
 	%h6.titulo.text-center Registro de Historial Académico:

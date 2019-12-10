@@ -37,12 +37,20 @@ module SeccionesHelper
 	def colocar_estado_seccion seccion
 		if seccion.calificada
 			return colocar_numeros_seccion seccion
-		elsif seccion.asignatura.numerica3?
-			return colocar_reciente_estado_calificacion seccion
 		else
-			return colocar_por_calificar seccion
+			capture_haml do 
+				if seccion.asignatura.numerica3?
+					colocar_badge seccion.total_estudiantes, 'info', 'Inscritos'
+					colocar_badge seccion.total_retirados, 'secondary', 'Retirados'
+					colocar_reciente_estado_calificacion seccion
+				else
+					colocar_badge seccion.total_estudiantes, 'info', 'Inscritos'
+					colocar_badge seccion.total_retirados, 'secondary', 'Retirados'
+					colocar_badge 'Por Calificar', 'info'
+					colocar_badge seccion.total_sin_calificar, 'dark', 'Estudiantes Por Calificar'
+				end
+			end
 		end
-
 	end
 
 	def colocar_numeros_seccion seccion
@@ -93,7 +101,8 @@ module SeccionesHelper
 			end
 		end
 
-		colocar_etiqueta mensaje, tipo_adicional
+		# colocar_etiqueta mensaje, tipo_adicional
+		colocar_badge mensaje, tipo_adicional, mensaje
 		
 	end
 
