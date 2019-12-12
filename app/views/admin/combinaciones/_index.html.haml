@@ -9,7 +9,7 @@
     .modal.hideble.fade#nueva_combinacion{'aria-hidden'=> false}
       - @combinacion = Combinacion.new
       - @combinacion.estudiante_id = @estudiante.id
-      - @idiomas2 = @idiomas1 = @escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
+      -# @idiomas2 = @idiomas1 = @escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
       = render '/admin/combinaciones/form'
 
   .text-center Combinaciones de Idiomas:

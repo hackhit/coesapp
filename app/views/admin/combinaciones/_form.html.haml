@@ -16,10 +16,10 @@
             %label.control-label
               Combinación:
             .controls
+              - idiomas = @escuela.departamentos.reject{|i| i.id.eql? 'EG' or i.id.eql? 'TRA'; }
+              = f.collection_select :idioma1_id, idiomas, :id, :descripcion, {}, { class: 'form-control text_field', required: true}
 
-              = f.collection_select :idioma1_id, @idiomas1, :id, :descripcion, {}, { class: 'form-control text_field', required: true}
-
-              = f.collection_select :idioma2_id, @idiomas2, :id, :descripcion, {}, { class: 'form-control text_field', required: true}
+              = f.collection_select :idioma2_id, idiomas, :id, :descripcion, {}, { class: 'form-control text_field', required: true}
 
           .control-group
             %label.control-label
