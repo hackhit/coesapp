@@ -2,6 +2,7 @@
   %table.table.table-striped.table-sm.table-hover.table-bordered
     %thead
       %tr
+        %th Id
         %th Fecha
         %th Usuario
         %th Objeto
@@ -13,7 +14,8 @@
 
       - @bitacoras.each do |bita| 
         %tr.align-middle
-          %td= "Hace #{distance_of_time_in_words(Time.now, bita.created_at)} (#{l bita.created_at, format: "%d/%m/%Y - %I:%M%p"})"
+          %td= bita.id
+          %td= "Hace #{distance_of_time_in_words(Time.now, bita.created_at-4.hours)} (#{(bita.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')})"
           %td= bita.usuario.descripcion if bita.usuario
           %td= bita.tipo_objeto
           %td= bita.tipo
