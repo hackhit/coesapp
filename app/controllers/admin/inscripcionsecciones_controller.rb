@@ -204,6 +204,7 @@ module Admin
 					end
 
 					if ins.save
+						info_bitacora "Inscripción en #{ins.seccion.descripcion} (#{ins.asignatura.id}). Id inscripcion: #{ins.id}" , Bitacora::CREACION, ins.estudiante						
 						guardadas += 1
 					else
 						flash[:error] = "#{ins.errors.full_messages.join' | '}"
@@ -254,6 +255,7 @@ module Admin
 					ins.escuela_id = ins.seccion.escuela.id
 					if ins.save
 						flash[:success] = "Estudiante inscrito satisfactoriamente"
+						info_bitacora "Inscripción directa en #{ins.seccion.descripcion} (#{ins.asignatura.id}). Id inscripcion: #{ins.id}" , Bitacora::CREACION, ins.estudiante
 					else
 						flash[:danger] = "Error al intentar inscribir en la sección: #{ins.errors.full_messages.to_sentence}"
 					end
@@ -264,8 +266,11 @@ module Admin
 
 		def destroy
 			es = Inscripcionseccion.find params[:id]
+			sec = es.seccion
 			est = es.estudiante 
 			if es.destroy
+				info_bitacora "Eliminada inscripción en #{sec.descripcion} (#{sec.asignatura_id})" , Bitacora::ELIMINACION, est
+
 				flash[:info] = "Inscripción eliminado satisfactoriamente"
 			else
 				flash[:danger] = "El estudiante no pudo ser eliminado: #{es.errors.full_messages.to_sentence}"

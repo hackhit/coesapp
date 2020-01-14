@@ -58,7 +58,7 @@ module Admin
     # GET /asignaturas/1.json
     def show
       @titulo = "Asignatura: #{@asignatura.descripcion.upcase}"
-      @bitacoras = Bitacora.search @asignatura.id
+      @bitacoras = Bitacora.search(@asignatura.id).order(created_at: :desc).limit(50)
 
       @profesores = @asignatura.escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')
 

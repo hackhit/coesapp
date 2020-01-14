@@ -15,9 +15,9 @@
       - @bitacoras.each do |bita| 
         %tr.align-middle
           %td= bita.id
-          %td= "Hace #{distance_of_time_in_words(Time.now, bita.created_at-4.hours)} (#{(bita.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')})"
+          %td= "Hace #{distance_of_time_in_words(Time.now-4.hours, bita.created_at-4.hours)} (#{(bita.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')})"
           %td= bita.usuario.descripcion if bita.usuario
           %td= bita.tipo_objeto
-          %td= bita.tipo
+          %td= bita.tipo.capitalize
           %td= bita.descripcion
           %td= bita.ip_origen
