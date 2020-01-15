@@ -1,6 +1,12 @@
 $(document).ready(function() {
+
+	$('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+		$($.fn.dataTable.tables( true ) ).css('width', '100%');
+		$($.fn.dataTable.tables( true ) ).DataTable().columns.adjust().draw();
+	} );
+
 	$('.dataTable').DataTable({
-		scrollY: 250,
+		scrollY: 300,
 		// pageLength: 100,
 		// lengthChange: false,
 		paging: false,

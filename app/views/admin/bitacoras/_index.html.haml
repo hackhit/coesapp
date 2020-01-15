@@ -1,5 +1,5 @@
 .border.mt-3.p-3
-  %table.table.table-striped.table-sm.table-hover.table-bordered
+  %table.dataTable.table.table-striped.table-sm.table-hover.table-bordered
     %thead
       %tr
         %th Id
@@ -8,16 +8,14 @@
         %th Objeto
         %th Tipo Trans
         %th Descripción
-        %th IP Origen
 
     %tbody
 
       - @bitacoras.each do |bita| 
-        %tr.align-middle
+        %tr
           %td= bita.id
           %td= "Hace #{distance_of_time_in_words(Time.now-4.hours, bita.created_at-4.hours)} (#{(bita.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')})"
           %td= bita.usuario.descripcion if bita.usuario
           %td= bita.tipo_objeto
           %td= bita.tipo.capitalize if bita.tipo
           %td= bita.descripcion
-          %td= bita.ip_origen
