@@ -4,9 +4,10 @@
   .nav.nav-tabs
     = link_to "Preinscritos (#{@preinscritos.count})", "#tab1", "data-toggle": "tab", class: 'nav-item nav-link active show'
     = link_to "Confirmados FHE (#{@confirmados.count})", "#tab2", "data-toggle": "tab", class: 'nav-item nav-link'
-    = link_to "Inscritos UCV (#{@inscritos_ucv.count})", "#tab3", "data-toggle": "tab", class: 'nav-item nav-link'
+    = link_to "Inscritos Sec (#{@inscritos_ucv.count})", "#tab3", "data-toggle": "tab", class: 'nav-item nav-link'
     = link_to "Nuevos(#{@nuevos.count})", "#tab4", "data-toggle": "tab", class: 'nav-item nav-link'
-    = link_to "Reincorporados (#{@reincorporados.count})", "#tab5", "data-toggle": "tab", class: 'nav-item nav-link'
+    = link_to "Nuevos Sin Sec (#{@nuevos_sin_sec.count})", "#tab5", "data-toggle": "tab", class: 'nav-item nav-link'
+    = link_to "Reincorporados (#{@reincorporados.count})", "#tab6", "data-toggle": "tab", class: 'nav-item nav-link'
       
 .tab-content
   .tab-pane.active.show#tab1
@@ -22,6 +23,9 @@
     .border.mt-3.p-3
       = render partial: '/admin/grados/lista_nuevos', locals: {grados: @nuevos, estado: 'Nuevos'}
   .tab-pane#tab5
+    .border.mt-3.p-3
+      = render partial: '/admin/grados/lista_nuevos', locals: {grados: @nuevos_sin_sec, estado: 'NuevosSinSec'}
+  .tab-pane#tab6
     .border.mt-3.p-3
       = render partial: '/admin/grados/lista_nuevos', locals: {grados: @reincorporados, estado: 'Reincorporados'}
 

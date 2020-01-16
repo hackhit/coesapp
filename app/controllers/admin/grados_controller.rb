@@ -100,6 +100,7 @@ module Admin
       @inscritos_ucv = grados.inscritos_ucv
       @reincorporados = grados.reincorporado
       @nuevos = grados.reject{|g| !g.inscripciones.any?}
+      @nuevos_sin_sec = grados.no_inscritos_ucv.reject{|g| !g.inscripciones.any?}
     end
 
     def index

@@ -25,6 +25,8 @@ class ExportarExcel
 			unless estado.eql? 'nuevo'
 				if estado.eql? 'ucv'
 					grados = grados.inscritos_ucv
+				elsif estado.eql? 'nuevossinsec'
+					grados = grados.no_inscritos_ucv.reject{|g| !g.inscripciones.any?}
 				else
 					indice = Grado.estado_inscripciones[estado]
 					grados = grados.where(estado_inscripcion: indice)
