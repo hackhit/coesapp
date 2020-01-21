@@ -1,5 +1,8 @@
 .border.p-3
-	- @back = session[:administrador_id] ? index2_secciones_path : principal_profesor_index_path 
+	- if params[:back] and params[:back].eql? 'inscripcion' and params[:ci]
+		- @back = seleccionar_inscripcionseccion_path(params[:ci])
+	- else
+		- @back = session[:administrador_id] ? index2_secciones_path : principal_profesor_index_path 
 	
 	= btn_atras @back
 

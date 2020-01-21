@@ -7,7 +7,7 @@
 			.mt-md-2#responseTotal{class: hidden}
 				#tableResponse
 					- if @secciones and @secciones.any?
-						= render partial: '/admin/inscripcionsecciones/secciones_inscripcion', locals: {object: @asignatura, secciones: @secciones} if @asignatura
+						= render partial: '/admin/inscripcionsecciones/secciones_inscripcion', locals: {object: @asignatura, secciones: @secciones, inscritas_o_aprobadas: @incritar_o_aprobadas} if @asignatura
 
 				#noEncontrado.pagination-centered.text-center.hideble.p-0
 					.alert.alert-danger No se encontraron secciones

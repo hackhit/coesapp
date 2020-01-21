@@ -23,32 +23,20 @@
 							- desc = obj.descripcion_completa.upcase
 							- desc += "<span class= 'badge badge-info ml-1'>pci</span>"
 
-						- if @ids_aprobadas and @ids_aprobadas.include? obj.id
-							.text-muted.alert.alert-success.mb-0.px-3.py-2
-								= raw desc
-								= colocar_total_secciones_badge total_secciones
-								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
+						= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
+
+							= raw desc
+							= colocar_total_secciones_badge total_secciones
+							%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos 
+
+							- if @ids_aprobadas and @ids_aprobadas.include? obj.id
 								%span.badge.badge-secondary.float-right.ml-1 Aprobada
 
-						- elsif @ids_asignaturas and @ids_asignaturas.include? obj.id
-							.text-muted.alert.alert-info.mb-0.px-3.py-2
-								= raw desc
-								= colocar_total_secciones_badge total_secciones
-								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
+							- elsif @ids_asignaturas and @ids_asignaturas.include? obj.id
 								%span.badge.badge-secondary.float-right.ml-1 Previamente Inscrita
-						- elsif total_secciones < 1
-							.text-muted.alert.alert-secondary.mb-0.px-3.py-2
+							- elsif total_secciones < 1
 								- if @controller and @controller.eql? 'secciones'
 									= btn_plus_seccion_modal obj
-									=# btn_toggle 'btn-outline-success', 'plus', 'javascript:void(0)', 'Agregar Sección', '', "setAsignaturaToNewSeccion(`#{obj.id}`,`#{obj.descripcion}` );$(`#nueva_seccion`).modal();"
-								= raw desc
-								= colocar_total_secciones_badge total_secciones
-								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
-						- else
-							= link_to "##{object_name}_#{obj.id}", "data-toggle": :tab, onclick: "updatePage('#{object_name}', '#{obj.id}');", class: "nav-link #{obj_activo}", id: "#{object_name}_#{obj.id}" do
-								= raw desc
-								= colocar_total_secciones_badge total_secciones
-								%span.badge.badge-light.float-right.mx-1.tooltip-btn{id: "bagCreditos#{obj.id}", 'data-toggle': 'tooltip', title: "U. Créditos"}= obj.creditos
 					- else
 						- desc = obj.descripcion
 						- if controller_name.eql? 'inscripcionsecciones' and obj.is_a? Escuela

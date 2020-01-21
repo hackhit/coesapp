@@ -158,9 +158,13 @@ module Admin
 				if inscripciones
 					@ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} 
 					@ids_aprobadas = inscripciones.aprobadas.collect{|i| i.seccion.asignatura_id}
+
+					p "  Resultado: #{session[:asignatura]}   ".center(200, "?")
+
+            		@incritar_o_aprobadas = ((@ids_aprobadas and (@ids_aprobadas.include? session[:asignatura])) or (@ids_asignaturas and (@ids_asignaturas.include? session[:asignatura])))
 				end
 
-				@titulo = "Inscripción para el período #{current_periodo.id} - Paso 2 - Seleccionar Secciones"
+				@titulo = "Inscripción para el período #{current_periodo.id} - #{@ids_asignaturas.include? session[:asignatura]} - Paso 2 - Seleccionar Secciones"
 
 				@escuelas = current_admin.escuelas.merge @estudiante.escuelas 
 

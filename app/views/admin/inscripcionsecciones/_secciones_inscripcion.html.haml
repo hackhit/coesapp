@@ -5,12 +5,12 @@
 .p-3
 	%table#resultado.table.table-bordered.table-striped.table-sm.table-hover
 		%thead
-			%tr
-				%th Sec.
-				%th Profesor Tutor (Calificador)
-				%th Horario
-				%th Estado
-				%th.text-center= borrar_seleccion_link object.id
+			%tr.text-center
+				%th.align-middle Sec.
+				%th.align-middle Profesor Tutor (Calificador)
+				%th.align-middle Horario
+				%th.align-middle{style: 'width: 80px'} Estado
+				%th.align-middle= borrar_seleccion_link object.id
 
 		%tbody{id: object.id}
 			- secciones.each do |seccion|
@@ -20,17 +20,17 @@
 				- @clase = 'table-danger' if volumen <= 0
 				- @clase = 'table-success' if volumen >= 3
 				%tr{class: @clase}
-					%td= seccion.numero
+					%td.align-middle.text-center= link_to seccion.numero, "#{seccion_path(seccion)}?back=inscripcion&ci=#{@estudiante.id}"
 					%td= seccion.descripcion_profesor_asignado
 					%td= seccion.horario.descripcion if seccion.horario
-					%td
+					%td.align-middle.text-center{style: 'font-size: larger'}
 						%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Capacidad'}
 							%span.badge.badge-light= seccion.capacidad
 						= "/"
 						%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Inscritos'}		
 							%span.badge.badge-light= seccion.total_estudiantes
-					%td.text-center
-						- if volumen > 0
+					%td.align-middle.text-center
+						- if !inscritas_o_aprobadas and volumen > 0
 							=# radio_button_tag "[secciones][#{seccion.id}]", nil, false, class: seccion.asignatura_id, onclick: "agregar_a_seleccion('#{seccion.asignatura_id}','#{seccion.numero}')"
 							- aux = Hash.new
 							- a = seccion.asignatura

@@ -93,9 +93,20 @@ module Admin
         else
           @secciones = @objeto.secciones.del_periodo(current_periodo.id)
         end
-        if session[:inscripcion_estudiante_id]          
+        if session[:inscripcion_estudiante_id]       
           @estudiante = Estudiante.find session[:inscripcion_estudiante_id]
           @escuelas = current_admin.escuelas.merge @estudiante.escuelas 
+
+          inscripciones = @estudiante.inscripciones
+          @inscripciones = inscripciones.del_periodo(current_periodo.id) 
+
+          if inscripciones
+            @ids_asignaturas = @inscripciones.collect{|i| i.seccion.asignatura_id} 
+            @ids_aprobadas = inscripciones.aprobadas.collect{|i| i.seccion.asignatura_id}
+
+            @incritar_o_aprobadas = ((@ids_aprobadas and (@ids_aprobadas.include? params[:id])) or (@ids_asignaturas and (@ids_asignaturas.include? params[:id])))
+          end
+
         end
       end
         #render json: {secciones: secciones, status: :success}
