@@ -294,7 +294,8 @@ module Admin
 
     def cambiar_capacidad
       @seccion.capacidad = params[:capacidad]
-      @seccion.save
+      info_bitacora("Cambio de capacidad del aula a #{@seccion.capacidad}", Bitacora::ACTUALIZACION, @seccion) if @seccion.save
+
     end
 
     def agregar_profesor_secundario
@@ -424,7 +425,7 @@ module Admin
               url = index2_secciones_path
             end
             redirect_to url
-             }
+          }
           format.json { render :show, status: :created, location: @seccion }
         else
           flash[:danger] = "Error al intentar generar la sección: #{@seccion.errors.full_messages.to_sentence}."

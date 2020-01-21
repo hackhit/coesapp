@@ -8,6 +8,8 @@
 			%th Tipo de Sección
 			%th Id
 			%th U. Créditos
+			- if current_admin.mas_altos?
+				%th Capacidad
 			%th ¿PCI?
 			- if @seccion.horario
 				%th Horario
@@ -24,6 +26,7 @@
 			%td= "#{@seccion.tipo_seccion.descripcion.titleize}"
 			%td= "#{@seccion.numero}"
 			%td= "#{@seccion.asignatura.creditos}"
+			%td= render partial: '/admin/secciones/cambiar_capacidad', locals: {seccion: @seccion}
 			%td
 				- if @seccion.asignatura.pci? @seccion.periodo_id
 					.text-success= glyph 'ok'
