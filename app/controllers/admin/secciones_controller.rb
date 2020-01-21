@@ -3,8 +3,8 @@ module Admin
     # Privilegios
     before_action :filtro_logueado
     before_action :filtro_admin_profe, only: [:show]
-    before_action :filtro_admin_altos!, only: [:agregar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion, :desasignar_profesor_secundario]
-    before_action :filtro_admin_mas_altos!, only: [:cambiar_capacidad, :create, :new, :create, :update]
+    before_action :filtro_admin_altos!, only: [:cambiar_capacidad, :agregar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion, :desasignar_profesor_secundario]
+    before_action :filtro_admin_mas_altos!, only: [:create, :new, :create, :update]
     #before_action :filtro_ninja!, only: [:destroy, :index]
 
     before_action :set_seccion, except: [:index, :index2, :get_secciones, :get_tab_objects, :new, :create, :habilitar_calificar, :get_profesores]
@@ -46,7 +46,12 @@ module Admin
         else  
           objeto = params[:type].camelize.constantize.find(params[:value])
           if objeto.is_a? Escuela
-            @childrens = objeto.departamentos.order('descripcion ASC')
+
+            if current_admin and current_admin.admin_departamento?
+              @childrens = Departamento.where(id: current_admin.departamento_id)
+            else
+              @childrens = objeto.departamentos.order('descripcion ASC')
+            end
             # session[:departamento] = session[:catedra] = session[:asignatura] = nil
           elsif objeto.is_a? Departamento
             # session[:catedra] = session[:asignatura] = nil
@@ -120,6 +125,10 @@ module Admin
       @escuelas = current_periodo.escuelas.merge current_admin.escuelas
       #@editar_asignaturas = true if current_admin.altos?
       @seccion = Seccion.new
+      if current_admin.admin_departamento?
+        session[:departamento] = current_admin.departamento_id 
+        session[:escuela] = current_admin.departamento.escuela_id
+      end
       @departamentos = current_admin.departamentos #Departamento.all
       if escuela = current_admin.pertenece_a_escuela
         @profesores = escuela.profesores.joins(:usuario).all.order('usuarios.apellidos')

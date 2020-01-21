@@ -148,7 +148,13 @@ class VisitorsController < ApplicationController
       session[:administrador_id] = usuario.administrador.id
       session['periodo_actual_id'] = inicial_current_periodo.id 
       
-      redirect_to periodos_path  
+      # redirect_to periodos_path  
+
+      if current_admin.admin_departamento?
+        redirect_to index2_secciones_path
+      else
+        redirect_to periodos_path
+      end
       # if current_admin.maestros?
       #   redirect_to periodos_path  
       # else

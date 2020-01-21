@@ -7,7 +7,7 @@
 	- else
 		- col =  'col-md-3'
 	%div{id: "#{object_name}Tabs", class: "tabs #{col}", style: "max-height: 400px;overflow: scroll;"}
-		%ul.nav.nav-pills.mb-3.flex-column{role: :tablist, "aria-orientation": 'vertical', id: "pills-#{object_name}-tab"}
+		%ul.nav.nav-pills.mb-3.flex-column{role: :tablist, "aria-orientation": 'vertical', id: "pills-#{object_name}-tab", style: 'transition: all 5s;'}
 			- bloqueado = false
 			- objects.each do |obj|
 				- obj_activo = (session[object_name].eql? obj.id) ? 'active' : ''

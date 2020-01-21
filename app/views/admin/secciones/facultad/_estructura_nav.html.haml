@@ -20,7 +20,10 @@
 		- @secciones = Seccion.where(id: [])
 
 - else
-	- @dptosTabs = Escuela.find(session[:escuela]).departamentos.order('descripcion ASC') if session[:escuela] 
+	- if current_admin and  current_admin.admin_departamento?
+		- @dptosTabs = Departamento.where(id: current_admin.departamento_id)
+	- else
+		- @dptosTabs = Escuela.find(session[:escuela]).departamentos.order('descripcion ASC') if session[:escuela] 
 	- if session[:departamento]
 		- @catTabs = Departamento.find(session[:departamento]).catedras.order('descripcion ASC')
 		- @asigTabs = Catedra.find(session[:catedra]).asignaturas.activas(current_periodo.id).del_departamento(session[:departamento]).order('descripcion ASC') if session[:catedra]
