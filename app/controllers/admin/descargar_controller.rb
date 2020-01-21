@@ -134,7 +134,7 @@ module Admin
 				redirect_back fallback_location: root_path
 			else
 
-				if @estudiante.grados.where(escuela_id: 'IDIO').first.secciones.del_periodo('2019-02A').map{|s| s.horario}.compact.any?
+				if @estudiante.grados.where(escuela_id: params[:escuela_id]).first.secciones.del_periodo(periodo_id).map{|s| s.horario}.compact.any?
 					pdf = ExportarPdf.hacer_constancia_inscripcion params[:id], periodo_id, params[:escuela_id]
 				else
 					pdf = ExportarPdf.hacer_constancia_inscripcion_sin_horario params[:id], periodo_id, params[:escuela_id]
