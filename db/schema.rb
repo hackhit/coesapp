@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_30_165230) do
+ActiveRecord::Schema.define(version: 2020_01_24_120719) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -160,6 +160,8 @@ ActiveRecord::Schema.define(version: 2019_10_30_165230) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "inscripcion_abierta", default: true
+    t.boolean "habilitar_retiro_asignaturas", default: true
+    t.boolean "habilitar_cambio_seccion", default: true
     t.index ["id"], name: "index_escuelas_on_id"
   end
 
@@ -214,7 +216,7 @@ ActiveRecord::Schema.define(version: 2019_10_30_165230) do
     t.index ["plan_id"], name: "index_historialplanes_on_plan_id"
   end
 
-  create_table "horarios", primary_key: "seccion_id", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "horarios", primary_key: "seccion_id", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "titulo"
     t.string "color"
     t.datetime "created_at", null: false

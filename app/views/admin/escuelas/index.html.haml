@@ -3,7 +3,7 @@
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
-    %tr
+    %tr.text-center
       %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Secciones Periodo actual'} Sec
@@ -11,15 +11,17 @@
       %th{width: '10%'} Opciones
       - if current_admin.maestros?
         %th Inscripción
+        %th Retiros
+        %th Cambio Secciones
   %tbody
     - @escuelas.each do |escuela|
       - @ins = escuela.inscripcionsecciones.del_periodo(current_periodo.id)
       %tr
-        %td= escuela.id
-        %td= escuela.descripcion
-        %td= @ins.secciones_creadas.count#escuela.secciones.del_periodo(current_periodo.id).count
-        %td= @ins.estudiantes_inscritos.count
-        %td
+        %td.align-middle= escuela.id
+        %td.align-middle= escuela.descripcion
+        %td.align-middle.text-right= @ins.secciones_creadas.count#escuela.secciones.del_periodo(current_periodo.id).count
+        %td.align-middle.text-right= @ins.estudiantes_inscritos.count
+        %td.align-middle
           = link_to escuela_path(escuela), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'
           = link_to edit_escuela_path(escuela), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
@@ -30,9 +32,23 @@
 
           - if current_admin.maestros?
             %td
-              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: '¿Inscripción Abierta?'}
+              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Inscripción'}
                 = check_box nil, :activa, checked: escuela.inscripcion_abierta, class: 'onoffswitch-checkbox', id: "swidth_#{escuela.id}", onChange: "switches('#{set_inscripcion_abierta_escuela_path(escuela.id)}')"
                 %label.onoffswitch-label{for: "swidth_#{escuela.id}"}
+                  %span.onoffswitch-inner
+                  %span.onoffswitch-switch
+
+            %td
+              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Retiro Asignaturas'}
+                = check_box nil, :activa, checked: escuela.retiro_asignaturas_habilitado?, class: 'onoffswitch-checkbox', id: "swidthRetiro#{escuela.id}", onChange: "switches('#{set_habilitar_retiro_asignaturas_escuela_path(escuela.id)}')"
+                %label.onoffswitch-label{for: "swidthRetiro#{escuela.id}"}
+                  %span.onoffswitch-inner
+                  %span.onoffswitch-switch
+
+            %td
+              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Cambio de Sección'}
+                = check_box nil, :activa, checked: escuela.cambio_seccion_habilitado?, class: 'onoffswitch-checkbox', id: "swidthCambio#{escuela.id}", onChange: "switches('#{set_habilitar_cambio_seccion_escuela_path(escuela.id)}')"
+                %label.onoffswitch-label{for: "swidthCambio#{escuela.id}"}
                   %span.onoffswitch-inner
                   %span.onoffswitch-switch
 

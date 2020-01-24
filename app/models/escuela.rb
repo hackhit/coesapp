@@ -60,6 +60,14 @@ class Escuela < ApplicationRecord
 		inscripcion_abierta.eql? true
 	end
 
+	def retiro_asignaturas_habilitado?
+		self.habilitar_retiro_asignaturas
+	end
+
+	def cambio_seccion_habilitado?
+		self.habilitar_cambio_seccion
+	end
+
 	def inscripcion_cerrada?
 		!inscripcion_abierta?
 	end

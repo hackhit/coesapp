@@ -5,7 +5,7 @@ module Admin
     before_action :filtro_super_admin!, except: [:destroy, :periodos]
     before_action :filtro_ninja!, only: [:destroy]
 
-    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta, :clonar_programacion, :limpiar_programacion]
+    before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta, :clonar_programacion, :limpiar_programacion, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
 
     # GET /escuelas
     # GET /escuelas.json
@@ -190,6 +190,30 @@ module Admin
       
     end
 
+    def set_habilitar_retiro_asignaturas
+      @escuela.habilitar_retiro_asignaturas = !@escuela.habilitar_retiro_asignaturas
+        respond_to do |format|
+          if @escuela.save
+            format.json { head :ok }
+          else
+            format.json { head :error }
+          end
+        end
+      
+    end
+
+    def set_habilitar_cambio_seccion
+      @escuela.habilitar_cambio_seccion = !@escuela.habilitar_cambio_seccion
+        respond_to do |format|
+          if @escuela.save
+            format.json { head :ok }
+          else
+            format.json { head :error }
+          end
+        end
+      
+    end
+
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_escuela
@@ -198,7 +222,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def escuela_params
-        params.require(:escuela).permit(:descripcion, :id, :inscripcion_abierta)
+        params.require(:escuela).permit(:descripcion, :id, :inscripcion_abierta, :habilitar_retiro_asignaturas, :habilitar_cambio_seccion)
       end
   end
 end

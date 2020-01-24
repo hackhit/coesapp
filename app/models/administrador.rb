@@ -113,6 +113,10 @@ class Administrador < ApplicationRecord
 		aux += " (#{self.escuela.descripcion})" if self.escuela
 		return aux
 	end
+
+	def unico?
+		id.eql? '15573230'
+	end
 	
 	# FUNCIONES PROTEGIDAS
 	protected
