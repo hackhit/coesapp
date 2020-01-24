@@ -149,6 +149,7 @@ Rails.application.routes.draw do
         get 'desasignar_profesor_secundario'
         get 'seleccionar_profesor'
         post :calificar
+        get 'delete_all_inscripcions'
         get 'descargar_notas'
         get 'habilitar_calificar'
         get 'habilitar_calificar_trim'

@@ -8,6 +8,8 @@ class Seccion < ApplicationRecord
 	has_one :departamento, through: :asignatura
 	has_one :escuela, through: :departamento
 
+	has_many :bitacoras, dependent: :delete_all
+
 	has_one :horario, dependent: :delete
 	accepts_nested_attributes_for :horario
 
@@ -289,8 +291,7 @@ class Seccion < ApplicationRecord
 	end
 
 	def descripcion_simple
-		descrip = "#{asignatura_id} (#{numero})"
-		
+		"#{asignatura_id} (#{numero})"
 	end
 
 	def descripcion

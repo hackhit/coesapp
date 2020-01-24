@@ -16,14 +16,12 @@
 				= link_to 'Bitácora', "#bitacora", "data-toggle": :tab, class: "nav-item nav-link"
 			.tab-content
 				.tab-pane#seccion.active.show
+					- if current_admin and current_admin.maestros? and @seccion.inscripciones.any?
+						.float-right= btn_toggle 'btn-danger', 'trash', delete_all_inscripcions_seccion_path(@seccion), 'Eliminar Todas las Inscripciones', "#{glyph 'education'}", data: {confimation: 'Esta acción es irreversible. ¿Está completamente seguro?'}
 					.border.mt-3.p-3= render '/admin/secciones/detalle_seccion'
 				.tab-pane#bitacora
-					%br
+
 					.text-center.titulo De la Sección:
-					= render '/admin/bitacoras/index'
-					%br
-					.text-center.titulo De Inscripciones:
-					- @bitacoras = Bitacora.search("Seccion id: (#{@seccion.id})")
 					= render '/admin/bitacoras/index'
 		
 	- else

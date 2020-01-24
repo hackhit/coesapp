@@ -374,7 +374,7 @@ module Admin
       @inscripciones_secciones = @seccion.inscripcionsecciones.sort_by{|h| h.usuario.apellidos}
       @any_outplan = @seccion.inscripcionsecciones.aprobado.reject{|h| h.ultimo_plan}.count > 0
 
-      @bitacoras = Bitacora.search_by_type('Seccion').search(@seccion.id)
+      @bitacoras = Bitacora.search_by_id(@seccion.id).limit(50)#.search(@seccion.id)
 
       @titulo = "Sección: #{@seccion.descripcion_escuela} - Período #{@seccion.periodo_id}"
 
@@ -457,6 +457,15 @@ module Admin
         format.html { redirect_back fallback_location: index2_secciones_path, notice: 'Seccion Eliminada.' }
         format.json { head :no_content }
       end
+    end
+
+    def delete_all_inscripcions
+      total = @seccion.inscripciones.count
+      @seccion.inscripciones.each do |ins|
+        (info_bitacora "Eliminada inscripcion de #{ins.estudiante.descripcion} en #{ins.seccion.descripcion_simple}", Bitacora::ELIMINACION, @seccion) if ins.delete
+      end
+      
+      redirect_back fallback_location: index2_secciones_path, notice: "Se eliminaron un total de #{total} inscripciones"
     end
 
     private

@@ -1,7 +1,10 @@
-- if seccion.horario
-	= badge_icon_tooltip edit_horario_path(seccion.horario), 'badge-primary btn-sm ml-md-1 p-md-1', 'Editar Horario','time', 'pencil'
+- unless seccion.inscripciones.any?
+	- if seccion.horario
+		= badge_icon_tooltip edit_horario_path(seccion.horario), 'badge-primary btn-sm ml-md-1 p-md-1', 'Editar Horario','time', 'pencil'
+	- else
+		= badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario','time', 'plus'
 - else
-	= badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario','time', 'plus'
+	.badge.align-middle.text-center.tooltip-btn.bg-dark.text-white{'data-toggle': 'tooltip', title: "Posse inscripciones. Elimínelas para poder agregar o modificar horarios"}= glyph 'time'
 
 - if current_admin
 	= badge_icon_tooltip notas_seccion_descargar_path(seccion.id, :pdf), 'badge-info btn-sm p-md-1', 'Descargar Acta PDF', 'file'

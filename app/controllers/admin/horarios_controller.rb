@@ -95,11 +95,17 @@ module Admin
     def new
       @horario = Horario.new
       @seccion = Seccion.find params[:seccion_id]
-      @horario.seccion_id = @seccion.id
-      @titulo = 'Nuevo Horario'
-      @profesores = @seccion.todos_profes
 
-      profes_ids = @profesores.ids
+      if @seccion.inscripciones.any?
+        flash[:danger] = 'Posse inscripciones en ésta seccion. Elimínelas para poder agregar o modificar horarios'
+        redirect_back fallback_location: seccion_path(@seccion)
+      else
+        @horario.seccion_id = @seccion.id
+        @titulo = 'Nuevo Horario'
+        @profesores = @seccion.todos_profes
+
+        profes_ids = @profesores.ids
+      end  
 
       # @bloques = Bloquehorario.where(profesor_id: profes_ids).collect{|bh| {day: Bloquehorario.dias[bh.dia], periods: [["#{bh.entrada_to_schedule}", "#{bh.salida_to_schedule}"]]}}.to_json
 
@@ -127,9 +133,16 @@ module Admin
     # GET /horarios/1/edit
     def edit
       @seccion = @horario.seccion
-      @horario.seccion_id = @seccion.id
-      @titulo = 'Editar Horario'
-      @profesores = @seccion.todos_profes
+
+      if @seccion.inscripciones.any?
+        flash[:danger] = 'Posse inscripciones en esta seccion. Elimínelas para poder agregar o modificar horarios'
+        redirect_back fallback_location: seccion_path(@seccion)
+      else
+        @horario.seccion_id = @seccion.id
+        @titulo = 'Editar Horario'
+        @profesores = @seccion.todos_profes
+      end
+
     end
 
     # POST /horarios

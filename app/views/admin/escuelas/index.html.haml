@@ -39,7 +39,7 @@
                   %span.onoffswitch-switch
 
             %td
-              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Retiro Asignaturas'}
+              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Retiro y Eliminación Asignaturas'}
                 = check_box nil, :activa, checked: escuela.retiro_asignaturas_habilitado?, class: 'onoffswitch-checkbox', id: "swidthRetiro#{escuela.id}", onChange: "switches('#{set_habilitar_retiro_asignaturas_escuela_path(escuela.id)}')"
                 %label.onoffswitch-label{for: "swidthRetiro#{escuela.id}"}
                   %span.onoffswitch-inner

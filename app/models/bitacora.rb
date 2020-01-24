@@ -11,6 +11,7 @@ class Bitacora < ApplicationRecord
   #SCOPE
   scope :search, lambda {|value| where("descripcion LIKE ? OR comentario LIKE ? OR id_objeto LIKE ?", "%#{value}%", "%#{value}%", "%#{value}%")}
   scope :search_by_type, lambda {|type| where(tipo_objeto: type)}
+  scope :search_by_id, lambda {|id| where(id_objeto: id)}
 
   # VARIABLES
   enum tipo: [:general, :creacion, :actualizacion, :eliminacion, :descarga, :especial]
@@ -20,6 +21,7 @@ class Bitacora < ApplicationRecord
 
   # RELACIONES
   belongs_to :usuario, primary_key: :ci, optional: true
+  belongs_to :seccion, primary_key: :ci, optional: true
 
   protected
 
