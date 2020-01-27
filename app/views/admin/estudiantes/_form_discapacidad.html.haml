@@ -1,0 +1,14 @@
+%h6.titulo Discapacidad:
+%br
+#discapacidad
+  - @disca = @usuario.estudiante.discapacidad if @usuario and @usuario.estudiante
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right ¿Posee usted alguna discapacidad? Indique:
+    .col-md-9
+      - Usuario::DISCAPACIDADES.each do |d| 
+        %label.btn.btn-secondary.btn-sm
+          = radio_button_tag "[estudiante]discapacidad", d, (@disca.eql? d)
+          = d.upcase
+      %label.btn.btn-secondary.btn-sm
+        = radio_button_tag "[estudiante]discapacidad", 'Otro', false
+        Otro

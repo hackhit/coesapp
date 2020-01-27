@@ -1,0 +1,107 @@
+.border.p-3
+  %h6.titulo Datos Personales:
+  %br
+  - requerido = current_admin.nil?
+  - if action_name.eql? 'new'
+    .form-group.row
+      = f.label :ci, class: 'col-form-label col-md-3 text-right ', value: 'Cédula de Identidad:'
+      .col-md-9
+        =# f.text_field :ci, required: true, class: 'text-field form-control ci form-control-plaintext', placeholder: 'Cédula de Identidad', autofocus: true
+        = f.text_field :ci, required: true, class: 'text-field form-control ci', autofocus: true
+
+  - elsif @usuario and (current_usuario.ci.eql? @usuario.ci) and (@usuario.ci.eql? @usuario.password)
+    .form-group.row
+      = f.label :password, class: 'col-form-label col-md-3', value: 'Contraseña'
+      .col-md-9
+        = f.password_field :password, required: true, class: 'text-field form-control'
+    .form-group.row
+      = f.label :password_confirmation, class: 'col-form-label col-md-3', value: 'Confirme Contraseña'
+      .col-md-9
+        = f.password_field :password_confirmation, required: true, class: 'text-field form-control'
+
+  .form-group.row
+    = f.label :nombres, class: 'col-form-label col-md-3 text-right', value: 'Nombres:'
+    .col-md-9
+      = f.text_field :nombres, class: 'text-field form-control upcase', required: requerido
+  .form-group.row
+    = f.label :apellidos, class: 'col-form-label col-md-3 text-right', value: 'Apellidos:'
+    .col-md-9
+      = f.text_field :apellidos, class: 'text-field form-control upcase', required: requerido
+  .form-group.row
+    = f.label :email, class: 'col-form-label col-md-3 text-right', value: 'Email:'
+    .col-md-9
+      = f.email_field :email, class: 'text-field form-control', required: requerido
+  .form-group.row
+    = f.label :telefono_habitacion, class: 'col-form-label col-md-3 text-right', value: 'Teléfono de Habitación:'
+    .col-md-9
+      = f.phone_field :telefono_habitacion, class: 'text-field form-control', required: requerido
+  .form-group.row
+    = f.label :telefono_movil, class: 'col-form-label col-md-3 text-right', value: 'Teléfono Móvil:'
+    .col-md-9
+      = f.phone_field :telefono_movil, class: 'text-field form-control', required: requerido
+
+  - if @usuario and @usuario.estudiante
+    .form-group.row
+      = f.label 'estado_civil', class: 'col-form-label col-md-3 text-right', value: 'Estado Civil:'
+      .col-md-9
+        - Usuario.estado_civiles.map do |k,v| 
+          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k}
+            = radio_button_tag '[usuario]estado_civil', k, (@usuario.estado_civil.eql? k), required: requerido
+            = k[0..4].upcase
+
+    = render partial: '/admin/estudiantes/form_datos_origen', locals: {f: f, requerido: requerido}
+    = render partial: '/admin/estudiantes/form_direccion', locals: {requerido: requerido}
+    = render '/admin/estudiantes/form_discapacidad'
+    = render '/admin/estudiantes/form_otros_titulos'
+
+:javascript
+
+  function sendData(url, children, parameters, municipio, parroquia){
+    $.ajax({
+      url: url,
+      dataType: 'json', 
+      type: 'GET',
+      data: parameters,
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+        $('#cargando a').html(`Cangando... `)
+        $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
+      },
+      success: function (data) {
+        let selectorAux = $('#'+children);
+        selectorAux.empty();
+        selectorAux.append($("<option></option>").attr("value",'').text('--- Seleccione ---'));
+
+        for (let e of data){
+          $('#'+children)
+            .append($("<option></option>")
+              .attr("value",e)
+              .text(e));
+        }
+      },
+      complete: function(){
+        $('#cargando').modal('hide');
+      }
+    });
+    console.log('Datos cargados')
+    return true
+  };
+
+
+  $(document).ready(function() {
+
+    $('.dynamic').on('change', function(e){
+      let children = $(this).attr('children');
+      let url = $(this).attr('url');
+
+      sendData(url, children, {term: $(this).val()})
+
+    });
+
+    $('#selectMunicipio').on('change', function(e){
+      let estado = $('#selectEstado').val();
+      sendData(`#{getParroquias_usuarios_path}`, 'selectParroquia', {term: $(this).val(), estado: estado})
+
+    })
+    
+  });

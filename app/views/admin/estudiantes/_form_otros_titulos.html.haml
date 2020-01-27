@@ -1,0 +1,20 @@
+%h6.titulo Otro título universitario:
+%br
+#universitario
+  - @titulo_universitario = @usuario.estudiante.titulo_universitario if @usuario and @usuario.estudiante
+  - @titulo_universidad = @usuario.estudiante.titulo_universidad if @usuario and @usuario.estudiante
+  - @titulo_anno = @usuario.estudiante.titulo_anno if @usuario and @usuario.estudiante
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right ¿Es egresado universitario? indique título optenido:
+    .col-md-9
+      = text_field_tag '[estudiante]titulo_universitario', @titulo_universitario, class: 'text-field form-control'
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right Universidad:
+    .col-md-9
+      = text_field_tag '[estudiante]titulo_universidad', @titulo_universidad, class: 'text-field form-control' 
+  .form-group.row
+    %label.col-form-label.col-md-3.text-right Año:
+    .col-md-9
+      =# text_field_tag '[estudiante]titulo_anno', nil, class: 'text-field form-control', value: titulo_anno
+      = select_year @titulo_anno.to_i, {start_year: Time.now.year, prompt: '--- N/A ---', end_year: Time.now.year - 30},{class: 'text-field form-control'}
+      =# select_year(14{prompt: '--- Ninguno ---', field_name: '[estudiante]titulo_anno'}, {class: 'text-field form-control'})

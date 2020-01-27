@@ -1,45 +1,25 @@
 module Admin
   class UsuariosController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_administrador, except: [:edit, :update, :countries, :estados, :getParroquias]
-    before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :edit, :update, :countries, :estados, :getParroquias]
+    before_action :filtro_administrador, except: [:edit, :update, :countries, :getMunicipios, :getParroquias]
+    before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :edit, :update, :countries, :getMunicipios, :getParroquias]
     before_action :filtro_super_admin!, only: [:set_administrador, :set_estudiante, :set_profesor]
     before_action :filtro_ninja!, only: [:destroy, :delete_rol]
 
-    before_action :set_usuario, except: [:index, :new, :create, :busquedas, :countries, :estados, :getParroquias]
+    before_action :set_usuario, except: [:index, :new, :create, :busquedas, :countries, :getMunicipios, :getParroquias]
 
     # GET /usuarios
     # GET /usuarios.json
 
-    def getParroquias
-
-      estado = params[:estado]
-
-      estados = Usuario.venezuela.map{|a| a["estado"]}
-      indice = estados.index(estado)
-
-      indiceMunicipio = Usuario.venezuela[indice]["municipios"].map{|a| a["municipio"]}.index(params[:term])
-
-      parroquias = Usuario.venezuela[indice]["municipios"][indiceMunicipio]
-
-
-      render json: parroquias['parroquias'].map.sort, status: :ok
-
+    def getMunicipios
+      render json: Direccion.municipios(params[:term]), status: :ok
     end
 
-    def estados
-      estado = params[:term]
-
-      estados = Usuario.venezuela.map{|a| a["estado"]}
-      indice = estados.index(estado)
-
-      objeto = Usuario.venezuela[indice]
-      render json: objeto['municipios'].map{|a| a["municipio"]}.sort, status: :ok
-      
+    def getParroquias
+      render json: Direccion.parroquias(params[:estado], params[:term]), status: :ok
     end
 
     def countries
-
       country = params[:term]
       data_hash = Usuario.naciones
       render json: data_hash[country].sort{|a,b| a <=> b}, status: :ok
@@ -244,6 +224,24 @@ module Admin
     # GET /usuarios/1/edit
     def edit
       @titulo = "Editar Usuario: #{@usuario.descripcion}"
+      estudiante = @usuario.estudiante
+      if estudiante and estudiante.direccion
+        @estado = @usuario.estudiante.direccion.estado
+        if @estado
+          @municipios = Direccion.municipios(@estado) 
+          @municipio = estudiante.direccion.municipio
+          if @municipio
+            @parroquias = Direccion.parroquias(@estado, @municipio)
+            @parroquia = estudiante.direccion.ciudad
+          end
+        end
+      else
+        @estado = nil
+        @municipios = []
+        @municipio = nil
+        @parroquias = []
+        @parroquia = nil
+      end
     end
 
     # POST /usuarios
@@ -348,9 +346,10 @@ module Admin
         if @usuario.estudiante
           if direccion = Direccion.where(estudiante_id: @usuario.estudiante.id).first
             
-            flash[:info] = 'Dirección actualizada' if direccion.update(direccion_params)
+              flash[:info] = direccion.update(direccion_params) ? 'Dirección actualizada' : 'No se pudo actualizar la dirección'
           else
-            flash[:info] = 'Nueva dirección agregada a los registros del sistema.' if Direccion.create(direccion_params)
+            direccion = Direccion.new(direccion_params)
+            flash[:info] = direccion.save ? 'Nueva dirección agregada a los registros del sistema.' : 'No se pudo guardar la dirección del estudiante'
           end
 
           @usuario.estudiante.discapacidad = params[:estudiante][:discapacidad]

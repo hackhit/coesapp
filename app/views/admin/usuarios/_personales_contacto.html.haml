@@ -59,10 +59,10 @@
 	%li 
 		%b Teléfono de Habitación:
 		= "#{@usuario.telefono_habitacion}"
-	-if @usuario.estudiante and @usuario.estudiante.direccion
+	-if @usuario.estudiante
 		%li 
-			%b Dirección de Haitación:
-			= @usuario.estudiante.direccion.descripcion_completa
+			%b Dirección de Habitación:
+			= @usuario.estudiante.direccion.descripcion_completa if @usuario.estudiante.direccion
 
 - if @usuario.estudiante
 	%b Otros Datos:

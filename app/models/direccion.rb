@@ -15,4 +15,37 @@ class Direccion < ApplicationRecord
 		"#{estado} - #{municipio} - #{ciudad} - #{sector} - #{calle}, #{tipo_vivienda}: #{nombre_vivienda}"
 	end
 
+
+	def self.getIndexEstado estadoName
+		estados = venezuela.map{|a| a["estado"]}
+		estados.index(estadoName)
+	end
+
+	def self.getIndexMunicipio estadoName, municipioName
+		indiceEstado = getIndexEstado estadoName
+		venezuela[indiceEstado]["municipios"].map{|a| a["municipio"]}.index(municipioName)
+	end
+
+	def self.estados
+		venezuela.map{|a| a["estado"]}
+	end
+
+	def self.municipios estadoName
+		Direccion.venezuela[getIndexEstado(estadoName)]['municipios'].map{|a| a["municipio"]}.sort
+	end
+
+	def self.parroquias estadoName, municipioName
+		indiceEstado = getIndexEstado(estadoName)
+		indiceMunicipio = getIndexMunicipio(estadoName, municipioName)
+      	venezuela[indiceEstado]["municipios"][indiceMunicipio]['parroquias'].map.sort
+	end
+
+    def self.venezuela
+      require 'json'
+
+      file = File.read("#{Rails.root}/public/venezuela.json")
+
+      JSON.parse(file)
+    end
+
 end

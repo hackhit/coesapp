@@ -1,0 +1,23 @@
+- if @usuario and @usuario.pais_nacimiento
+  - data_hash = Usuario.naciones
+  - @cities = data_hash[@usuario.pais_nacimiento].sort{|a,b| a <=> b}
+  
+- @cities ||= []
+
+%h6.titulo Datos de Origen:
+%br
+.form-group.row
+  = f.label 'pais_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'País de Nacimiento:'
+  .col-md-9
+    = f.select(:pais_nacimiento, Usuario.naciones.keys.sort, { include_blank: 'Selecciona País de Nacimiento...'}, {class: "dynamic form-control text_field", requerido: requerido, id: 'selectCountry', children: 'selectCity', url: countries_usuarios_path})
+
+.form-group.row
+  = f.label 'ciudad_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Ciudad de Nacimiento:'
+  .col-md-9
+    = f.select(:ciudad_nacimiento, @cities, { include_blank: 'Selecciona Ciudad de Nacimiento...'}, {class: "form-control text_field", requerido: requerido, id: 'selectCity'})
+.form-group.row
+  = f.label 'fecha_nacimiento', class: 'col-form-label col-md-3 text-right', value: 'Fecha de Nacimiento:'
+  .col-md-9
+    = f.date_field 'fecha_nacimiento', class: 'text-field form-control', requerido: requerido
+
+

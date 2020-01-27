@@ -1,0 +1,46 @@
+%h6.titulo.m-2 Dirección:
+%br
+= hidden_field_tag '[direccion]estudiante_id', @usuario.ci
+
+- @sector = @usuario.estudiante.direccion.sector if @usuario and @usuario.estudiante and @usuario.estudiante.direccion
+- @calle = @usuario.estudiante.direccion.calle if @usuario and @usuario.estudiante and @usuario.estudiante.direccion
+- @tipo_vivienda = @usuario.estudiante.direccion.tipo_vivienda if @usuario and @usuario.estudiante and @usuario.estudiante.direccion
+- @nombre = @usuario.estudiante.direccion.nombre_vivienda if @usuario and @usuario.estudiante and @usuario.estudiante.direccion
+
+  
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Ubicación:
+  .col-md-3
+    = select_tag '[direccion]estado', options_for_select(Direccion.estados, @estado), class: 'dynamic form-control text-field', required: requerido, include_blank: '--- Seleccione Estado ---', id: 'selectEstado', children: 'selectMunicipio', url: getMunicipios_usuarios_path
+  .col-md-3
+    = select_tag '[direccion]municipio', options_for_select(@municipios, @municipio), class: 'form-control text-field', required: requerido, include_blank: '--- Seleccione Municipio ---', id: 'selectMunicipio', childer: 'selectParroquia', url: getParroquias_usuarios_path
+  .col-md-3
+    = select_tag '[direccion]ciudad', options_for_select(@parroquias, @parroquia), class: 'form-control text-field', required: requerido, include_blank: '--- Seleccione Parroquia ---', id: 'selectParroquia'
+  = render 'layouts/cargando'
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Urbanización/Sector:
+  .col-md-9
+    = text_field_tag '[direccion]sector', @sector, class: 'text-field form-control', required: requerido
+
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Calle/Avenida:
+  .col-md-9
+    = text_field_tag '[direccion]calle', @calle, class: 'text-field form-control', required: requerido
+
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Tipo de Vivienda:
+  .col-md-9
+    %label.btn.btn-secondary.btn-sm
+      = radio_button_tag '[direccion]tipo_vivienda', 'Casa', ('Casa'.eql? @tipo_vivienda), required: requerido
+      Casa
+    %label.btn.btn-secondary.btn-sm
+      = radio_button_tag '[direccion]tipo_vivienda', 'Quinta', ('Quinta'.eql? @tipo_vivienda), required: requerido
+      Quinta
+    %label.btn.btn-secondary.btn-sm
+      = radio_button_tag '[direccion]tipo_vivienda', 'Apartamento', ('Apartamento'.eql? @tipo_vivienda), required: requerido
+      Apartamento
+.form-group.row
+  %label.col-form-label.col-md-3.text-right Nombre/Número:
+  .col-md-9
+    = text_field_tag '[direccion]nombre_vivienda', @nombre, class: 'text-field form-control', required: requerido
+

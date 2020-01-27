@@ -1,118 +1,22 @@
 = form_for @usuario, html: { class: 'form-horizontal' } do |f|
-  - if current_estudiante and @usuario.estudiante
+
+  - if current_estudiante and @usuario.estudiante and (current_usuario.ci.eql? @usuario.ci) and (@usuario.ci.eql? @usuario.password)
     = render partial: '/admin/estudiantes/form_new_estudiante', locals: {f: f}
   - else
-
+    = render partial: '/admin/usuarios/form_datos_personales', locals: {f: f}
     - if params[:estudiante]
       = hidden_field_tag 'estudiante_set', true
-      .form-group.row
-        %label.col-form-label.col-md-2 Escuela
-        .col-md-10
-          = collection_select(nil, :escuela_id , Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
-
-    - elsif params[:profesor]
-      .form-group.row
-        %label.col-form-label.col-md-2 Departamento
-        .col-md-10
-          =# collection_select(:profesor, :departamento_id, Departamento.all, :id, :descripcion_completa, {prompt: "-- Seleccione Departamento --"}, {required: true, class: 'text-field form-control'})
-
-          = grouped_collection_select :profesor, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {:prompt => "-- Seleccione Departamento --"}, { class: 'selects2 form-control text-field'}
+      = render '/admin/grados/form'
+    - if params[:profesor]
+      = render 'form_datos_profe'
     - elsif params[:administrador]
-      .form-group.row
-        %label.col-form-label.col-md-2 Rol del Adminstrador
-        .col-md-10
-          = select_tag '[administrador]rol', options_for_select(Administrador.roles.reject{|a| a.eql? 'ninja'}.map{|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text-field form-control', id: :roles_admin
-      #jefeDepartamento.hideble
-        .form-group.row
-          %label.col-form-label.col-md-2 Departamento
-          .col-md-10
-            = grouped_collection_select :administrador, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, { class: 'text-field form-control'}
-            =# grouped_collection_select :cal_seccion, :cal_profesor_ci, @departamentos, :cal_profesores, :descripcion, :id, :descripcion, {:prompt => "Profesor"}, { class: 'selects2', style: 'width:30%'}
-            =# collection_select(:administrador, :departamento_id, Departamento.all, :id, :descripcion_completa, {prompt: "-- Seleccione Departamento --"}, {class: 'text-field form-control'})
-      #jefeEscuela.hideble
-        .form-group.row
-          %label.col-form-label.col-md-2 Escuela
-          .col-md-10
-            = collection_select(:administrador, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
+      = render 'form_datos_admin'
 
-    - if action_name.eql? 'new'
-      .form-group.row
-        = f.label :ci, class: 'col-form-label col-md-2', value: 'Cédula de Identidad'
-        .col-md-10
-          =# f.text_field :ci, required: true, class: 'text-field form-control ci form-control-plaintext', placeholder: 'Cédula de Identidad'
-          = f.text_field :ci, required: true, class: 'text-field form-control ci'
-    - elsif (current_usuario.ci.eql? @usuario.ci) & (@usuario.ci.eql? @usuario.password)
-      .form-group.row
-        = f.label :password, class: 'col-form-label col-md-2', value: 'Contraseña'
-        .col-md-10
-          = f.password_field :password, required: true, class: 'text-field form-control'
-      .form-group.row
-        = f.label :password_confirmation, class: 'col-form-label col-md-2', value: 'Confirme Contraseña'
-        .col-md-10
-          = f.password_field :password_confirmation, required: true, class: 'text-field form-control'
-
-    .form-group.row
-      = f.label :nombres, class: 'col-form-label col-md-2 float-right'
-      .col-md-10
-        - if current_admin and current_admin.altos?
-          = f.text_field :nombres, required: true, class: 'text-field form-control upcase'
-        - else
-          .text-field.form-control.text-muted= @usuario.nombres
-    .form-group.row
-      = f.label :apellidos, class: 'col-form-label col-md-2'
-      .col-md-10
-        - if current_admin and current_admin.altos? #@current_admin and @current_admin.altos?
-          = f.text_field :apellidos, required: true, class: 'text-field form-control upcase'
-
-        - else
-          .text-field.form-control.text-muted.form-control-plaintext= @usuario.apellidos
-    .form-group.row
-      = f.label :email, class: 'col-form-label col-md-2'
-      .col-md-10
-        = f.email_field :email, class: 'text-field form-control'
-    .form-group.row
-      = f.label :telefono_habitacion, class: 'col-form-label col-md-2'
-      .col-md-10
-        = f.phone_field :telefono_habitacion, class: 'text-field form-control'
-    .form-group.row
-      = f.label :telefono_movil, class: 'col-form-label col-md-2'
-      .col-md-10
-        = f.phone_field :telefono_movil, class: 'text-field form-control'
-    .form-group.row
-      = f.label :sexo, class: 'col-form-label col-md-2'
-      .col-md-10
-        =# f.select(:sexo, Usuario.sexos.keys.map {|sexo| [sexo.titleize,sexo]},{}, {class: 'text-field form-control', required: true})
-        - Usuario.sexos.map do |k,v| 
-          %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
-            = radio_button_tag '[usuario]sexo', k, (@usuario and @usuario.sexo.eql? k), required: true
-            = k[0].upcase
   .form-group.row
     .col-md-offset-2.col-md-10
       = f.submit nil, class: 'btn btn-primary'
 
 :javascript
-  $('#roles_admin').on('change',function(evt){ 
-    if ($(this).val() == 'admin_departamento') {
-      $('#jefeDepartamento').show();
-      $("#administrador_departamento_id").prop('required',true);
-
-    }else{
-      $('#jefeDepartamento').hide();
-      $("#administrador_departamento_id").prop('required',false);
-
-    };
-
-    if ($(this).val() == 'admin_escuela') {
-      $('#jefeEscuela').show();
-      $("#administrador_escuela_id").prop('required',true);
-
-    }else{
-      $('#jefeEscuela').hide();
-      $("#administrador_escuela_id").prop('required',false);
-
-    };
-
-  });
 
   $('.upcase').on('input',function(evt){ 
     var node = $(this);

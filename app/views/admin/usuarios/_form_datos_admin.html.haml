@@ -1,0 +1,38 @@
+.form-group.row
+  %label.col-form-label.col-md-2.text-right Rol del Adminstrador: 
+  .col-md-10
+    = select_tag '[administrador]rol', options_for_select(Administrador.roles.reject{|a| a.eql? 'ninja'}.map{|k,v| [k.titleize,k]}), prompt: '-- Seleccione Rol --', required: true, class: 'text-field form-control', id: :roles_admin
+#jefeDepartamento.hideble
+  .form-group.row
+    %label.col-form-label.col-md-2.text-right Departamento:
+    .col-md-10
+      = grouped_collection_select :administrador, :departamento_id, Escuela.all, :departamentos, :descripcion, :id, :descripcion, {prompt: "-- Seleccione Departamento --"}, { class: 'text-field form-control'}
+#jefeEscuela.hideble
+  .form-group.row
+    %label.col-form-label.col-md-2.text-right Escuela:
+    .col-md-10
+      = collection_select(:administrador, :escuela_id, Escuela.all, :id, :descripcion, {prompt: "-- Seleccione Escuela --"}, {class: 'text-field form-control'})
+
+:javascript
+  $('#roles_admin').on('change',function(evt){ 
+    if ($(this).val() == 'admin_departamento') {
+      $('#jefeDepartamento').show();
+      $("#administrador_departamento_id").prop('required',true);
+
+    }else{
+      $('#jefeDepartamento').hide();
+      $("#administrador_departamento_id").prop('required',false);
+
+    };
+
+    if ($(this).val() == 'admin_escuela') {
+      $('#jefeEscuela').show();
+      $("#administrador_escuela_id").prop('required',true);
+
+    }else{
+      $('#jefeEscuela').hide();
+      $("#administrador_escuela_id").prop('required',false);
+
+    };
+
+  });

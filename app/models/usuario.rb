@@ -44,15 +44,6 @@ class Usuario < ApplicationRecord
 
 	# FUNCIONES:
 
-    def self.venezuela
-      require 'json'
-
-      file = File.read("#{Rails.root}/public/venezuela.json")
-
-      JSON.parse(file)
-    end
-
-
     def self.naciones
       require 'json'
 

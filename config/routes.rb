@@ -169,7 +169,7 @@ Rails.application.routes.draw do
         # post :index
         get :busquedas
         get :countries
-        get :estados
+        get :getMunicipios
         get :getParroquias
       end
       member do
