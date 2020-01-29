@@ -5,8 +5,8 @@
 %table#dataTableCat.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
-      %th= model_class.human_attribute_name(:id)
-      %th= model_class.human_attribute_name(:descripcion)
+      %th Escuela
+      %th Descripción
       %th Departamentos
       %th
         = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: 'Total de asignaturas para el período actual' do
@@ -22,13 +22,13 @@
   %tbody
     - @catedras.each do |catedra|
       %tr
-        %td= catedra.id
+        %td= catedra.departamentos.joins(:escuela).collect{|d| d.escuela.descripcion}.uniq.to_sentence
         %td= catedra.descripcion
         %td
           %table.table
-            - catedra.departamentos.each do |c| 
+            - catedra.departamentos.each do |d| 
               %tr
-                %td= c.descripcion_completa.upcase
+                %td= link_to d.descripcion.upcase, departamento_path(d)
         %td= catedra.asignaturas.count
         %td= catedra.secciones.count
         %td= catedra.inscripcionsecciones.count
@@ -96,6 +96,27 @@
             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
           }
+        },
+
+        initComplete: function () {
+            this.api().columns(0).every( function () {
+                var column = this;
+                var select = $('<select style="width: 220px;" class="form-control form-control-sm float-left"><option value="">Filtrar Escuela</option></select>')
+                    .insertBefore( $('#dataTableCat_filter').parent().parent() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+ 
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
         }
 
     });

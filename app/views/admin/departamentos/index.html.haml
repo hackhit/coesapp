@@ -2,12 +2,12 @@
 
 - if current_usuario and current_admin.mas_altos?
   = btn_add_success new_departamento_path, 'Agregar Nuevo Departamento', 'Nuevo'
-
+  %br
+  %br
 %table#dataTableDpto.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr
       %th Escuela
-      %th= model_class.human_attribute_name(:id)
       %th= model_class.human_attribute_name(:descripcion)
       %th Cátedra
       %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de asignaturas para el periodo actual'} Asigs
@@ -19,14 +19,13 @@
 
     - @departamentos.each do |departamento|
       %tr
-        %td= departamento.escuela_id
-        %td= departamento.id
-        %td= departamento.descripcion
+        %td= departamento.escuela.descripcion
+        %td= link_to departamento.descripcion, departamento_path(departamento)
         %td
           %table.table
             - departamento.catedras.each do |c| 
               %tr
-                %td= "#{c.id} - #{c.descripcion}"
+                %td= link_to c.descripcion, catedra_path(c)
         %td= departamento.asignaturas.count
         %td= departamento.secciones.del_periodo(current_periodo.id).count
         %td= departamento.inscripcionsecciones.del_periodo(current_periodo.id).count
@@ -95,7 +94,30 @@
             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
           }
+        },
+
+
+        initComplete: function () {
+            this.api().columns(0).every( function () {
+                var column = this;
+                var select = $('<select style="width: 220px;" class="form-control form-control-sm float-left"><option value="">Filtrar Escuela</option></select>')
+                    .insertBefore( $('#dataTableDpto_filter').parent().parent() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+ 
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
         }
+
 
     });
   } );
