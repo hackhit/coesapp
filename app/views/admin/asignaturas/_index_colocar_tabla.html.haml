@@ -1,4 +1,9 @@
-- escuela = @asignaturas.first.escuela
+- if @asignaturas.first
+  - escuela = @asignaturas.first.escuela
+- elsif params[:escuela_id]
+  - escuela = Escuela.find params[:escuela_id]
+- else
+  - escuela = @escuela
 = render partial: '/admin/escuelas/eliminar_programacion', locals: {escuela: escuela}
 .tab-content
   .border.p-3
