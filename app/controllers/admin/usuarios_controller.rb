@@ -366,7 +366,7 @@ module Admin
         redirect_to url_back
       else
         flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}."
-
+        params[:estudiante] = nil
         if @usuario.estudiante and @usuario.estudiante.direccion
           @estado = @usuario.estudiante.direccion.estado
           if @estado
@@ -385,7 +385,7 @@ module Admin
           @parroquia = nil
         end
         @titulo = "Editar Usuario: #{@usuario.descripcion}"
-        render :edit 
+        redirect_to edit_usuario_path(@usuario) 
       end
     end
 

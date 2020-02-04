@@ -1,7 +1,7 @@
 .border.p-3
   %h6.titulo Datos Personales:
   %br
-  - requerido = current_admin.nil?
+  - requerido = (not params[:estudiante])
   - if action_name.eql? 'new'
     .form-group.row
       = f.label :ci, class: 'col-form-label col-md-3 text-right ', value: 'Cédula de Identidad:'
@@ -18,7 +18,7 @@
       = f.label :password_confirmation, class: 'col-form-label col-md-3', value: 'Confirme Contraseña'
       .col-md-9
         = f.password_field :password_confirmation, required: true, class: 'text-field form-control'
-
+  = @usuario.password
   .form-group.row
     = f.label :nombres, class: 'col-form-label col-md-3 text-right', value: 'Nombres:'
     .col-md-9
