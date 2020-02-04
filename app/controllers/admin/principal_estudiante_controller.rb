@@ -17,7 +17,7 @@ module Admin
 				estu = usuario.estudiante
 				@estudiante = @usuario.estudiante #Estudiante.where(usuario_ci: session[:usuario_id]).limit(1).first
 				
-				@titulo = "#{@usuario.descripcion} - Período: #{current_periodo.id} - #{@estudiante.escuelas.collect{|es| es.descripcion}.to_sentence.upcase}"
+				@titulo = "#{@usuario.descripcion} - #{@estudiante.escuelas.collect{|es| es.descripcion}.to_sentence.upcase}"
 
 				# @periodos = Periodo.order("inicia DESC").all
 				# @inscripciones = Inscripcionseccion.joins(:seccion).where(estudiante_id: @estudiante.usuario_id).order("secciones.asignatura_id DESC")

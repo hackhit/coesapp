@@ -344,12 +344,12 @@ module Admin
         info_bitacora_crud Bitacora::ACTUALIZACION, @usuario
         flash[:success] = "Usuario actualizado con éxito"
         if @usuario.estudiante
-          if direccion = Direccion.where(estudiante_id: @usuario.estudiante.id).first
+          if @direccion = Direccion.where(estudiante_id: @usuario.estudiante.id).first
             
-              flash[:info] = direccion.update(direccion_params) ? 'Dirección actualizada' : 'No se pudo actualizar la dirección'
+              flash[:info] = @direccion.update(direccion_params) ? 'Dirección actualizada' : 'No se pudo actualizar la dirección'
           else
-            direccion = Direccion.new(direccion_params)
-            flash[:info] = direccion.save ? 'Nueva dirección agregada a los registros del sistema.' : 'No se pudo guardar la dirección del estudiante'
+            @direccion = Direccion.new(direccion_params)
+            flash[:info] = @direccion.save ? 'Nueva dirección agregada a los registros del sistema.' : 'No se pudo guardar la dirección del estudiante'
           end
 
           @usuario.estudiante.discapacidad = params[:estudiante][:discapacidad]
@@ -363,11 +363,30 @@ module Admin
             flash[:error] = "No se pudo completar la actualización. Por favor revise e inténtelo nuevamente: #{@usuario.estudiante.errors.full_messages.to_sentence}}."
           end
         end  
-        
+        redirect_to url_back
       else
         flash[:danger] = "Error: #{@usuario.errors.full_messages.to_sentence}."
+
+        if @usuario.estudiante and @usuario.estudiante.direccion
+          @estado = @usuario.estudiante.direccion.estado
+          if @estado
+            @municipios = Direccion.municipios(@estado) 
+            @municipio = estudiante.direccion.municipio
+            if @municipio
+              @parroquias = Direccion.parroquias(@estado, @municipio)
+              @parroquia = estudiante.direccion.ciudad
+            end
+          end
+        else
+          @estado = nil
+          @municipios = []
+          @municipio = nil
+          @parroquias = []
+          @parroquia = nil
+        end
+        @titulo = "Editar Usuario: #{@usuario.descripcion}"
+        render :edit 
       end
-      redirect_to url_back
     end
 
     # DELETE /usuarios/1
