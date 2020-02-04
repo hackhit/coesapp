@@ -115,7 +115,7 @@ module Admin
       else
         info_bitacora_crud Bitacora::ELIMINACION, @periodo
         if @periodo.id.eql? session['periodo_actual_id']
-          session['periodo_actual_id'] = inicial_current_periodo #current_admin.escuela.periodos.order(inicia: :asc).last
+          session['periodo_actual_id'] = inicial_current_periodo.id  #current_admin.escuela.periodos.order(inicia: :asc).last
         end
         @periodo.destroy
         redirect_to periodos_url, notice: 'Período eliminado satisfactoriamente.' 

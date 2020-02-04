@@ -3,7 +3,7 @@
 		%tr
 			- if @inscripciones.any?
 				%td= btn_success 'download-alt', "#{kardex_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Descargar Kardex de #{@nickname}", 'Kardex'
-				- if @inscripciones.del_periodo(current_periodo.id).any?
+				- if current_estudiante or @inscripciones.del_periodo(current_periodo.id).any?
 					%td= btn_success 'download-alt', "#{constancia_inscripcion_descargar_path(@estudiante.id, :pdf)}?escuela_id=#{@escuela.id}", "Constancia de Inscripción de #{@nickname}", 'Constancia Inscripción y Horario'
 					%td= btn_success 'download-alt', "#{constancia_estudio_descargar_path(@estudiante.id)}?escuela_id=#{@escuela.id}", "Constancia de Estudio de #{@nickname}", 'Constancia Estudio'
 				-# if @inscripciones.del_periodo(current_periodo.id).any?

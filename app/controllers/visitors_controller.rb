@@ -142,11 +142,12 @@ class VisitorsController < ApplicationController
     gen = usuario.genero
 
     flash[:success] = "Bienvenid#{gen} #{usuario.nombres}" 
+      session['periodo_actual_id'] = inicial_current_periodo.id 
 
     if tipo == "Administrador" && usuario.administrador
       session[:rol] = tipo
       session[:administrador_id] = usuario.administrador.id
-      session['periodo_actual_id'] = inicial_current_periodo.id 
+      # session['periodo_actual_id'] = inicial_current_periodo.id 
       
       # redirect_to periodos_path  
 
@@ -163,14 +164,14 @@ class VisitorsController < ApplicationController
     elsif tipo == "Profesor" && usuario.profesor
       session[:rol] = tipo
       session[:profesor_id] = usuario.profesor.id
-      session['periodo_actual_id'] = inicial_current_periodo.id 
+      # session['periodo_actual_id'] = inicial_current_periodo.id 
       
       redirect_to principal_profesor_index_path
       return
     elsif tipo == "Estudiante"
       session[:rol] = tipo
       session[:estudiante_id] = usuario.estudiante.id
-      session['periodo_actual_id'] = inicial_current_periodo.id 
+      # session['periodo_actual_id'] = inicial_current_periodo.id 
       redirect_to principal_estudiante_index_path
       return
     end

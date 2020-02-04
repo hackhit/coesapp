@@ -40,7 +40,6 @@
 			- @inscripciones = @estudiante.inscripcionsecciones.joins(:escuela).where("escuelas.id = :e or pci_escuela_id = :e", e: @escuela.id)
 			- periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
 			- @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)
-
 			= render partial: '/admin/estudiantes/historial_academico'
 
 		- if false #@escuela.id.eql? 'IDIO' and !@estudiante.combinaciones.any?

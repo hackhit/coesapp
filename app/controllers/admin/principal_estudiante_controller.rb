@@ -6,6 +6,8 @@ module Admin
 		def index
 			@usuario = Usuario.find session[:estudiante_id]
 
+			@nickname = @usuario.nickname.capitalize
+
 			if ((current_usuario.estudiante and current_usuario.estudiante.direccion.blank?) or current_usuario.nacionalidad.blank? or current_usuario.fecha_nacimiento.blank? or current_usuario.pais_nacimiento.blank? or current_usuario.ciudad_nacimiento.blank? or current_usuario.estado_civil.blank? or current_usuario.email.blank? or current_usuario.telefono_movil.blank? or current_usuario.telefono_habitacion.blank? or (current_usuario.ci.eql? current_usuario.password))
 
 

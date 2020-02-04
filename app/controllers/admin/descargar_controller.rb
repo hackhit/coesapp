@@ -166,7 +166,7 @@ module Admin
 				redirect_back fallback_location: root_path
 			else
 				pdf = ExportarPdf.hacer_constancia_estudio params[:id], periodo_id, params[:escuela_id]
-				unless send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "attachment"
+				unless send_data pdf.render, filename: "constancia_estudio_#{params[:id].to_s}.pdf", type: "application/pdf", disposition: "inline"
 					flash[:error] = "En estos momentos no se pueden descargar el acta, intentelo más tarde."
 				end
 				return
