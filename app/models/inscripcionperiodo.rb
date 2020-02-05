@@ -1,2 +1,0 @@
-class Inscripcionperiodo < ApplicationRecord
-end
