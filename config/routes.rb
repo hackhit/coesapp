@@ -88,7 +88,7 @@ Rails.application.routes.draw do
 
     end
     
-    resources :inscripcionperiodos, :historialplanes, :dias
+    resources :historialplanes, :dias
 
     resources :catedradepartamentos, only: [:create, :destroy]
 
