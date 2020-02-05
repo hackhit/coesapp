@@ -5,6 +5,10 @@ module Admin
 		# before_action :filtro_admin_mas_altos!, except: [:destroy]
 		# before_action :filtro_ninja!, only: [:destroy]
 
+		# before_action :filtro_autorizado, except: [:index, :buscar_estudiante, :seleccionar, :inscribir, :resumen]
+		# before_action :filtro_autorizado_inscribir, only: [:buscar_estudiante, :seleccionar, :inscribir, :resumen]
+
+		before_action :filtro_autorizado, except: [:index]
 		before_action :set_inscripcionseccion, only: [:cambiar_seccion]
 
 		# def set_pci
@@ -237,12 +241,12 @@ module Admin
 
 		end
 
-		def nuevo
-			@accion = params[:accion]
-			@controlador = params[:controlador]
-			@secciones = CalSeccion.all
-			@estudiante = CalEstudiante.find(params[:ci])
-		end
+		# def nuevo
+		# 	@accion = params[:accion]
+		# 	@controlador = params[:controlador]
+		# 	@secciones = CalSeccion.all
+		# 	@estudiante = CalEstudiante.find(params[:ci])
+		# end
 
 		def crear
 			id = params[:estudiante_id]

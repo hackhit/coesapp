@@ -1,0 +1,98 @@
+- model_class = Catedra
+- if current_admin.mas_altos?
+  = btn_add_success new_catedra_path, 'Agregar Nueva Cátedra', 'Nueva'
+
+%table#dataTableCat.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+  %thead
+    %tr
+      %th Acción
+      %th Controlador
+      %th Usuario
+  %tbody
+    - @autorizadas.each do |a|
+      %tr
+        %td= a.restringida.accion
+        %td= a.restringida.controlador
+        %td= a.usuario.descripcion
+
+:javascript
+
+  $(document).ready(function() {
+
+    $('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+      $($.fn.dataTable.tables( true ) ).css('width', '100%');
+      $($.fn.dataTable.tables( true ) ).DataTable().columns.adjust().draw();
+    } );
+
+    $('#dataTableCat').DataTable({
+      scrollY: 300,
+      // pageLength: 100,
+      // lengthChange: false,
+      paging: false,
+      responsive: true,
+      /* dom: '<"html5buttons"B>lTfgitp',
+      buttons: [
+        {extend: 'excel', title: 'ExcelListaSeccion'},
+        {extend: 'pdf', title: 'PDFListaSeccion'}
+
+        {extend: 'print',
+          customize: function (win){
+            $(win.document.body).addClass('white-bg');
+            $(win.document.body).css('font-size', '10px');
+
+            $(win.document.body).find('table')
+              .addClass('compact')
+              .css('font-size', 'inherit');
+        }
+        } 
+      ], */
+      language: 
+        {
+          "sProcessing":     "Procesando...",
+          "sLengthMenu":     "Mostrar _MENU_ registros",
+          "sZeroRecords":    "No se encontraron resultados",
+          "sEmptyTable":     "Ningún dato disponible en esta tabla",
+          "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+          "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+          "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+          "sInfoPostFix":    "",
+          "sSearch":         "Buscar:",
+          "sUrl":            "",
+          "sInfoThousands":  ",",
+          "sLoadingRecords": "Cargando...",
+          "oPaginate": {
+            "sFirst":    "Primero",
+            "sLast":     "Último",
+            "sNext":     "Siguiente",
+            "sPrevious": "Anterior"
+          },
+          "oAria": {
+            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+          }
+        },
+
+        initComplete: function () {
+            this.api().columns(0).every( function () {
+                var column = this;
+                var select = $('<select style="width: 220px;" class="form-control form-control-sm float-left"><option value="">Filtrar Escuela</option></select>')
+                    .insertBefore( $('#dataTableCat_filter').parent().parent() )
+                    .on( 'change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+ 
+                        column
+                            .search( val ? '^'+val+'$' : '', true, false )
+                            .draw();
+                    } );
+ 
+                column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                } );
+            } );
+        }
+
+    });
+  } );
+

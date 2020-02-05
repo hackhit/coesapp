@@ -72,6 +72,25 @@ class ApplicationController < ActionController::Base
 		end
 	end
 
+	def filtro_autorizado_inscribir
+		if !(current_usuario and current_usuario.restringidas.where(accion: :all).any?)
+			flash[:danger] = "No posee los privilegios para inscribir"
+			redirect_to index2_secciones_path
+		end
+	end
+
+	def filtro_autorizado
+		funcion = Restringida.where(controlador: controller_name, accion: action_name).first
+		if current_usuario and funcion and !(Autorizada.where(usuario_id: current_usuario.id, restringida_id: funcion.id).any?)
+			flash[:danger] = "No posee los privilegios para ejecutar la acción solicitada"
+			redirect_to index2_secciones_path
+		end
+	end
+
+
+	# def filtro_autorizado
+
+	# end
 
 	def inicial_current_periodo
 		escuela = current_escuela

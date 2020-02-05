@@ -1,0 +1,13 @@
+- model_class = Restringida
+.page-header
+  %h1=t '.title', default: model_class.model_name.human.titleize
+.fieldset
+  %dl
+    %dt.label.label-default= model_class.human_attribute_name(:acceso_total)
+    %dd
+      %pre.prettyprint= @restringida.acceso_total
+
+.form-group
+  = link_to 'Regresar', restringidas_path, class: 'btn btn-default'
+  = link_to t('.edit', default: t("helpers.links.edit")), edit_restringida_path(@restringida), class: 'btn btn-default'
+  = link_to t('.destroy', default: t("helpers.links.destroy")), restringida_path(@restringida), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger'

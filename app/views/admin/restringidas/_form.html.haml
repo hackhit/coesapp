@@ -1,0 +1,28 @@
+= form_for @restringida, html: { class: 'form-horizontal' } do |f|
+  .form-group.row
+    = f.label :controlador, class: 'control-label col-md-2 text-right'
+    .col-md-10
+      =# f.text_field :controlador, class: 'form-control', autofocus: true, required: true
+
+      = f.select(:controlador, @controladores.sort, { include_blank: 'Selecciona Controlador...'}, {class: "form-control", requerido: true})
+
+  .form-group.row
+    = f.label :accion, class: 'control-label col-md-2 text-right', value: 'Acción'
+    .col-md-10
+      = f.text_field :accion, class: 'form-control', required: true
+  .form-group.row
+    = f.label :grupo, class: 'control-label col-md-2 text-right'
+    .col-md-10
+
+      = f.select(:grupo, Restringida.grupos.keys.sort, { include_blank: 'Selecciona Grupo...'}, {class: "form-control", requerido: true})
+
+  .form-group.row
+    
+    = f.label :nombre_publico, class: 'control-label col-md-2 text-right', value: 'Nombre Público'
+    .col-md-10
+      = f.text_field :nombre_publico, class: 'form-control', required: true
+
+  .form-group
+    .col-md-offset-2.col-md-10
+      = f.submit nil, class: 'btn btn-primary'
+      =# link_to t('.cancel', default: t("helpers.links.cancel")), restringida_path, class: 'btn btn-default'

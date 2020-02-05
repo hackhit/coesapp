@@ -109,11 +109,14 @@
     - if current_admin.mas_altos? and @administrador
       - activeTab = (session[:usuarioTypeTab].eql? 'administrador') ? 'active' : ''  
       .tab-pane#administrador.border.p-3.border-top-0{class: activeTab}
-        %h6.alert.alert-info.pb-ms-3
-          = @administrador.descripcion
-          - if current_admin.maestros?
-            = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'setAdmin'
-            = render '/admin/usuarios/set_administrador'
+        .row
+          .col-6
+            %h6.alert.alert-info.pb-ms-3
+              = @administrador.descripcion
+              - if current_admin.maestros?
+                = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'setAdmin'
+                = render '/admin/usuarios/set_administrador'
+          .col-6= render '/admin/autorizadas/show'
 
 
 

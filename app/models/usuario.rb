@@ -17,6 +17,9 @@ class Usuario < ApplicationRecord
 	has_one :estudiante
 	has_one :profesor
 
+	has_many :autorizadas
+	has_many :restringidas, through: :autorizadas
+
 	has_many :bitacoras
 	accepts_nested_attributes_for :bitacoras
 
