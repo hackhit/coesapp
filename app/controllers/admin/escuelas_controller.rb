@@ -2,8 +2,11 @@ module Admin
   class EscuelasController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_super_admin!, except: [:destroy, :periodos]
-    before_action :filtro_ninja!, only: [:destroy]
+    # before_action :filtro_ninja!, only: [:destroy]
+    befores_action :filtro_administrador
+    before_action :filtro_super_admin!, only: [:set_inscripcion_abierta, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
+
+    before_action :filtro_autorizado, except: [:new, :edit, :periodos, :set_inscripcion_abierta, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
 
     before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta, :clonar_programacion, :limpiar_programacion, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
 
@@ -170,9 +173,23 @@ module Admin
     # DELETE /escuelas/1
     # DELETE /escuelas/1.json
     def destroy
-      @escuela.destroy
+
+      if @escuela.periodos.any?
+        flash[:danger] = "No es posible eliminar la escuela, se encuentra asociada a un total de #{@escuela.periodos.count} peridos. Elmine dicha relación e inténtelo de nuevo."
+      elsif @escuela.grados.any?
+        flash[:danger] = "No es posible eliminar la escuela, hay #{@escuela.grados.count} estudiante(s) inscrito(s) en ella. Por favor elimínelo(s) e inténtelo de nuevo."
+      elsif @escuela.asignaturas.any?
+        flash[:danger] = "No es posible eliminar la escuela, hay #{@escuela.asignaturas.count} asignaturas registradas en ella. Por favor elimínela(s) e inténtelo de nuevo."
+      elsif @escuela.secciones.any?
+        flash[:danger] = "No es posible eliminar la escuela, hay #{@escuela.secciones.count} secciones registradas en ella. Por favor elimínela(s) e inténtelo de nuevo."
+      elsif @escuela.departamentos.any?
+        flash[:danger] = "No es posible eliminar la escuela, hay #{@escuela.departamentos.count} departamentos registrados en ella. Por favor elimínelo(s) e inténtelo de nuevo."
+      else
+        info_bitacora_crud Bitacora::ELIMINACION, @escuela 
+        @escuela.destroy
+      end
+
       respond_to do |format|
-        info_bitacora_crud Bitacora::ELIMINACION, @escuela
         format.html { redirect_to escuelas_url, notice: 'Escuela eliminada satisfactoriamente.' }
         format.json { head :no_content }
       end

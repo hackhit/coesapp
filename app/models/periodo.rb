@@ -27,6 +27,7 @@ class Periodo < ApplicationRecord
     validates :inicia, presence: true#, uniqueness: true
 
 	# FUNCIONES:
+
 	def inscripciones
 		inscripcionsecciones
 	end

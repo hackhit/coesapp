@@ -5,6 +5,9 @@ module Admin
     #before_action :filtro_admin_mas_altos!, except: [:destroy]
     #before_action :filtro_ninja!, only: [:destroy]
 
+    before_action :filtro_administrador
+    before_action :filtro_autorizado, except: [:new, :edit]
+
     before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa, :set_pci]
 
     def set_activa
@@ -137,6 +140,14 @@ module Admin
     # DELETE /asignaturas/1
     # DELETE /asignaturas/1.json
     def destroy
+
+      if @asignatura.inscripcionsecciones.any?
+        flash[:danger] = "El asignatura posee estudiantes inscritos. Por favor elimínelos e inténtelo nuevamente."
+      else
+        info_bitacora_crud Bitacora::ELIMINACION, @asignatura
+        @asignatura.destroy
+      end
+
       @asignatura.destroy
       info_bitacora_crud Bitacora::ELIMINACION, @asignatura
       respond_to do |format|

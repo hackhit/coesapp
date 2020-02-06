@@ -1,6 +1,6 @@
 class Restringida < ApplicationRecord
-	GRUPOS = %w(Generales Inscripciones Calificaciones Horarios Usuarios Estructurales)
-
+	GRUPOS = %w(Generales Estructurales Informacionales Inscripciones Importaciones Usuarios Calificaciones Programaciones)
+			#    0              1              2             3             4            5           6            7
 	has_many :autorizadas, dependent: :delete_all
 	has_many :usuarios, through: :autorizadas
 

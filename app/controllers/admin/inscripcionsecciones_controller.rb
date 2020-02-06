@@ -8,7 +8,7 @@ module Admin
 		# before_action :filtro_autorizado, except: [:index, :buscar_estudiante, :seleccionar, :inscribir, :resumen]
 		# before_action :filtro_autorizado_inscribir, only: [:buscar_estudiante, :seleccionar, :inscribir, :resumen]
 
-		before_action :filtro_autorizado, except: [:index]
+		before_action :filtro_autorizado#, except: [:index]
 		before_action :set_inscripcionseccion, only: [:cambiar_seccion]
 
 		# def set_pci
@@ -136,10 +136,7 @@ module Admin
 				}
 
 				format.json {render json: inscripcion.save, status: :ok}
-
-
 			end
-
 		end
 		
 		def buscar_estudiante
@@ -176,10 +173,8 @@ module Admin
 
 				aux = current_periodo.escuelas.merge @estudiante.escuelas
 				@creditLimits = 31 if aux.ids.include? 'COMU'
-				@creditLimits *= aux.count
-				
+				@creditLimits *= aux.count	
 			end
-
 		end
 
 		def inscribir

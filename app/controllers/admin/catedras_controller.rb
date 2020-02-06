@@ -2,8 +2,10 @@ module Admin
   class CatedrasController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_admin_mas_altos!, except: [:destroy]
-    before_action :filtro_ninja!, only: [:destroy]
+    # before_action :filtro_admin_mas_altos!, except: [:destroy]
+    # before_action :filtro_ninja!, only: [:destroy]
+    before_action :filrto_administrador
+    before_action :filtro_autorizado, except: [:new, :edit]
 
     before_action :set_catedra, only: [:show, :edit, :update, :destroy]
 
@@ -67,8 +69,14 @@ module Admin
     # DELETE /catedras/1
     # DELETE /catedras/1.json
     def destroy
-      info_bitacora_crud Bitacora::ELIMINACION, @catedra
-      @catedra.destroy
+
+      if @catedra.inscripcionsecciones.any?
+        flash[:danger] = "La cátedra posee estudiantes inscritos. Por favor elimínelos e inténtelo nuevamente."
+      else
+        info_bitacora_crud Bitacora::ELIMINACION, @catedra
+        @catedra.destroy
+      end
+
       respond_to do |format|
         format.html { redirect_to catedras_url, notice: 'Catedra eliminada.' }
         format.json { head :no_content }

@@ -1,5 +1,7 @@
 module Admin
   class RestringidasController < ApplicationController
+    before_action :filtro_logueado
+    before_action :filtro_admin_altos!
     before_action :set_restringida, only: [:show, :edit, :update, :destroy]
 
     # GET /restringidas

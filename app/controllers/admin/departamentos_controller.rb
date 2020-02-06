@@ -3,8 +3,8 @@ module Admin
     # Privilegios
 
     before_action :filtro_logueado
-    before_action :filtro_admin_mas_altos!, except: [:destroy]
-    before_action :filtro_ninja!, only: [:destroy]
+    before_action :filtro_administrador
+    before_action :filtro_autorizado, except: [:new, :edit]
 
     before_action :set_departamento, only: [:show, :edit, :update, :destroy]
 
@@ -70,8 +70,12 @@ module Admin
     # DELETE /departamentos/1
     # DELETE /departamentos/1.json
     def destroy
-      info_bitacora_crud Bitacora::ELIMINACION, @departamento
-      @departamento.destroy
+      if @departamento.inscripcionsecciones.any?
+        flash[:danger] = "El departamento posee estudiantes inscritos. Por favor elimínelos e inténtelo nuevamente."
+      else
+        info_bitacora_crud Bitacora::ELIMINACION, @departamento
+        @departamento.destroy
+      end
       respond_to do |format|
         format.html { redirect_to departamentos_url, notice: 'Departamento eliminado satisfactoriamente.' }
         format.json { head :no_content }

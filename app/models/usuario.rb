@@ -46,6 +46,18 @@ class Usuario < ApplicationRecord
 	# }
 
 	# FUNCIONES:
+	def autorizado? *args 
+
+		if administrador and administrador.maestros?
+			true
+		else
+			if args[1]
+				restringidas.where(controlador: args[0], accion: args[1]).any?
+			else
+				autorizadas.where(restringida_id: args[0]).any?
+			end
+		end
+	end
 
     def self.naciones
       require 'json'

@@ -23,7 +23,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :autorizadas, only: :index
+    resources :autorizadas, only: :index do 
+      member do
+        post 'set'
+      end
+    end
 
     resources :grados, only: :index do
       member do

@@ -5,5 +5,5 @@
 	
 	= raw (@titulo ? @titulo : action_name.titleize)
 
-	- if current_admin and current_admin.mas_altos?
+	- if current_admin and current_admin.autorizado? 'inscripcionsecciones', 'inscribir' 
 		= simple_toggle buscar_estudiante_inscripcionsecciones_path, '', 'Inscribir Estudiante', 'success float-left ml-md-1', 'education'

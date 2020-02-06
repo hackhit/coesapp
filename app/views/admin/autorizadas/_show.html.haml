@@ -1,5 +1,5 @@
 .border.p-3
-	%h5.alert.alert-info.titulo.text-center PROCESOS DE ACCESSO RESTRINGIDO
+	%h5.alert.alert-danger.titulo.text-center PROCESOS DE ACCESSO RESTRINGIDO
 	- Restringida::GRUPOS.each do |gr| 
 		- restringidas = Restringida.where(grupo: gr).order([controlador: :desc, accion: :desc])
 		- if restringidas.any?
@@ -8,11 +8,12 @@
 				%tboby
 					- restringidas.each do |rest| 
 						%tr
-							%td= rest.nombre_publico
+							%td= "#{rest.nombre_publico} (#{rest.controlador})"
 
 							%td{style: 'width:20%'}
 								.onoffswitch
-									= check_box nil, :activa, checked: rest.usuarios.where(ci:@usuario.id).any?, class: 'onoffswitch-checkbox', id: "switch#{rest.id}", onChange: "switches('#{restringida_path(rest.id)}')"
+									- autorizado = @usuario.autorizado?(rest.id)
+									= check_box nil, :activa, checked: autorizado, class: 'onoffswitch-checkbox', id: "switch#{rest.id}", onChange: "switches('#{set_autorizada_path(rest.id)}?usuario_id=#{@usuario.id}')"
 									%label.onoffswitch-label{for: "switch#{rest.id}"}
 										%span.onoffswitch-inner
 										%span.onoffswitch-switch

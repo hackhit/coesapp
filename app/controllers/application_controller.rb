@@ -80,10 +80,13 @@ class ApplicationController < ActionController::Base
 	end
 
 	def filtro_autorizado
-		funcion = Restringida.where(controlador: controller_name, accion: action_name).first
-		if current_usuario and funcion and !(Autorizada.where(usuario_id: current_usuario.id, restringida_id: funcion.id).any?)
-			flash[:danger] = "No posee los privilegios para ejecutar la acción solicitada"
-			redirect_to index2_secciones_path
+		# funcion = Restringida.where(controlador: controller_name, accion: action_name).first
+		if current_usuario and (current_admin and !current_admin.maestros?) and not(current_usuario.autorizado?(controller_name, action_name))
+			flash[:danger] = 'No posee los privilegios para ejecutar la acción solicitada'
+			respond_to do |format|
+				format.html {redirect_back fallback_location: index2_secciones_path}
+				format.json {render json: 'No posee los privilegios para ejecutar la acción solicitada', status: :unprocessable_entity }
+			end
 		end
 	end
 

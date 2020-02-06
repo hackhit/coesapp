@@ -230,11 +230,11 @@ module Admin
       end
     end
 
-    def importar_secciones
-      data = File.readlines("AlemIV.rtf") #read file into array
-      data.map! {|line| line.gsub(/world/, "ruby")} #invoke on each line gsub
-      File.open("test2.txt", "a") {|f| f.puts "Nueva Linea: #{data}"} #output data to other file
-    end
+    # def importar_secciones
+    #   data = File.readlines("AlemIV.rtf") #read file into array
+    #   data.map! {|line| line.gsub(/world/, "ruby")} #invoke on each line gsub
+    #   File.open("test2.txt", "a") {|f| f.puts "Nueva Linea: #{data}"} #output data to other file
+    # end
 
     def calificar
       @estudiantes = params[:est]
@@ -450,8 +450,12 @@ module Admin
     # DELETE /secciones/1
     # DELETE /secciones/1.json
     def destroy
-      info_bitacora_crud Bitacora::ELIMINACION, @seccion
-      @seccion.destroy
+      if @seccion.inscripcionsecciones.any?
+        flash[:danger] = 'No se puede eliminar la sección. Posee Estudiantes inscritos.'
+      else
+        info_bitacora_crud Bitacora::ELIMINACION, @seccion
+        @seccion.destroy
+      end
       respond_to do |format|
       
         format.html { redirect_back fallback_location: index2_secciones_path, notice: 'Seccion Eliminada.' }

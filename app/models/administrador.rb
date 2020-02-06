@@ -23,6 +23,10 @@ class Administrador < ApplicationRecord
 	validates :departamento_id,  presence: true, if: -> {self.admin_departamento?}
 	validates :escuela_id,  presence: true, if: -> {self.admin_escuela?}
 
+	def autorizado? *args
+		usuario.autorizado? *args
+	end
+
 	def pertenece_a_escuela
 		if self.escuela
 			return self.escuela

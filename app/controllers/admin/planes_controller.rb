@@ -2,8 +2,11 @@ module Admin
   class PlanesController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_admin_mas_altos!, except: [:destroy]
-    before_action :filtro_ninja!, only: [:destroy]
+
+    before_action :filtro_administrador
+    before_action :filtro_autorizado, except: [:new, :edit]
+    # before_action :filtro_admin_mas_altos!, except: [:destroy]
+    # before_action :filtro_ninja!, only: [:destroy]
 
     before_action :set_plan, only: [:show, :edit, :update, :destroy]
 

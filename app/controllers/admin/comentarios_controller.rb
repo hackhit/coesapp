@@ -1,18 +1,16 @@
 module Admin
   class ComentariosController < ApplicationController
     before_action :set_comentario, only: [:show, :edit, :update, :destroy, :habilitar]
-    before_action :filtro_super_admin!
+    before_action :filtro_administrador
+
+    before_action :filtro_autorizado, except: [:new, :edit]
     # GET /comentarios
     # GET /comentarios.json
 
     def habilitar
-
       @comentario.habilitado = !@comentario.habilitado
       @comentario.save
-
     end
-
-
 
     def index
       @comentarios = Comentario.order('updated_at DESC').limit(70)
@@ -54,7 +52,6 @@ module Admin
     # PATCH/PUT /comentarios/1
     # PATCH/PUT /comentarios/1.json
     def update
-
       respond_to do |format|
         if @comentario.update(comentario_params)
           format.html { redirect_to @comentario, notice: 'Comentario actualizado con éxito.' }
