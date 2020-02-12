@@ -8,7 +8,8 @@ class Seccion < ApplicationRecord
 	has_one :departamento, through: :asignatura
 	has_one :escuela, through: :departamento
 
-	has_many :bitacoras, dependent: :delete_all
+	# En realdiad esta relación no es posible porque no existe una relación directa con la clase bitacoras. Es parte del diseño de polimorfismo de clases (Bitacorables) porque el campo id_objeto no está asociado explicitamente a una sección sino a cualquier clase.
+	has_many :bitacoras#, dependent: :delete_all # Sí se coloca esta dependencia al eliminar se genera un error
 
 	has_one :horario, dependent: :delete
 	accepts_nested_attributes_for :horario
