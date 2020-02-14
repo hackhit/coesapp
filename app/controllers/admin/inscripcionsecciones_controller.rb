@@ -8,7 +8,7 @@ module Admin
 		# before_action :filtro_autorizado, except: [:index, :buscar_estudiante, :seleccionar, :inscribir, :resumen]
 		# before_action :filtro_autorizado_inscribir, only: [:buscar_estudiante, :seleccionar, :inscribir, :resumen]
 
-		before_action :filtro_autorizado#, except: [:index]
+		before_action :filtro_autorizado#, except: [:buscar_estudiante, :seleccionar, :resumen]
 		before_action :set_inscripcionseccion, only: [:cambiar_seccion]
 
 		# def set_pci

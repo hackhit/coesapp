@@ -4,7 +4,7 @@ module Admin
 
     before_action :filtro_logueado
     before_action :filtro_administrador
-    before_action :filtro_autorizado, except: [:new, :edit]
+    before_action :filtro_autorizado#, except: [:new, :edit]
 
     before_action :set_departamento, only: [:show, :edit, :update, :destroy]
 

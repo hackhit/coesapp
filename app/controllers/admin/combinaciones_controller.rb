@@ -2,7 +2,8 @@ module Admin
   class CombinacionesController < ApplicationController
     before_action :filtro_logueado
     before_action :filtro_administrador
-
+    
+    before_action :filtro_autorizado#, only: [:create, :destroy]
     before_action :set_combinacion, only: [:show, :edit, :update, :destroy]
 
     def index

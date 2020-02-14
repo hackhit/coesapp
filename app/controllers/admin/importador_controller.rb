@@ -1,7 +1,7 @@
 module Admin
 	class ImportadorController < ApplicationController
 		before_action :filtro_administrador
-		berore_action :filtro_autorizado, only: [:importar_seccion, :importar_profesores, :importar_estudiantes]
+		berore_action :filtro_autorizado#, only: [:importar_seccion, :importar_profesores, :importar_estudiantes]
 
 		def index
 			@titulo = "Importador"

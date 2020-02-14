@@ -16,7 +16,9 @@
       select.innerHTML = ""
 
       if(id!= ""){
-        $.get(`/coesapp/escuelas/${id}/periodos?periodo_actual_id=#{@current_periodo.id}`, function(data){
+
+      
+        $.get(`${getHost()}/escuelas/${id}/periodos?periodo_actual_id=#{@current_periodo.id}`, function(data){
 
           // Add options
           for (var i in data.ids) {

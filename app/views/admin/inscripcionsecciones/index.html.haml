@@ -1,10 +1,3 @@
-
-= link_to "#{inscritos_escuela_periodo_descargar_path(params[:periodo_id])}?escuela_id=#{@escuela.id}", class: 'btn btn-sm btn-outline-success float-right ml-2', target: "_blank" do
-	= glyph 'download-alt'
-	= glyph 'file'
-	X Descargar
-
-
 %table#dataTable.table.table-sm
 	%thead
 		%tr
@@ -27,8 +20,8 @@
 				%td= ins.apellidos
 				%td= ins.nombres
 				%td= est.escuelas.ids.to_sentence
-				- hplan = est.historialplanes.joins(:plan).where("planes.escuela_id = ?", @escuela.id).order('periodo_id DESC').first#.plan_id
-				-# hplan = est.ultimo_plan_de_escuela(@escuela.id)
+				- hplan = est.historialplanes.joins(:plan).where("planes.escuela_id = ?", @escupe.escuela_id).order('periodo_id DESC').first#.plan_id
+				-# hplan = est.ultimo_plan_de_escuela(@escupe.escuela_id)
 				%td= hplan ? hplan.plan_id : "--"
 				%td= ins.asignaturas
 				%td= ins.total_creditos
@@ -47,8 +40,8 @@
 			paging: false,
 			dom: '<"html5buttons"B>lTfgitp',
 			buttons: [
-				{extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `Inscripciones-#{current_periodo.id}-#{@escuela.id}`, className: 'btn btn-sm btn-outline-info'},
-				{extend: 'pdf', text: "<span class='glyphicon glyphicon-download'></span> PDF", title: `PDF-Inscripciones-#{current_periodo.id}-#{@escuela.id}`, className: 'btn btn-sm btn-outline-info'} 
+				{extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `Inscripciones-#{current_periodo.id}-#{@escupe.escuela_id}`, className: 'btn btn-sm btn-outline-info'},
+				{extend: 'pdf', text: "<span class='glyphicon glyphicon-download'></span> PDF", title: `PDF-Inscripciones-#{current_periodo.id}-#{@escupe.escuela_id}`, className: 'btn btn-sm btn-outline-info'} 
 			],
 			language: 
 				{

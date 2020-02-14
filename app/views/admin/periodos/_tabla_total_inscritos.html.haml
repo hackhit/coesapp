@@ -29,10 +29,12 @@
                     = plan.id.upcase
 
             - if val > 0
-              = link_to "#{inscripcionsecciones_path}?periodo_id=#{periodo.id}&escuela_id=#{e.id}", class: 'link' do 
-                = glyph 'download'
-                = val
 
+              =# link_to "#{inscripcionsecciones_path}?periodo_id=#{periodo.id}&escuela_id=#{e.id}", class: 'link' do 
+              - if escupe = Escuelaperiodo.where(escuela_id: e.id, periodo_id: periodo.id).first
+                = link_to escuelaperiodo_path(escupe.id), class: 'link' do 
+                  = glyph 'download'
+                  = val
         - if current_admin.maestros?
           %td
             = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do

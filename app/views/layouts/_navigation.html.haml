@@ -18,42 +18,40 @@
               .dropdown-item.text-info= current_periodo.id
               - if current_admin
                 = link_to 'Periodos', periodos_path, class: 'dropdown-item'
-              - if current_admin.maestros?
-                = link_to 'Escuelas', escuelas_path, class: 'dropdown-item'
-                = link_to 'Noticias', comentarios_path, class: 'dropdown-item'
-              = link_to 'Cartelera', carteleras_path, class: 'dropdown-item'
-              - if current_admin.mas_altos?
-                = link_to 'Planes', planes_path, class: 'dropdown-item'
-                = link_to 'Departamentos', departamentos_path, class: 'dropdown-item'
-                = link_to 'Cátedras', catedras_path, class: 'dropdown-item'
-                = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item'
+                = link_to 'Escuelas', escuelas_path, class: 'dropdown-item' if (current_admin.autorizado? 'Escuelas', 'index')
+                = link_to 'Noticias', comentarios_path, class: 'dropdown-item' if (current_admin.autorizado? 'Noticias', 'index')
+                = link_to 'Cartelera', carteleras_path, class: 'dropdown-item' if (current_admin.autorizado? 'Carteleras', 'index')
+                = link_to 'Planes', planes_path, class: 'dropdown-item' if (current_admin.autorizado? 'Planes', 'index')
+                = link_to 'Departamentos', departamentos_path, class: 'dropdown-item' if (current_admin.autorizado? 'Departamentos', 'index')
+                = link_to 'Cátedras', catedras_path, class: 'dropdown-item' if (current_admin.autorizado? 'Catedras', 'index')
+                = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item' if (current_admin.autorizado? 'Importaciones', 'index')
+                = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item' if (current_admin.autorizado? 'Asignaturas', 'index') and (current_admin.escuelas.count.eql? 1)
 
-              - if current_admin.escuelas.count.eql? 1
-                = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item'
-
-          - if current_admin.escuelas.count > 1
+          - if (current_admin.autorizado? 'Asignaturas', 'index') and (current_admin.escuelas.count > 1)
             %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'asignaturas'}"}  
               %a.nav-link.dropdown-toggle#Reportes{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
                 Asignaturas
               .dropdown-menu{"aria-labelledby" => "Asignaturas"}
                 - current_admin.escuelas.joins(:escuelaperiodos).where('escuelaperiodos.periodo_id = ?', current_periodo.id).each do |esc| 
                   = link_to "Asignaturas de #{esc.descripcion}", "#{asignaturas_path}?escuela_id=#{esc.id}", class: 'dropdown-item'
-          %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'secciones'}"}  
-            %a.nav-link.dropdown-toggle#Reportes{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
-              Reportes
-            .dropdown-menu{"aria-labelledby" => "Reportes"}
-              = link_to 'Reporte PIC', secciones_path, class: 'dropdown-item'
-              = link_to 'Citas Horarias', citas_horarias_grados_path, class: 'dropdown-item'
-              = link_to 'Tipos de Estudiante', index_nuevos_grados_path, class: 'dropdown-item'
-          - if current_admin.altos?
+          - if (current_admin.autorizado? 'Secciones', 'index') or (current_admin.autorizado? 'Grados', 'citas_horarias') or (current_admin.autorizado? 'Grados', 'index_nuevos') 
+            %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'secciones'}"}  
+              %a.nav-link.dropdown-toggle#Reportes{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
+                Reportes
+              .dropdown-menu{"aria-labelledby" => "Reportes"}
+                = link_to 'Reporte PIC', secciones_path, class: 'dropdown-item' if (current_admin.autorizado? 'Secciones', 'index')
+                = link_to 'Citas Horarias', citas_horarias_grados_path, class: 'dropdown-item' if (current_admin.autorizado? 'Grados', 'citas_horarias')
+                = link_to 'Tipos de Estudiante', index_nuevos_grados_path, class: 'dropdown-item' if (current_admin.autorizado? 'Grados', 'index_nuevos')
+
+          - if (current_admin.autorizado? 'Usuarios', 'create') and (current_admin.autorizado? 'Usuarios', 'set_estudiante') or (current_admin.autorizado? 'Usuarios', 'set_profesor')
             %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}
               %a.nav-link.dropdown-toggle#usuarioDropdown{"aria-expanded": false, "aria-haspopup": true, "data-toggle": :dropdown, href: "#", role: :button}
                 Usuarios
                 - if controller_name.eql? 'usuarios'
                   %span.sr-only (current)
               .dropdown-menu{"aria-labelledby" => "usuarioDropdown"}
-                = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item'
-                = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item'
+                = link_to 'Registrar Profesor', "#{new_usuario_path}?profesor=true", class: 'dropdown-item' if (current_admin.autorizado? 'Usuarios', 'set_profesor')
+                = link_to 'Registrar Estudiante', "#{new_usuario_path}?estudiante=true", class: 'dropdown-item' if (current_admin.autorizado? 'Usuarios', 'set_estudiante')
                 - if current_admin.maestros?
                   = link_to 'Registrar Administrador', "#{new_usuario_path}?administrador=true", class: 'dropdown-item'
         - if current_admin

@@ -1,0 +1,6 @@
+= link_to "#{inscritos_escuela_periodo_descargar_path(@escupe.periodo_id)}?escuela_id=#{@escupe.escuela_id}", class: 'btn btn-sm btn-outline-success float-right ml-2', target: "_blank" do
+	= glyph 'download-alt'
+	= glyph 'file'
+	X Descargar
+
+= render file: '/admin/inscripcionsecciones/index' 

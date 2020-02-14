@@ -72,16 +72,11 @@ class ApplicationController < ActionController::Base
 		end
 	end
 
-	def filtro_autorizado_inscribir
-		if !(current_usuario and current_usuario.restringidas.where(accion: :all).any?)
-			flash[:danger] = "No posee los privilegios para inscribir"
-			redirect_to index2_secciones_path
-		end
-	end
-
 	def filtro_autorizado
-		# funcion = Restringida.where(controlador: controller_name, accion: action_name).first
-		if current_usuario and (current_admin and !current_admin.maestros?) and not(current_usuario.autorizado?(controller_name, action_name))
+		accion = (action_name.eql? 'show') ? 'index' : action_name
+		funcion = Restringida.where(controlador: controller_name, accion: accion).first
+
+		if funcion and current_usuario and (current_admin and !current_admin.maestros?) and not(current_usuario.autorizado?(controller_name, accion))
 			flash[:danger] = 'No posee los privilegios para ejecutar la acción solicitada'
 			respond_to do |format|
 				format.html {redirect_back fallback_location: index2_secciones_path}

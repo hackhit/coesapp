@@ -3,7 +3,7 @@ module Admin
     before_action :set_comentario, only: [:show, :edit, :update, :destroy, :habilitar]
     before_action :filtro_administrador
 
-    before_action :filtro_autorizado, except: [:new, :edit]
+    before_action :filtro_autorizado#, except: [:new, :edit]
     # GET /comentarios
     # GET /comentarios.json
 

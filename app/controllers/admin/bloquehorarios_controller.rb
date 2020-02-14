@@ -1,5 +1,6 @@
 module Admin
   class BloquehorariosController < ApplicationController
+    before_action :filtro_logueado
     before_action :set_bloquehorario, only: [:show, :edit, :update, :destroy]
 
     # GET /bloquehorarios

@@ -5,6 +5,8 @@ module Admin
 
     before_action :set_historialplan, only: [:show, :edit, :update, :destroy]
 
+    before_action :filtro_autorizado#, only: [:create, :update, :destroy]
+
     # GET /historialplan/1
     # GET /historialplan/1.json
     def show

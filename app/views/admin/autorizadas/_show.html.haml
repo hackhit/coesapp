@@ -1,73 +1,70 @@
 .border.p-3
-	%h5.alert.alert-danger.titulo.text-center PROCESOS DE ACCESSO RESTRINGIDO
-	#accordion
-		- Restringida::GRUPOS.each do |gr| 
-			- restringidas = Restringida.where(grupo: gr).order([controlador: :desc, accion: :desc])
-			- if restringidas.any?
+  %h5.alert.alert-danger.titulo.text-center PROCESOS DE ACCESSO RESTRINGIDO
+  #accordion
+    - Restringida::GRUPOS.each do |gr| 
+      - restringidas = Restringida.where(grupo: gr)
+      - if restringidas.any?
 
-				.card
-					.card-header{id: "heading#{gr}"}
-						%h5.mb-0
-							= link_to gr.titleize, "#collapse#{gr}", {"aria-controls": "collapse#{gr}", "aria-expanded": :false, "data-target": "#collapse#{gr}", "data-toggle": :collapse, class: "btn btn-link"}
-								
+        .card
+          .card-header{id: "heading#{gr}"}
+            %h5.mb-0
+              = link_to gr.titleize, "#collapse#{gr}", {"aria-controls": "collapse#{gr}", "aria-expanded": true, "data-target": "#collapse#{gr}", "data-toggle": :collapse, class: "btn btn-link"}   
+              .float-right
+                .onoffswitch
+                  - alguna = @usuario.restringidas.where(grupo: gr).any?
+                  = check_box nil, :activa, checked: alguna, class: 'onoffswitch-checkbox switches', id: "switch#{gr}", url: "#{set_autorizada_path(gr)}?usuario_id=#{@usuario.id}&grupo=true", grupo: "grupo#{gr}"
+                  %label.onoffswitch-label{for: "switch#{gr}"}
+                    %span.onoffswitch-inner
+                    %span.onoffswitch-switch
 
-							.float-right
+          .collapse{id: "collapse#{gr}", "aria-labelledby": "heading#{gr}", "data-parent": "#accordion"}
+            .card-body{style: 'max-height: 400px;overflow-y: scroll;'}
 
-								.onoffswitch
-									= # Buscar manera de validar si tiene o no todos los perimisos del grupo
-									- alguna = @usuario.restringidas.where(grupo: gr).any?
-									= check_box nil, :activa, checked: alguna, class: 'onoffswitch-checkbox switches', id: "switch#{gr}", url: "#{set_autorizada_path(gr)}?usuario_id=#{@usuario.id}&grupo=true", grupo: "grupo#{gr}"
-									%label.onoffswitch-label{for: "switch#{gr}"}
-										%span.onoffswitch-inner
-										%span.onoffswitch-switch
+              - controladores = restringidas.collect{|r| r.controlador}.uniq.sort
+              - controladores.each do |controlador| 
+                .border.mb-2
+                  - titulo = (controlador.eql? 'Grados') ? 'carrera' : controlador
+                  .titulo.text-center= titulo.upcase
+                  %table.table-striped.table-sm.table-hover.table-condensed.table-responsive-md.m-2{style: 'width: 98%'}
+                    %tboby
+                      - restringidas.where(controlador: controlador).order(nombre_publico: :asc).each do |rest| 
+                        %tr
+                          %td= "#{rest.nombre_publico}"
 
-					.collapse{id: "collapse#{gr}", "aria-labelledby": "heading#{gr}", "data-parent": "#accordion"}
-						.card-body
-
-							%table#dataTableCat.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3{style: 'width:100%'}
-								%tboby
-									- restringidas.each do |rest| 
-										%tr
-											%td= "#{rest.nombre_publico} (#{rest.controlador})"
-
-											%td{style: 'width:20%'}
-												.onoffswitch
-													- autorizado = @usuario.autorizado?(rest.id)
-													= check_box nil, :activa, checked: autorizado, class: "onoffswitch-checkbox grupo#{gr} switches", id: "switch#{rest.id}", url: "#{set_autorizada_path(rest.id)}?usuario_id=#{@usuario.id}"
-													%label.onoffswitch-label{for: "switch#{rest.id}"}
-														%span.onoffswitch-inner
-														%span.onoffswitch-switch
+                          %td{style: 'width:20%'}
+                            .onoffswitch
+                              - autorizado = @usuario.autorizado?(rest.id)
+                              = check_box nil, :activa, checked: autorizado, class: "onoffswitch-checkbox grupo#{gr} switches", id: "switch#{rest.id}", url: "#{set_autorizada_path(rest.id)}?usuario_id=#{@usuario.id}"
+                              %label.onoffswitch-label{for: "switch#{rest.id}"}
+                                %span.onoffswitch-inner
+                                %span.onoffswitch-switch
 
 :javascript
 
-	$('.switches').on('change', function(){
-		var obj = $(this);
-		var url = obj.attr('url');
-		var grupo = obj.attr('grupo');
-		if (grupo) $(`.${grupo}`).prop('checked', obj[0].checked)
-		switches(url+'&autorizar='+obj[0].checked)
-	})
+  $(document).ready(function() {
 
-	function toggleSwitches(url, controlador){
-		console.log($(this).val())
+    $('.switches').on('change', function(){
+      var obj = $(this);
+      var url = obj.attr('url');
+      var grupo = obj.attr('grupo');
+      if (grupo) $(`.${grupo}`).prop('checked', obj[0].checked)
+      switches(url+'&autorizar='+obj[0].checked)
+    })
 
-		$(`.${controlador}`).prop('checked', false)
-		// switches(url)
+    function switches(url){
+      $.ajax({
+        url: url,
+        type: 'POST',
+        dataType: 'json',
+        beforeSend: function() {
+        $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
+        },
+        complete: function(){$('#cargando').modal('hide')}      
+      });
+    }
 
-	}
+  } );
 
 
-	function switches(url){
-		$.ajax({
-			url: url,
-			type: 'POST',
-			dataType: 'json',
-			beforeSend: function() {
-			$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
-			},
-			complete: function(){$('#cargando').modal('hide')}			
-		});
-
-	}
 
 

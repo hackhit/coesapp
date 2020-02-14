@@ -6,7 +6,7 @@ module Admin
     #before_action :filtro_ninja!, only: [:destroy]
 
     before_action :filtro_administrador
-    before_action :filtro_autorizado, except: [:new, :edit]
+    before_action :filtro_autorizado#, except: [:new, :edit]
 
     before_action :set_asignatura, only: [:show, :edit, :update, :destroy, :set_activa, :set_pci]
 

@@ -3,6 +3,7 @@ module Admin
     # Privilegios
     before_action :filtro_logueado
     before_action :filtro_administrador
+    before_action :filtro_autorizado, only: [:agregar, :cambiar_inscripcion, :eliminar]
 
     def citas_horarias
       # Colocar un mensaje que si en el periodo actual no está dentro de los periodos de la escuela debe cambiarlos
@@ -62,8 +63,6 @@ module Admin
       else
         params[:grado]['inscrito_ucv'] = 0
       end
-      p params[:grado]['estado_inscripcion']
-      p params[:grado]
       grado = Grado.new(grado_params)
 
               
@@ -76,11 +75,11 @@ module Admin
         historialplan.grado = grado
         # historialplan.estudiante_id = @estudiante.id
         # historialplan.escuela_id = grado.escuela_id
-        flash[:success] = '¡Registro exitoso en escuela!'
+        flash[:success] = '¡Registro de Carrera en escuela generado con éxito!'
 
         if historialplan.save
           info_bitacora_crud Bitacora::CREACION, historialplan
-          flash[:success] = 'Carrera creada con éxito.' 
+          flash[:success] = '¡Plan de carrera creada con éxito!' 
         else
           flash[:error] = "Error al intentar guardar el historial del plan: #{historialplan.errors.full_messages.to_sentence}"
         end

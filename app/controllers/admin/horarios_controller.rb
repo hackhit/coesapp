@@ -3,6 +3,8 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_administrador, except: [:get_bloques]
     before_action :set_horario, only: [:show, :edit, :update, :destroy]
+    before_action :filtro_autorizado#, only: [:create, :update, :destroy]
+
 
     # GET /horarios
     # GET /horarios.json

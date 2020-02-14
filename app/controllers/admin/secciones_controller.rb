@@ -2,10 +2,15 @@ module Admin
   class SeccionesController < ApplicationController
     # Privilegios
     before_action :filtro_logueado
-    before_action :filtro_admin_profe, only: [:show]
-    before_action :filtro_admin_altos!, only: [:cambiar_capacidad, :agregar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion, :desasignar_profesor_secundario]
-    before_action :filtro_admin_mas_altos!, only: [:create, :new, :create, :update]
+    before_action :filtro_administrador, except: [:show]
+    before_action :filtro_admin_profe, only: :show
+
+    # before_action :filtro_admin_altos!, only: [:cambiar_capacidad, :agregar_profesor_secundario, :seleccionar_profesor, :cambiar_profe_seccion, :desasignar_profesor_secundario]
+    # before_action :filtro_admin_mas_altos!, only: [:create, :new, :create, :update]
+
     #before_action :filtro_ninja!, only: [:destroy, :index]
+
+    before_action :filtro_autorizado#, except: [:show, :get_tab_objects, :get_secciones, :index2, :new, :edit, :seleccionar_profesor]
 
     before_action :set_seccion, except: [:index, :index2, :get_secciones, :get_tab_objects, :new, :create, :habilitar_calificar, :get_profesores]
 
@@ -139,7 +144,8 @@ module Admin
     end
 
 
-    def index
+    def index #Reporte PIC
+
       @titulo = "Secciones del Periodo: #{current_periodo.id}"
       if escuela = current_admin.pertenece_a_escuela
         @secciones = escuela.secciones.joins(:asignatura).del_periodo(current_periodo.id).order('asignaturas.descripcion ASC')

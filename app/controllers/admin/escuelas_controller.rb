@@ -3,10 +3,10 @@ module Admin
     # Privilegios
     before_action :filtro_logueado
     # before_action :filtro_ninja!, only: [:destroy]
-    befores_action :filtro_administrador
+    before_action :filtro_administrador
     before_action :filtro_super_admin!, only: [:set_inscripcion_abierta, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
 
-    before_action :filtro_autorizado, except: [:new, :edit, :periodos, :set_inscripcion_abierta, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
+    before_action :filtro_autorizado#, except: [:new, :edit, :periodos, :set_inscripcion_abierta, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
 
     before_action :set_escuela, only: [:show, :edit, :update, :destroy, :periodos, :set_inscripcion_abierta, :clonar_programacion, :limpiar_programacion, :set_habilitar_retiro_asignaturas, :set_habilitar_cambio_seccion]
 

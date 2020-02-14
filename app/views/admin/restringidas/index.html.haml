@@ -1,13 +1,12 @@
 - model_class = Restringida
 
-%table.table.table-striped
+%table.dataTable.table.table-striped
   %thead
     %tr
 
       %th Controlador
       %th Acción
       %th Grupo
-      %th Acceso Libre
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @restringidas.each do |restringida|
@@ -15,7 +14,6 @@
         %td= restringida.controlador.camelize
         %td= restringida.accion
         %td= restringida.grupo.capitalize
-        %td= restringida.acceso_total
         %td
           = link_to restringida_path(restringida), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'
