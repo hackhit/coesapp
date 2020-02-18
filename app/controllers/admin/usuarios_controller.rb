@@ -412,9 +412,11 @@ module Admin
       def mismo_usuario?
         if action_name.eql? 'index'
           return true
-        else
+        elsif params[:id]
           @usuario = Usuario.find(params[:id])
           @usuario.id.eql? current_usuario.id
+        else
+          true
         end
       end
 
