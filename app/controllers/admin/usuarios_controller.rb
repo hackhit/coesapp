@@ -410,8 +410,12 @@ module Admin
     protected
 
       def mismo_usuario?
-        @usuario = Usuario.find(params[:id])
-        @usuario.id.eql? current_usuario.id
+        if action_name.eql? 'index'
+          return true
+        else
+          @usuario = Usuario.find(params[:id])
+          @usuario.id.eql? current_usuario.id
+        end
       end
 
     private
