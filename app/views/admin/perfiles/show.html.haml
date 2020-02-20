@@ -1,0 +1,9 @@
+%p#notice= notice
+
+%p
+  %b Nombre:
+  = @perfil.nombre
+
+= link_to 'Edit', edit_perfil_path(@perfil)
+\|
+= link_to 'Back', perfiles_path

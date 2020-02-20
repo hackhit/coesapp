@@ -190,7 +190,7 @@ module ApplicationHelper
 	end
 
 	def simple_icon_toggle_modal_edit title_tooltip, id_modal
-		simple_icon_toggle_modal title_tooltip, '', 'edit', id_modal
+		simple_icon_toggle_modal title_tooltip, '', 'pencil', id_modal
 	end
 
 	def simple_icon_toggle_modal title_tooltip, color_type, icon, id_modal

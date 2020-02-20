@@ -1,7 +1,7 @@
 module Admin
   class RestringidasController < ApplicationController
     before_action :filtro_logueado
-    before_action :filtro_admin_altos!
+    before_action :filtro_super_admin!
     before_action :set_restringida, only: [:show, :edit, :update, :destroy]
 
     # GET /restringidas
@@ -24,6 +24,7 @@ module Admin
     # GET /restringidas/1
     # GET /restringidas/1.json
     def show
+      @titulo = 'Detalle de la Función Restringida'
     end
 
     # GET /restringidas/new
@@ -87,7 +88,7 @@ module Admin
 
       # Never trust parameters from the scary internet, only allow the white list through.
       def restringida_params
-        params.require(:restringida).permit(:id, :acceso_total, :nombre_publico, :controlador, :accion, :grupo)
+        params.require(:restringida).permit(:id, :nombre_publico, :controlador, :accion, :grupo)
       end
   end
 end

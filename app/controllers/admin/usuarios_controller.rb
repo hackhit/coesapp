@@ -192,7 +192,7 @@ module Admin
       @estudiante = @usuario.estudiante
       @profesor = @usuario.profesor
       @administrador = @usuario.administrador
-
+      @perfil = Perfil.new if @administrador
       #@periodos = @estudiante.escuela.periodos.order("inicia DESC") if @estudiante
 
       if @estudiante

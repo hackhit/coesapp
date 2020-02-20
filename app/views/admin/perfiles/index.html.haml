@@ -1,0 +1,53 @@
+.border.border-right-0.p-3
+  %h6.titulo.text-center Perfiles
+  %table.table.table-sm
+    %tbody
+      - @perfiles.each do |perfil|
+        %tr.text-right
+          %td{style: 'border-top: 0px;'}
+            = link_to "#{perfil_path(perfil)}?usuario_id=#{@usuario.id}", method: :delete, data: { confirm: 'Está acción es irreversible ¿Está Seguro?' }, class: 'tooltip-btn btn btn-sm text-danger','data-toggle': :tooltip, 'data-placement': :left, title: 'Eliminar Perfil' do
+              = glyph 'trash'
+            = link_to 'javascript:void(0)', class: "tooltip-btn btn btn-sm editPerfil", 'data-placement': :left, title: 'Editar Perfil', id: perfil.id, data: {nombre: perfil.nombre, toggle: :tooltip} do
+              = glyph 'pencil'
+            %button.btn.btn-sm.btn-info.setPerfil{idsHijos: perfil.restringidas.ids}
+              = perfil.nombre
+              = "(#{perfil.restringidas.count})"
+              = glyph 'chevron-right'
+
+= render partial: '/admin/perfiles/form'
+
+:javascript
+
+  $(document).ready(function(){
+
+    $('.setPerfil').on('click', function(){
+      let arrIds = $(this)[0].attributes[1].value
+      arrIds = arrIds.substring(1, arrIds.length - 1).split(",")
+
+      $(`input:checked`).prop('checked', false)
+
+      $.each(arrIds, function(k,v){
+        $(`#switch${v.trim()}`).prop('checked', true)
+      });
+      
+    });
+    $('.editPerfil').on('click', function(){
+      let ident = $(this).prop('id');
+      let nombre = $(this)["0"].dataset["nombre"];
+      
+      $('#perfilForm').prop('action', `/perfiles/${ident}`); 
+
+      let formu = document.getElementById('perfilForm');
+      let metodo = document.createElement('input');
+    
+      metodo.setAttribute('name', '_method');
+      metodo.setAttribute('type', 'hidden');
+      metodo.setAttribute('value', 'patch');
+      metodo.setAttribute('id', 'patch');
+      formu.append(metodo);
+
+
+      $('#perfil_nombre').prop('value', nombre); 
+      $('#perfilModal').modal();
+    });
+  });

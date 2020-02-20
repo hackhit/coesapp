@@ -1,0 +1,24 @@
+
+
+.modal.fade{'aria-hidden': false, role: :dialog, id: "perfilModal"}
+  .modal-dialog
+    .modal-content
+      .alert.alert-info
+        %button.close{"aria-label": "Cerrar", data: {dismiss: :modal}, type: :button}
+          %span{"aria-hidden": true} ×      
+        %h4.text-center{id: "perfilTitle"}
+          Guardar Perfil de Procesos de Acceso Restringido
+          PARE
+      .modal-body.border.p-2
+
+        =# form_for @perfil, html: { class: 'form-horizontal', id: 'perfilForm' }, remote: true, data: {type: :json} do |f|
+        = form_for @perfil, html: { class: 'form-horizontal', id: 'perfilForm' } do |f|
+          .form-group
+            .col-md-12
+
+              = hidden_field_tag 'usuario_id', @usuario.id if @usuario
+              = f.text_field :nombre, class: 'text_field form-control', placeholder: 'Nombre del Perfil', required: true, maxlength: "30"
+
+          .modal-footer
+            %a.btn.btn-sm.btn-outline-light{data: {dismiss: :modal}, onclick: "$('#perfilForm > #patch').remove();"} Cancelar
+            = submit_tag 'Guardar', class: 'btn btn-outline-success btn-sm'

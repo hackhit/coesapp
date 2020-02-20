@@ -1,12 +1,17 @@
-- model_class = Restringida
-.page-header
-  %h1=t '.title', default: model_class.model_name.human.titleize
-.fieldset
-  %dl
-    %dt.label.label-default= model_class.human_attribute_name(:acceso_total)
-    %dd
-      %pre.prettyprint= @restringida.acceso_total
 
+.fieldset
+  %dl 
+    Controlador
+    %dt.label.label-default= @restringida.controlador
+  %dl 
+    Acción
+    %dt.label.label-default= @restringida.accion
+  %dl 
+    Nombre Públido
+    %dt.label.label-default= @restringida.nombre_publico
+  %dl 
+    Grupo
+    %dt.label.label-default= @restringida.grupo
 .form-group
   = link_to 'Regresar', restringidas_path, class: 'btn btn-default'
   = link_to t('.edit', default: t("helpers.links.edit")), edit_restringida_path(@restringida), class: 'btn btn-default'

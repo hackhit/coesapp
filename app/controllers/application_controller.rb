@@ -73,7 +73,8 @@ class ApplicationController < ActionController::Base
 	end
 
 	def filtro_autorizado
-		accion = (action_name.eql? 'show') ? 'index' : action_name
+
+		accion = (!(controller_name.eql? 'secciones') and (action_name.eql? 'show')) ? 'index' : action_name
 		funcion = Restringida.where(controlador: controller_name, accion: accion).first
 
 		if funcion and current_usuario and (current_admin and !current_admin.maestros?) and not(current_usuario.autorizado?(controller_name, accion))

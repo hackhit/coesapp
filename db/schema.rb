@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_29_191830) do
+ActiveRecord::Schema.define(version: 2020_02_18_213243) do
 
   create_table "administradores", primary_key: "usuario_id", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "rol", null: false
@@ -234,19 +234,6 @@ ActiveRecord::Schema.define(version: 2020_01_29_191830) do
     t.index ["seccion_id"], name: "index_horarios_on_seccion_id"
   end
 
-  create_table "inscripcionperiodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "periodo_id", null: false
-    t.string "estudiante_id", null: false
-    t.string "tipo_estado_inscripcion_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["estudiante_id", "periodo_id"], name: "index_inscripcionperiodos_on_estudiante_id_and_periodo_id", unique: true
-    t.index ["estudiante_id"], name: "index_inscripcionperiodos_on_estudiante_id"
-    t.index ["periodo_id", "estudiante_id"], name: "index_inscripcionperiodos_on_periodo_id_and_estudiante_id", unique: true
-    t.index ["periodo_id"], name: "index_inscripcionperiodos_on_periodo_id"
-    t.index ["tipo_estado_inscripcion_id"], name: "index_inscripcionperiodos_on_tipo_estado_inscripcion_id"
-  end
-
   create_table "inscripcionsecciones", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "seccion_id"
     t.string "estudiante_id"
@@ -333,6 +320,19 @@ ActiveRecord::Schema.define(version: 2020_01_29_191830) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_parametros_generales_on_id"
+  end
+
+  create_table "perfiles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "nombre"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "perfiles_restringidas", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "restringida_id", null: false
+    t.bigint "perfil_id", null: false
+    t.index ["perfil_id"], name: "perfiles_restringidas_perfile_id_fk"
+    t.index ["restringida_id", "perfil_id"], name: "index_perfiles_restringidas_on_restringida_id_and_perfil_id", unique: true
   end
 
   create_table "periodos", id: :string, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -496,9 +496,6 @@ ActiveRecord::Schema.define(version: 2020_01_29_191830) do
   add_foreign_key "historialplanes", "periodos", name: "historialplanes_ibfk_2", on_update: :cascade, on_delete: :cascade
   add_foreign_key "historialplanes", "planes", name: "historialplanes_ibfk_1", on_update: :cascade, on_delete: :cascade
   add_foreign_key "horarios", "secciones", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionperiodos", "estudiantes", primary_key: "usuario_id", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionperiodos", "periodos", on_update: :cascade, on_delete: :cascade
-  add_foreign_key "inscripcionperiodos", "tipo_estado_inscripciones", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones", "escuelas", column: "pci_escuela_id", name: "inscripcionsecciones_ibfk_1", on_update: :cascade, on_delete: :nullify
   add_foreign_key "inscripcionsecciones", "estudiantes", primary_key: "usuario_id", name: "inscripcionsecciones_ibfk_4", on_update: :cascade, on_delete: :cascade
   add_foreign_key "inscripcionsecciones", "secciones", name: "inscripcionsecciones_ibfk_6", on_update: :cascade, on_delete: :cascade
@@ -518,6 +515,8 @@ ActiveRecord::Schema.define(version: 2020_01_29_191830) do
   add_foreign_key "inscripcionsecciones_copy1", "tipo_estado_calificaciones", name: "inscripcionsecciones_copy1_ibfk_5", on_update: :cascade, on_delete: :nullify
   add_foreign_key "inscripcionsecciones_copy1", "tipo_estado_inscripciones", name: "inscripcionsecciones_copy1_ibfk_7", on_update: :cascade, on_delete: :nullify
   add_foreign_key "inscripcionsecciones_copy1", "tipoasignaturas", name: "inscripcionsecciones_copy1_ibfk_3", on_update: :cascade, on_delete: :nullify
+  add_foreign_key "perfiles_restringidas", "perfiles", name: "perfiles_restringidas_perfile_id_fk", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "perfiles_restringidas", "restringidas", name: "perfiles_restringidas_restringida_id_fk", on_update: :cascade, on_delete: :cascade
   add_foreign_key "planes", "escuelas", on_update: :cascade, on_delete: :cascade
   add_foreign_key "profesores", "departamentos", name: "profesores_ibfk_1", on_update: :cascade, on_delete: :nullify
   add_foreign_key "profesores", "usuarios", primary_key: "ci", name: "profesores_ibfk_2", on_update: :cascade, on_delete: :cascade

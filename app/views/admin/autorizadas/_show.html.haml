@@ -1,5 +1,11 @@
 .border.p-3
-  %h5.alert.alert-danger.titulo.text-center PROCESOS DE ACCESSO RESTRINGIDO
+
+  %h5.alert.alert-danger.titulo.text-center
+    PROCESOS DE ACCESSO RESTRINGIDO (PARE)
+  = link_to 'javascript:void(0)', class: "tooltip-btn btn btn-sm btn-outline-success float-right", 'data-toggle': :tooltip, 'data-placement': :left, title: 'Guardar el Perfil Actual', id: 'nuevoPerfil' do
+    = glyph 'ok'
+  %br
+  %br
   #accordion
     - Restringida::GRUPOS.each do |gr| 
       - restringidas = Restringida.where(grupo: gr)
@@ -38,17 +44,20 @@
                               %label.onoffswitch-label{for: "switch#{rest.id}"}
                                 %span.onoffswitch-inner
                                 %span.onoffswitch-switch
-  #cargando.pagination-centered.text-center.hideble
-    = image_tag 'loading.gif'
-    Cargando...
-  #no_encontrado.pagination-centered.text-center.hideble.p-0
-    .alert-danger No se encontrado secciones
 
+= render 'layouts/cargando'
 
 :javascript
 
   $(document).ready(function() {
 
+    $('#nuevoPerfil').on('click', function(){
+      $('#perfilForm').attr('action', '/perfiles');
+      $('#perfilForm > #patch').remove();
+      $('#perfil_nombre').prop('value', ''); 
+      $('#perfilModal').modal();
+    })
+    
     $('.switches').on('change', function(){
       var obj = $(this);
       var url = obj.attr('url');
