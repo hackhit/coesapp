@@ -5,6 +5,30 @@ module Admin
 
     # GET /perfiles
     # GET /perfiles.json
+
+    # def autorizar_usuario
+    #   perfil = Perfil.find params[:id]
+    #   usuario = Usuario.find(params[:usuario_id])
+    #   perfil_restringidas_ids = perfil.restringidas.ids
+
+    #   autorizadas_ids = usuario.autorizadas.where("restringida_id NOT IN (#{perfil_restringidas_ids.flatten.join(',')})").ids
+    #   Autorizada.where(id: autorizadas_ids).delete_all #if autorizadas_ids.any?
+
+    #   autorizadas_ids = perfil_restringidas_ids - usuario.autorizadas.ids
+    #   Autorizada.create(autorizadas_ids.map{|id| {restringida_id: id, usuario_id: params[:usuario_id]}}) if autorizadas_ids.any?
+    #   render json: 'Autorizado Perfil', status: :ok
+    # end
+
+    def autorizar_usuario
+      perfil = Perfil.find params[:id]
+      usuario = Usuario.find(params[:usuario_id])
+      restringidas_ids = perfil.restringidas.ids
+      autorizadas_ids = usuario.autorizadas.ids
+      Autorizada.where(id: autorizadas_ids).delete_all if autorizadas_ids.any?
+      Autorizada.create(restringidas_ids.map{|id| {restringida_id: id, usuario_id: params[:usuario_id]}}) if restringidas_ids.any?
+      render json: 'Autorizado Perfil', status: :ok
+    end
+
     def index
       @perfiles = Perfil.all
     end

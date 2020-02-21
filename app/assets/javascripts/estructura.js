@@ -157,3 +157,18 @@ function setTab(type, id){
 		});
 	sessionStorage.setItem(type, id)
 }
+
+
+	function switches(url){
+		$.ajax({
+		url: url,
+		type: 'POST',
+		dataType: 'json',
+		beforeSend: function() {
+			$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
+		},
+		complete: function(){
+			$('#cargando').modal('hide')
+		}
+		});
+	}

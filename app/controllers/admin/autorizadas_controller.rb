@@ -1,7 +1,7 @@
 module Admin
 	class AutorizadasController < ApplicationController
 		before_action :filtro_logueado
-		before_action :filtro_admin_altos!
+		before_action :filtro_super_admin!
 
 		def index
 			@autorizadas = Autorizada.all.limit(100)#.order([controlador: :desc, accion: :desc])

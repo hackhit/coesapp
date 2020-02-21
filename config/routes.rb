@@ -15,7 +15,12 @@ Rails.application.routes.draw do
   end
 
   scope module: :admin do
-    resources :perfiles
+    resources :perfiles do
+      member do
+        post 'autorizar_usuario'
+      end
+    end
+
     resources :escuelaperiodos, only: :show
     resources :tipo_secciones, :tipoasignaturas, :tipo_calificaciones, :tipo_estado_inscripciones, :bloquehorarios, :restringidas
 

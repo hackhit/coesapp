@@ -7,9 +7,9 @@
           %td{style: 'border-top: 0px;'}
             = link_to "#{perfil_path(perfil)}?usuario_id=#{@usuario.id}", method: :delete, data: { confirm: 'Está acción es irreversible ¿Está Seguro?' }, class: 'tooltip-btn btn btn-sm text-danger','data-toggle': :tooltip, 'data-placement': :left, title: 'Eliminar Perfil' do
               = glyph 'trash'
-            = link_to 'javascript:void(0)', class: "tooltip-btn btn btn-sm editPerfil", 'data-placement': :left, title: 'Editar Perfil', id: perfil.id, data: {nombre: perfil.nombre, toggle: :tooltip} do
+            = link_to 'javascript:void(0)', class: "tooltip-btn btn btn-sm editPerfil", 'data-placement': :left, title: 'Editar Nombre del Perfil', id: perfil.id, data: {nombre: perfil.nombre, toggle: :tooltip} do
               = glyph 'pencil'
-            %button.btn.btn-sm.btn-info.setPerfil{idsHijos: perfil.restringidas.ids}
+            %button.btn.btn-sm.btn-info.setPerfil{idsHijos: perfil.restringidas.ids, url: "#{autorizar_usuario_perfil_path(perfil.id)}?usuario_id=#{@usuario.id}"}
               = perfil.nombre
               = "(#{perfil.restringidas.count})"
               = glyph 'chevron-right'
@@ -21,14 +21,27 @@
   $(document).ready(function(){
 
     $('.setPerfil').on('click', function(){
-      let arrIds = $(this)[0].attributes[1].value
+      let arrIds = $(this)[0].attributes['idshijos'].value
+      console.log(arrIds);
       arrIds = arrIds.substring(1, arrIds.length - 1).split(",")
 
       $(`input:checked`).prop('checked', false)
 
-      $.each(arrIds, function(k,v){
-        $(`#switch${v.trim()}`).prop('checked', true)
-      });
+      $('.setPerfil').removeClass('active')
+      $(this).addClass('active')
+      console.log(arrIds.length)
+      if (arrIds.length > 1) {
+        $.each(arrIds, function(k,v){
+          let aux = $(`#switch${v.trim()}`)
+          aux.prop('checked', true)
+          nombreClase = aux[0].classList[1].substring(5)
+          //console.log(nombreClase)
+          $(`#switch${nombreClase}`).prop('checked', true)
+          $(`#switch${v.trim()}`).prop('checked', true)
+        });
+      }
+      let url = $(this)[0].attributes['url'].value
+      switches(url);
       
     });
     $('.editPerfil').on('click', function(){

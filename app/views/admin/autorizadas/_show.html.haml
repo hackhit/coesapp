@@ -3,6 +3,7 @@
   %h5.alert.alert-danger.titulo.text-center
     PROCESOS DE ACCESSO RESTRINGIDO (PARE)
   = link_to 'javascript:void(0)', class: "tooltip-btn btn btn-sm btn-outline-success float-right", 'data-toggle': :tooltip, 'data-placement': :left, title: 'Guardar el Perfil Actual', id: 'nuevoPerfil' do
+    Guardar Perfil
     = glyph 'ok'
   %br
   %br
@@ -64,19 +65,8 @@
       var grupo = obj.attr('grupo');
       if (grupo) $(`.${grupo}`).prop('checked', obj[0].checked)
       switches(url+'&autorizar='+obj[0].checked)
+      $('.setPerfil').removeClass('active')
     })
-
-    function switches(url){
-      $.ajax({
-        url: url,
-        type: 'POST',
-        dataType: 'json',
-        beforeSend: function() {
-        $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
-        },
-        complete: function(){$('#cargando').modal('hide')}      
-      });
-    }
 
   } );
 
