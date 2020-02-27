@@ -557,7 +557,12 @@ class ExportarPdf
 
 	def self.insertar_tabla_convocados pdf, inscripciones#, k
 
-		data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD. PLAN</b>", "<b>CALIF. DESCR.</b>", "<b>TIPO</b>","<b>CALIF. NUM.</b>", "<b>CALIF. EN LETRAS</b>"]]
+		if inscripciones.first.seccion.asignatura.absoluta?
+			data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD. PLAN</b>", "<b>CALIF. DESCR.</b>", "<b>TIPO</b>", "<b>CALIF. EN LETRAS</b>"]]
+		else
+			data = [["<b>N°</b>", "<b>CÉDULA DE IDENTIDAD</b>", "<b>APELLIDOS Y NOMBRES</b>", "<b>COD. PLAN</b>", "<b>CALIF. DESCR.</b>", "<b>TIPO</b>","<b>CALIF. NUM.</b>", "<b>CALIF. EN LETRAS</b>"]]
+		end
+
 		i = 1
 		inscripciones.each do |h|
 			if h.tiene_calificacion_posterior?
@@ -570,15 +575,26 @@ class ExportarPdf
 				cali_a_letras = h.calificacion_en_letras
 			end
 
-			data << [i, 
-			h.estudiante_id,
-			h.estudiante.usuario.apellido_nombre,
-			h.grado.plan_id,
-			estado_a_letras,
-			tipo_calificacion_id,
-			h.colocar_nota_final,
-			cali_a_letras
-			]
+			if h.seccion.asignatura.absoluta?
+				data << [i, 
+				h.estudiante_id,
+				h.estudiante.usuario.apellido_nombre,
+				h.grado.plan_id,
+				estado_a_letras,
+				tipo_calificacion_id,
+				cali_a_letras
+				]
+			else
+				data << [i, 
+				h.estudiante_id,
+				h.estudiante.usuario.apellido_nombre,
+				h.grado.plan_id,
+				estado_a_letras,
+				tipo_calificacion_id,
+				h.colocar_nota_final,
+				cali_a_letras
+				]
+			end
 
 			if h.tiene_calificacion_posterior?
 				i += 1

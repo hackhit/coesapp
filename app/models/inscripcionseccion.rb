@@ -375,8 +375,16 @@ class Inscripcionseccion < ApplicationRecord
 	end
 
 	def colocar_nota_final
-		if self.calificacion_final.nil?
+		if retirado? 
+			return '--'
+		elsif self.calificacion_final.nil?
 			return 'SN'
+		elsif seccion.asignatura.absoluta?
+			if self.aprobado?
+				valor = 'A'
+			else
+				valor = 'AP'
+			end			
 		else
 			return sprintf("%02i", self.calificacion_final)
 		end		
