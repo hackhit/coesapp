@@ -171,7 +171,7 @@ module Admin
 				@creditLimits = current_periodo.anual? ? 49 : 25
 
 				aux = current_periodo.escuelas.merge @estudiante.escuelas
-				@creditLimits = 31 if aux.ids.include? 'COMU'
+				# @creditLimits = 31 if aux.ids.include? 'COMU'
 				@creditLimits *= aux.count
 				
 			end

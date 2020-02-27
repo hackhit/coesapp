@@ -18,9 +18,14 @@
 		let btnConfirm = document.getElementById('btn-confirmacion')
 		let master = #{current_admin and current_admin.maestros?}
 		let limit = #{@creditLimits}
+		console.log('Estamos revisando...')
+		console.log('Total de Créditos: '+ totalCreditos)
+		console.log('Límite de Créditos: '+ limit)
 		if(totalNuevas > 0 && (master || (totalCreditos >= 0 && totalCreditos < limit))){
+			console.log('Activado boton de confirmar')
 			btnConfirm.disabled = false
 		}else{
+			console.log('Desactivado boton de confirmar')
 			btnConfirm.disabled = true
 		}
 	};
