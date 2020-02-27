@@ -206,7 +206,7 @@ function setAtributosSeccionForm(ele){
 	metodo.setAttribute('type', 'hidden');
 	metodo.setAttribute('value', 'patch');
 	metodo.setAttribute('id', 'patch');
-	formulario.prop('action', `/secciones/${dataSon.id}`)
+	formulario.prop('action', `${getHost()}/secciones/${dataSon.id}`)
 	formulario.append(metodo);
 	formulario.find('input#_seccionnumero')[0].value = dataSon.numero;
 	formulario.find('input#_seccioncapacidad')[0].value = dataSon.capacidad;
