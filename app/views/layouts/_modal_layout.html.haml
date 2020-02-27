@@ -12,4 +12,4 @@
           .modal-footer
             %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar
             - unless url.nil?
-              = submit_tag 'Guardar', class: 'btn btn-outline-success btn-sm'
+              = submit_tag 'Guardar', class: 'btn btn-outline-success btn-sm'#, id: "#{id_modal}BtnSubmitForm"

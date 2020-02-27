@@ -4,3 +4,22 @@
 = render '/admin/secciones/facultad/estructura_nav'
 = render '/admin/secciones/modal_form'
 
+
+:javascript
+	$(document).ready(function(){
+
+		$('.addSeccion').on('click', function(){
+			let formulario = $('#newSeccionForm');
+			formulario.find("input#patch").remove();
+			formulario.prop('action', `/secciones/`);
+
+			formulario.find('input#_seccionnumero')[0].value = '';
+			formulario.find('input#_seccioncapacidad')[0].value = '30';
+			formulario.find(`input#_secciontipo_seccion_id_EE`).prop('checked', false);
+			formulario.find(`input#_secciontipo_seccion_id_EI`).prop('checked', false);
+			formulario.find(`input#_secciontipo_seccion_id_NF`).prop('checked', false);
+			formulario.find(`input#_secciontipo_seccion_id_NS`).prop('checked', false);
+			formulario.find(`#seccion_profesor_id`).val('');
+			formulario.find(`#seccion_profesor_id`).select2().trigger('change');
+		})
+	});

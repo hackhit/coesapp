@@ -236,7 +236,7 @@ module ApplicationHelper
 	def btn_plus_seccion_modal a
 		onClick = "$('#newSeccion').modal();"
 		onClick += "setAsignaturaToNewSeccion('#{a.id}', '#{a.descripcion}')" if a
-		btn_toggle 'btn-outline-success', 'plus', 'javascript:void(0)', 'Agregar Sección', '', onClick
+		btn_toggle 'btn-outline-success addSeccion', 'plus', 'javascript:void(0)', 'Agregar Sección', '', onClick
 	end
 
 end

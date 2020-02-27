@@ -7,7 +7,7 @@
 .form-group
   %label.control-label.col-md-12 Identificador
   .col-md-12
-    = text_field_tag "[seccion]numero", nil, {placeholder: 'Id. Sección...', class: 'form-control upcase', maxlength: 3, required: true}
+    = text_field_tag "[seccion]numero", @seccion.numero, {placeholder: 'Id. Sección...', class: 'form-control upcase', maxlength: 3, required: true}
     %small.text-muted.font-italic Máximo 3 catacteres alfanuméricos (Caracteres Especiales No permitido)
 
 .form-group
@@ -16,7 +16,7 @@
     - TipoSeccion.order("created_at DESC").all.reject{|t| t.id.eql? 'ND' or t.id.eql? 'NR'}.each do |ts| 
       
       %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: ts.descripcion.titleize}
-        = radio_button_tag '[seccion]tipo_seccion_id', ts.id, false, required: true
+        = radio_button_tag '[seccion]tipo_seccion_id', ts.id, @seccion.tipo_seccion_id.eql?(ts.id), required: true
         = ts.id
 .form-group
   %label.control-label.col-md-12 Capacidad

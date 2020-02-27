@@ -157,3 +157,73 @@ function setTab(type, id){
 		});
 	sessionStorage.setItem(type, id)
 }
+
+
+// function sendFormViaAjax(event, este){
+// 	event.preventDefault();
+// 	console.log(este);
+// 	var url = $(este)[0].form['action'];
+// 	// var form = $('#newSeccionForm')[0]
+// 	var form = $(este)[0].form
+// 	// var form = document.getElementById('newSeccionForm');
+// 	var data = new FormData(form);
+// 	console.log(data)
+// 	console.log(url);
+
+// 	// $.post(url, data);
+
+// 	$.ajax({
+// 		url: `${getHost()}/secciones/10389`,
+// 		data: {id: 'x', numero: 'A2'},
+// 		type: 'POST',
+// 		success: function(dataConfi){
+// 			alert(dataConfi);
+// 		}
+// 	})
+
+// 	// alert('Hola mundo');
+// }
+
+// $('#newSeccionBtnSubmitForm').on('click', function(event){
+// 	event.preventDefault();
+// 	let formu = $("#newSeccionForm").serialize();
+// 	$.post(url, formu);
+// })
+
+
+function setAtributosSeccionForm(ele){
+
+	let dataSon = ele.attributes['data-seccion'].value;
+	dataSon = JSON.parse(dataSon);
+
+	//console.log(dataSon);
+	//$('#newSeccionForm').prop('action', `/secciones/${dataSon.id}`);
+
+	let formulario = $('#newSeccionForm');
+	let metodo = document.createElement('input');
+
+	metodo.setAttribute('name', '_method');
+	metodo.setAttribute('type', 'hidden');
+	metodo.setAttribute('value', 'patch');
+	metodo.setAttribute('id', 'patch');
+	formulario.prop('action', `/secciones/${dataSon.id}`)
+	formulario.append(metodo);
+	formulario.find('input#_seccionnumero')[0].value = dataSon.numero;
+	formulario.find('input#_seccioncapacidad')[0].value = dataSon.capacidad;
+	formulario.find(`input#_secciontipo_seccion_id_${dataSon.tipo_seccion_id}`).prop('checked', true);
+
+
+	formulario.find(`#seccion_profesor_id`).val(dataSon.profesor_id);
+	formulario.find(`#seccion_profesor_id`).select2().trigger('change');
+	// formulario.find(`#_seccion_profesor_id option[value=${dataSon.profesor_id}]`).attr('selected', 'selected');
+
+	formulario.find('#_seccionasignatura_id').val(`${dataSon.asignatura_id}`)
+	$('#newSeccionTitle').html(`Editar Sección ${dataSon.numero} de ${dataSon.asignatura_id}`)
+
+	//$('#newSeccionForm input#_seccionnumero')[0].value = dataSon.numero;
+	//$(`#newSeccionForm input#_secciontipo_seccion_id_${dataSon.tipo_seccion_id}`).prop('checked', true);
+	//$('#newSeccionForm input#_seccioncapacidad')[0].value = dataSon.capacidad;
+	//$(`#newSeccionForm input#_seccion_profesor_id option[value=${dataSon.profesor_id}]`).attr('selected', 'selected')
+
+
+}
