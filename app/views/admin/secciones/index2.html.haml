@@ -11,7 +11,7 @@
 		$('.addSeccion').on('click', function(){
 			let formulario = $('#newSeccionForm');
 			formulario.find("input#patch").remove();
-			formulario.prop('action', `/secciones/`);
+			formulario.prop('action', `${getHost()}/secciones/`);
 
 			formulario.find('input#_seccionnumero')[0].value = '';
 			formulario.find('input#_seccioncapacidad')[0].value = '30';
