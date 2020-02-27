@@ -7,6 +7,7 @@
       %th Controlador
       %th Acción
       %th Grupo
+      %th Nombre Público
       %th=t '.actions', default: t("helpers.actions")
   %tbody
     - @restringidas.each do |restringida|
@@ -14,6 +15,7 @@
         %td= restringida.controlador.camelize
         %td= restringida.accion
         %td= restringida.grupo.capitalize
+        %td= restringida.nombre_publico
         %td
           = link_to restringida_path(restringida), class: 'btn btn-xs', title: "#{ t('.show', default: t('helpers.links.show')) }" do
             = glyph 'info-sign'

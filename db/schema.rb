@@ -373,6 +373,7 @@ ActiveRecord::Schema.define(version: 2020_02_18_213243) do
   end
 
   create_table "restringidas", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.boolean "acceso_total", default: false
     t.string "nombre_publico", null: false
     t.string "controlador", null: false
     t.string "accion", null: false
