@@ -206,12 +206,17 @@ module Admin
 					else
 						asignaturas_impropias << seccion.asignatura_id
 					end
+					volumen = seccion.capacidad.to_i - seccion.total_estudiantes.to_i
 
-					if ins.save
-						info_bitacora "Inscripción en #{ins.seccion.descripcion} (#{ins.asignatura.id}). Id inscripcion: #{ins.id}" , Bitacora::CREACION, ins.estudiante						
-						guardadas += 1
+					if volumen <= 0
+						flash[:error] = "Se superó la capacidad de la sección por favor amplíela o indíquele a su superior para realizar la inscripción"
 					else
-						flash[:error] = "#{ins.errors.full_messages.join' | '}"
+						if ins.save
+							info_bitacora "Inscripción en #{ins.seccion.descripcion} (#{ins.asignatura.id}). Id inscripcion: #{ins.id}" , Bitacora::CREACION, ins.estudiante						
+							guardadas += 1
+						else
+							flash[:error] = "#{ins.errors.full_messages.join' | '}"
+						end
 					end
 					flash[:info] = "Para mayor información vaya al detalle del estudiante haciendo clic <a href='#{usuario_path(id)}' class='btn btn-primary btn-sm'>aquí</a> "
 				end 

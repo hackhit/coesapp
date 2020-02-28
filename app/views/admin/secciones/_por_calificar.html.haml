@@ -3,7 +3,7 @@
 = form_tag(calificar_seccion_path) do
 	= hidden_field_tag "id", @seccion.id
 
-	%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+	%table.table.dataTable.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
 		= render 'admin/secciones/tabla_headers_tipo_seccion'
 
 		%tbody
@@ -28,7 +28,8 @@
 						= render partial: 'admin/secciones/opciones_asignaturas_por_tipo', locals: {es: es, disable: disable}
 					- if (!@seccion.asignatura.numerica3? or (@seccion.asignatura.numerica3? and @seccion.tiene_trimestres2?))
 						%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
-					%td= (es.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')
+					- if current_admin
+						%td= (es.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')
 
 
 	= button_tag 'Guardar', class: 'btn btn-sm mx-3 float-right btn-outline-success', id: 'submit'

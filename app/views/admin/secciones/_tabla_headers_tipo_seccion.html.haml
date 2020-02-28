@@ -54,4 +54,6 @@
 			%th Aplazado
 		- if current_admin or !@seccion.asignatura.numerica3? or (@seccion.asignatura.numerica3? and @seccion.tiene_trimestres2?)
 			%th Descripción
-		%th Fecha y Hora Inscripción
+		
+		- if current_admin
+			%th Fecha y Hora Inscripción

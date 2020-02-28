@@ -6,7 +6,6 @@ $(document).ready(function() {
 	} );
 
 	$('.dataTable').DataTable({
-		scrollY: 300,
 		// pageLength: 100,
 		// lengthChange: false,
 		paging: false,

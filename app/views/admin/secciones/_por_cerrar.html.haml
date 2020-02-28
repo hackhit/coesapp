@@ -3,7 +3,7 @@
 = form_tag(calificar_seccion_path) do
 	= hidden_field_tag "id", @seccion.id
 	= hidden_field_tag "cerrar", true
-	%table.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
+	%table.dataTable.table.table-bordered.table-striped.table-sm.table-hover{style: "text-align:left;"}
 		= render 'admin/secciones/tabla_headers_tipo_seccion'#, locals: {inscripciones: inscripciones}
 
 		%tbody
@@ -38,7 +38,8 @@
 									= number_field_tag "[est][#{es.estudiante_id}]calificacion_posterior", {}, {value: valor_posterior, class: 'form-control form-control-sm otra_calificacion', required: !disable_porterior, disabled: disable_porterior,  :step => 1, :in => 0...21, onchange: "numero_a_letras($(this).val(), #{es.estudiante_id});", tipo_calificacion_id: tipo, id_obj: es.id}
 
 					%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
-					%td= (es.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')
+					- if current_admin
+						%td= (es.created_at-4.hours).strftime('%d/%m/%Y %H:%M %p')
 	%hr
 		= submit_tag "Guardar", id: "submit", class: "btn btn-outline-success float-right ml-md-2", disable_with: "Espere..."
 :javascript
