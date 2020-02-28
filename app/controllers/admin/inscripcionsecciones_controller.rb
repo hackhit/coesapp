@@ -208,7 +208,7 @@ module Admin
 					end
 					volumen = seccion.capacidad.to_i - seccion.total_estudiantes.to_i
 
-					if volumen <= 0
+					if volumen <= 0 and !(current_admin and current_admin.maestros?)
 						flash[:error] = "Se superó la capacidad de la sección por favor amplíela o indíquele a su superior para realizar la inscripción"
 					else
 						if ins.save
