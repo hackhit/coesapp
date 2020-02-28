@@ -136,7 +136,7 @@ function paintTabObjects(type, id,controller, callback){
 			$('#filterTabs').append(data.tabs)
 		},
 		beforeSend: function(){
-			$('#cargando a').html(`Cangando ${type}... `)
+			$('#cargando a').html(`Cargando ${type}... `)
 			$('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
 		},
 		complete: function(){
