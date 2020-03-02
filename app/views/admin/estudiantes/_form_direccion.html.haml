@@ -16,7 +16,6 @@
     = select_tag '[direccion]municipio', options_for_select(@municipios, @municipio), class: 'form-control text-field', required: requerido, include_blank: '--- Seleccione Municipio ---', id: 'selectMunicipio', childer: 'selectParroquia', url: getParroquias_usuarios_path
   .col-md-3
     = select_tag '[direccion]ciudad', options_for_select(@parroquias, @parroquia), class: 'form-control text-field', required: requerido, include_blank: '--- Seleccione Parroquia ---', id: 'selectParroquia'
-  = render 'layouts/cargando'
 .form-group.row
   %label.col-form-label.col-md-3.text-right Urbanización/Sector:
   .col-md-9

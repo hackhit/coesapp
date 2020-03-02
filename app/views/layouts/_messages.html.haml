@@ -3,6 +3,6 @@
   - if msg.is_a?(String)
     - name = 'info' if name.to_s == 'notice'
     - name = 'danger' if name.to_s == 'error'
-    %div{:class => "alert alert-#{name.to_s}", :role  => "alert"}
+    .alert{:class => "alert-#{name.to_s}", :role  => "alert"}
       %button.close{"aria-hidden" => "true", "data-dismiss" => "alert", :type => "button"} &times;
       = content_tag :div, raw(msg), :id => "flash_#{name.to_s}"
