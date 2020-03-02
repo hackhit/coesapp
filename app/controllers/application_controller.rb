@@ -75,7 +75,6 @@ class ApplicationController < ActionController::Base
 
 	def inicial_current_periodo
 		escuela = current_escuela
-
 		if escuela and escuela.periodos.count > 0 
 			return escuela.periodos.order(:inicia).last 
 		else
