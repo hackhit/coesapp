@@ -19,6 +19,14 @@
       .col-md-9
         = f.password_field :password_confirmation, required: true, class: 'text-field form-control'
   .form-group.row
+    = f.label 'nacionalidad', class: 'col-form-label col-md-3 text-right', value: 'Nacionalidad:'
+    .col-md-9
+      - Usuario.nacionalidades.map do |k,v| 
+        %label.btn.btn-secondary.btn-sm
+          = radio_button_tag '[usuario]nacionalidad', k, (@usuario.nacionalidad.eql? k), required: true
+          = k.upcase
+
+  .form-group.row
     = f.label :nombres, class: 'col-form-label col-md-3 text-right', value: 'Nombres:'
     .col-md-9
       = f.text_field :nombres, class: 'text-field form-control upcase', required: requerido
@@ -63,7 +71,7 @@
       data: parameters,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
-        $('#cargando a').html(`Cangando... `)
+        $('#cargando a').html(`Cargando... `)
         $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
       },
       success: function (data) {

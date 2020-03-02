@@ -37,4 +37,8 @@
 			- if @seccion.horario
 				%td= @seccion.horario.descripcion
 
-			%td= colocar_estado_seccion @seccion
+			%td
+				= colocar_estado_seccion @seccion
+				= link_to 'javascript:void(0)', class: "tooltip-btn badge badge-primary btn-sm p-md-1 badge-primary editarSeccion", 'data-toggle': :tooltip, title: 'Editar Sección', onclick: "setAtributosSeccionForm(this);$('#newSeccion').modal();", data: {seccion: @seccion.to_json} do
+					=glyph 'pencil'
+

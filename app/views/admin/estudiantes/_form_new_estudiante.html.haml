@@ -76,7 +76,7 @@
       data: data,
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
-        $('#cargando a').html(`Cangando... `)
+        $('#cargando a').html(`Cargando... `)
         $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
       },
       success: function (data) {

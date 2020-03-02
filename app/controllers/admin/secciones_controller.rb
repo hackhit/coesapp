@@ -381,7 +381,7 @@ module Admin
       @any_outplan = @seccion.inscripcionsecciones.aprobado.reject{|h| h.ultimo_plan}.count > 0
 
       @bitacoras = Bitacora.search_by_id(@seccion.id).limit(50)#.search(@seccion.id)
-
+      @departamentos = current_admin.departamentos if current_admin
       @titulo = "Sección: #{@seccion.descripcion_escuela} - Período #{@seccion.periodo_id}"
 
       if @seccion.asignatura.catedra_id.eql? 'IB' or @seccion.asignatura.catedra_id.eql? 'LIN' or @seccion.asignatura.catedra_id.eql? 'LE'
@@ -410,6 +410,8 @@ module Admin
 
     # GET /secciones/1/edit
     def edit
+      @titulo = "Editando Sección #{@seccion.descripcion}"
+      @departamentos = current_admin.departamentos
     end
 
     # POST /secciones
@@ -444,6 +446,7 @@ module Admin
     # PATCH/PUT /secciones/1
     # PATCH/PUT /secciones/1.json
     def update
+      params[:seccion][:profesor_id] = nil if params[:seccion][:profesor_id].eql? ""
       if @seccion.update(seccion_params)
         flash[:success] = 'Sección actualizada con éxito.'
         info_bitacora_crud Bitacora::ACTUALIZACION, @seccion

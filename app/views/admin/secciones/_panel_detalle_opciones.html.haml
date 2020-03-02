@@ -4,7 +4,7 @@
 	- else
 		= badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario','time', 'plus'
 - else
-	.badge.align-middle.text-center.tooltip-btn.bg-dark.text-white{'data-toggle': 'tooltip', title: "Posse inscripciones. Elimínelas para poder agregar o modificar horarios"}= glyph 'time'
+	.badge.p-md-1.align-middle.text-center.tooltip-btn.bg-dark.text-white{'data-toggle': 'tooltip', title: "Posse inscripciones. Elimínelas para poder agregar o modificar horarios"}= glyph 'time'
 
 - if current_admin
 	= badge_icon_tooltip notas_seccion_descargar_path(seccion.id, :pdf), 'badge-info btn-sm p-md-1', 'Descargar Acta PDF', 'file'
@@ -24,3 +24,7 @@
 			
 - if current_admin.maestros? and seccion.calificada
 	= badge_icon_tooltip habilitar_calificar_seccion_path(seccion.id), 'badge-warning btn-sm p-md-1', 'Habilitar para Calificar Nuevamente', 'off'
+
+
+= link_to 'javascript:void(0)', class: "tooltip-btn badge badge-primary btn-sm p-md-1 badge-primary editarSeccion", 'data-toggle': :tooltip, title: 'Editar Sección', onclick: "setAtributosSeccionForm(this);$('#newSeccion').modal();", data: {seccion: seccion.to_json} do
+	=glyph 'pencil'
