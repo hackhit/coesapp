@@ -8,7 +8,7 @@
 
 %nav
   .nav.nav-tabs
-    = link_to 'Docentes', "#profes", "data-toggle": :tab, class: "nav-item nav-link active"
+    = link_to 'Profesores', "#profes", "data-toggle": :tab, class: "nav-item nav-link active"
   .tab-content
     .tab-pane#profes.border.p-3.border-top-0.active
       = render partial: '/admin/profesores/index', locals: {profesores: @escuela.profesores}
