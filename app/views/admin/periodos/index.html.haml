@@ -1,5 +1,4 @@
-- if current_admin.maestros?
-	= btn_add_success new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo'
+= btn_add_success(new_periodo_path, 'Agregar Nuevo Periodo', 'Nuevo') if (current_admin and current_admin.autorizado? 'Periodos', 'create')
 
 = render partial: '/admin/periodos/filtros'#, locals:{objetos: Escuela.all}
 

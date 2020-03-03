@@ -11,23 +11,24 @@
     /%span.badge.badge-info.mr-3
     =# "#{total_secciones} #{'seccion'.pluralize(total_secciones)} en total"
 
-    - if current_admin.mas_altos?
+    - if (current_admin and current_admin.autorizado? 'Asignaturas', 'create')
       = link_to "#{new_asignatura_path}?escuela_id=#{escuela.id}", class: "btn btn-outline-success btn-sm tooltip-btn float-left mr-2", 'data_toggle': :tooltip, title: "Agregar Nueva Asignatura en #{escuela.descripcion}" do
         = glyph 'plus'
         Nueva
 
-    - if periodo_anterior = escuela.periodo_anterior(current_periodo.id)
+    - periodo_anterior = escuela.periodo_anterior(current_periodo.id)
+    - if periodo_anterior and (current_admin and current_admin.autorizado? 'Escuelas', 'clonar_programaciones')
       = link_to 'javascript:void(0)', class: 'clonar btn btn-outline-info btn-sm tooltip-btn float-left mr-2', 'data_toggle': :tooltip, title: "Clonar Programación de Periodos anteriores", escuela_id: escuela.id do
         = glyph 'file'
         = glyph 'chevron-right'
         = glyph 'duplicate'
 
-    - disabledClean = escuela.secciones.del_periodo(current_periodo.id).any? ? '' : 'disabled'
-
-    = link_to 'javascript:void(0)', class: "btn btn-outline-danger btn-sm tooltip-btn #{disabledClean} float-left mr-2", 'data_toggle': :tooltip, title: "Eliminar Programación del periodo actual #{current_periodo.id}", onclick: "$('#BorrarClonacion#{escuela.id}').modal()", disabled: disabledClean do
-      = glyph 'duplicate'
-      = glyph 'chevron-right'
-      = glyph 'trash'
+    - if (current_admin and current_admin.autorizado? 'Escuelas', 'limpiar_programaciones')
+      - disabledClean = escuela.secciones.del_periodo(current_periodo.id).any? ? '' : 'disabled'
+      = link_to 'javascript:void(0)', class: "btn btn-outline-danger btn-sm tooltip-btn #{disabledClean} float-left mr-2", 'data_toggle': :tooltip, title: "Eliminar Programación del periodo actual #{current_periodo.id}", onclick: "$('#BorrarClonacion#{escuela.id}').modal()", disabled: disabledClean do
+        = glyph 'duplicate'
+        = glyph 'chevron-right'
+        = glyph 'trash'
 
 
     %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3{id: "table#{escuela.id}"}
@@ -41,8 +42,9 @@
           %th Calif.
           %th U. Créditos
           %th Secciones
-          %th Activa
-          %th PCI
+          - if (current_admin and current_admin.autorizado? 'Asignaturas', 'set_activa')
+            %th Activa
+            %th PCI
           %th Opciones
       %tbody
         - @asignaturas.each do |asignatura| 
@@ -61,21 +63,30 @@
                   - asignatura.secciones.del_periodo(current_periodo).each do |s| 
                     %td= s.numero
 
-                  %td= btn_plus_seccion_modal asignatura
+                  - if (current_admin and current_admin.autorizado? 'Secciones', 'create')
+                    %td= btn_plus_seccion_modal asignatura
+            - if (current_admin and current_admin.autorizado? 'Asignaturas', 'set_activa')
+              %td
+                = render partial: '/layouts/onoffswitch', locals: {titulo: '¿Activar Asignatura?', url: set_activa_asignatura_path(asignatura.id), id: asignatura.id, chequeada: (asignatura.activa? current_periodo.id), id_html: "activas_#{asignatura.id}"}
+              %td 
+                - hidden = (asignatura.tiene_programaciones? current_periodo.id) ? '' : 'hideble'
+                .div{id: "pci_#{asignatura.id}", class: hidden} 
+                  = render partial: '/layouts/onoffswitch', locals: {titulo: '¿PCI?', url: set_pci_asignatura_path(asignatura.id), id: asignatura.id, chequeada: asignatura.pci?(current_periodo.id), id_html: "pci_switch_#{asignatura.id}"}
+            
             %td
-              = render partial: '/layouts/onoffswitch', locals: {titulo: '¿Activar Asignatura?', url: set_activa_asignatura_path(asignatura.id), id: asignatura.id, chequeada: (asignatura.activa? current_periodo.id), id_html: "activas_#{asignatura.id}"}
-            %td 
-              - hidden = (asignatura.tiene_programaciones? current_periodo.id) ? '' : 'hideble'
-              .div{id: "pci_#{asignatura.id}", class: hidden} 
-                = render partial: '/layouts/onoffswitch', locals: {titulo: '¿PCI?', url: set_pci_asignatura_path(asignatura.id), id: asignatura.id, chequeada: asignatura.pci?(current_periodo.id), id_html: "pci_switch_#{asignatura.id}"}
-            %td
-              .tooltip-btn{'data_toggle': :tooltip, title: 'Editar Asignatura'}
-                = link_to edit_asignatura_path(asignatura), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-                  = glyph 'pencil'
-
-              - if false#asignatura.secciones.count == 0
-                = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-                  .text-danger= glyph 'trash'
+              - if current_admin and (current_admin.autorizado? 'Asignaturas', 'destroy')
+                .float-right
+                  - if !(asignatura.secciones.any?)
+                    = link_to asignatura_path(asignatura), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: '¿Está seguro?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+                      .text-danger= glyph 'trash'
+                  - else
+                    .btn.btn-sm.tooltip-btn{'data-toggle': :tooltip, title: 'Elimine las secciones en éste u otro período para activar la opción'}
+                      .text-muted= glyph 'trash'
+              - if current_admin and (current_admin.autorizado? 'Asignaturas', 'update')
+                .float-right.ml-1
+                  .tooltip-btn{'data_toggle': :tooltip, title: 'Editar Asignatura'}
+                    = link_to edit_asignatura_path(asignatura), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+                      = glyph 'pencil'
 
 :javascript
 

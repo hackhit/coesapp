@@ -2,14 +2,23 @@
   .form-group
     = f.label :id, class: 'control-label col-md-2', value: 'Identificador'
     .col-md-10
-      = f.text_field :id, class: 'text_field form-control'
+      = f.text_field :id, class: 'form-control id'
   .form-group
     = f.label :descripcion, class: 'control-label col-md-2'
     .col-md-10
-      = f.text_field :descripcion, class: 'text_field form-control'
+      = f.text_field :descripcion, class: 'form-control'
   .form-group
     .col-md-offset-2.col-md-10
       = link_to escuelas_path, class: 'btn btn-outline-secondary btn-sm' do
         = glyph 'chevron-left'
         = t('.cancel', default: t("helpers.links.cancel"))
       = f.submit nil, class: 'btn btn-outline-success btn-sm ml-2'
+
+
+:javascript
+
+  $('.id').on('input',function(evt){ 
+    var node = $(this);
+    node.val(node.val().toUpperCase());
+    node.val(node.val().replace(/[^A-Z]/g,'') );
+    });

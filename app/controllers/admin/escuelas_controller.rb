@@ -197,38 +197,34 @@ module Admin
 
     def set_inscripcion_abierta
       @escuela.inscripcion_abierta = !@escuela.inscripcion_abierta
-        respond_to do |format|
-          if @escuela.save
-            format.json { head :ok }
-          else
-            format.json { head :error }
-          end
-        end
+      if @escuela.save
+        aux = @escuela.inscripcion_abierta ? 'Inscripción Abierta' : 'Inscripción Cerrada'
+        render json: {data: aux, status: :success}
+      else
+        render json: {data: "Error al intentar cambiar la noticia : #{@escuela.errors.full_messages.to_sentence}", status: :success}
+      end
       
     end
 
     def set_habilitar_retiro_asignaturas
       @escuela.habilitar_retiro_asignaturas = !@escuela.habilitar_retiro_asignaturas
-        respond_to do |format|
-          if @escuela.save
-            format.json { head :ok }
-          else
-            format.json { head :error }
-          end
-        end
+      if @escuela.save
+        aux = @escuela.retiro_asignaturas_habilitado? ? 'Retiro y Eliminación de Asignaturas Habilitado' : 'Retiro y Eliminación de Asignaturas Deshabilitado'
+        render json: {data: aux, status: :success}
+      else
+        render json: {data: "Error al intentar cambiar la noticia : #{@escuela.errors.full_messages.to_sentence}", status: :success}
+      end
       
     end
 
     def set_habilitar_cambio_seccion
       @escuela.habilitar_cambio_seccion = !@escuela.habilitar_cambio_seccion
-        respond_to do |format|
-          if @escuela.save
-            format.json { head :ok }
-          else
-            format.json { head :error }
-          end
-        end
-      
+      if @escuela.save
+        aux = @escuela.cambio_seccion_habilitado? ? 'Habilitado Cambios de Secciones' : 'Deshabilitado Cambios de Secciones'
+        render json: {data: aux, status: :success}
+      else
+        render json: {data: "Error al intentar cambiar la noticia : #{@escuela.errors.full_messages.to_sentence}", status: :success}
+      end 
     end
 
     private

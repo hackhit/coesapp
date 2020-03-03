@@ -87,13 +87,13 @@ Rails.application.routes.draw do
     end
 
 
-    resources :periodos, :planes, :departamentos, :catedras, :escuelas
+    resources :periodos, :planes, :departamentos, :catedras
     resources :escuelas do 
       member do
         get 'periodos'
-        post 'set_inscripcion_abierta'
-        post 'set_habilitar_retiro_asignaturas'
-        post 'set_habilitar_cambio_seccion'
+        get 'set_inscripcion_abierta'
+        get 'set_habilitar_retiro_asignaturas'
+        get 'set_habilitar_cambio_seccion'
         get 'limpiar_programacion'
       end
       collection do

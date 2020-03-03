@@ -25,9 +25,16 @@
           %td= escuela.id
           %td= escuela.descripcion
 
-.form-group
-  = btn_atras periodos_path
-  = btn_edit_primary edit_periodo_path(@periodo), 'Editar Período', "Editar"
-  = link_to periodo_path(@periodo), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger btn-sm' do
-    = glyph 'trash'
-    = t('.destroy', default: t("helpers.links.destroy"))
+  .form-group
+    = btn_atras(periodos_path)
+    - if (current_admin and (current_admin.autorizado? 'Periodos', 'update'))
+      = btn_edit_primary(edit_periodo_path(@periodo), 'Editar Período', "Editar")
+    - if (current_admin and (current_admin.autorizado? 'Periodos', 'delete'))
+      - if (!@periodo.inscripciones.any?)
+        = link_to periodo_path(@periodo), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-danger btn-sm' do
+          = glyph 'trash'
+          Eliminar
+      - else
+        .btn.btn-sm.btn-outline-secondary.tooltip-btn.disabled{'data-toggle': :tooltip, title: 'Elimine las inscripciones para activar la opción'}
+          = glyph 'trash'
+          Eliminar 

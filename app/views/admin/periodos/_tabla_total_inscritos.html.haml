@@ -8,7 +8,7 @@
       - current_admin.escuelas.each do |e| 
         %th.tooltip-btn.thFiltrables{'data_toggle': :tooltip, title: e.descripcion, class: "fil#{e.id}"}= e.id
 
-      - if current_admin.maestros?
+      - if current_admin and ((current_admin.autorizado? 'Periodos', 'update') or (current_admin.autorizado? 'Periodos', 'delete'))
         %th Opciones
   %tbody
     - @periodos.each do |periodo|
@@ -29,16 +29,21 @@
                     = plan.id.upcase
 
             - if val > 0
-
-              =# link_to "#{inscripcionsecciones_path}?periodo_id=#{periodo.id}&escuela_id=#{e.id}", class: 'link' do 
               - if escupe = Escuelaperiodo.where(escuela_id: e.id, periodo_id: periodo.id).first
-                = link_to escuelaperiodo_path(escupe.id), class: 'link' do 
-                  = glyph 'download'
-                  = val
-        - if current_admin.maestros?
+                = link_to_if((current_admin and current_admin.autorizado?('Escuelaperiodos', 'index')), raw("#{glyph('download')} #{val}"), escuelaperiodo_path(escupe.id), class: 'tooltip-btn', 'data-toggle': :tooltip, title: 'Total de Inscripciones', 'data-placement': :right )
+
+        - if current_admin and ((current_admin.autorizado? 'Periodos', 'update') or (current_admin.autorizado? 'Periodos', 'delete'))
           %td
-            = link_to edit_periodo_path(periodo), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-              = glyph 'pencil'
-            - if current_admin.ninja?  
-              = link_to periodo_path(periodo), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-                .text-danger= glyph 'trash'
+            - if (current_admin.autorizado? 'Periodos', 'update')
+              
+              = link_to edit_periodo_path(periodo), class: 'btn btn-sm tooltip-btn', 'data-toggle': :tooltip, title: 'Editar Periodo', 'data-placement': :left  do
+                = glyph 'pencil'
+            - if (current_admin.autorizado? 'Periodos', 'delete')
+
+
+              - if (!periodo.inscripciones.any?)
+                = link_to periodo_path(periodo), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Está seguro?')) }, class: 'btn btn-sm' do
+                  .text-danger= glyph 'trash'
+              - else
+                .btn.btn-sm.tooltip-btn.disabled{'data-toggle': :tooltip, title: 'Elimine las inscripciones para activar la opción'}
+                  .text-muted= glyph 'trash'

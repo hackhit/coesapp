@@ -13,7 +13,7 @@ module Admin
         aux = @comentario.habilitado ? 'Comentario Habilitado' : 'Comentario Deshabilitado'
         render json: {data: aux, status: :success}
       else
-        render json: {data: "Error al intentar cambiar la noticia : #{@comentario.errors.messages.to_sentence()}", status: :success}
+        render json: {data: "Error al intentar cambiar la noticia : #{@comentario.errors.full_messages.to_sentence}", status: :success}
       end
     end
 

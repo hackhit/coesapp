@@ -1,11 +1,12 @@
-- model_class = Escuela
-= link_to t('.new', default: t("helpers.links.new")), new_escuela_path, class: 'btn btn-outline-primary btn-sm'
+= link_to new_escuela_path, class: 'btn btn-outline-success btn-sm tooltip-btn', 'data-toggle': :tooltip, title: 'Agregar Nueva Escuela' do
+  = glyph 'plus'
+  Agregar
 
 %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
   %thead
     %tr.text-center
-      %th= model_class.human_attribute_name(:id)
-      %th= model_class.human_attribute_name(:descripcion)
+      %th Id
+      %th Descripción
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Secciones Periodo actual'} Sec
       %th.tooltip-btn{'data_toggle': :tooltip, title: 'Total Inscritos Periodo actual'} Inscritos
       %th{width: '10%'} Opciones
@@ -22,48 +23,21 @@
         %td.align-middle.text-right= @ins.secciones_creadas.count#escuela.secciones.del_periodo(current_periodo.id).count
         %td.align-middle.text-right= @ins.estudiantes_inscritos.count
         %td.align-middle
-          = link_to escuela_path(escuela), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
-            = glyph 'info-sign'
-          = link_to edit_escuela_path(escuela), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-            = glyph 'pencil'
-          - if current_admin.ninja?
-            = link_to escuela_path(escuela), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-              .text-danger= glyph 'trash'
+          - if (current_admin and current_admin.autorizado? 'Escuelas', 'delete')
+            - if !(escuela.inscripciones.any?)
+              = link_to escuela_path(escuela), method: :delete, data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-sm float-right', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+                .text-danger= glyph 'trash'
+            - else
+              .btn.btn-sm.float-right.text-muted.tooltip-btn{'data-toggle': :tooltip, title: 'Elimine las inscripciones para activar la opción', 'data-placement': :left}= glyph 'trash'
+          - if (current_admin and current_admin.autorizado? 'Escuelas', 'update')
+            = link_to edit_escuela_path(escuela), class: 'btn btn-sm float-right', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+              = glyph 'pencil'
+          = link_to escuela_path(escuela), class: 'btn btn-sm float-right', title: "#{ t('.show', default: t('helpers.links.show')) }" do
+            = glyph 'search'
 
           - if current_admin.maestros?
-            %td
-              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Inscripción'}
-                = check_box nil, :activa, checked: escuela.inscripcion_abierta, class: 'onoffswitch-checkbox', id: "swidth_#{escuela.id}", onChange: "switches('#{set_inscripcion_abierta_escuela_path(escuela.id)}')"
-                %label.onoffswitch-label{for: "swidth_#{escuela.id}"}
-                  %span.onoffswitch-inner
-                  %span.onoffswitch-switch
+            %td= agregar_onoffswitch 'Habilitar Inscripción', "inscrip#{escuela.id}", set_inscripcion_abierta_escuela_path(escuela.id), escuela.inscripcion_abierta
 
-            %td
-              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Retiro y Eliminación Asignaturas'}
-                = check_box nil, :activa, checked: escuela.retiro_asignaturas_habilitado?, class: 'onoffswitch-checkbox', id: "swidthRetiro#{escuela.id}", onChange: "switches('#{set_habilitar_retiro_asignaturas_escuela_path(escuela.id)}')"
-                %label.onoffswitch-label{for: "swidthRetiro#{escuela.id}"}
-                  %span.onoffswitch-inner
-                  %span.onoffswitch-switch
+            %td= agregar_onoffswitch 'Habilitar Retiro y Eliminación Asignaturas', "retiro#{escuela.id}", set_habilitar_retiro_asignaturas_escuela_path(escuela.id), escuela.retiro_asignaturas_habilitado?
 
-            %td
-              .onoffswitch.tooltip-btn{'data_toggle': :tooltip, title: 'Habilitar Cambio de Sección'}
-                = check_box nil, :activa, checked: escuela.cambio_seccion_habilitado?, class: 'onoffswitch-checkbox', id: "swidthCambio#{escuela.id}", onChange: "switches('#{set_habilitar_cambio_seccion_escuela_path(escuela.id)}')"
-                %label.onoffswitch-label{for: "swidthCambio#{escuela.id}"}
-                  %span.onoffswitch-inner
-                  %span.onoffswitch-switch
-
-:javascript
-
-  function switches(url){
-    $.ajax({
-      url: url,
-      type: 'POST',
-      dataType: 'json', 
-      beforeSend: function() {
-        $('#cargando').modal({keyboard: false, show: true, backdrop: 'static'})
-      },
-      complete: function(){$('#cargando').modal('hide')}
-        
-    });
-
-  }
+            %td= agregar_onoffswitch 'Habilitar Cambio de Sección', "cambioSeccion#{escuela.id}", set_habilitar_cambio_seccion_escuela_path(escuela.id), escuela.cambio_seccion_habilitado?

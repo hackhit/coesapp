@@ -36,6 +36,10 @@ class Escuela < ApplicationRecord
 
 	#FUNCTIONS
 
+	def inscripciones
+		inscripcionsecciones
+	end
+
 	def self.actualizar_parciales_201802A
 		e = Escuela.find 'IDIO'
 		ss = e.secciones.calificadas.del_periodo ('2018-02A')

@@ -5,9 +5,8 @@
   - @asignaturas = @escuelas.first.asignaturas
   = render 'admin/asignaturas/index_colocar_tabla'
 
-= render 'admin/secciones/modal_form'
-
-= render 'admin/escuelas/clonar_periodo'
+= render 'admin/secciones/modal_form' if current_admin and ((current_admin.autorizado? 'Secciones', 'create') or (current_admin.autorizado? 'Secciones', 'update'))
+= render 'admin/escuelas/clonar_periodo' if (current_admin and current_admin.autorizado? 'Escuelas', 'clonar_programaciones')
 
 :javascript
 
