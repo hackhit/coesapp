@@ -1,9 +1,3 @@
-- model_class = Escuela
-.fieldset
-  %dl
-    %dt.label.label-default= model_class.human_attribute_name(:descripcion)
-    %dd
-      %pre.prettyprint= @escuela.descripcion
 
 .form-group
   = link_to t('.back', default: t("helpers.links.back")), escuelas_path, class: 'btn btn-outline-secondary btn-sm'
@@ -11,3 +5,11 @@
   - if current_admin.ninja?
     = link_to escuela_path(@escuela), method: "delete", data: { confirm: t('.confirm', default: t("helpers.links.confirm", default: 'Are you sure?')) }, class: 'btn btn-outline-danger btn-sm' do
       = glyph 'trash'
+
+%nav
+  .nav.nav-tabs
+    = link_to 'Profesores', "#profes", "data-toggle": :tab, class: "nav-item nav-link active"
+  .tab-content
+    .tab-pane#profes.border.p-3.border-top-0.active
+      = render partial: '/admin/profesores/index', locals: {profesores: @escuela.profesores}
+
