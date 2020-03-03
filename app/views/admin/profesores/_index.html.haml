@@ -1,0 +1,83 @@
+.border.p-3
+  %table#tableProfes.table.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+    %thead
+      %tr
+        %th CI
+        %th Nombres 
+        %th Apellidos
+        %th Móvil
+        %th Local
+        %th Departamento
+        %th Correo
+        %th Sexo
+        %th Califi
+        %th Pendient
+
+    %tbody
+      - profesores.each do |profesor| 
+        %tr
+          %td= link_to profesor.usuario_id, usuario_path(profesor.usuario)
+          %td= profesor.usuario.apellidos.upcase
+          %td= profesor.usuario.nombres.upcase
+          %td= profesor.usuario.telefono_movil
+          %td= profesor.usuario.telefono_habitacion
+          %td= profesor.departamento.descripcion.upcase if profesor.departamento
+          %td= profesor.usuario.email
+          %td= profesor.usuario.sexo
+          %td
+            %span.badge.badge-info= profesor.secciones.sin_calificar.count
+          %td
+            %span.badge.badge-info= profesor.secciones.sin_calificar.count
+            
+
+
+
+:javascript
+  $(document).ready(function(){
+    $('#tableProfes').DataTable({
+
+    responsive: true,
+    dom: '<"html5buttons"B>lTfgitp',
+    buttons: [
+      {extend: 'excel', text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `Excel Lista Profesores de la Escuela #{@escuela.descripcion.titleize}`, className: 'btn btn-sm btn-outline-info'},
+      {extend: 'print', 
+        text: "<span class='glyphicon glyphicon-download'></span> Excel", title: `Excel Lista Profesores de la Escuela #{@escuela.descripcion.titleize}`, className: 'btn btn-sm btn-outline-info mr-3',
+        customize: function (win){
+          $(win.document.body).addClass('white-bg');
+          $(win.document.body).css('font-size', '10px');
+
+          $(win.document.body).find('table')
+            .addClass('compact')
+            .css('font-size', 'inherit');
+        }
+      }
+    ],
+    language: 
+      {
+        "sProcessing":     "Procesando...",
+        "sLengthMenu":     "Mostrar _MENU_ registros",
+        "sZeroRecords":    "No se encontraron resultados",
+        "sEmptyTable":     "Ningún dato disponible en esta tabla",
+        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix":    "",
+        "sSearch":         "Buscar:",
+        "sUrl":            "",
+        "sInfoThousands":  ",",
+        "sLoadingRecords": "Cargando...",
+        "oPaginate": {
+          "sFirst":    "Primero",
+          "sLast":     "Último",
+          "sNext":     "Siguiente",
+          "sPrevious": "Anterior"
+        },
+        "oAria": {
+          "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        }
+      }
+
+
+    });
+  })

@@ -17,7 +17,7 @@
     - @escuelas.each do |escuela|
       - @ins = escuela.inscripcionsecciones.del_periodo(current_periodo.id)
       %tr
-        %td.align-middle= escuela.id
+        %td.align-middle= link_to escuela.id, escuela_path(escuela) 
         %td.align-middle= escuela.descripcion
         %td.align-middle.text-right= @ins.secciones_creadas.count#escuela.secciones.del_periodo(current_periodo.id).count
         %td.align-middle.text-right= @ins.estudiantes_inscritos.count
