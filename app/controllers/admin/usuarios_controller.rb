@@ -201,7 +201,8 @@ module Admin
         ids = @estudiante.inscripcionsecciones.select{|ins| ins.pci_pendiente_por_asociar?}.collect{|i| i.id}
         @secciones_pci_pendientes = Inscripcionseccion.where(id: ids)#select{|ins| ins.pci_pendiente_por_asociar?}.ids
       end  
-      @escuelas_disponibles = @estudiante ? current_admin.escuelas.reject{|es| @estudiante.escuelas.include? es} : current_admin.escuelas
+      # @escuelas_disponibles = @estudiante ? current_admin.escuelas.reject{|es| @estudiante.escuelas.include? es} : current_admin.escuelas
+      @escuelas_disponibles = @estudiante ? Escuela.all.reject{|es| @estudiante.escuelas.include? es} : Escuela.all
 
       if @profesor
         @secciones_pendientes = @profesor.secciones.sin_calificar.order('periodo_id DESC, numero ASC')

@@ -51,7 +51,7 @@
               = link_to "#pane_#{escuela.id}", "data-toggle": :tab, class: "nav-item nav-link #{activeTab}", onclick: "setTab('tabEscuela', '#{escuela.id}')" do
                 = "#{escuela.descripcion.titleize}"
             .nav-item.nav-link
-              - if @escuelas_disponibles.any?
+              - if (current_admin and current_admin.autorizado? 'Grados', 'agregar') #@escuelas_disponibles.any?
                 = simple_icon_toggle_modal "Registrar a #{@nickname} en una Escuela", 'success', 'plus', 'agregarGrado'
                 
             - if @estudiante #and @estudiante.valido_para_inscribir? current_periodo.id
@@ -76,8 +76,8 @@
               - periodo_ids = @inscripciones.joins(:seccion).group("secciones.periodo_id").count.keys
               %h6.alert.alert-info.pb-ms-3
                 = "Escuela: #{@escuela.descripcion.titleize}"
-                - if current_admin.maestros?
-                  = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'trash', "eliminar#{escuela.id}"
+                - if (current_admin and current_admin.autorizado? 'Grados', 'eliminar')
+                  = simple_icon_toggle_modal 'Eliminar Escuela', 'danger', 'minus', "eliminar#{escuela.id}"
                   = render partial: '/admin/estudiantes/eliminar_escuela'
               .row
                 .col-md-6

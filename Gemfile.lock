@@ -237,6 +237,8 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
+    toastr-rails (1.0.3)
+      railties (>= 3.1.0)
     ttfunk (1.5.1)
     turbolinks (5.2.0)
       turbolinks-source (~> 5.2)
@@ -295,6 +297,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   summernote-rails (~> 0.8.10.0)
+  toastr-rails
   turbolinks (~> 5)
   turnout
   tzinfo-data

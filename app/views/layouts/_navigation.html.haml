@@ -40,8 +40,8 @@
                 Reportes
               .dropdown-menu{"aria-labelledby" => "Reportes"}
                 = link_to 'Reporte PIC', secciones_path, class: 'dropdown-item' if (current_admin.autorizado? 'Secciones', 'index')
-                = link_to 'Citas Horarias', citas_horarias_grados_path, class: 'dropdown-item' if (current_admin.autorizado? 'Grados', 'citas_horarias')
-                = link_to 'Tipos de Estudiante', index_nuevos_grados_path, class: 'dropdown-item' if (current_admin.autorizado? 'Grados', 'index_nuevos')
+                = link_to 'Citas Horarias', citas_horarias_grados_path, class: 'dropdown-item' if (current_admin.autorizado? 'Grados', 'cita_horaria')
+                = link_to 'Tipos de Estudiante', index_nuevos_grados_path, class: 'dropdown-item' if (current_admin.autorizado? 'Grados', 'index_nuevo')
 
           - if (current_admin.autorizado? 'Usuarios', 'create') and (current_admin.autorizado? 'Usuarios', 'set_estudiante') or (current_admin.autorizado? 'Usuarios', 'set_profesor')
             %li.nav-item.dropdown{class: "#{'active' if controller_name.eql? 'usuarios'}"}

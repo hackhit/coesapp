@@ -22,18 +22,7 @@
             = glyph 'edit'
         
         %td
-          =# agregar_onoffswitch 'habilitar', "switches('#{habilitar_comentario_path(comentario.id)}', '#{comentario.id}')", comentario.id, true
-
-
-          = content_tag :b, class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'habilitar' do
-            .onoffswitch
-              - onChange = "switches('#{habilitar_comentario_path(comentario.id)}');"
-              = check_box nil, :activa, checked: comentario.habilitado, class: 'onoffswitch-checkbox', id: "swidth_#{comentario.id}", onChange: onChange
-              %label.onoffswitch-label{for: "swidth_#{comentario.id}"}
-                %span.onoffswitch-inner
-                %span.onoffswitch-switch
-
-
+          = agregar_onoffswitch 'habilitar', comentario.id, habilitar_comentario_path(comentario.id), comentario.habilitado
 
         %td
           = link_to comentario, method: :delete, data: { confirm: 'Are you sure?' } do
@@ -44,15 +33,3 @@
 = link_to new_comentario_path, class: 'btn btn-sm btn-outline-success' do
   = glyph 'plus'
   Nueva Nota
-
-
-:javascript
-
-  function switches(url){
-    $.ajax({
-      url: url,
-      type: 'GET',
-      dataType: 'json', 
-      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))}  
-    });
-  }

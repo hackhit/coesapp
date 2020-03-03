@@ -78,11 +78,16 @@ class ApplicationController < ActionController::Base
 		funcion = Restringida.where(controlador: controller_name, accion: accion).first
 
 		if funcion and current_usuario and (current_admin and !current_admin.maestros?) and not(current_usuario.autorizado?(controller_name, accion))
-			flash[:danger] = 'No posee los privilegios para ejecutar la acción solicitada'
+			msg = 'No posee los privilegios para ejecutar la acción solicitada'
 			respond_to do |format|
-				format.html {redirect_back fallback_location: index2_secciones_path}
-				format.json {render json: 'No posee los privilegios para ejecutar la acción solicitada', status: :unprocessable_entity }
+				format.html do 
+					flash[:danger] = msg
+					redirect_back fallback_location: index2_secciones_path
+				end
+				format.json {render json: {data: msg, status: :success, type: :error} }
 			end
+
+			# render json: {data: msg, status: :success}
 		end
 	end
 

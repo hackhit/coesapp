@@ -9,7 +9,12 @@ module Admin
 
     def habilitar
       @comentario.habilitado = !@comentario.habilitado
-      @comentario.save
+      if @comentario.save
+        aux = @comentario.habilitado ? 'Comentario Habilitado' : 'Comentario Deshabilitado'
+        render json: {data: aux, status: :success}
+      else
+        render json: {data: "Error al intentar cambiar la noticia : #{@comentario.errors.messages.to_sentence()}", status: :success}
+      end
     end
 
     def index

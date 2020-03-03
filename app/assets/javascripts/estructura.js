@@ -174,6 +174,8 @@ function switches(url){
 	});
 }
 
+
+
 // function sendFormViaAjax(event, este){
 // 	event.preventDefault();
 // 	console.log(este);

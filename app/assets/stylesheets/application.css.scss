@@ -17,8 +17,10 @@
  @import 'bootstrap/glyphicons';
  @import "summernote-bs4";
  @import "summernote-custom-theme.min";
+ 
  *= require select2
  *= require select2-bootstrap
+ *= require toastr
  *= require_tree .
  *= require_self
 
