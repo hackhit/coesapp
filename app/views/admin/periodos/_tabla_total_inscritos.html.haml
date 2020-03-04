@@ -8,7 +8,7 @@
       - current_admin.escuelas.each do |e| 
         %th.tooltip-btn.thFiltrables{'data_toggle': :tooltip, title: e.descripcion, class: "fil#{e.id}"}= e.id
 
-      - if current_admin and ((current_admin.autorizado? 'Periodos', 'update') or (current_admin.autorizado? 'Periodos', 'delete'))
+      - if current_admin and ((current_admin.autorizado? 'Periodos', 'update') or (current_admin.autorizado? 'Periodos', 'destroy'))
         %th Opciones
   %tbody
     - @periodos.each do |periodo|
@@ -32,13 +32,13 @@
               - if escupe = Escuelaperiodo.where(escuela_id: e.id, periodo_id: periodo.id).first
                 = link_to_if((current_admin and current_admin.autorizado?('Escuelaperiodos', 'index')), raw("#{glyph('download')} #{val}"), escuelaperiodo_path(escupe.id), class: 'tooltip-btn', 'data-toggle': :tooltip, title: 'Total de Inscripciones', 'data-placement': :right )
 
-        - if current_admin and ((current_admin.autorizado? 'Periodos', 'update') or (current_admin.autorizado? 'Periodos', 'delete'))
+        - if current_admin and ((current_admin.autorizado? 'Periodos', 'update') or (current_admin.autorizado? 'Periodos', 'destroy'))
           %td
             - if (current_admin.autorizado? 'Periodos', 'update')
               
               = link_to edit_periodo_path(periodo), class: 'btn btn-sm tooltip-btn', 'data-toggle': :tooltip, title: 'Editar Periodo', 'data-placement': :left  do
                 = glyph 'pencil'
-            - if (current_admin.autorizado? 'Periodos', 'delete')
+            - if (current_admin.autorizado? 'Periodos', 'destroy')
 
 
               - if (!periodo.inscripciones.any?)

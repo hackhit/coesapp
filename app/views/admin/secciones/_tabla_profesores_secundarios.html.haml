@@ -8,7 +8,6 @@
 						= link_to "#{desasignar_profesor_secundario_seccion_path(seccion.id)}?profesor_id=#{profe.usuario_id}", {'data-confirm' => "¿Está seguro de esta acción?", class: 'tooltip-btn', 'data_toggle': :tooltip, title: 'Desasignar Este Profesor'},{role: 'button'} do
 							%i.glyphicon.glyphicon-minus.text-danger
 
-	- if current_admin.mas_altos?
+	- if (current_admin and current_admin.autorizado? 'Secciones', 'agregar_profesor_secundario')
 		%tr
-			%td
-				= simple_toggle 'javascript:void(0)', '', 'Agregar Profesor Secundario', 'success', 'plus', "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Agregar Profesor secunadrio a #{seccion.descripcion}');$('#profesor > #secundario').val(true);$('#editar_profesor').modal();"
+			%td= simple_toggle 'javascript:void(0)', '', 'Agregar Profesor Secundario', 'success', 'plus', "$('#profesor > #id').val('#{seccion.id}');$('#editar_profesor_titulo').html('Agregar Profesor secunadrio a #{seccion.descripcion}');$('#profesor > #secundario').val(true);$('#editar_profesor').modal();"
