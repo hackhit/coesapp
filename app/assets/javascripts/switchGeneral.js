@@ -1,8 +1,8 @@
 $(document).ready(function(){
 	$('.switchGeneral').on('change',function(){
 		let obj = $(this);
-      	let url = obj.attr('url');
-      	toastr.options.timeOut = 1500;
+		let url = obj.attr('url');
+		toastr.options.timeOut = 1500;
 		$.ajax({
 			url: url,
 			type: 'GET',
