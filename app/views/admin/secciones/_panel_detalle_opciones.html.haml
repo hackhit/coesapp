@@ -1,10 +1,11 @@
-- unless seccion.inscripciones.any?
-	- if seccion.horario
-		= badge_icon_tooltip edit_horario_path(seccion.horario), 'badge-primary btn-sm ml-md-1 p-md-1', 'Editar Horario','time', 'pencil'
+- if current_admin and (current_admin.autorizado?('Horarios', 'create') or current_admin.autorizado?('Horarios', 'update'))
+	- unless seccion.inscripciones.any?
+		- if seccion.horario
+			= badge_icon_tooltip edit_horario_path(seccion.horario), 'badge-primary btn-sm ml-md-1 p-md-1', 'Editar Horario','time', 'pencil' if current_admin.autorizado?('Horarios', 'update')
+		- else
+			= badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario','time', 'plus' if current_admin.autorizado?('Horarios', 'create')
 	- else
-		= badge_icon_tooltip "#{new_horario_path}?seccion_id=#{seccion.id}", 'badge-success btn-sm ml-md-1 p-md-1', 'Agregar Horario','time', 'plus'
-- else
-	.badge.p-md-1.align-middle.text-center.tooltip-btn.bg-dark.text-white{'data-toggle': 'tooltip', title: "Posse inscripciones. Elimínelas para poder agregar o modificar horarios"}= glyph 'time'
+		.badge.p-md-1.align-middle.text-center.tooltip-btn.bg-secondary.text-white{'data-toggle': 'tooltip', title: "Posse inscripciones. Elimínelas para poder agregar o modificar horarios"}= glyph 'time'
 
 - if current_admin
 	= badge_icon_tooltip notas_seccion_descargar_path(seccion.id, :pdf), 'badge-info btn-sm p-md-1', 'Descargar Acta PDF', 'file'
@@ -13,18 +14,21 @@
 
 	-if seccion.calificada
 		= badge_icon_tooltip acta_examen_excel_descargar_path(seccion.id), 'badge-success btn-sm p-md-1', 'Descargar Acta en Excel', 'file', nil, 'X'
+- if (current_admin and current_admin.autorizado? 'Secciones', 'show')
+	= badge_icon_tooltip seccion_path(seccion), 'badge-info btn-sm p-md-1', 'Ver Detalle / Calificar', 'search', 'check'
 
-= badge_icon_tooltip seccion_path(seccion), 'badge-info btn-sm p-md-1', 'Ver Detalle / Calificar', 'search', 'check'
+- if (current_admin and current_admin.autorizado? 'Secciones', 'destroy')
+	- unless seccion.estudiantes.any?
+		%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
+			= link_to "", {href: seccion_path(seccion), class: 'badge badge-danger p-md-1', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
+				= glyph 'trash'
+	- else
+		.badge.p-md-1.align-middle.text-center.tooltip-btn.bg-secondary.text-white.disabled{'data-toggle': 'tooltip', title: "Elimine las inscripciones para activar ésta opción"}= glyph 'trash'
 
-- unless seccion.estudiantes.any?
-
-	%b.tooltip-btn{'data_toggle': :tooltip, title: 'Eliminar Seccion'}
-		= link_to "", {href: seccion_path(seccion), class: 'badge badge-danger p-md-1', data: {confirm: "Se perderan los estudiantes inscritos en la sección, ¿Está seguro de esta acción?"}, method: :delete} do
-			= glyph 'trash'
 			
-- if current_admin.maestros? and seccion.calificada
+- if (current_admin and current_admin.autorizado? 'Secciones', 'habilitar_calificar') and seccion.calificada
 	= badge_icon_tooltip habilitar_calificar_seccion_path(seccion.id), 'badge-warning btn-sm p-md-1', 'Habilitar para Calificar Nuevamente', 'off'
 
-
-= link_to 'javascript:void(0)', class: "tooltip-btn badge badge-primary btn-sm p-md-1 badge-primary editarSeccion", 'data-toggle': :tooltip, title: 'Editar Sección', onclick: "setAtributosSeccionForm(this);$('#newSeccion').modal();", data: {seccion: seccion.to_json} do
-	=glyph 'pencil'
+- if (current_admin and current_admin.autorizado? 'Secciones', 'update')
+	= link_to 'javascript:void(0)', class: "tooltip-btn badge badge-primary btn-sm p-md-1 badge-primary editarSeccion", 'data-toggle': :tooltip, title: 'Editar Sección', onclick: "setAtributosSeccionForm(this);$('#newSeccion').modal();", data: {seccion: seccion.to_json} do
+		=glyph 'pencil'

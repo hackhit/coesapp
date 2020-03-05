@@ -19,7 +19,8 @@
 
 	.border.p-md-2.mt-md-3#responseTotal{class: hidden}		
 		.text-center
-			- if (current_admin and current_admin.autorizado? 'Secciones', 'create') and controller_name.eql? 'secciones' or (@controller and @controller.eql? 'secciones')
+			- if (current_admin and current_admin.autorizado? 'Secciones', 'create') and (controller_name.eql? 'secciones' or (@controller and @controller.eql? 'secciones'))
+
 				#btnNewSeccion{class: hidden}= btn_plus_seccion_modal @asignatura
 			%a#descAsignatura{href: "#{asignatura_path(@asignatura.id) if @asignatura}"}= @asignatura.descripcion_id_con_creditos if @asignatura
 		#tableResponse

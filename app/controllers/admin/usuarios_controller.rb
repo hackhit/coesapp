@@ -3,13 +3,13 @@ module Admin
     before_action :filtro_logueado
     before_action :filtro_administrador, except: [:edit, :update, :countries, :getMunicipios, :getParroquias]
     before_action :filtro_admin_mas_altos!, except: [:busquedas, :index, :show, :edit, :update, :countries, :getMunicipios, :getParroquias]
-    before_action :filtro_super_admin!, only: [:set_administrador, :set_estudiante, :set_profesor]
+    before_action :filtro_super_admin!, only: [:set_administrador]
     before_action :filtro_ninja!, only: [:destroy, :delete_rol]
 
 
-    before_action :filtro_autorizado#, only: [:create, :update, :destroy, :set_estudiante, :set_administrador, :set_profesor, :resetear_contrasena, :cambiar_ci]
+    # before_action :filtro_autorizado#, only: [:create, :update, :destroy, :set_estudiante, :set_administrador, :set_profesor, :resetear_contrasena, :cambiar_ci]
 
-    before_action :filtro_autorizado, except: :update, if: :mismo_usuario?
+    before_action :filtro_autorizado#, except: :update, if: :mismo_usuario?
 
     before_action :set_usuario, except: [:index, :new, :create, :busquedas, :countries, :getMunicipios, :getParroquias, :no_mismo_usuario?]
 
