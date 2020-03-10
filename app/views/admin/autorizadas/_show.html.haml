@@ -36,7 +36,7 @@
                     %tboby
                       - restringidas.where(controlador: controlador).order(nombre_publico: :asc).each do |rest| 
                         %tr
-                          %td= "#{rest.nombre_publico}"
+                          %td= "#{rest.nombre_publico} - #{rest.accion}"
 
                           %td{style: 'width:20%'}
                             .onoffswitch

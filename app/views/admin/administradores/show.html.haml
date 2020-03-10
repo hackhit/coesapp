@@ -3,8 +3,9 @@
   - if current_admin.maestros?
     = simple_icon_toggle_modal_edit "Cambiar Tipo de Administrador a #{@nickname}", 'setAdmin'
     = render '/admin/usuarios/set_administrador'
-.row.no-gutters
-  .col-4
-    - @perfiles = Perfil.all.order(nombre: :asc)
-    = render template: '/admin/perfiles/index'
-  .col-8= render '/admin/autorizadas/show'
+- unless @administrador.maestros?
+  .row.no-gutters
+    .col-4
+      - @perfiles = Perfil.all.order(nombre: :asc)
+      = render template: '/admin/perfiles/index'
+    .col-8= render '/admin/autorizadas/show'

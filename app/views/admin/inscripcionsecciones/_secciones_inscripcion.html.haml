@@ -1,7 +1,7 @@
 
 %h6.titulo.m-2
-	= "Secciones disponibles para:" 
-	%a.small#descAsignatura{href: "#{asignatura_path(@asignatura.id) if @asignatura}"}= @asignatura.descripcion_id_con_creditos if @asignatura
+	= "Secciones disponibles para:"
+	%a.small#descAsignatura{href: "#{asignatura_path(@asignatura.id) if (@asignatura and (current_admin and current_admin.autorizado? 'Asignaturas', 'show'))}"}= @asignatura.descripcion_id_con_creditos if @asignatura
 .p-3
 	%table#resultado.table.table-bordered.table-striped.table-sm.table-hover
 		%thead
@@ -10,7 +10,8 @@
 				%th.align-middle Profesor Tutor (Calificador)
 				%th.align-middle Horario
 				%th.align-middle{style: 'width: 80px'} Estado
-				%th.align-middle= borrar_seleccion_link object.id
+				- if (current_admin and current_admin.autorizado? 'Inscripcionsecciones', 'inscribir')
+					%th.align-middle= borrar_seleccion_link object.id
 
 		%tbody{id: object.id}
 			- secciones.each do |seccion|
@@ -20,7 +21,7 @@
 				- @clase = 'table-danger' if volumen <= 0
 				- @clase = 'table-success' if volumen >= 3
 				%tr{class: @clase}
-					%td.align-middle.text-center= link_to seccion.numero, "#{seccion_path(seccion)}?back=inscripcion&ci=#{@estudiante.id}"
+					%td.align-middle.text-center= link_to_if (current_admin and current_admin.autorizado? 'Secciones', 'show'), seccion.numero, "#{seccion_path(seccion)}?back=inscripcion&ci=#{@estudiante.id}"
 					%td= seccion.descripcion_profesor_asignado
 					%td= seccion.horario.descripcion if seccion.horario
 					%td.align-middle.text-center{style: 'font-size: larger'}
@@ -29,27 +30,29 @@
 						= "/"
 						%b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Inscritos'}		
 							%span.badge.badge-light= seccion.total_estudiantes
-					%td.align-middle.text-center
-						- if !inscritas_o_aprobadas and volumen > 0
-							=# radio_button_tag "[secciones][#{seccion.id}]", nil, false, class: seccion.asignatura_id, onclick: "agregar_a_seleccion('#{seccion.asignatura_id}','#{seccion.numero}')"
-							- aux = Hash.new
-							- a = seccion.asignatura
+					- if (current_admin and current_admin.autorizado? 'Inscripcionsecciones', 'inscribir')
+						%td.align-middle.text-center
+							- if !inscritas_o_aprobadas and volumen > 0
+								=# radio_button_tag "[secciones][#{seccion.id}]", nil, false, class: seccion.asignatura_id, onclick: "agregar_a_seleccion('#{seccion.asignatura_id}','#{seccion.numero}')"
+								- aux = Hash.new
+								- a = seccion.asignatura
 
 
-							- bloques = seccion.horario ? seccion.horario.bloques_schedule.to_json : []
+								- bloques = seccion.horario ? seccion.horario.bloques_schedule.to_json : []
 
-							-# aux = [seccion.periodo_id, a.id, a.departamento.descripcion, a.catedra.descripcion, a.descripcion, a.creditos,  seccion.numero, seccion.id, ]
-							- aux[:cells] = {periodo_id: seccion.periodo_id, asig_id: a.id, esc: seccion.escuela.descripcion, dpto: a.departamento.descripcion,  cat: a.catedra.descripcion, desc: a.descripcion, num: seccion.numero, cred: a.creditos}
-							- if a.pci?(current_periodo.id) #and @escuelas
-								- value = (@escuelas.count.eql? 1) ? @escuelas.first.id : ""
-								- content = collection_select :secciones, seccion.id, @escuelas, :id, :descripcion, {selected: value, prompt: true}, { class: 'pci_seleccion form-control form-control-sm', required: true}
-								- aux[:select] = {content: content}
+								-# aux = [seccion.periodo_id, a.id, a.departamento.descripcion, a.catedra.descripcion, a.descripcion, a.creditos,  seccion.numero, seccion.id, ]
+								- aux[:cells] = {periodo_id: seccion.periodo_id, asig_id: a.id, esc: seccion.escuela.descripcion, dpto: a.departamento.descripcion,  cat: a.catedra.descripcion, desc: a.descripcion, num: seccion.numero, cred: a.creditos}
+								- if a.pci?(current_periodo.id) #and @escuelas
+									- value = (@escuelas.count.eql? 1) ? @escuelas.first.id : ""
+									- content = collection_select :secciones, seccion.id, @escuelas, :id, :descripcion, {selected: value, prompt: true}, { class: 'pci_seleccion form-control form-control-sm', required: true}
+									- aux[:select] = {content: content}
+									
+								- aux[:sec] = {id: seccion.id}
+
+								-# aux[:asig] = {id: a.id, cred: a.creditos, desc: a.descripcion, dpto: a.departamento.descripcion, cat: a.catedra.descripcion}
+								-# aux[:sec] = {num: seccion.numero, id: seccion.id, periodo_id: seccion.periodo_id}
 								
-							- aux[:sec] = {id: seccion.id}
-
-							-# aux[:asig] = {id: a.id, cred: a.creditos, desc: a.descripcion, dpto: a.departamento.descripcion, cat: a.catedra.descripcion}
-							-# aux[:sec] = {num: seccion.numero, id: seccion.id, periodo_id: seccion.periodo_id}
-							= radio_button_tag seccion.asignatura_id, seccion.id, false, id: seccion.id, class: seccion.asignatura_id, onchange: "agregarASeleccionas(#{aux.to_json}); addHorario(#{bloques}, '#{seccion.asignatura_id}');"
+								= radio_button_tag seccion.asignatura_id, seccion.id, false, id: seccion.id, class: seccion.asignatura_id, onchange: "agregarASeleccionas(#{aux.to_json}); addHorario(#{bloques}, '#{seccion.asignatura_id}');"
 =# render partial: '/admin/inscripcionsecciones/tabla_selecciones', locals: {escuelas: @escuelas}
 
 =# render partial: '/admin/horarios/horario_secciones'

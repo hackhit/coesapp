@@ -1,25 +1,24 @@
-
-%h6.alert.alert-info.p-2
-  Roles:
-  - @usuario.roles_generales.each do |r|    
-    = r.to_s.titleize
-    - if current_admin.ninja?
-      = content_tag :b, class: 'tooltip-btn', 'data_toggle'=> :tooltip, title: "Eliminar rol como #{r.titleize}"  do
-        = link_to "#{delete_rol_usuario_path(@usuario)}?#{r.downcase}=true", class: 'btn btn-sm', data: { confirm: 'Esta acción eliminará irreversiblemente todas las asociaciones del rol de usuario como asignaturas y calificaciones. ¿Está Seguro?'} do
-          .text-danger= glyph 'minus'
-
-- if current_admin.altos?
-  %h6.alert.alert-success.p-2
-    Agregar Rol:
-    = render '/admin/usuarios/set_estudiante'
-    - unless @estudiante
-      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'agregarGrado'
-    - if !@administrador and current_admin.maestros?
-      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'setAdmin'
-      = render '/admin/usuarios/set_administrador'
-    - unless @profesor
-      = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'setProfesor'
-      = render '/admin/usuarios/set_profesor'
+.row
+  .col-md-6
+    %h6.alert.alert-info.p-2
+      Roles Existentes:
+      - @usuario.roles_generales.each do |r|    
+        = r.to_s.titleize
+        - if current_admin and (current_admin.autorizado? 'Usuarios', 'delete_rol')
+          = link_to "#{delete_rol_usuario_path(@usuario)}?#{r.downcase}=true", class: 'tooltip-btn btn btn-sm', 'data_toggle': :tolltip, title: "Eliminar rol como #{r.titleize}", data: { confirm: 'Esta acción eliminará irreversiblemente todas las asociaciones del rol de usuario como asignaturas y calificaciones. ¿Está Seguro?'} do
+            .text-danger= glyph 'trash'
+  .col-md-6
+    %h6.alert.alert-success.p-2
+      Roles por agregar:
+      = render '/admin/usuarios/set_estudiante'
+      - if !@estudiante and current_admin and (current_admin.autorizado? 'Usuarios', 'set_estudiante')
+        = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Estudiante", "Estudiante", 'agregarGrado'
+      - if !@administrador and current_admin.maestros?
+        = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Administrador", "Administrador", 'setAdmin'
+        = render '/admin/usuarios/set_administrador'
+      - if !@profesor and current_admin and (current_admin.autorizado? 'Usuarios', 'set_profesor')
+        = btn_toggle_modal 'plus', "Registrar a #{@nickname} como Profesor", "Profesor", 'setProfesor'
+        = render '/admin/usuarios/set_profesor'
 %nav
   .nav.nav-tabs
     - activeTab = (session[:usuarioTypeTab].eql? 'personal') ? 'active' : '' 
@@ -94,8 +93,6 @@
 
                   = render partial: '/admin/historialplanes/index', locals: {grado: grado}
                   = render '/admin/combinaciones/index' if @escuela.id.eql? 'IDIO'
-
-
               -# @curso = @estudiante.grados.where(escuela_id: escuela.id).first
               -# @inscripciones = @curso.inscripciones
               - @periodos = Periodo.where(id: periodo_ids).order(inicia: :desc)

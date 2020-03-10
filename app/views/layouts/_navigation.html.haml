@@ -24,7 +24,8 @@
                 = link_to 'Planes', planes_path, class: 'dropdown-item' if (current_admin.autorizado? 'Planes', 'index')
                 = link_to 'Departamentos', departamentos_path, class: 'dropdown-item' if (current_admin.autorizado? 'Departamentos', 'index')
                 = link_to 'Cátedras', catedras_path, class: 'dropdown-item' if (current_admin.autorizado? 'Catedras', 'index')
-                = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item' if (current_admin.autorizado? 'Importaciones', 'index')
+                - if (current_admin.autorizado? 'Importador', 'importar_estudiantes') or (current_admin.autorizado? 'Importador', 'importar_profesores') or (current_admin.autorizado? 'Importador', 'importar_seccion')
+                  = link_to 'Importaciones', {controller: :importador, action: :index}, class: 'dropdown-item'
                 = link_to 'Asignaturas', asignaturas_path, class: 'dropdown-item' if (current_admin.autorizado? 'Asignaturas', 'index') and (current_admin.escuelas.count.eql? 1)
 
           - if (current_admin.autorizado? 'Asignaturas', 'index') and (current_admin.escuelas.count > 1)

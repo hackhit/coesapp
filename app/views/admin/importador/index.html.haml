@@ -1,6 +1,9 @@
 %br
 .border.p-md-3
-  = link_to 'Profesores', {controller: 'importador', action: 'seleccionar_archivo_profesores'}, class: 'btn btn-sm btn-outline-primary mr-md-3'
-  = link_to 'Estudiantes', {controller: 'importador', action: 'seleccionar_archivo_estudiantes'}, class: 'btn btn-sm btn-outline-primary mr-md-3'
-  = link_to 'Inscripciones', {controller: 'importador', action: 'seleccionar_archivo_secciones'}, class: 'btn btn-sm btn-outline-primary'
+  - if (current_admin.autorizado? 'Importador', 'importar_profesores')
+    = link_to 'Profesores', {controller: 'importador', action: 'seleccionar_archivo_profesores'}, class: 'btn btn-sm btn-outline-primary mr-md-3'
+  - if (current_admin.autorizado? 'Importador', 'importar_estudiantes')
+    = link_to 'Estudiantes', {controller: 'importador', action: 'seleccionar_archivo_estudiantes'}, class: 'btn btn-sm btn-outline-primary mr-md-3'
+  - if (current_admin.autorizado? 'Importador', 'importar_seccion')
+    = link_to 'Inscripciones', {controller: 'importador', action: 'seleccionar_archivo_secciones'}, class: 'btn btn-sm btn-outline-primary'
 

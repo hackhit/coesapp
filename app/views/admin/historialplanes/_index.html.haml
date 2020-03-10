@@ -2,7 +2,7 @@
 - @planes = @escuela.planes
 - @periodos = @escuela.periodos.order('inicia DESC')
 %h6.titulo.mb-md-2
-  - if current_admin.altos? #and @estudiante.planes.count < 3
+  - if current_admin and (current_admin.autorizado? 'Historialplanes', 'create')
     .float-left.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nuevo Plan de Estudio'}
       = link_to('javascript:void(0)', { class: 'text-success m-1', onclick: "return $('#nuevo_plan_periodo_#{@escuela.id}').modal();", 'data_toggle': :modal }) do
         = glyph "plus"
@@ -21,13 +21,15 @@
     %tr
       %th
         = hp.descripcion
-        - if current_admin.mas_altos?
+        - if current_admin and (current_admin.autorizado? 'Historialplanes', 'update')
           %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar plan de estudio'}
             = link_to('javascript:void(0)', {onclick: "return $('##{hp.plan_id}_periodo').modal();", 'data_toggle' => 'modal'}) do
               = glyph 'edit'
+        - if current_admin and (current_admin.autorizado? 'Historialplanes', 'destroy')
           %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Eliminar plan de estudio'}
             = link_to(hp, method: :delete, 'data-confirm' => '¿Está seguro de eliminar el plan de estudio para el estudiante?', class: 'text-danger') do
               = glyph 'trash'
+        - if current_admin and (current_admin.autorizado? 'Historialplanes', 'destroy' or current_admin.autorizado? 'Historialplanes', 'update')
           .modal.hide.fade{tabindex: "-1", role: "dialog", 'aria-labelledby' => "myModalLabel", 'aria-hidden'=> false, id: "#{hp.plan_id}_periodo"}
             - @hp = hp
             - @accion = 'update'

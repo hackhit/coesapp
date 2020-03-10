@@ -8,7 +8,7 @@
 
 	= render '/admin/secciones/tabla_descripcion'
 	= render '/admin/secciones/opciones_descarga'
-	= render '/admin/secciones/modal_form' if current_admin
+	= render '/admin/secciones/modal_form' if current_admin and (current_admin.autorizado? 'Secciones', 'update')
 	- if current_admin and current_admin.maestros?
 		%nav
 			.nav.nav-tabs

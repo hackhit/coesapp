@@ -86,15 +86,8 @@ class ApplicationController < ActionController::Base
 				end
 				format.json {render json: {data: msg, status: :success, type: :error} }
 			end
-
-			# render json: {data: msg, status: :success}
 		end
 	end
-
-
-	# def filtro_autorizado
-
-	# end
 
 	def inicial_current_periodo
 		escuela = current_escuela

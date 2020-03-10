@@ -15,6 +15,7 @@
 	%td= a.descripcion_pci current_periodo.id
 	%td= sec.numero
 	%td.creditos.text-right= a.creditos
-	%td
-		= link_to(ins, {method: :delete, data: {:confirm => "Se perderan los datos, ¿Está seguro de esta acción?" }}) do
-			.text-danger= glyph 'trash'
+	- if (current_admin and current_admin.autorizado? 'Inscripcionsecciones', 'destroy')
+		%td
+			= link_to(ins, {method: :delete, data: {:confirm => "Se perderan los datos, ¿Está seguro de esta acción?" }}) do
+				.text-danger= glyph 'trash'

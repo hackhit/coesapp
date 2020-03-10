@@ -12,8 +12,8 @@
 					%th Asignatura
 					%th Sección
 					%th U. Créditos 
-
-					%th
+					- if (current_admin and current_admin.autorizado? 'Inscripcionsecciones', 'destroy')
+						%th
 			%tbody
 				- if @inscripciones and @inscripciones.any?
 					- @inscripciones.each do |ins| 

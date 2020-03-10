@@ -1,7 +1,7 @@
 - @planes = @escuela.planes
 - @periodos = @escuela.periodos.order('inicia DESC')
 %h6.titulo.mb-md-2
-  - if current_admin and current_admin.altos? and @estudiante.combinaciones.count < 3
+  - if current_admin and (current_admin.autorizado? 'Combinaciones', 'create') and @estudiante.combinaciones.count < 3
     .float-left.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Agregar Nueva Combinación de Idiomas'}
       = link_to('javascript:void(0)', { class: 'text-success m-1', :onclick => "return $('#nueva_combinacion').modal();", 'data_toggle' => 'modal' }) do
         = glyph 'plus'
@@ -19,7 +19,7 @@
     %tr
       %th
         = combinacion.descripcion
-        - if current_admin and current_admin.mas_altos?
+        - if current_admin and (current_admin.autorizado? 'Combinaciones', 'destroy')
           %b.tooltip-btn{'data_toggle'=>'tooltip', 'title'=>'Editar'}
             = link_to('javascript:void(0)', {onclick: "return $('#combinacion_#{combinacion.periodo_id}').modal();", 'data_toggle' => 'modal'}) do
               = glyph 'edit'

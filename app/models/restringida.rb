@@ -12,4 +12,8 @@ class Restringida < ApplicationRecord
 
 	enum grupo: GRUPOS 
 
+	def descripcion_completa
+		"#{controlador} - #{accion} - #{nombre_publico} #{grupo}"
+	end
+
 end

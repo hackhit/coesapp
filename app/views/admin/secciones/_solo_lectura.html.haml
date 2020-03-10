@@ -39,10 +39,10 @@
 				%td= es.estado.upcase
 
 				%td= text_field_tag "[#{es.estudiante_id}]calificacion_en_letras", {}, {readonly: true, disabled: true, value: es.calificacion_en_letras, class: 'form-control form-control-sm'}
-				- if current_admin 
+				- if current_admin and (current_admin.autorizado? 'Inscripcionsecciones', 'cambiar_calificacion')
 					%th
 						- if !es.retirado?
 							= link_to 'javascript:void(0)', onclick: "$('#inscripcionseccion_id').val('#{es.id}');$('#nueva_seccion_titulo').html('Modificar Calificación a #{es.estudiante.usuario.descripcion_apellido}');$('#cambio_calificacion').modal();", class: 'tooltip-btn btn-sm btn-outline-success', 'data_toggle': :tooltip, title: 'Cambiar Calificación' do
 								= glyph :pencil
- 
-= render 'admin/secciones/modal_cambio_calificacion' if current_admin
+- if current_admin and (current_admin.autorizado? 'Inscripcionsecciones', 'cambiar_calificacion')
+	= render 'admin/secciones/modal_cambio_calificacion' if current_admin

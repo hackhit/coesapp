@@ -5,7 +5,7 @@
 	- else
 		= render partial: 'admin/secciones/solo_lectura', locals: {inscripciones: @inscripciones_secciones}
 - elsif current_admin
-	- if @seccion.cerrada? and calificada
+	- if (@seccion.cerrada? and calificada) or !(current_admin.autorizado? 'Secciones', 'calificar')
 		= render partial: 'admin/secciones/solo_lectura', locals: {inscripciones: @inscripciones_secciones}
 		= # Ojo: Incluir opciones para cambiar estado pero con mensaje de bitacora
 	- else

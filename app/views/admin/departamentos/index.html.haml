@@ -1,43 +1,50 @@
 - model_class = Departamento
 
-- if current_usuario and current_admin.mas_altos?
+- if (current_admin and current_admin.autorizado? 'Departamentos', 'create')
   = btn_add_success new_departamento_path, 'Agregar Nuevo Departamento', 'Nuevo'
   %br
   %br
-%table#dataTableDpto.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
-  %thead
-    %tr
-      %th Escuela
-      %th= model_class.human_attribute_name(:descripcion)
-      %th Cátedra
-      %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de asignaturas para el periodo actual'} Asigs
-      %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de secciones para el periodo actual'} Seccs 
-      %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de inscripciones para el periodo actual'} Inscr
-      %th Actividad
-      %th Opciones
-  %tbody
-
-    - @departamentos.each do |departamento|
+.border.p-2  
+  %table#dataTableDpto.table-striped.table-sm.table-hover.table-bordered.table-responsive-md.mt-3
+    %thead
       %tr
-        %td= departamento.escuela.descripcion
-        %td= link_to departamento.descripcion, departamento_path(departamento)
-        %td
-          %table.table
-            - departamento.catedras.each do |c| 
-              %tr
-                %td= link_to c.descripcion, catedra_path(c)
-        %td= departamento.asignaturas.count
-        %td= departamento.secciones.del_periodo(current_periodo.id).count
-        %td= departamento.inscripcionsecciones.del_periodo(current_periodo.id).count
-        %td=l departamento.updated_at, format: :short
-        %td
-          = link_to departamento_path(departamento), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
-            = glyph 'info-sign'
-          = link_to edit_departamento_path(departamento), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
-            = glyph 'pencil'
-          - if current_admin.ninja?
-            = link_to departamento_path(departamento), method: :delete, data: { confirm: 'Esta acción eliminará irreversiblemente tadas las asignaturas y asociaciones con cátedras del sistema. ¿Está Seguro?'}, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
-              .text-danger= glyph 'trash'
+        %th Escuela
+        %th= model_class.human_attribute_name(:descripcion)
+        %th Cátedra
+        %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de asignaturas para el periodo actual'} Asigs
+        %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de secciones para el periodo actual'} Seccs 
+        %th.tooltip-btn{'data_toggle'=> :tooltip, title: 'Total de inscripciones para el periodo actual'} Inscr
+        %th Actividad
+        %th Opciones
+    %tbody
+
+      - @departamentos.each do |departamento|
+        %tr
+          %td= departamento.escuela.descripcion
+          %td= link_to_if (current_admin and current_admin.autorizado? 'Departamentos', 'show'), departamento.descripcion, departamento_path(departamento)
+          %td
+            %table.table
+              - departamento.catedras.each do |c| 
+                %tr
+                  %td= link_to_if (current_admin and current_admin.autorizado? 'Catedras', 'index'), c.descripcion, catedra_path(c)
+          %td= departamento.asignaturas.count
+          %td= departamento.secciones.del_periodo(current_periodo.id).count
+          %td= departamento.inscripcionsecciones.del_periodo(current_periodo.id).count
+          %td=l departamento.updated_at, format: :short
+          %td
+            - if (current_admin and current_admin.autorizado? 'Departamentos', 'show')
+              = link_to departamento_path(departamento), class: 'btn btn-sm', title: "#{ t('.show', default: t('helpers.links.show')) }" do
+                = glyph 'info-sign'
+            - if (current_admin and current_admin.autorizado? 'Departamentos', 'update')
+              = link_to edit_departamento_path(departamento), class: 'btn btn-sm', title: "#{ t('.edit', default: t('helpers.links.edit')) }" do
+                = glyph 'pencil'
+            - if (current_admin and current_admin.autorizado? 'Departamentos', 'destroy')
+              - if !(departamento.asignaturas.any?)
+                = link_to departamento_path(departamento), method: :delete, data: { confirm: 'Esta acción eliminará irreversiblemente tadas las asignaturas y asociaciones con cátedras del sistema. ¿Está Seguro?'}, class: 'btn btn-sm', title: "#{ t('.destroy', default: t('helpers.links.destroy')) }" do
+                  .text-danger= glyph 'trash'
+              - else
+                .btn.btn-sm.tooltip-btn{'data-toggle': :tooltip, title: 'Elimine las asignaturas asociadas al departamento para activar la opción'}
+                  .text-muted= glyph 'trash'
 
 :javascript
 
