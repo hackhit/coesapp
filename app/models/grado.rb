@@ -1,7 +1,7 @@
 class Grado < ApplicationRecord
 	#CONSTANTES:
 
-	self.primary_keys = :estudiante_id, :escuela_id
+	self.primary_keys = :escuela_id, :estudiante_id
 
 	TIPO_INGRESOS = ['OPSU', 'OPSU/COLA', 'SIMADI', 'ACTA CONVENIO (DOCENTE)', 'ACTA CONVENIO (ADMIN)', 'ACTA CONVENIO (OBRERO)', 'DISCAPACIDAD', 'DIPLOMATICO', 'COMPONENTE DOCENTE', 'EQUIVALENCIA', 'ART. 25 (CULTURA)', 'ART. 25 (DEPORTE)', 'CAMBIO: 158', 'ART. 6', 'EGRESADO', 'SAMUEL ROBINSON', 'DELTA AMACURO', 'AMAZONAS', 'PRODES', 'CREDENCIALES']
 
@@ -10,9 +10,9 @@ class Grado < ApplicationRecord
 	belongs_to :estudiante
 	belongs_to :plan, optional: true
 
-	has_many :historialplanes, foreign_key: [:estudiante_id, :escuela_id]
+	has_many :historialplanes, foreign_key: [:escuela_id, :estudiante_id]
 	
-	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
+	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:escuela_id, :estudiante_id] 
 
 	has_many :secciones, through: :inscripciones, source: :seccion
 
@@ -43,7 +43,7 @@ class Grado < ApplicationRecord
 
 	scope :sin_plan, -> {where(plan_id: nil)}
 
-	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado]
+	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado, :postgrado]
 
 	enum estado_inscripcion: [:preinscrito, :confirmado, :reincorporado]
 

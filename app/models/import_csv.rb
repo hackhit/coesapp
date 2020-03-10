@@ -10,7 +10,7 @@ class ImportCsv
 	# 	return CSV.parse(csv_text, headers: true, encoding: 'iso-8859-1:utf-8')
 	# end
 
-	def self.importar_estudiantes file, escuela_id, plan_id, periodo_id
+	def self.importar_estudiantes file, escuela_id, plan_id, periodo_id, grado
 		require 'csv'
 
 		csv_text = File.read(file)
@@ -26,13 +26,16 @@ class ImportCsv
 
 		csv = CSV.parse(csv_text, headers: true, encoding: 'iso-8859-1:utf-8')
 		# csv.each do |row|
-		csv.group_by{|ci| ci[0]}.values.each do |row|
+
+		csv.each do |row|
 			begin
 				# if profe = Profesor.where(usuario_id: row.field(0))
 				hay_usuario = false
-				row = row[0]
+				# row = row[0]
 				row['ci'].strip!
 				row['ci'].delete! '^0-9'
+				plan_id = row['plan_id'] if plan_id.nil?
+				# tipo_ingreso = row['tipo_ingreso'] ? row['tipo_ingreso'] : Grado::TIPO_INGRESOS[0]
 
 				if usuario = Usuario.where(ci: row['ci']).limit(1).first
 					usuarios_existentes << usuario.ci
@@ -55,7 +58,7 @@ class ImportCsv
 					usuario.telefono_habitacion = row['telefono_habitacion']
 					if usuario.save
 						hay_usuario = true
-					p usuario.to_json
+						p usuario.to_json
 					else
 						usuarios_no_agregados << row['ci']
 					end
@@ -79,19 +82,25 @@ class ImportCsv
 					end
 
 					if hay_estudiante
+						p "GRADO: #{grado['estado_inscripcion']}, #{grado['tipo_ingreso']}, #{grado[:estado]}"
 						p "HAY ESTUDIANTE"
+
 						if estudiante.grados.where(escuela_id: escuela_id).first
 							estudiantescuelas_existentes << estudiante.id
 						else
-							p "ESCUALA ESTUDIANTE AGREGADO"
-							total_agregados += 1 if estudiante.grados.create(escuela_id: escuela_id)
+							p "ESCUELA ESTUDIANTE AGREGADO"
+							total_agregados += 1 if estudiante.grados.create!(escuela_id: escuela_id, tipo_ingreso: grado['tipo_ingreso'], estado_inscripcion: grado['estado_inscripcion'], estado: grado[:estado])
 						end
 						
-						if estudiante.historialplanes.where(plan_id: plan_id).count < 1
+						if plan_id and !estudiante.historialplanes.where(plan_id: plan_id, periodo_id: periodo_id).any?
 							hp = Historialplan.new
-							hp.estudiante_id = estudiante.id
+							grado = estudiante.grados.where(escuela_id: escuela_id).first
+							p "ESTUDIANTE CI: #{estudiante.id}"
 							hp.plan_id = plan_id
 							hp.periodo_id = periodo_id
+							# hp.estudiante_id = estudiante.id
+							# hp.escuela_id = escuela_id
+							hp.grado = grado
 							if hp.save
 								total_planes_agregados += 1
 							else
@@ -105,6 +114,7 @@ class ImportCsv
 			end
 		end
 		resumen = "</br><b>Resumen:</b> 
+			</br></br>Total de registros a procesar: <b>#{csv.count}</b>
 			</br></br>Total Estudiantes Agregados: <b>#{total_agregados}</b><hr></hr>
 			Total Usuarios Existentes: <b>#{usuarios_existentes.size}</b><hr></hr>
 			Total Estudiantes Existentes: <b>#{estudiantes_existentes.size}</b><hr></hr>
@@ -112,7 +122,7 @@ class ImportCsv
 			Total Estudiantes No Agregados: <b>#{estudiantes_no_agregados.size}</b>
 			</br><i>Detalle:</i></br> #{estudiantes_no_agregados.to_sentence}<hr></hr>
 
-			Total EscuelaEstudiantes Existentes: <b>#{estudiantescuelas_existentes.size}</b><hr></hr>
+			Total Carreras Existentes: <b>#{estudiantescuelas_existentes.size}</b><hr></hr>
 
 			Total Usuarios No Agregados: <b>#{usuarios_no_agregados.size}</b>
 			</br><i>Detalle:</i></br> #{usuarios_no_agregados.to_sentence}
@@ -120,10 +130,7 @@ class ImportCsv
 			</br>Total Planes No Agregados o Existentes: <b>#{total_planes_no_agregados}</b>"
 
 		return "Proceso de importación completado. #{resumen}"
-
-
 	end
-
 
 	def self.importar_profesores file
 		require 'csv'
@@ -186,10 +193,9 @@ class ImportCsv
 			</br><i>Detalle:</i></br> #{usuarios_no_agregados.to_sentence}"
 
 		return "Proceso de importación completado. #{resumen}"
-
 	end
 
-	def self.importar_secciones file, escuela_id, periodo_id
+	def self.importar_inscripciones file, escuela_id, periodo_id
 		require 'csv'
 
 		csv_text = File.read(file)
@@ -227,10 +233,11 @@ class ImportCsv
 							else
 								return 'Error en el periodo_id. Por favor revise el archivo e inténtelo nuevamente.'
 							end
+							periodo_id = row.field(4)
 						end
 
-						unless s = Seccion.where(numero: row.field(2), periodo_id: row.field(4), asignatura_id: a.id).limit(1).first
-							total_nuevas_secciones += 1 if s = Seccion.create!(numero: row.field(2), periodo_id: row.field(4), asignatura_id: a.id, tipo_seccion_id: 'NF')
+						unless s = Seccion.where(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id).limit(1).first
+							total_nuevas_secciones += 1 if s = Seccion.create!(numero: row.field(2), periodo_id: periodo_id, asignatura_id: a.id, tipo_seccion_id: 'NF')
 						end
 
 						if s
@@ -239,14 +246,17 @@ class ImportCsv
 								estudiantes_inexistentes << row.field(0)
 							else
 								inscrip = s.inscripcionsecciones.where(estudiante_id: row.field(0)).first
-								
 								unless inscrip
 									inscrip = Inscripcionseccion.new
+
+									grado = estu.grados.where(escuela_id: escuela_id).first
+
 									inscrip.seccion_id = s.id
-									inscrip.estudiante_id = row.field(0)
+									inscrip.estudiante_id = estu.id
 
 									inscrip.escuela_id = escuela_id
 
+									inscrip.grado = grado
 									inscrip.pci = true unless estu.grados.where(escuela_id: escuela_id).any?
 										
 									if inscrip.save!
@@ -312,7 +322,6 @@ class ImportCsv
 				end
 			end
 		return "Proceso de importación completado con éxito. #{self.resumen total_inscritos, total_existentes, estudiantes_no_inscritos, total_nuevas_secciones, secciones_no_creadas, estudiantes_inexistentes, asignaturas_inexistentes, total_calificados, total_no_calificados, total_aprobados, total_aplazados, total_retirados,periodo_id}"
-
 	end
 
 
