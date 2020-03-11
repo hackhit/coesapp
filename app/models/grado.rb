@@ -1,7 +1,7 @@
 class Grado < ApplicationRecord
 	#CONSTANTES:
 
-	self.primary_keys = :escuela_id, :estudiante_id
+	self.primary_keys = :estudiante_id, :escuela_id
 
 	TIPO_INGRESOS = ['OPSU', 'OPSU/COLA', 'SIMADI', 'ACTA CONVENIO (DOCENTE)', 'ACTA CONVENIO (ADMIN)', 'ACTA CONVENIO (OBRERO)', 'DISCAPACIDAD', 'DIPLOMATICO', 'COMPONENTE DOCENTE', 'EQUIVALENCIA', 'ART. 25 (CULTURA)', 'ART. 25 (DEPORTE)', 'CAMBIO: 158', 'ART. 6', 'EGRESADO', 'SAMUEL ROBINSON', 'DELTA AMACURO', 'AMAZONAS', 'PRODES', 'CREDENCIALES']
 

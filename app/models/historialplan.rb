@@ -5,7 +5,7 @@ class Historialplan < ApplicationRecord
 	belongs_to :periodo
 	belongs_to :plan
 
-	belongs_to :grado, primary_key: ['escuela_id', 'estudiante_id'], foreign_key: ['escuela_id', 'estudiante_id']
+	belongs_to :grado, primary_key: ['estudiante_id', 'escuela_id'], foreign_key: ['estudiante_id', 'escuela_id']
 
 
 	# OJO: Esta debe ser la validación: Que un estudiante no tenga más de un plan para un mismo periodo
