@@ -12,7 +12,7 @@ class Grado < ApplicationRecord
 
 	has_many :historialplanes, foreign_key: [:escuela_id, :estudiante_id]
 	
-	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:escuela_id, :estudiante_id] 
+	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
 
 	has_many :secciones, through: :inscripciones, source: :seccion
 
