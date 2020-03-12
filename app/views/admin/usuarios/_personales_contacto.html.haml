@@ -15,8 +15,6 @@
 	- if current_admin and current_admin.ninja?
 		%li
 			%b Contraseña:
-			= @usuario.password
-
 			%b.tooltip-btn{'data_toggle'=>'tooltip', title: "Resetear Contraseña"}
 				= link_to( resetear_contrasena_usuario_path(@usuario), {'data-confirm' => 'Esta acción asignará la cédula de identidad como contraseña, ¿está de acuerdo?'}) do
 					= glyph 'repeat'

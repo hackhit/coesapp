@@ -5,8 +5,6 @@
       %th.span3 Roles
       %th.span4 Nombre y Apellido
       %th Cédula
-      - if current_admin.ninja? 
-        %th Contraseña
       %th Correo Electrónico
       %th Móvil
       %th Opciones
@@ -36,9 +34,7 @@
                   %td= rol
 
         %td= link_to u.nombre_completo, u
-        %td= link_to u.ci, u 
-        - if current_admin.ninja?  
-          %td= u.password
+        %td= link_to u.ci, u
         %td= u.email
         %td= u.telefono_movil
         %td
