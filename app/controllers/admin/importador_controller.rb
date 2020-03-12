@@ -29,12 +29,12 @@ module Admin
 		# end
 
 		# ==== IMPORTADOR DE SECCIONES ===== #
-		def seleccionar_archivo_secciones
-			@titulo = "Importador de Archivos de Secciones"
+		def seleccionar_archivo_inscripciones
+			@titulo = "Importador de Archivos de Inscripciones"
 		end
-		def importar_seccion
-			flash[:info] = ImportCsv.importar_secciones params[:datafile].tempfile, params[:escuela_id], params[:periodo_id]
-			redirect_to action: 'seleccionar_archivo_secciones'
+		def importar_inscripciones
+			flash[:info] = ImportCsv.importar_inscripciones params[:datafile].tempfile, params[:escuela_id], params[:periodo_id]
+			redirect_to action: 'seleccionar_archivo_inscripciones'
 		end
 
 		# ==== IMPORTADOR DE PROFESORES ===== #
@@ -49,11 +49,12 @@ module Admin
 
 		# ==== IMPORTADOR DE ESTUDIANTES ===== #
 		def seleccionar_archivo_estudiantes
+			@escuelas = current_admin ? current_admin.escuelas : Escuela.all
 			@titulo = "Importador de Archivos de Estudiantes por Escuela"
 		end
 
 		def importar_estudiantes
-			flash[:info] = ImportCsv.importar_estudiantes params[:datafile].tempfile, params[:escuela_id], params[:plan_id], params[:periodo_id]
+			flash[:info] = ImportCsv.importar_estudiantes params[:datafile].tempfile, params[:escuela_id], params[:plan_id], params[:periodo_id], params[:grado]
 			redirect_to action: 'seleccionar_archivo_estudiantes'
 		end
 

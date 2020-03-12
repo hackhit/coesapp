@@ -22,19 +22,54 @@
             Para obtener información de cómo exportar archivos .csv en Excel haga click
             %a{href: 'https://support.office.com/es-es/article/importar-o-exportar-archivos-de-texto-txt-o-csv-5250ac4c-663c-47ce-937b-339e391393ba', target: '_blank'} aquí
         = file_field_tag :datafile, required: true, class: 'form-control', accept: ".csv"
+      
+      .m-3.alert.alert-danger
+        %b !Atención!
+        Los valores seleccionados debajo se aplicarán a todos los estudiantes a importar
       .col-md-12
-        = select(nil, :escuela_id, Escuela.all.collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Escuela...'}, {class: "form-control", required: true, onchange: 'set_escuela()'})
+        = select(nil, :escuela_id, @escuelas.collect{|o| [ o.descripcion, o.id ] }, { include_blank: 'Selecciona Escuela...'}, {class: "form-control", required: true, onchange: 'set_escuela()'})
 
-        = grouped_collection_select nil, :plan_id, Escuela.all, :planes, :descripcion, :id, :descripcion_completa, {:prompt => "Selecciona planes..."}, { class: 'form-control hideble mt-md-3', required: true}
+        #plan.d-none
+          %br
+          = check_box_tag :periodo_en_archivo, nil, false, id: 'incluirPlan'#onChange: "togglePeriodo($(this))" 
+          El plan está incluido en una columna del archivo
+          = grouped_collection_select nil, :plan_id, @escuelas, :planes, :descripcion, :id, :descripcion_completa, {:prompt => "Selecciona planes..."}, { class: 'form-control mt-md-1', required: true}
 
+          = grouped_collection_select nil, :periodo_id, @escuelas, :periodos, :descripcion, :id, :id, {:prompt => "Selecciona a partir de cúal período se aplica el plan..."}, { class: 'form-control mt-md-3', required: true}
+          .border.mt-3.p-3
+            Elija el Modalidad de Ingreso:
+            %br
+            %br
+            - Grado.tipos_ingreso.map do |k,v| 
+              %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+                = radio_button_tag '[grado]tipo_ingreso', k, false, required: true, class: ''
+                = "#{k.upcase}"
+          .border.mt-3.p-3
+            Elija el Estado Inicial de Inscripción:
+            %br
+            %br
+            - Grado.estado_inscripciones.map do |k,v| 
+              %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+                = radio_button_tag '[grado]estado_inscripcion', k, false, required: true, class: ''
+                = "#{k.upcase}"
+          .border.mt-3.p-3
+            Elija el Estado inicial según el tipo de estudiante:
+            %br
+            %br
+            - Grado.estados.map do |k,v| 
+              %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+                = radio_button_tag '[grado]estado', k, false, required: true, class: ''
+                = "#{k.upcase}"
 
-        = grouped_collection_select nil, :periodo_id, Escuela.all, :periodos, :descripcion, :id, :id, {:prompt => "Selecciona a partir de cúal período se aplica el plan..."}, { class: 'form-control hideble mt-md-3', required: true}        
 
     .form-group
       .col-md-offset-2.col-md-10
         = submit_tag "Cargar", {class: 'btn btn-outline-success btn-sm', disable_with: "Cargando..."}
 
 :javascript
+  $('#incluirPlan').click(function(){
+    $('#plan_id').prop('disabled', $(this).is(":checked"));
+  })
   function set_escuela(){
 
     $("#plan_id optgroup").hide();
@@ -44,6 +79,5 @@
     $("#periodo_id optgroup[label='" + escuela + "']").show();
     $("#plan_id").val('');
     $("#periodo_id").val('');
-    $("#plan_id").show();
-    $("#periodo_id").show();
+    $('#plan').removeClass('d-none');
   }

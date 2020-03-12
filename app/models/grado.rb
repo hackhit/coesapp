@@ -10,7 +10,7 @@ class Grado < ApplicationRecord
 	belongs_to :estudiante
 	belongs_to :plan, optional: true
 
-	has_many :historialplanes, foreign_key: [:estudiante_id, :escuela_id]
+	has_many :historialplanes, foreign_key: [:escuela_id, :estudiante_id]
 	
 	has_many :inscripciones, class_name: 'Inscripcionseccion', foreign_key: [:estudiante_id, :escuela_id] 
 
@@ -43,7 +43,7 @@ class Grado < ApplicationRecord
 
 	scope :sin_plan, -> {where(plan_id: nil)}
 
-	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado]
+	enum estado: [:pregrado, :tesista, :posible_graduando, :graduando, :graduado, :postgrado]
 
 	enum estado_inscripcion: [:preinscrito, :confirmado, :reincorporado]
 
