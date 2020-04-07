@@ -38,8 +38,8 @@ gem 'turnout'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
+gem 'puma', '~> 3.11'
 group :development do
-  gem 'puma', '~> 3.11'
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
