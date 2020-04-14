@@ -280,12 +280,12 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails
   listen (>= 3.0.5, < 3.2)
-  mysql2
+  mysql2 (~> 0.4.10)
   pdf-reader
   pdf-reader-html
   prawn
   prawn-table
-  puma (~> 3.11)
+  puma
   rails (~> 5.2.2)
   rails_layout
   sass-rails (~> 5.0)
