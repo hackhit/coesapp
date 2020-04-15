@@ -183,5 +183,7 @@ Rails.application.routes.draw do
     end
   end
   
+  get '/check.txt', to: proc {[200, {}, ['it_works']]}
+  
   root to: 'visitors#index'
 end
