@@ -12,7 +12,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "bootstrap", ">= 4.1.2"
 gem 'haml-rails'
 gem 'jquery-rails'
-gem 'mysql2', '~> 0.4.10'
+gem 'mysql2'#, '~> 0.4.10'
 gem 'bootstrap-sass-extras'
 gem 'composite_primary_keys', '=11.2'
 
