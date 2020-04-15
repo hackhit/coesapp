@@ -1,0 +1,6 @@
+
+production:
+  adapter: mysql2
+  url: <%= ENV['DATABASE_URL'] %>
+  encoding: utf8
+  pool: 5
