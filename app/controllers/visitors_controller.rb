@@ -94,27 +94,26 @@ class VisitorsController < ApplicationController
 
       begin
         session[:usuario_ci] = usuario.ci
-        m = usuario.email
-        # ApplicationMailer.olvido_clave(usuario).deliver_later#! #deliver_now # deliver_later
+        ApplicationMailer.olvido_clave(usuario).deliver_now #deliver_later#! #deliver_now # deliver_later
 
-        texto = "Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.
+        # texto = "Estimado: #{usuario.nickname}, Usted ha solicitado recuperar su clave.
 
-        Su clave es:#{usuario.password}
+        # Su clave es:#{usuario.password}
 
-        Gracias por su colaboracion. 
-        UCV La casa que vence la sombra.
-        Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com"
-        unless m.blank?
+        # Gracias por su colaboracion. 
+        # UCV La casa que vence la sombra.
+        # Ante cualquier duda o inconveniente responder a: soporte.coes.fhe@gmail.com"
+        # unless m.blank?
 
-          system(".././sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACION DE CLAVE COES-FHE' -m '#{texto}' -v")
+        #   system(".././sendEmail.pl  -o tls=no -f soporte.coes.fhe@ucv.ve -t #{m} -s 190.169.255.189 -u 'RECUPERACION DE CLAVE COES-FHE' -m '#{texto}' -v")
 
-          system("echo 'Correo enviado! ----------------------------------'") 
+        #   system("echo 'Correo enviado! ----------------------------------'") 
 
-          flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}, por favor revise su correo electrónico dentro de 5 minutos."
-          info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
-        else
-          flash[:error] = "El usuario no posee un correo registrado. Por favor contacte a las autoridades competentes para solvertar esta situación."
-        end
+        #   flash[:success] = "#{usuario.nombres}, se ha enviado la clave al correo: #{m[0]}...#{m[4..m.size]}, por favor revise su correo electrónico dentro de 5 minutos."
+        #   info_bitacora 'Solicitó recuperación de clave', nil, 'Session'
+        # else
+        #   flash[:error] = "El usuario no posee un correo registrado. Por favor contacte a las autoridades competentes para solvertar esta situación."
+        # end
       rescue Exception => e
         flash[:error] = "Error: #{e}"
       end
