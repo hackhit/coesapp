@@ -40,7 +40,7 @@ group :development, :test do
 end
 
 group :production do
-  gem 'puma'#, '~> 3.11'
+  gem 'puma', '>= 4.3.9' #, '~> 3.11'
 end
 group :development do
   gem 'web-console', '>= 3.3.0'
