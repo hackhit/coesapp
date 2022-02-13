@@ -1,19 +1,19 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.5.1'
-gem 'rails', '~> 5.2.2'
-gem 'sass-rails', '~> 5.0'
+gem 'rails', '~> 5.2.6', '>= 5.2.6.2'
+gem 'sass-rails', '~> 5.0', '>= 5.0.7'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 4.2', '>= 4.2.2'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "bootstrap", ">= 4.1.2"
-gem 'haml-rails'
-gem 'jquery-rails'
+gem 'haml-rails', '>= 1.0.0'
+gem 'jquery-rails', '>= 4.3.3'
 gem 'mysql2'#, '~> 0.4.10'
-gem 'bootstrap-sass-extras'
+gem 'bootstrap-sass-extras', '>= 0.0.7'
 gem 'composite_primary_keys', '=11.2'
 
 # gem 'pdf-writer', :git => 'https://github.com/metaskills/pdf-writer.git'
@@ -40,10 +40,10 @@ group :development, :test do
 end
 
 group :production do
-  gem 'puma'#, '~> 3.11'
+  gem 'puma', '>= 4.3.11' #, '~> 3.11'
 end
 group :development do
-  gem 'web-console', '>= 3.3.0'
+  gem 'web-console', '>= 3.7.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
