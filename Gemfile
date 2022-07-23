@@ -2,11 +2,11 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.5.1'
 gem 'rails', '~> 5.2.2'
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0', '>= 5.0.7'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 4.2', '>= 4.2.2'
 gem 'turbolinks', '~> 5'
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.8', '>= 2.8.0'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "bootstrap", ">= 4.1.2"
@@ -43,10 +43,10 @@ group :production do
   gem 'puma'#, '~> 3.11'
 end
 group :development do
-  gem 'web-console', '>= 3.3.0'
+  gem 'web-console', '>= 3.7.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.0.1'
   gem 'better_errors'
   gem 'html2haml'
   gem 'hub', :require=>nil
